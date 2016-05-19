@@ -9,11 +9,13 @@
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/rollbar/Rollbar.NET</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A client for rollbar. Constructs valid Rollbar report payloads.</description>
+    <description>
+      Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.
+    </description>
     <releaseNotes>
       Initial Release, unit tested.
     </releaseNotes>
     <copyright>Copyright 2015</copyright>
-    <tags>rollbar</tags>
+    <tags>error exception tracking reporting log analysis monitoring aggregation crash reporting</tags>
   </metadata>
 </package>

@@ -1,4 +1,4 @@
-# Valetude.Rollbar
+# Rollbar.NET
 
 A .NET Rollbar Client that is not ASP.NET specific.
 
@@ -22,7 +22,7 @@ occurence leaving two important things up to you, the implementer:
 
 Nuget Package Manager:
 
-    install-package Valetude.Rollbar
+    install-package Rollbar
 
 ## What's inside?
 
@@ -43,7 +43,7 @@ error" (`RollbarPerson`), "What HTTP request data can you give me about the
 error (if it happened during an HTTP Request, of course)" (`RollbarRequest`),
 "How severe was the error?" (`Level`). Anything you see on the
 [rollbar api website](https://rollbar.com/docs/api/items_post/) can be found in
-`Valetude.Rollbar`.
+`Rollbar.NET`.
 
 `RollbarBody` can be constructed one of 5 ways:
 
@@ -64,7 +64,7 @@ error (if it happened during an HTTP Request, of course)" (`RollbarRequest`),
  assigned tothe `CrashReport` field of `RollbarBody`
 
 None of the fields on `RollbarBody` are updatable, and all null fields in
-`Valetude.Rollbar` are left off of the final JSON payload.
+`Rollbar.NET` are left off of the final JSON payload.
 
 ## Example?
 
