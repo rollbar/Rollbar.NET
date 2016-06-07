@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class PersonFixture {
         [Fact]
         public void Person_id_rendered_correctly() {

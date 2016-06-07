@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Rollbar {
+namespace RollbarDotNet {
     [JsonConverter(typeof(ArbitraryKeyConverter))]
     public class Client : HasArbitraryKeys {
         public JavascriptClient Javascript { get; set; }

@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class FrameFixture {
         [Fact]
         public void Frame_from_filename_leaves_everything_else_null() {
@@ -33,7 +33,7 @@ namespace Rollbar.Test {
             Assert.Contains(string.Format("\"filename\":\"{0}\"", frame.FileName.Replace("\\", "\\\\")), json);
             Assert.Matches("\"lineno\":\\d+", json);
             Assert.Matches("\"colno\":\\d+", json);
-            Assert.Contains("\"method\":\"Rollbar.Test.FrameFixture.GetFrame()\"", json);
+            Assert.Contains("\"method\":\"RollbarDotNet.Test.FrameFixture.GetFrame()\"", json);
         }
 
         [Fact]

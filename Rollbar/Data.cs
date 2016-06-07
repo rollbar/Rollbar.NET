@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Rollbar {
+namespace RollbarDotNet {
     public class Data {
         private static readonly string NotifierAssemblyVersion = typeof(Data).Assembly.GetName().Version.ToString(3);
         public static string DefaultPlatform = "windows";

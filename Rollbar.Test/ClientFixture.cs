@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class ClientFixture {
         private readonly Client _client;
 

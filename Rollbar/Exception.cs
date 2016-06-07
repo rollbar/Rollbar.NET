@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace Rollbar {
+namespace RollbarDotNet {
     public class Exception {
         public Exception(string @class) {
             Class = @class;

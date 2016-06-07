@@ -6,7 +6,7 @@ using FakeItEasy;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class PayloadFixture {
         private readonly Payload _exceptionExample;
         private readonly Payload _messageException;
@@ -62,7 +62,7 @@ namespace Rollbar.Test {
 
             var frames = Assert.IsType<JArray>(trace["frames"]);
             Assert.All(frames, token => Assert.NotNull(token["filename"]));
-            Assert.Equal("Rollbar.Test.PayloadFixture.ThrowAnException()", frames[0]["method"].Value<string>());
+            Assert.Equal("RollbarDotNet.Test.PayloadFixture.ThrowAnException()", frames[0]["method"].Value<string>());
             var exception = Assert.IsType<JObject>(trace["exception"]);
             Assert.Equal("Test", exception["message"].Value<string>());
             Assert.Equal("System.Exception", exception["class"].Value<string>());
@@ -139,7 +139,7 @@ namespace Rollbar.Test {
             Assert.All(traceChain, trace => {
                 var frames = Assert.IsType<JArray>(trace["frames"]);
                 Assert.All(frames, frame => Assert.NotNull(frame["filename"]));
-                Assert.Equal("Rollbar.Test.PayloadFixture.ThrowAnException()", frames[0]["method"].Value<string>());
+                Assert.Equal("RollbarDotNet.Test.PayloadFixture.ThrowAnException()", frames[0]["method"].Value<string>());
                 var exception = Assert.IsType<JObject>(trace["exception"]);
                 Assert.Equal("Test", exception["message"].Value<string>());
                 Assert.Equal("System.Exception", exception["class"].Value<string>());
