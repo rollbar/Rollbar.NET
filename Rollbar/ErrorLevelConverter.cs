@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Rollbar {
+namespace RollbarDotNet {
     public class ErrorLevelConverter : JsonConverter<ErrorLevel> {
         public override void WriteJson(JsonWriter writer, ErrorLevel value, JsonSerializer serializer) {
             writer.WriteValue(value.ToString().ToLower());

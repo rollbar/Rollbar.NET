@@ -7,7 +7,7 @@
     <ProjectGuid>{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rollbar</RootNamespace>
+    <RootNamespace>RollbarDotNet</RootNamespace>
     <AssemblyName>Rollbar</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -55,6 +55,9 @@
     <Compile Include="Person.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Message.cs" />
+    <Compile Include="Rollbar.cs" />
+    <Compile Include="RollbarClient.cs" />
+    <Compile Include="RollbarConfig.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Trace.cs" />
   </ItemGroup>

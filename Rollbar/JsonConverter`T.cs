@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace Rollbar {
+namespace RollbarDotNet {
     public abstract class JsonConverter<T> : JsonConverter {
         public sealed override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) {
             if (!(value is T)) {

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class MessageFixture {
         private readonly Message _message;
 

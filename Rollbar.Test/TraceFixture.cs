@@ -1,7 +1,7 @@
 ﻿using System;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class TraceFixture {
         [Fact]
         public void Trace_built_from_exception_has_correct_frames() {
@@ -9,8 +9,8 @@ namespace Rollbar.Test {
             Assert.NotNull(trace.Frames);
             Assert.NotEmpty(trace.Frames);
             Assert.Equal(2, trace.Frames.Length);
-            Assert.Equal("Rollbar.Test.TraceFixture.ThrowException()", trace.Frames[0].Method);
-            Assert.Equal("Rollbar.Test.TraceFixture.GetException()", trace.Frames[1].Method);
+            Assert.Equal("RollbarDotNet.Test.TraceFixture.ThrowException()", trace.Frames[0].Method);
+            Assert.Equal("RollbarDotNet.Test.TraceFixture.GetException()", trace.Frames[1].Method);
             Assert.All(trace.Frames, frame => Assert.EndsWith("TraceFixture.cs", frame.FileName));
         }
 

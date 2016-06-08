@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class BodyFixture {
         [Fact]
         public void Exceptions_cannot_be_null() {
@@ -77,7 +77,7 @@ namespace Rollbar.Test {
             var rollbarBody = new Body(GetException());
             var json = JsonConvert.SerializeObject(rollbarBody);
             Assert.Contains("\"trace\":{", json);
-            Assert.Contains("\"Rollbar.Test.BodyFixture.GetException()\"", json);
+            Assert.Contains("\"RollbarDotNet.Test.BodyFixture.GetException()\"", json);
             Assert.DoesNotContain("\"crash_report\":{", json);
             Assert.DoesNotContain("\"trace_chain\":{", json);
             Assert.DoesNotContain("\"message\":{", json);
@@ -88,7 +88,7 @@ namespace Rollbar.Test {
             var rollbarBody = new Body(GetAggregateException());
             var json = JsonConvert.SerializeObject(rollbarBody);
             Assert.Contains("\"trace_chain\":[", json);
-            Assert.Contains("\"Rollbar.Test.BodyFixture.ThrowException()\"", json);
+            Assert.Contains("\"RollbarDotNet.Test.BodyFixture.ThrowException()\"", json);
             Assert.DoesNotContain("\"crash_report\":{", json);
             Assert.DoesNotContain("\"trace\":{", json);
             Assert.DoesNotContain("\"message\":{", json);

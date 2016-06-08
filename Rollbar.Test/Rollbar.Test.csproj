@@ -8,7 +8,7 @@
     <ProjectGuid>{91F86F46-079A-40A5-BC2C-D34D3119515A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rollbar.Test</RootNamespace>
+    <RootNamespace>RollbarDotNet.Test</RootNamespace>
     <AssemblyName>Rollbar.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

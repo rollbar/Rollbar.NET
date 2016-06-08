@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class ExceptionFixture {
         [Fact]
         public void Exception_cant_be_null() {

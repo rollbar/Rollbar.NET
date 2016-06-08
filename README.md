@@ -66,12 +66,34 @@ error (if it happened during an HTTP Request, of course)" (`RollbarRequest`),
 None of the fields on `RollbarBody` are updatable, and all null fields in
 `Rollbar.NET` are left off of the final JSON payload.
 
-## Example?
+## Examples
 
-This is a new library, hopefully more examples will be forthcoming.
+### Winforms
 
-Currently the best example of how to use this is at
-[Nancy.Rollbar](https://github.com/Valetude/Nancy.Rollbar). Please see the
-`RollbarPayloadFactory` and its dependencies.  To see how it might get
-integrated into a Nancy app you can take a peek in the unit tests for that
-project. There's a single example in the test suite, using Nancy's fakes.
+To use inside a Winforms Application, do the following inside your main method:
+
+```
+[STAThread]
+static void Main()
+{
+    Rollbar.Init(new RollbarConfignew RollbarConfig
+    {
+        AccessToken = "POST_SERVER_ACCESS_TOKEN",
+        Environment = "production"
+    });
+    Application.EnableVisualStyles();
+    Application.SetCompatibleTextRenderingDefault(false);
+
+    Application.ThreadException += (sender, args) =>
+    {
+        Rollbar.Report(args.Exception);
+    };
+
+    AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+    {
+        Rollbar.Report(args.ExceptionObject as System.Exception);
+    };
+
+    Application.Run(new Form1());
+}
+```

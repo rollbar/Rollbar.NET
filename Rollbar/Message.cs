@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Rollbar {
+namespace RollbarDotNet {
     [JsonConverter(typeof (ArbitraryKeyConverter))]
     public class Message : HasArbitraryKeys {
         public Message(string body) {

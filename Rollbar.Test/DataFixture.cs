@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class DataFixture {
         private static readonly Regex WhiteSpace = new Regex(@"\s");
         private readonly Data _basicData;

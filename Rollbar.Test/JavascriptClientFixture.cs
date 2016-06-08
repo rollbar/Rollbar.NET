@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace Rollbar.Test {
+namespace RollbarDotNet.Test {
     public class JavascriptClientFixture {
         private readonly JavascriptClient _jsClient;
 
