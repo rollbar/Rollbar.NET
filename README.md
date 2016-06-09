@@ -2,32 +2,72 @@
 
 A .NET Rollbar Client that is not ASP.NET specific.
 
-## Why?
-
-[RollbarSharp](https://github.com/mroach/RollbarSharp) is great, works nicely,
-even with Nancy if you choose. But the problem is that it depends on being in an
-ASP.NET environment. You can't use it in a console application, or a windows
-phone application, or any of the dozens of other web frameworks you might want
-to take advantage of.
-
-This library handles all of that by making it easy to construct a valid rollbar
-occurence leaving two important things up to you, the implementer:
-
- 1. How do you send this to Rollbar? (Do you use a `WebClient`? `RestSharp`?
- (if you don't mind the lisense), raw `HttpClient`?)
- 2. How do you get all the information out of your environment and into the
- payload you're about to send Rollbar?
-
 ## Install
 
 Nuget Package Manager:
 
     install-package Rollbar
 
-## What's inside?
+## Basic Usage
 
-To get started you've got exactly one interesting class to worry about:
-`RollbarPayload`. The class and the classes that compose the class cannot be
+* Initialize Rollbar with `Rollbar.Init(new RollbarConfig("POST_SERVER_ACCESS_TOKEN"))`
+* Send errors to Rollbar with `Rollbar.Report(Exception)`
+* Send messages to Rollbar with `Rollbar.Report(string)`
+
+## RollbarConfig
+
+The `RollbarConfig` object allows you to configure the Rollbar library.
+
+<dl>
+    <dt>AccessToken</dt>
+    <dd>The access token for your project, allows you access to the Rollbar API</dd>
+
+    <dt>Endpoint</dt>
+    <dd>The Rollbar API endpoint, defaults to https://api.rollbar.com/api/1/</dd>
+
+    <dt>Environment</dt>
+    <dd>Environment name, e.g. `"production"` or `"development"` defaults to `"production"`</dd>
+
+    <dt>Enabled</dt>
+    <dd>If set to false, errors will not be sent to Rollbar, defaults to `true`</dd>
+
+    <dt>LogLevel</dt>
+    <dd>The default level of the messages sent to Rollbar</dd>
+
+    <dt>Transform</dt>
+    <dd>
+        Allows you to specify a transformation function to modify the payload before it is sent to Rollbar
+
+        ```new RollbarConfig
+{
+    Transform = payload =>
+    {
+        payload.Data.Person = new Person
+        {
+            Id = 123,
+            Username = "rollbar",
+            Email = "user@rollbar.com"
+        };
+    }
+}```
+    </dd>
+</dl>
+
+## Person Data
+
+You can set the current person data with a call to
+```Rollbar.PersonData(new Person
+{
+    Id = 123,
+    Username = "rollbar",
+    Email = "user@rollbar.com"
+});
+
+## Advanced Usage
+
+If you want more control over sending the data to Rollbar, you can fire up a `RollbarClient`
+yourself, and make the calls directly. To get started you've got exactly one interesting class
+to worry about: `RollbarPayload`. The class and the classes that compose the class cannot be
 constructed without all mandatory arguments, and mandatory fields cannot be set.
 Therefore, if you can constrcut a payload then it is valid for the purposes of
 sending to Rollbar. To get the JSON to send to Rollbar just call

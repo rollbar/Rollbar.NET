@@ -1,3 +1,5 @@
+using System;
+
 namespace RollbarDotNet
 {
     public class RollbarConfig
@@ -12,7 +14,7 @@ namespace RollbarDotNet
             Environment = "production";
             Enabled = true;
             LogLevel = ErrorLevel.Debug;
-            ScrubField = new[] { "passwd", "password", "secret", "confirm_password", "password_confirmation" };
+            ScrubFields = new[] { "passwd", "password", "secret", "confirm_password", "password_confirmation" };
             EndPoint = "https://api.rollbar.com/api/1/";
         }
 
@@ -20,12 +22,14 @@ namespace RollbarDotNet
 
         public string EndPoint { get; set; }
 
-        public string[] ScrubField { get; set; }
+        public string[] ScrubFields { get; set; }
 
         public ErrorLevel? LogLevel { get; set; }
 
         public bool? Enabled { get; set; }
 
         public string Environment { get; set; }
+
+        public Action<Payload> Transform { get; set; }
     }
 }

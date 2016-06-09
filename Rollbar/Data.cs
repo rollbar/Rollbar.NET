@@ -62,7 +62,7 @@ namespace RollbarDotNet {
         public Client Client { get; set; }
 
         [JsonProperty("custom", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, object> Custom { get; set; }
+        public object Custom { get; set; }
 
         [JsonProperty("fingerprint", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string Fingerprint { get; set; }

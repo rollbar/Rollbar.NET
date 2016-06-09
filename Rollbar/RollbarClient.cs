@@ -7,7 +7,7 @@ namespace RollbarDotNet
     /// <summary>
     /// Client for accessing the Rollbar API
     /// </summary>
-    public class RollbarClient
+    public class RollbarClient : IRollbarClient
     {
         public RollbarConfig Config { get; }
 
@@ -26,5 +26,10 @@ namespace RollbarDotNet
             var webClient = new WebClient();
             webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
         }
+    }
+
+    public interface IRollbarClient
+    {
+        void PostItem(Payload payload);
     }
 }
