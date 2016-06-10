@@ -37,6 +37,12 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
     <dt>Transform</dt>
     <dd>
         Allows you to specify a transformation function to modify the payload before it is sent to Rollbar
+    </dd>
+</dl>
+
+## Transform Lambda Example
+
+The transform config property allows you to specify a lambda that will be called before the payload is sent to Rollbar.
 
 ```
 new RollbarConfig
@@ -52,8 +58,6 @@ new RollbarConfig
     }
 }
 ```
-    </dd>
-</dl>
 
 ## Person Data
 
