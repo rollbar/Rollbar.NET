@@ -82,6 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PersonFixture.cs" />
     <Compile Include="RequestFixture.cs" />
+    <Compile Include="RollbarFixture.cs" />
     <Compile Include="ServerFixture.cs" />
     <Compile Include="TraceFixture.cs" />
   </ItemGroup>

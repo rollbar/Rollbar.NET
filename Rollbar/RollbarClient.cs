@@ -24,7 +24,7 @@ namespace RollbarDotNet
         private void SendPost<T>(string url, T payload)
         {
             var webClient = new WebClient();
-            webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+            webClient.UploadStringAsync(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
         }
     }
 
