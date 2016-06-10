@@ -37,8 +37,15 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
     <dt>Transform</dt>
     <dd>
         Allows you to specify a transformation function to modify the payload before it is sent to Rollbar
+    </dd>
+</dl>
 
-        ```new RollbarConfig
+## Transform Lambda Example
+
+The transform config property allows you to specify a lambda that will be called before the payload is sent to Rollbar.
+
+```
+new RollbarConfig
 {
     Transform = payload =>
     {
@@ -49,19 +56,20 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
             Email = "user@rollbar.com"
         };
     }
-}```
-    </dd>
-</dl>
+}
+```
 
 ## Person Data
 
 You can set the current person data with a call to
-```Rollbar.PersonData(new Person
+```
+Rollbar.PersonData(new Person
 {
     Id = 123,
     Username = "rollbar",
     Email = "user@rollbar.com"
 });
+```
 
 ## Advanced Usage
 
