@@ -6,10 +6,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace RollbarDotNet.Test {
-    public class FrameFixture {
+namespace RollbarDotNet.Test 
+{
+    public class FrameFixture 
+    {
         [Fact]
-        public void Frame_from_filename_leaves_everything_else_null() {
+        public void Frame_from_filename_leaves_everything_else_null() 
+        {
             var frame = new Frame("ThisFile.cs");
             Assert.Equal("ThisFile.cs", frame.FileName);
             Assert.Null(frame.LineNo);
@@ -18,7 +21,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Frame_from_stackframe_fills_out_everythign() {
+        public void Frame_from_stackframe_fills_out_everythign() 
+        {
             var frame = new Frame(GetFrame());
             Assert.EndsWith("FrameFixture.cs", frame.FileName);
             Assert.NotNull(frame.LineNo);
@@ -27,7 +31,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Frame_from_stack_frame_serializes_correctly() {
+        public void Frame_from_stack_frame_serializes_correctly() 
+        {
             var frame = new Frame(GetFrame());
             var json = JsonConvert.SerializeObject(frame);
             Assert.Contains(string.Format("\"filename\":\"{0}\"", frame.FileName.Replace("\\", "\\\\")), json);
@@ -37,23 +42,30 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Frame_can_have_code() {
-            var frame = new Frame("ThisFile.cs") {
+        public void Frame_can_have_code() 
+        {
+            var frame = new Frame("ThisFile.cs") 
+            {
                 Code = "        CallThisMethod(arg1, myObject2);",
             };
             Assert.Contains("\"code\":\"        CallThisMethod(arg1, myObject2);\"", JsonConvert.SerializeObject(frame));
         }
 
         [Fact]
-        public void Frame_can_have_context() {
-            var frame = new Frame("ThisFile.cs") {
+        public void Frame_can_have_context() 
+        {
+            var frame = new Frame("ThisFile.cs") 
+            {
                 Code = "        CallThisMethod(arg1, myObject2);",
-                Context = new CodeContext {
-                    Pre = new [] {
+                Context = new CodeContext 
+                {
+                    Pre = new[] 
+                    {
                         "        var arg1 = new Whatever();",
                         "        var myObject2 = new Whatever();",
                     },
-                    Post = new [] {
+                    Post = new[] 
+                    {
                         "        Console.WriteLine(\"Whatever\", arg1);",
                         "    }",
                     },
@@ -67,9 +79,12 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Frame_can_have_args() {
-            var frame = new Frame("ThisFile.cs") {
-                Args = new[] {
+        public void Frame_can_have_args() 
+        {
+            var frame = new Frame("ThisFile.cs") 
+            {
+                Args = new[] 
+                {
                     "1", "\"Test\"", "1.5",
                 },
             };
@@ -80,12 +95,15 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Frame_can_have_kwargs() {
-            var frame = new Frame("ThisFile.cs") {
-                Kwargs = new Dictionary<string, object> {
-                    {"One", 1},
-                    {"String", "Hi There"},
-                    {"Arr", new object[0] },
+        public void Frame_can_have_kwargs() 
+        {
+            var frame = new Frame("ThisFile.cs") 
+            {
+                Kwargs = new Dictionary<string, object> 
+                {
+                    { "One", 1 },
+                    { "String", "Hi There" },
+                    { "Arr", new object[0] },
                 },
             };
             var json = JsonConvert.SerializeObject(frame);
@@ -95,11 +113,14 @@ namespace RollbarDotNet.Test {
             Assert.Contains("\"Arr\":[]", json);
         }
 
-        private static StackFrame GetFrame() {
-            try {
+        private static StackFrame GetFrame() 
+        {
+            try 
+            {
                 throw new InvalidOperationException("I'm afraid I can't do that HAL");
             }
-            catch (System.Exception e) {
+            catch (System.Exception e) 
+            {
                 return new StackTrace(e, true).GetFrames()[0];
             }
         }

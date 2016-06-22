@@ -2,21 +2,26 @@
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace RollbarDotNet.Test {
-    public class JavascriptClientFixture {
+namespace RollbarDotNet.Test 
+{
+    public class JavascriptClientFixture 
+    {
         private readonly JavascriptClient _jsClient;
 
-        public JavascriptClientFixture() {
+        public JavascriptClientFixture() 
+        {
             this._jsClient = new JavascriptClient();
         }
 
         [Fact]
-        public void Empty_request_rendered_as_empty_dict() {
+        public void Empty_request_rendered_as_empty_dict() 
+        {
             Assert.Equal("{}", JsonConvert.SerializeObject(_jsClient));
         }
 
         [Fact]
-        public void JsClient_browser_rendered_when_present() {
+        public void JsClient_browser_rendered_when_present() 
+        {
             const string browser = "chromex64";
             _jsClient.Browser = browser;
             var json = JsonConvert.SerializeObject(_jsClient);
@@ -26,7 +31,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void JsClient_code_version_rendered_when_present() {
+        public void JsClient_code_version_rendered_when_present() 
+        {
             const string codeVersion = "6846d84aecf68d46d8acease684cfe86a6es84cf";
             _jsClient.CodeVersion = codeVersion;
             var json = JsonConvert.SerializeObject(_jsClient);
@@ -36,7 +42,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void JsClient_source_map_enabled_rendered_when_present() {
+        public void JsClient_source_map_enabled_rendered_when_present() 
+        {
             const bool sourceMapEnabled = true;
             _jsClient.SourceMapEnabled = sourceMapEnabled;
             var json = JsonConvert.SerializeObject(_jsClient);
@@ -46,7 +53,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void JsClient_guess_uncaught_frames_rendered_when_present() {
+        public void JsClient_guess_uncaught_frames_rendered_when_present() 
+        {
             const bool guessUncaughtFrames = false;
             _jsClient.GuessUncaughtFrames = guessUncaughtFrames;
             var json = JsonConvert.SerializeObject(_jsClient);
@@ -56,7 +64,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void JsClient_can_have_arbitrary_keys() {
+        public void JsClient_can_have_arbitrary_keys() 
+        {
             const string browser = "chromex64";
             _jsClient.Browser = browser;
             _jsClient["whatever"] = "test";

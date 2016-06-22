@@ -16,14 +16,14 @@ namespace RollbarDotNet.Test
         [Fact]
         public void ReportException()
         {
-            var guid = Rollbar.Report(new System.Exception("test exception"));
+            var guid = Rollbar.Report(new System.Exception("test exception"), ErrorLevel.Error, null);
             Assert.NotNull(guid);
         }
 
         [Fact]
         public void ReportMessage()
         {
-            var guid = Rollbar.Report("test message");
+            var guid = Rollbar.Report("test message", ErrorLevel.Error, null);
             Assert.NotNull(guid);
         }
     }

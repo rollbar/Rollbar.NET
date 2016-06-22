@@ -4,21 +4,26 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace RollbarDotNet.Test {
-    public class RequestFixture {
+namespace RollbarDotNet.Test 
+{
+    public class RequestFixture 
+    {
         private readonly Request _request;
 
-        public RequestFixture() {
+        public RequestFixture() 
+        {
             this._request = new Request();
         }
 
         [Fact]
-        public void Empty_request_rendered_as_empty_dict() {
+        public void Empty_request_rendered_as_empty_dict() 
+        {
             Assert.Equal("{}", JsonConvert.SerializeObject(_request));
         }
 
         [Fact]
-        public void Request_url_rendered_when_present() {
+        public void Request_url_rendered_when_present() 
+        {
             const string url = "/my/url?search=string";
             _request.Url = url;
             var json = JsonConvert.SerializeObject(_request);
@@ -28,7 +33,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Request_method_rendered_when_present() {
+        public void Request_method_rendered_when_present() 
+        {
             const string method = "whatever";
             _request.Method = method;
             var json = JsonConvert.SerializeObject(_request);
@@ -38,8 +44,10 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Request_headers_rendered_when_present() {
-            var headers = new Dictionary<string,string> {
+        public void Request_headers_rendered_when_present() 
+        {
+            var headers = new Dictionary<string, string> 
+            {
                 { "Header", "header-value" },
                 { "Accept", "json" },
             };
@@ -48,12 +56,14 @@ namespace RollbarDotNet.Test {
             Assert.Contains("\"Header\":\"header-value\"", json);
             Assert.Contains("\"Accept\":\"json\"", json);
             JObject jObject = JObject.Parse(json)["headers"] as JObject;
-            Assert.Equal(headers.Values.OrderBy(x => x), jObject.Properties().Select( x=> x.Value).Values<string>().OrderBy(x => x));
+            Assert.Equal(headers.Values.OrderBy(x => x), jObject.Properties().Select(x => x.Value).Values<string>().OrderBy(x => x));
         }
 
         [Fact]
-        public void Request_params_rendered_when_present() {
-            var @params = new Dictionary<string, object> {
+        public void Request_params_rendered_when_present() 
+        {
+            var @params = new Dictionary<string, object> 
+            {
                 { "One", (long)1 },
                 { "Name", "Chris" },
             };
@@ -64,14 +74,17 @@ namespace RollbarDotNet.Test {
             var jObject = JObject.Parse(json)["params"] as JObject;
             Assert.NotNull(jObject);
             Assert.Equal(@params.Keys.OrderBy(x => x), jObject.Properties().Select(x => x.Name).OrderBy(x => x));
-            foreach(var kvp in @params) {
+            foreach (var kvp in @params) 
+            {
                 Assert.Equal(kvp.Value, jObject[kvp.Key].ToObject<object>());
             }
         }
 
         [Fact]
-        public void Request_get_params_rendered_when_present() {
-            var getParams = new Dictionary<string, object> {
+        public void Request_get_params_rendered_when_present() 
+        {
+            var getParams = new Dictionary<string, object> 
+            {
                 { "One", (long)1 },
                 { "Name", "Chris" },
             };
@@ -82,13 +95,15 @@ namespace RollbarDotNet.Test {
             var jObject = JObject.Parse(json)["get_params"] as JObject;
             Assert.NotNull(jObject);
             Assert.Equal(getParams.Keys.OrderBy(x => x), jObject.Properties().Select(x => x.Name).OrderBy(x => x));
-            foreach (var kvp in getParams) {
+            foreach (var kvp in getParams) 
+            {
                 Assert.Equal(kvp.Value, jObject[kvp.Key].ToObject<object>());
             }
         }
 
         [Fact]
-        public void Request_query_string_rendered_when_present() {
+        public void Request_query_string_rendered_when_present() 
+        {
             const string queryString = "whatever";
             _request.QueryString = queryString;
             var json = JsonConvert.SerializeObject(_request);
@@ -98,8 +113,10 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Request_post_params_rendered_when_present() {
-            var postParams = new Dictionary<string, object> {
+        public void Request_post_params_rendered_when_present() 
+        {
+            var postParams = new Dictionary<string, object> 
+            {
                 { "One", (long)1 },
                 { "Name", "Chris" },
             };
@@ -110,13 +127,15 @@ namespace RollbarDotNet.Test {
             var jObject = JObject.Parse(json)["post_params"] as JObject;
             Assert.NotNull(jObject);
             Assert.Equal(postParams.Keys.OrderBy(x => x), jObject.Properties().Select(x => x.Name).OrderBy(x => x));
-            foreach(var kvp in postParams) {
+            foreach (var kvp in postParams) 
+            {
                 Assert.Equal(kvp.Value, jObject[kvp.Key].ToObject<object>());
             }
         }
 
         [Fact]
-        public void Request_post_body_rendered_when_present() {
+        public void Request_post_body_rendered_when_present() 
+        {
             const string postBody = "whatever";
             _request.PostBody = postBody;
             var json = JsonConvert.SerializeObject(_request);
@@ -126,7 +145,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Request_user_ip_rendered_when_present() {
+        public void Request_user_ip_rendered_when_present() 
+        {
             const string userIp = "whatever";
             _request.UserIp = userIp;
             var json = JsonConvert.SerializeObject(_request);
@@ -136,7 +156,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Request_arbitrary_key_gets_rendered() {
+        public void Request_arbitrary_key_gets_rendered() 
+        {
             _request["whatever"] = "value";
             Assert.Contains("whatever", _request.Select(x => x.Key).ToArray());
             var json = JsonConvert.SerializeObject(_request);
