@@ -10,7 +10,10 @@ namespace RollbarDotNet
         public static void Init(RollbarConfig config = null)
         {
             if (config == null)
+            {
                 config = new RollbarConfig();
+            }
+
             _config = config;
         }
         
@@ -32,7 +35,9 @@ namespace RollbarDotNet
         private static Guid? SendBody(Body body, ErrorLevel? level, object custom)
         {
             if (string.IsNullOrWhiteSpace(_config.AccessToken) || _config.Enabled == false)
+            {
                 return null;
+            }
 
             var guid = Guid.NewGuid();
 

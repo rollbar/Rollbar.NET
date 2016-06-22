@@ -4,13 +4,17 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace RollbarDotNet {
-    public class Frame {
-        public Frame(string filename) {
+namespace RollbarDotNet 
+{
+    public class Frame 
+    {
+        public Frame(string filename) 
+        {
             FileName = filename;
         }
 
-        public Frame(StackFrame frame) {
+        public Frame(StackFrame frame) 
+        {
             var method = frame.GetMethod();
 
             FileName = GetFileName(frame, method);
@@ -33,7 +37,7 @@ namespace RollbarDotNet {
         public string Method { get; set; }
 
         #region Unautomatable
-        //These properties cannot be automated w/ normal C# StackFrames.
+        // These properties cannot be automated w/ normal C# StackFrames.
         // You may be able to fill this out from another .NET language.
         // They're there in case you're awesome.
 
@@ -51,39 +55,55 @@ namespace RollbarDotNet {
 
         #endregion
 
-        private static string GetFileName(StackFrame frame, MethodBase method) {
+        private static string GetFileName(StackFrame frame, MethodBase method) 
+        {
             var returnVal = frame.GetFileName();
-            if (!string.IsNullOrWhiteSpace(returnVal)) {
+            if (!string.IsNullOrWhiteSpace(returnVal)) 
+            {
                 return returnVal;
             }
+
             return method.ReflectedType != null ? method.ReflectedType.FullName : "(unknown)";
         }
 
-        private static int? GetLineNumber(StackFrame frame) {
+        private static int? GetLineNumber(StackFrame frame) 
+        {
             var lineNo = frame.GetFileLineNumber();
-            if (lineNo != 0) return lineNo;
+            if (lineNo != 0)
+            {
+                return lineNo;
+            }
 
             lineNo = frame.GetILOffset();
-            if (lineNo != -1) return lineNo;
+            if (lineNo != -1)
+            {
+                return lineNo;
+            }
 
             lineNo = frame.GetNativeOffset();
             return lineNo == -1 ? (int?)null : lineNo;
         }
 
-        private static int? GetFileColumnNumber(StackFrame frame) {
+        private static int? GetFileColumnNumber(StackFrame frame) 
+        {
             return frame.GetFileColumnNumber();
         }
 
-        private static string GetMethod(MethodBase method) {
+        private static string GetMethod(MethodBase method) 
+        {
             var methodName = method.Name;
-            if (method.ReflectedType != null) {
+            if (method.ReflectedType != null) 
+            {
                 methodName = string.Format("{0}.{1}", method.ReflectedType.FullName, methodName);
             }
+
             var parameters = method.GetParameters();
 
-            if (parameters.Length > 0) {
+            if (parameters.Length > 0) 
+            {
                 return string.Format("{0}({1})", methodName, string.Join(", ", parameters.Select(p => string.Format("{0} {1}", p.ParameterType, p.Name))));
             }
+
             return string.Format("{0}()", methodName);
         }
     }

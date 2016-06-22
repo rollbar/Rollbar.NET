@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 
-namespace RollbarDotNet {
-    [JsonConverter(typeof (ErrorLevelConverter))]
-    public enum ErrorLevel {
+namespace RollbarDotNet 
+{
+    [JsonConverter(typeof(ErrorLevelConverter))]
+    public enum ErrorLevel 
+    {
         Critical,
         Error,
         Warning,

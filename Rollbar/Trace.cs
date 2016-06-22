@@ -3,21 +3,30 @@ using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace RollbarDotNet {
-    public class Trace {
-        public Trace(Frame[] frames, Exception exception) {
-            if (frames == null) {
+namespace RollbarDotNet 
+{
+    public class Trace 
+    {
+        public Trace(Frame[] frames, Exception exception) 
+        {
+            if (frames == null) 
+            {
                 throw new ArgumentNullException(nameof(frames));
             }
-            if (exception == null) {
+
+            if (exception == null) 
+            {
                 throw new ArgumentNullException(nameof(exception));
             }
+
             Frames = frames;
             Exception = exception;
         }
 
-        public Trace(System.Exception exception) {
-            if (exception == null) {
+        public Trace(System.Exception exception) 
+        {
+            if (exception == null) 
+            {
                 throw new ArgumentNullException(nameof(exception));
             }
 

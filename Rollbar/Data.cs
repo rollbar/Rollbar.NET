@@ -2,22 +2,31 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RollbarDotNet {
-    public class Data {
+namespace RollbarDotNet 
+{
+    public class Data 
+    {
         private static readonly string NotifierAssemblyVersion = typeof(Data).Assembly.GetName().Version.ToString(3);
-        public static string DefaultPlatform = "windows";
-        public static string DefaultLanguage = "c#";
 
-        public Data(string environment, Body body) {
-            if (string.IsNullOrWhiteSpace(environment)) {
+        public static string DefaultPlatform { get; set; } = "windows";
+
+        public static string DefaultLanguage { get; set; } = "c#";
+
+        public Data(string environment, Body body) 
+        {
+            if (string.IsNullOrWhiteSpace(environment)) 
+            {
                 throw new ArgumentNullException(nameof(environment));
             }
-            if (body == null) {
+
+            if (body == null) 
+            {
                 throw new ArgumentNullException(nameof(body));
             }
+
             Environment = environment;
             Body = body;
-            Timestamp = (long) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             Platform = DefaultPlatform;
             Language = DefaultLanguage;
         }
@@ -74,15 +83,19 @@ namespace RollbarDotNet {
         public string Uuid { get; set; }
 
         [JsonIgnore]
-        public Guid? GuidUuid {
-            get { return Uuid == null ? (Guid?) null : Guid.Parse(Uuid); }
+        public Guid? GuidUuid 
+        {
+            get { return Uuid == null ? (Guid?)null : Guid.Parse(Uuid); }
             set { Uuid = value == null ? null : value.Value.ToString("N"); }
         }
 
         [JsonProperty("notifier", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, string> Notifier {
-            get {
-                return new Dictionary<string, string> {
+        public Dictionary<string, string> Notifier 
+        {
+            get 
+            {
+                return new Dictionary<string, string> 
+                {
                     { "name", "Rollbar.NET" },
                     { "version", NotifierAssemblyVersion },
                 };
