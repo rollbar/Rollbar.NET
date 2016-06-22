@@ -223,7 +223,7 @@ namespace RollbarDotNet.Test
         {
             Assert.Throws<ArgumentNullException>(() => 
             {
-                var x = new Payload(null, A<Data>.Ignored);
+                var x = new Payload(null, new Data("test", new Body("test")));
             });
         }
 
