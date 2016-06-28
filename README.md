@@ -72,7 +72,7 @@ None of the fields on `RollbarBody` are updatable, and all null fields in
 
 To use inside a Winforms Application, do the following inside your main method:
 
-```
+```csharp
 [STAThread]
 static void Main()
 {
