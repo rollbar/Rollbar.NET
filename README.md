@@ -76,7 +76,7 @@ To use inside a Winforms Application, do the following inside your main method:
 [STAThread]
 static void Main()
 {
-    Rollbar.Init(new RollbarConfignew RollbarConfig
+    Rollbar.Init(new RollbarConfig
     {
         AccessToken = "POST_SERVER_ACCESS_TOKEN",
         Environment = "production"
