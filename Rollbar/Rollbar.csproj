@@ -42,6 +42,7 @@
     <Compile Include="ErrorLevel.cs" />
     <Compile Include="ErrorLevelConverter.cs" />
     <Compile Include="HasArbitraryKeys.cs" />
+    <Compile Include="IRollbarClient.cs" />
     <Compile Include="JsonConverter`T.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Body.cs" />
@@ -58,6 +59,8 @@
     <Compile Include="Rollbar.cs" />
     <Compile Include="RollbarClient.cs" />
     <Compile Include="RollbarConfig.cs" />
+    <Compile Include="RollbarResponse.cs" />
+    <Compile Include="RollbarResult.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Trace.cs" />
   </ItemGroup>

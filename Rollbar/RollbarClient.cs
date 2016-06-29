@@ -43,27 +43,8 @@ namespace RollbarDotNet
 
         private async Task<string> SendPostAsync<T>(string url, T payload)
         {
-            var webClient = new WebClient();
+            var webClient = new WebClient(); 
             return await webClient.UploadStringTaskAsync(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
         }
-    }
-
-    public class RollbarResponse
-    {
-        [JsonProperty("err")]
-        public int Error { get; set; }
-        public RollbarResult Result { get; set; }
-    }
-
-    public class RollbarResult
-    {
-        public int? Id { get; set; }
-        public string Uuid { get; set; }
-    }
-
-    public interface IRollbarClient
-    {
-        Guid PostItem(Payload payload);
-        Task<Guid> PostItemAsync(Payload payload);
     }
 }
