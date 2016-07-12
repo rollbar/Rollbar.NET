@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RollbarDotNet
 {
@@ -22,17 +23,17 @@ namespace RollbarDotNet
             _personFunc = personFunc;
         }
 
-        public static Guid? Report(System.Exception e, ErrorLevel? level = ErrorLevel.Error, object custom = null)
+        public static Guid? Report(System.Exception e, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
         {
             return SendBody(new Body(e), level, custom);
         }
 
-        public static Guid? Report(string message, ErrorLevel? level = ErrorLevel.Error, object custom = null)
+        public static Guid? Report(string message, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
         {
             return SendBody(new Body(new Message(message)), level, custom);
         }
 
-        private static Guid? SendBody(Body body, ErrorLevel? level, object custom)
+        private static Guid? SendBody(Body body, ErrorLevel? level, IDictionary<string, object> custom)
         {
             if (string.IsNullOrWhiteSpace(_config.AccessToken) || _config.Enabled == false)
             {
