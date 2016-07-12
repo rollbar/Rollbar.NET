@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>$version$</version>
+    <version>0.3.1-beta</version>
     <title>Rollbar.NET</title>
     <authors>Chris Pfohl, Daniel Steuernol</authors>
     <owners>Rollbar Inc</owners>
