@@ -56,12 +56,14 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
 ## Person Data
 
 You can set the current person data with a call to
-```Rollbar.PersonData(() => new Person
+```
+Rollbar.PersonData(() => new Person
 {
     Id = 123,
     Username = "rollbar",
     Email = "user@rollbar.com"
-});```
+});
+```
 and this person will be attached to all future Rollbar calls.
 
 ## Advanced Usage
