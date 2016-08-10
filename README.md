@@ -37,15 +37,8 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
     <dt>Transform</dt>
     <dd>
         Allows you to specify a transformation function to modify the payload before it is sent to Rollbar
-    </dd>
-</dl>
 
-## Transform Lambda Example
-
-The transform config property allows you to specify a lambda that will be called before the payload is sent to Rollbar.
-
-```
-new RollbarConfig
+        ```new RollbarConfig
 {
     Transform = payload =>
     {
@@ -56,20 +49,20 @@ new RollbarConfig
             Email = "user@rollbar.com"
         };
     }
-}
-```
+}```
+    </dd>
+</dl>
 
 ## Person Data
 
 You can set the current person data with a call to
-```
-Rollbar.PersonData(new Person
+```Rollbar.PersonData(() => new Person
 {
     Id = 123,
     Username = "rollbar",
     Email = "user@rollbar.com"
-});
-```
+});```
+and this person will be attached to all future Rollbar calls.
 
 ## Advanced Usage
 
@@ -109,22 +102,65 @@ error (if it happened during an HTTP Request, of course)" (`RollbarRequest`),
  5. With a string, which should be formatted like an iOS crash report. This
  library has no way to verify if you've done this correctly, but if you pass in
  a string it will be wrapped in a dictionary and assigned to the `"raw"` key and
- assigned tothe `CrashReport` field of `RollbarBody`
+ assigned to the `CrashReport` field of `RollbarBody`
 
 None of the fields on `RollbarBody` are updatable, and all null fields in
 `Rollbar.NET` are left off of the final JSON payload.
 
 ## Examples
 
+### ASP.Net MVC
+
+To use inside an ASP.Net Application, first in your global.asax.cs and Application_Start method
+initialize Rollbar
+
+```
+protected void Application_Start()
+{
+    ...
+    Rollbar.Init(new RollbarConfig
+    {
+        AccessToken = ConfigurationManager.AppSettings["Rollbar.AccessToken"],
+        Environment = ConfigurationManager.AppSettings["Rollbar.Environment"]
+    });
+    ...
+}
+```
+
+Then create a global action filter
+
+```
+public class RollbarExceptionFilter : IExceptionFilter
+{
+    public void OnException(ExceptionContext filterContext)
+    {
+        if (filterContext.ExceptionHandled)
+            return;
+
+        Rollbar.Report(filterContext.Exception);
+    }
+}
+```
+
+and finally add it to the global filters collection
+
+```
+private static void RegisterGlobalFilters(GlobalFilterCollection filters)
+{
+    ...
+    filters.Add(new RollbarExceptionFilter());
+}
+```
+
 ### Winforms
 
 To use inside a Winforms Application, do the following inside your main method:
 
-```csharp
+```
 [STAThread]
 static void Main()
 {
-    Rollbar.Init(new RollbarConfig
+    Rollbar.Init(new RollbarConfignew RollbarConfig
     {
         AccessToken = "POST_SERVER_ACCESS_TOKEN",
         Environment = "production"
