@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace RollbarDotNet
@@ -7,7 +8,7 @@ namespace RollbarDotNet
     /// <summary>
     /// Client for accessing the Rollbar API
     /// </summary>
-    public class RollbarClient
+    public class RollbarClient : IRollbarClient
     {
         public RollbarConfig Config { get; }
 
@@ -16,15 +17,34 @@ namespace RollbarDotNet
             Config = config;
         }
 
-        public void PostItem(Payload payload)
+        public Guid PostItem(Payload payload)
         {
-            SendPost("item/", payload);
+            var stringResult = SendPost("item/", payload);
+            return ParseResponse(stringResult);
         }
 
-        private void SendPost<T>(string url, T payload)
+        public async Task<Guid> PostItemAsync(Payload payload)
+        {
+            var stringResult = await SendPostAsync("item/", payload);
+            return ParseResponse(stringResult);
+        }
+
+        private static Guid ParseResponse(string stringResult)
+        {
+            var response = JsonConvert.DeserializeObject<RollbarResponse>(stringResult);
+            return Guid.Parse(response.Result.Uuid);
+        }
+
+        private string SendPost<T>(string url, T payload)
         {
             var webClient = new WebClient();
-            webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+            return webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+        }
+
+        private async Task<string> SendPostAsync<T>(string url, T payload)
+        {
+            var webClient = new WebClient(); 
+            return await webClient.UploadStringTaskAsync(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
         }
     }
 }

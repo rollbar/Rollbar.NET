@@ -1,20 +1,28 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace RollbarDotNet {
-    public class Payload {
-        public Payload(string accessToken, Data data) {
-            if (string.IsNullOrWhiteSpace(accessToken)) {
+namespace RollbarDotNet 
+{
+    public class Payload 
+    {
+        public Payload(string accessToken, Data data) 
+        {
+            if (string.IsNullOrWhiteSpace(accessToken)) 
+            {
                 throw new ArgumentNullException(nameof(accessToken));
             }
-            if (data == null) {
+
+            if (data == null) 
+            {
                 throw new ArgumentNullException(nameof(data));
             }
+
             AccessToken = accessToken;
             Data = data;
         }
 
-        public string ToJson() {
+        public string ToJson() 
+        {
             return JsonConvert.SerializeObject(this);
         }
 

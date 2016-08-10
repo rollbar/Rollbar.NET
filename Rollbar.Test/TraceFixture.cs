@@ -1,10 +1,13 @@
 ﻿using System;
 using Xunit;
 
-namespace RollbarDotNet.Test {
-    public class TraceFixture {
+namespace RollbarDotNet.Test 
+{
+    public class TraceFixture 
+    {
         [Fact]
-        public void Trace_built_from_exception_has_correct_frames() {
+        public void Trace_built_from_exception_has_correct_frames() 
+        {
             var trace = new Trace(GetException());
             Assert.NotNull(trace.Frames);
             Assert.NotEmpty(trace.Frames);
@@ -15,7 +18,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Trace_built_from_exception_has_frame_and_exception() {
+        public void Trace_built_from_exception_has_frame_and_exception() 
+        {
             var trace = new Trace(GetException());
             Assert.NotNull(trace.Exception);
             Assert.NotNull(trace.Frames);
@@ -23,44 +27,56 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Trace_built_manually_works_correctly() {
+        public void Trace_built_manually_works_correctly() 
+        {
             var trace = new Trace(new Frame[0], new Exception("BadClass"));
             Assert.Equal("BadClass", trace.Exception.Class);
             Assert.Empty(trace.Frames);
         }
 
         [Fact]
-        public void Null_frames_not_allowed() {
-            Assert.Throws<ArgumentNullException>(() => {
+        public void Null_frames_not_allowed() 
+        {
+            Assert.Throws<ArgumentNullException>(() => 
+            {
                 new Trace(null, new Exception("whatever"));
             });
         }
 
         [Fact]
-        public void Null_rollbar_exception_not_allowed() {
-            Assert.Throws<ArgumentNullException>(() => {
+        public void Null_rollbar_exception_not_allowed() 
+        {
+            Assert.Throws<ArgumentNullException>(() => 
+            {
                 new Trace(new Frame[0], null);
             });
         }
 
         [Fact]
-        public void Null_exception_not_allowed() {
-            Assert.Throws<ArgumentNullException>(() => {
+        public void Null_exception_not_allowed() 
+        {
+            Assert.Throws<ArgumentNullException>(() => 
+            {
                 new Trace(null);
             });
         }
 
-        private static System.Exception GetException() {
-            try {
+        private static System.Exception GetException() 
+        {
+            try 
+            {
                 ThrowException();
             }
-            catch (System.Exception e) {
+            catch (System.Exception e) 
+            {
                 return e;
             }
+
             throw new System.Exception("Unreachable");
         }
 
-        private static void ThrowException() {
+        private static void ThrowException() 
+        {
             throw new System.Exception("Bummer");
         }
     }

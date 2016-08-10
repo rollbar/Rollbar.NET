@@ -8,6 +8,7 @@
     <owners>Rollbar Inc</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <projectUrl>https://github.com/rollbar/Rollbar.NET</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
       Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.

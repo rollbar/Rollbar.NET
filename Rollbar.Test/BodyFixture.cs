@@ -4,52 +4,67 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Xunit;
 
-namespace RollbarDotNet.Test {
-    public class BodyFixture {
+namespace RollbarDotNet.Test 
+{
+    public class BodyFixture 
+    {
         [Fact]
-        public void Exceptions_cannot_be_null() {
-            Assert.Throws<ArgumentNullException>(() => {
-                var rb = new Body((IEnumerable<System.Exception>) null);
+        public void Exceptions_cannot_be_null() 
+        {
+            Assert.Throws<ArgumentNullException>(() => 
+            {
+                var rb = new Body((IEnumerable<System.Exception>)null);
             });
         }
 
         [Fact]
-        public void Exceptions_cannot_be_empty() {
-            Assert.Throws<ArgumentException>(() => {
+        public void Exceptions_cannot_be_empty() 
+        {
+            Assert.Throws<ArgumentException>(() => 
+            {
                 var rb = new Body(new System.Exception[0]);
             });
         }
 
         [Fact]
-        public void Exception_cannot_be_null() {
-            Assert.Throws<ArgumentNullException>(() => {
-                var rb = new Body((System.Exception) null);
+        public void Exception_cannot_be_null() 
+        {
+            Assert.Throws<ArgumentNullException>(() => 
+            {
+                var rb = new Body((System.Exception)null);
             });
         }
 
         [Fact]
-        public void Message_cannot_be_null() {
-            Assert.Throws<ArgumentNullException>(() => {
-                var rb = new Body((Message) null);
+        public void Message_cannot_be_null() 
+        {
+            Assert.Throws<ArgumentNullException>(() => 
+            {
+                var rb = new Body((Message)null);
             });
         }
 
         [Fact]
-        public void Crash_report_cannot_be_null() {
-            Assert.Throws<ArgumentNullException>(() => {
-                var rb = new Body((string) null);
+        public void Crash_report_cannot_be_null() 
+        {
+            Assert.Throws<ArgumentNullException>(() => 
+            {
+                var rb = new Body((string)null);
             });
         }
 
         [Fact]
-        public void Crash_report_cannot_be_whitespace() {
-            Assert.Throws<ArgumentNullException>(() => {
+        public void Crash_report_cannot_be_whitespace() 
+        {
+            Assert.Throws<ArgumentNullException>(() => 
+            {
                 var rb = new Body("    \t\n");
             });
         }
 
         [Fact]
-        public void Crash_report_works_correctly() {
+        public void Crash_report_works_correctly() 
+        {
             var rollbarBody = new Body("Crash happened");
             var json = JsonConvert.SerializeObject(rollbarBody);
             Assert.Equal("{\"crash_report\":{\"raw\":\"Crash happened\"}}", json);
@@ -59,9 +74,11 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Message_works_correctly() {
-            var rollbarBody = new Body(new Message("Body of the message") {
-                {"key", "value"}
+        public void Message_works_correctly() 
+        {
+            var rollbarBody = new Body(new Message("Body of the message") 
+            {
+                { "key", "value" }
             });
             var json = JsonConvert.SerializeObject(rollbarBody);
             Assert.Contains("{\"message\":{", json);
@@ -73,7 +90,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Trace_works_correctly() {
+        public void Trace_works_correctly() 
+        {
             var rollbarBody = new Body(GetException());
             var json = JsonConvert.SerializeObject(rollbarBody);
             Assert.Contains("\"trace\":{", json);
@@ -84,7 +102,8 @@ namespace RollbarDotNet.Test {
         }
 
         [Fact]
-        public void Trace_chain_works_correctly() {
+        public void Trace_chain_works_correctly() 
+        {
             var rollbarBody = new Body(GetAggregateException());
             var json = JsonConvert.SerializeObject(rollbarBody);
             Assert.Contains("\"trace_chain\":[", json);
@@ -94,27 +113,48 @@ namespace RollbarDotNet.Test {
             Assert.DoesNotContain("\"message\":{", json);
         }
 
-        private static AggregateException GetAggregateException() {
-            try {
+        [Fact]
+        public void Exception_with_inner_exceptions_generate_trace_chain()
+        {
+            var exception = new System.Exception("test", new System.Exception("inner exception"));
+            var rollbarBody = new Body(exception);
+            var json = JsonConvert.SerializeObject(rollbarBody);
+            Assert.Contains("\"trace_chain\"", json);
+            Assert.DoesNotContain("\"crash_report\":{", json);
+            Assert.DoesNotContain("\"trace\":{", json);
+            Assert.DoesNotContain("\"message\":{", json);
+        }
+
+        private static AggregateException GetAggregateException() 
+        {
+            try 
+            {
                 Parallel.ForEach(new[] { 1, 2 }, i => ThrowException());
             }
-            catch (AggregateException e) {
+            catch (AggregateException e) 
+            {
                 return e;
             }
+
             throw new System.Exception("Unreachable");
         }
 
-        private static System.Exception GetException() {
-            try {
+        private static System.Exception GetException() 
+        {
+            try 
+            {
                 ThrowException();
             }
-            catch (System.Exception e) {
+            catch (System.Exception e) 
+            {
                 return e;
             }
+
             throw new System.Exception("Unreachable");
         }
 
-        private static void ThrowException() {
+        private static void ThrowException() 
+        {
             throw new System.Exception("Oops");
         }
     }

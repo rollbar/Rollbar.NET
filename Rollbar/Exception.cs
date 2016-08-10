@@ -1,16 +1,22 @@
 using System;
 using Newtonsoft.Json;
 
-namespace RollbarDotNet {
-    public class Exception {
-        public Exception(string @class) {
+namespace RollbarDotNet 
+{
+    public class Exception 
+    {
+        public Exception(string @class) 
+        {
             Class = @class;
         }
 
-        public Exception(System.Exception exception) {
-            if (exception == null) {
+        public Exception(System.Exception exception) 
+        {
+            if (exception == null) 
+            {
                 throw new ArgumentNullException(nameof(exception));
             }
+
             Class = exception.GetType().FullName;
             Message = exception.Message;
         }

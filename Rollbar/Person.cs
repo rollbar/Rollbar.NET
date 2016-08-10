@@ -1,8 +1,11 @@
 ﻿using Newtonsoft.Json;
 
-namespace RollbarDotNet {
-    public class Person {
-        public Person(string id) {
+namespace RollbarDotNet 
+{
+    public class Person 
+    {
+        public Person(string id) 
+        {
             Id = id;
         }
 
