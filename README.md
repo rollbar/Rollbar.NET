@@ -6,7 +6,7 @@ A .NET Rollbar Client that is not ASP.NET specific.
 
 Nuget Package Manager:
 
-    install-package Rollbar
+    Install-Package Rollbar
 
 ## Basic Usage
 
@@ -162,7 +162,7 @@ To use inside a Winforms Application, do the following inside your main method:
 [STAThread]
 static void Main()
 {
-    Rollbar.Init(new RollbarConfignew RollbarConfig
+    Rollbar.Init(new RollbarConfig
     {
         AccessToken = "POST_SERVER_ACCESS_TOKEN",
         Environment = "production"
