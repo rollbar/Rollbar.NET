@@ -25,12 +25,21 @@ namespace RollbarDotNet
                 throw new JsonSerializationException(msg);
             }
 
-            if (Enum.TryParse(value, true, out level)) 
+            if (TryParse(value, out level)) 
             {
                 return level;
             }
 
-            throw new JsonSerializationException(string.Format("Could not convert {0} to an ErrorLevel", value));
+            throw new JsonSerializationException($"Could not convert {value} to an ErrorLevel");
+        }
+
+        private bool TryParse<TEnum>(string value, out TEnum result) where TEnum : struct, IConvertible
+        {
+            var retValue = value != null && Enum.IsDefined(typeof(TEnum), value);
+            result = retValue ?
+                        (TEnum)Enum.Parse(typeof(TEnum), value) :
+                        default(TEnum);
+            return retValue;
         }
     }
 }

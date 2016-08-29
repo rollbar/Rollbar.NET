@@ -9,7 +9,7 @@ namespace RollbarDotNet
     {
         public Message(string body) 
         {
-            if (string.IsNullOrWhiteSpace(body)) 
+            if (string.IsNullOrEmpty(body?.Trim())) 
             {
                 throw new ArgumentNullException(nameof(body));
             }
@@ -21,7 +21,7 @@ namespace RollbarDotNet
 
         protected override void Normalize() 
         {
-            Body = (string)(AdditionalKeys.ContainsKey("body") && !string.IsNullOrWhiteSpace(AdditionalKeys["body"] as string) ? AdditionalKeys["body"] : Body);
+            Body = (string)(AdditionalKeys.ContainsKey("body") && !string.IsNullOrEmpty((AdditionalKeys["body"] as string)?.Trim()) ? AdditionalKeys["body"] : Body);
             AdditionalKeys.Remove("body");
         }
 

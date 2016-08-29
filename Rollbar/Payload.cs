@@ -7,7 +7,7 @@ namespace RollbarDotNet
     {
         public Payload(string accessToken, Data data) 
         {
-            if (string.IsNullOrWhiteSpace(accessToken)) 
+            if (string.IsNullOrEmpty(accessToken?.Trim())) 
             {
                 throw new ArgumentNullException(nameof(accessToken));
             }

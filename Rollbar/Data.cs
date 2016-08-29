@@ -14,7 +14,7 @@ namespace RollbarDotNet
 
         public Data(string environment, Body body) 
         {
-            if (string.IsNullOrWhiteSpace(environment)) 
+            if (string.IsNullOrEmpty(environment?.Trim())) 
             {
                 throw new ArgumentNullException(nameof(environment));
             }
@@ -83,9 +83,9 @@ namespace RollbarDotNet
         public string Uuid { get; set; }
 
         [JsonIgnore]
-        public Guid? GuidUuid 
+        public Guid? GuidUuid
         {
-            get { return Uuid == null ? (Guid?)null : Guid.Parse(Uuid); }
+            get { return Uuid == null ? (Guid?)null : new Guid(Convert.ToString(Uuid)); }
             set { Uuid = value == null ? null : value.Value.ToString("N"); }
         }
 

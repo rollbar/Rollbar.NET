@@ -58,7 +58,7 @@ namespace RollbarDotNet
         private static string GetFileName(StackFrame frame, MethodBase method) 
         {
             var returnVal = frame.GetFileName();
-            if (!string.IsNullOrWhiteSpace(returnVal)) 
+            if (!string.IsNullOrEmpty(returnVal?.Trim())) 
             {
                 return returnVal;
             }
@@ -94,17 +94,17 @@ namespace RollbarDotNet
             var methodName = method.Name;
             if (method.ReflectedType != null) 
             {
-                methodName = string.Format("{0}.{1}", method.ReflectedType.FullName, methodName);
+                methodName = $"{method.ReflectedType.FullName}.{methodName}";
             }
 
             var parameters = method.GetParameters();
 
             if (parameters.Length > 0) 
             {
-                return string.Format("{0}({1})", methodName, string.Join(", ", parameters.Select(p => string.Format("{0} {1}", p.ParameterType, p.Name))));
+                return $"{methodName}({string.Join(", ", parameters.Select(p => $"{p.ParameterType} {p.Name}").ToArray())})";
             }
 
-            return string.Format("{0}()", methodName);
+            return $"{methodName}()";
         }
     }
 }

@@ -23,9 +23,11 @@ namespace RollbarDotNet
             TraceChain = allExceptions.Select(e => new Trace(e)).ToArray();
         }
 
+#if NETFX_45
         public Body(AggregateException exception) : this(exception.InnerExceptions) 
         {
         }
+#endif
 
         public Body(System.Exception exception) 
         {
@@ -65,7 +67,7 @@ namespace RollbarDotNet
 
         public Body(string crashReport) 
         {
-            if (string.IsNullOrWhiteSpace(crashReport)) 
+            if (string.IsNullOrEmpty(crashReport?.Trim())) 
             {
                 throw new ArgumentNullException(nameof(crashReport));
             }

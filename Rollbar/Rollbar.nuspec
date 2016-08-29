@@ -19,4 +19,8 @@
     <copyright>Copyright 2015</copyright>
     <tags>error exception tracking reporting log analysis monitoring aggregation crash reporting</tags>
   </metadata>
+  <files>
+    <file src="bin\Release-Net35\Rollbar.dll" target="lib\net35\Rollbar.dll" />
+    <file src="bin\Release-Net40\Rollbar.dll" target="lib\net40\Rollbar.dll" />
+  </files>
 </package>
