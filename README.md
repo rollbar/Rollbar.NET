@@ -18,27 +18,33 @@ Nuget Package Manager:
 
 The `RollbarConfig` object allows you to configure the Rollbar library.
 
-<dl>
-    <dt>AccessToken</dt>
-    <dd>The access token for your project, allows you access to the Rollbar API</dd>
+  <dl>
+<dt>AccessToken
+</dt>
+<dd>The access token for your project, allows you access to the Rollbar API
+</dd>
+<dt>Endpoint
+</dt>
+<dd>The Rollbar API endpoint, defaults to https://api.rollbar.com/api/1/
+</dd>
+<dt>Environment
+</dt>
+<dd>Environment name, e.g. `"production"` or `"development"` defaults to `"production"`
+</dd>
+<dt>Enabled
+</dt>
+<dd>If set to false, errors will not be sent to Rollbar, defaults to `true`
+</dd>
+<dt>LogLevel
+</dt>
+<dd>The default level of the messages sent to Rollbar
+</dd>
+<dt>Transform
+</dt>
+<dd>Allows you to specify a transformation function to modify the payload before it is sent to Rollbar
 
-    <dt>Endpoint</dt>
-    <dd>The Rollbar API endpoint, defaults to https://api.rollbar.com/api/1/</dd>
-
-    <dt>Environment</dt>
-    <dd>Environment name, e.g. `"production"` or `"development"` defaults to `"production"`</dd>
-
-    <dt>Enabled</dt>
-    <dd>If set to false, errors will not be sent to Rollbar, defaults to `true`</dd>
-
-    <dt>LogLevel</dt>
-    <dd>The default level of the messages sent to Rollbar</dd>
-
-    <dt>Transform</dt>
-    <dd>
-        Allows you to specify a transformation function to modify the payload before it is sent to Rollbar
-
-        ```new RollbarConfig
+```csharp
+new RollbarConfig
 {
     Transform = payload =>
     {
@@ -49,14 +55,17 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
             Email = "user@rollbar.com"
         };
     }
-}```
-    </dd>
+}
+```
+
+</dd>
 </dl>
 
 ## Person Data
 
 You can set the current person data with a call to
-```
+
+```csharp
 Rollbar.PersonData(() => new Person
 {
     Id = 123,
@@ -64,6 +73,7 @@ Rollbar.PersonData(() => new Person
     Email = "user@rollbar.com"
 });
 ```
+
 and this person will be attached to all future Rollbar calls.
 
 ## Advanced Usage
@@ -116,7 +126,7 @@ None of the fields on `RollbarBody` are updatable, and all null fields in
 To use inside an ASP.Net Application, first in your global.asax.cs and Application_Start method
 initialize Rollbar
 
-```
+```csharp
 protected void Application_Start()
 {
     ...
@@ -131,7 +141,7 @@ protected void Application_Start()
 
 Then create a global action filter
 
-```
+```csharp
 public class RollbarExceptionFilter : IExceptionFilter
 {
     public void OnException(ExceptionContext filterContext)
@@ -146,7 +156,7 @@ public class RollbarExceptionFilter : IExceptionFilter
 
 and finally add it to the global filters collection
 
-```
+```csharp
 private static void RegisterGlobalFilters(GlobalFilterCollection filters)
 {
     ...
@@ -158,7 +168,7 @@ private static void RegisterGlobalFilters(GlobalFilterCollection filters)
 
 To use inside a Winforms Application, do the following inside your main method:
 
-```
+```csharp
 [STAThread]
 static void Main()
 {
