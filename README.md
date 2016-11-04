@@ -82,7 +82,7 @@ If you want more control over sending the data to Rollbar, you can fire up a `Ro
 yourself, and make the calls directly. To get started you've got exactly one interesting class
 to worry about: `RollbarPayload`. The class and the classes that compose the class cannot be
 constructed without all mandatory arguments, and mandatory fields cannot be set.
-Therefore, if you can constrcut a payload then it is valid for the purposes of
+Therefore, if you can construct a payload then it is valid for the purposes of
 sending to Rollbar. To get the JSON to send to Rollbar just call
 `RollbarPayload.ToJson` and stick it in the request body.
 
