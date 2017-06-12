@@ -51,7 +51,7 @@ new RollbarConfig
         payload.Data.Person = new Person
         {
             Id = 123,
-            Username = "rollbar",
+            UserName = "rollbar",
             Email = "user@rollbar.com"
         };
     }
@@ -69,7 +69,7 @@ You can set the current person data with a call to
 Rollbar.PersonData(() => new Person
 {
     Id = 123,
-    Username = "rollbar",
+    UserName = "rollbar",
     Email = "user@rollbar.com"
 });
 ```
