@@ -193,3 +193,74 @@ static void Main()
     Application.Run(new Form1());
 }
 ```
+
+### WPF
+
+Example of using Rollbar.NET inside of a WPF application. It is optional to set the user for Rollbar and can be reset to a different user at any time. This example includes a default user being set with `MainWindow.xml` loads by calling the `SetRollbarReportingUser` function. [Gist example code here](https://gist.github.com/cdesch/e08275e85a3f27a7b1b481430e12f308).
+
+`App.cs`:
+```csharp
+namespace Sample
+{
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            System.Diagnostics.Debug.WriteLine("App Start Up");
+
+            //Initialize Rollbar
+            Rollbar.Init(new RollbarConfig
+            {
+                AccessToken = "<your rollbar token>",
+#if DEBUG
+                Environment = "development"
+#else
+                Environment = "production"
+#endif            
+            });
+            // Setup Exception Handler
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Rollbar.Report(args.ExceptionObject as System.Exception);
+            };
+        }
+    }
+}
+```
+
+`MainWindow.cs`:
+```csharp
+namespace Sample
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            System.Diagnostics.Debug.Write("Starting MainWindow");
+
+            InitializeComponent();
+
+            //Set Default User for RollbarReporting
+            //  -- Reset if user logins in or wait to call SetRollbarReportingUser until user logins in 
+            SetRollbarReportingUser("id", "myEmail@example.com", "default");
+        }
+
+        private void SetRollbarReportingUser(string id, string email, string userName)
+        {
+            Person person = new Person(id);
+            person.Email = email;
+            person.UserName = userName;
+            Rollbar.PersonData(() => person);
+        }
+    }
+}
+```
+
+
