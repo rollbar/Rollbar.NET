@@ -53,6 +53,10 @@ namespace RollbarDotNet
             payload.Data.GuidUuid = guid;
             payload.Data.Person = _personFunc?.Invoke();
 
+            if (_config.Server != null) {
+              payload.Data.Server = _config.Server;
+            }
+
             _config.Transform?.Invoke(payload);
             client.PostItem(payload);
 

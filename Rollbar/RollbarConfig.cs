@@ -31,5 +31,7 @@ namespace RollbarDotNet
         public string Environment { get; set; }
 
         public Action<Payload> Transform { get; set; }
+
+        public Server? Server { get; set; }
     }
 }
