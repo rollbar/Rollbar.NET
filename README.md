@@ -189,6 +189,11 @@ static void Main()
     {
         Rollbar.Report(args.ExceptionObject as System.Exception);
     };
+    
+    TaskScheduler.UnobservedTaskException += (sender, args) =>
+    {
+        Rollbar.Report(args.Exception);
+    };
 
     Application.Run(new Form1());
 }
