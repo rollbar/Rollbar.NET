@@ -33,5 +33,7 @@ namespace RollbarDotNet
         public Action<Payload> Transform { get; set; }
 
         public Server Server { get; set; }
+
+        public string CodeVersion { get; set; }
     }
 }

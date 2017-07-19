@@ -58,6 +58,11 @@ namespace RollbarDotNet
               payload.Data.Server = _config.Server;
             }
 
+            if (_config.CodeVersion != null)
+            {
+                payload.Data.CodeVersion = _config.CodeVersion;
+            }
+
             _config.Transform?.Invoke(payload);
             client.PostItem(payload);
 
