@@ -48,12 +48,7 @@ new RollbarConfig
 {
     Transform = payload =>
     {
-        payload.Data.Person = new Person
-        {
-            Id = 123,
-            Username = "rollbar",
-            Email = "user@rollbar.com"
-        };
+        payload.Data.Body.Message = new Message("An updated message here.");
     }
 }
 ```
