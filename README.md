@@ -67,6 +67,14 @@ new RollbarConfig
 </dd>
 </dl>
 
+## Caught Exceptions
+
+To send a caught exception to Rollbar, you must call Rollbar.Report(). You can set an item's level when you call this function. The level can be 'Debug', 'Info', 'Warning', 'Error' and 'Critical'.
+
+```csharp
+Rollbar.Report(exception, Critical);
+```
+
 ## Person Data
 
 You can set the current person data with a call to
