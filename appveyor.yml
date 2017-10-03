@@ -1,9 +1,8 @@
-version: '0.3.0.{build}'
-assembly_info:
+version: '1.0.0.{build}'
+dotnet_csproj:
   patch: true
-  file: '**\AssemblyInfo.*'
-  assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}-rc1'
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
 before_build:
-  - nuget restore
+  - dotnet restore
