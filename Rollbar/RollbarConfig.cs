@@ -16,6 +16,7 @@ namespace RollbarDotNet
             LogLevel = ErrorLevel.Debug;
             ScrubFields = new[] { "passwd", "password", "secret", "confirm_password", "password_confirmation" };
             EndPoint = "https://api.rollbar.com/api/1/";
+            ProxyAddress = null;
         }
 
         public string AccessToken { get; set; }
@@ -32,6 +33,8 @@ namespace RollbarDotNet
 
         public Action<Payload> Transform { get; set; }
 
-        public Server? Server { get; set; }
+        public Server Server { get; set; }
+
+        public string ProxyAddress { get; set; }
     }
 }
