@@ -37,14 +37,38 @@ namespace RollbarDotNet
 
         private string SendPost<T>(string url, T payload)
         {
-            var webClient = new WebClient();
+            var webClient = this.BuildWebClient();
             return webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
         }
 
         private async Task<string> SendPostAsync<T>(string url, T payload)
         {
-            var webClient = new WebClient(); 
+            var webClient = this.BuildWebClient();
             return await webClient.UploadStringTaskAsync(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+        }
+
+        private WebClient BuildWebClient()
+        {
+            var webClient = new WebClient();
+
+            var webProxy = this.BuildWebProxy();
+
+            if (webProxy != null)
+            {
+                webClient.Proxy = webProxy;
+            }
+
+            return webClient;
+        }
+
+        private IWebProxy BuildWebProxy()
+        {
+            if (this.Config != null && !string.IsNullOrWhiteSpace(this.Config.ProxyAddress))
+            {
+                return new WebProxy(this.Config.ProxyAddress);
+            }
+
+            return null;
         }
     }
 }
