@@ -65,6 +65,12 @@ new RollbarConfig
 ```
 
 </dd>
+
+<dt>ProxyAddress
+</dt>
+<dd>A string URI which will be used as the WebClient proxy by passing to the WebProxy constructor.
+</dd>
+
 </dl>
 
 ## Caught Exceptions
