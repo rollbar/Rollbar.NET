@@ -1,49 +1,84 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar", "Rollbar\Rollbar.csproj", "{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.Test", "Rollbar.Test\Rollbar.Test.csproj", "{91F86F46-079A-40A5-BC2C-D34D3119515A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "Samples\ConsoleApp\ConsoleApp\ConsoleApp.csproj", "{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{41935F88-D4E0-4F08-807B-E676CAC1CCF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug-Net35|Any CPU = Debug-Net35|Any CPU
 		Debug-Net40|Any CPU = Debug-Net40|Any CPU
 		Debug-Net45|Any CPU = Debug-Net45|Any CPU
+		Release|Any CPU = Release|Any CPU
 		Release-Net35|Any CPU = Release-Net35|Any CPU
 		Release-Net40|Any CPU = Release-Net40|Any CPU
 		Release-Net45|Any CPU = Release-Net45|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Debug-Net35|Any CPU.ActiveCfg = Debug-Net35|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Debug-Net35|Any CPU.Build.0 = Debug-Net35|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Debug-Net40|Any CPU.ActiveCfg = Debug-Net40|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Debug-Net40|Any CPU.Build.0 = Debug-Net40|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Debug-Net45|Any CPU.ActiveCfg = Debug|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Debug-Net45|Any CPU.Build.0 = Debug|Any CPU
+		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Release-Net35|Any CPU.ActiveCfg = Release-Net35|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Release-Net35|Any CPU.Build.0 = Release-Net35|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Release-Net40|Any CPU.ActiveCfg = Release-Net40|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Release-Net40|Any CPU.Build.0 = Release-Net40|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Release-Net45|Any CPU.ActiveCfg = Release|Any CPU
 		{3A99C5E2-AE41-49CA-9CB3-2C3A70D2A8C1}.Release-Net45|Any CPU.Build.0 = Release|Any CPU
+		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Debug-Net35|Any CPU.ActiveCfg = Debug-Net35|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Debug-Net35|Any CPU.Build.0 = Debug-Net35|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Debug-Net40|Any CPU.ActiveCfg = Debug-Net40|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Debug-Net40|Any CPU.Build.0 = Debug-Net40|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Debug-Net45|Any CPU.ActiveCfg = Debug|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Debug-Net45|Any CPU.Build.0 = Debug|Any CPU
+		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Release-Net35|Any CPU.ActiveCfg = Release-Net35|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Release-Net35|Any CPU.Build.0 = Release-Net35|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Release-Net40|Any CPU.ActiveCfg = Release-Net40|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Release-Net40|Any CPU.Build.0 = Release-Net40|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Release-Net45|Any CPU.ActiveCfg = Release|Any CPU
 		{91F86F46-079A-40A5-BC2C-D34D3119515A}.Release-Net45|Any CPU.Build.0 = Release|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Debug-Net35|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Debug-Net35|Any CPU.Build.0 = Debug|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Debug-Net40|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Debug-Net40|Any CPU.Build.0 = Debug|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Debug-Net45|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Debug-Net45|Any CPU.Build.0 = Debug|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Release-Net35|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Release-Net35|Any CPU.Build.0 = Release|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Release-Net40|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Release-Net40|Any CPU.Build.0 = Release|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Release-Net45|Any CPU.ActiveCfg = Release|Any CPU
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF}.Release-Net45|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5CAAA7C8-47FB-419C-88B3-0F8BA25CBEDF} = {41935F88-D4E0-4F08-807B-E676CAC1CCF7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C41E5DB4-06D7-42BC-A932-A5488155C0BD}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

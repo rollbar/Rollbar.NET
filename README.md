@@ -41,7 +41,7 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
 </dd>
 <dt>Transform
 </dt>
-<dd>Allows you to specify a transformation function to modify the payload before it is sent to Rollbar
+<dd>Allows you to specify a transformation function to modify the payload before it is sent to Rollbar. Use this function to add any value that is in [Request.cs](https://github.com/rollbar/Rollbar.NET/blob/master/Rollbar/Request.cs), such as the user's IP address, query string, and URL of the request. 
 
 ```csharp
 new RollbarConfig
@@ -51,15 +51,35 @@ new RollbarConfig
         payload.Data.Person = new Person
         {
             Id = 123,
-            Username = "rollbar",
+            UserName = "rollbar",
             Email = "user@rollbar.com"
+        };
+        payload.Data.CodeVersion = "2";
+        payload.Data.Request = new Request()
+        {
+            Url = "http://rollbar.com",
+            UserIp = "192.121.222.92"
         };
     }
 }
 ```
 
 </dd>
+
+<dt>ProxyAddress
+</dt>
+<dd>A string URI which will be used as the WebClient proxy by passing to the WebProxy constructor.
+</dd>
+
 </dl>
+
+## Caught Exceptions
+
+To send a caught exception to Rollbar, you must call Rollbar.Report(). You can set an item's level when you call this function. The level can be 'Debug', 'Info', 'Warning', 'Error' and 'Critical'.
+
+```csharp
+Rollbar.Report(exception, ErrorLevel.Critical);
+```
 
 ## Person Data
 
@@ -69,7 +89,7 @@ You can set the current person data with a call to
 Rollbar.PersonData(() => new Person
 {
     Id = 123,
-    Username = "rollbar",
+    UserName = "rollbar",
     Email = "user@rollbar.com"
 });
 ```
@@ -193,3 +213,70 @@ static void Main()
     Application.Run(new Form1());
 }
 ```
+
+### WPF
+
+Example of using Rollbar.NET inside of a WPF application. It is optional to set the user for Rollbar and can be reset to a different user at any time. This example includes a default user being set with `MainWindow.xml` loads by calling the `SetRollbarReportingUser` function. [Gist example code here](https://gist.github.com/cdesch/e08275e85a3f27a7b1b481430e12f308).
+
+`App.cs`:
+```csharp
+namespace Sample
+{
+    /// <summary>
+    /// Interaction logic for App.xaml
+    /// </summary>
+    public partial class App : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            System.Diagnostics.Debug.WriteLine("App Start Up");
+
+            //Initialize Rollbar
+            Rollbar.Init(new RollbarConfig
+            {
+                AccessToken = "<your rollbar token>",
+                Environment = "production"          
+            });
+            // Setup Exception Handler
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Rollbar.Report(args.ExceptionObject as System.Exception);
+            };
+        }
+    }
+}
+```
+
+`MainWindow.cs`:
+```csharp
+namespace Sample
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            System.Diagnostics.Debug.Write("Starting MainWindow");
+
+            InitializeComponent();
+
+            //Set Default User for RollbarReporting
+            //  -- Reset if user logs in or wait to call SetRollbarReportingUser until user logs in 
+            SetRollbarReportingUser("id", "myEmail@example.com", "default");
+        }
+
+        private void SetRollbarReportingUser(string id, string email, string userName)
+        {
+            Person person = new Person(id);
+            person.Email = email;
+            person.UserName = userName;
+            Rollbar.PersonData(() => person);
+        }
+    }
+}
+```
+
+
