@@ -35,6 +35,8 @@ namespace RollbarDotNet
 
         public Server Server { get; set; }
 
+        public string CodeVersion { get; set; }
+
         public string ProxyAddress { get; set; }
     }
 }
