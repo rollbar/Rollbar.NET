@@ -8,6 +8,13 @@ namespace RollbarDotNet
         {
             Id = id;
         }
+        
+        public Person(string id, string userName, string email) 
+        {
+            Id = id;
+            UserName = userName;
+            Email = email;
+        }
 
         [JsonProperty("id", Required = Required.Always)]
         public string Id { get; set; }
