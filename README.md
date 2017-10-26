@@ -216,11 +216,7 @@ namespace Sample
             Rollbar.Init(new RollbarConfig
             {
                 AccessToken = "<your rollbar token>",
-#if DEBUG
-                Environment = "development"
-#else
-                Environment = "production"
-#endif            
+                Environment = "production"          
             });
             // Setup Exception Handler
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
@@ -248,7 +244,7 @@ namespace Sample
             InitializeComponent();
 
             //Set Default User for RollbarReporting
-            //  -- Reset if user logins in or wait to call SetRollbarReportingUser until user logins in 
+            //  -- Reset if user logs in or wait to call SetRollbarReportingUser until user logs in 
             SetRollbarReportingUser("id", "myEmail@example.com", "default");
         }
 
