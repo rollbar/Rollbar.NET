@@ -14,6 +14,8 @@
         public RollbarConfig(string accessToken)
         {
             AccessToken = accessToken;
+
+            // let's set some default values:
             Environment = "production";
             Enabled = true;
             LogLevel = ErrorLevel.Debug;
@@ -22,6 +24,7 @@
             ProxyAddress = null;
             Transform = null;
             Server = null;
+            Person = null;
         }
 
         public string AccessToken { get; set; }
@@ -39,6 +42,8 @@
         public Action<Payload> Transform { get; set; }
 
         public Server Server { get; set; }
+
+        public Person Person { get;set; }
 
         public string ProxyAddress { get; set; }
     }

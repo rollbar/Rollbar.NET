@@ -1,80 +1,142 @@
-﻿using System;
+﻿using Rollbar.DTOs;
+using System;
+using System.Collections.Generic;
 
 namespace Rollbar
 {
     public class RollbarLogger
         : IRollbar
     {
-        public ILogger Logger => throw new NotImplementedException();
+        private RollbarConfig _config;
+
+        #region IRollbar
+
+        public ILogger Logger => this;
 
         public IRollbar Configure(RollbarConfig settings)
         {
-            throw new NotImplementedException();
+            this._config = settings;
+
+            return this;
         }
 
         public IRollbar Configure(string accessToken)
         {
-            throw new NotImplementedException();
+            this._config.AccessToken = accessToken;
+
+            return this;
         }
 
         public RollbarConfig CloneConfiguration()
         {
-            throw new NotImplementedException();
+            return this._config;
         }
 
-        public void Log(ErrorLevel level, object obj)
+        #endregion IRollbar
+
+        #region ILogger
+
+        public ILogger Log(ErrorLevel level, object obj)
+        {
+            return this.Log(level, obj.ToString());
+        }
+
+        public ILogger Log(ErrorLevel level, string msg)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(ErrorLevel level, string msg)
+        public ILogger LogCritical(string msg)
         {
-            throw new NotImplementedException();
+            return this.Log(ErrorLevel.Critical, msg);
         }
 
-        public void LogCritical(string msg)
+        public ILogger LogCritical(System.Exception error)
         {
-            throw new NotImplementedException();
+            this.Report(error, ErrorLevel.Critical);
+
+            return this;
         }
 
-        public void LogCritical(Exception error)
+        public ILogger LogDebug(string msg)
         {
-            throw new NotImplementedException();
+            return this.Log(ErrorLevel.Debug, msg);
         }
 
-        public void LogDebug(string msg)
+        public ILogger LogDebug(ITraceable traceableObj)
         {
-            throw new NotImplementedException();
+            return this.LogDebug(traceableObj.Trace());
         }
 
-        public void LogDebug(ITraceable traceableObj)
+        public ILogger LogDebug(object obj)
         {
-            throw new NotImplementedException();
+            return this.LogDebug(obj.ToString());
         }
 
-        public void LogDebug(object obj)
+        public ILogger LogError(string msg)
         {
-            throw new NotImplementedException();
+            return this.Log(ErrorLevel.Error, msg);
         }
 
-        public void LogError(string msg)
+        public ILogger LogError(System.Exception error)
         {
-            throw new NotImplementedException();
+            this.Report(error, ErrorLevel.Error);
+
+            return this;
         }
 
-        public void LogError(Exception error)
+        public ILogger LogInfo(string msg)
         {
-            throw new NotImplementedException();
+            return this.Log(ErrorLevel.Info, msg);
         }
 
-        public void LogInfo(string msg)
+        public ILogger LogWarning(string msg)
         {
-            throw new NotImplementedException();
+            return this.Log(ErrorLevel.Warning, msg);
         }
 
-        public void LogWarning(string msg)
+        #endregion ILogger
+
+        private Guid? Report(System.Exception e, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
         {
-            throw new NotImplementedException();
+            return SendBody(new Body(e), level, custom);
         }
+
+        private Guid? Report(string message, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
+        {
+            return SendBody(new Body(new Message(message)), level, custom);
+        }
+
+        private Guid? SendBody(Body body, ErrorLevel? level, IDictionary<string, object> custom)
+        {
+            if (string.IsNullOrWhiteSpace(_config.AccessToken) || _config.Enabled == false)
+            {
+                return null;
+            }
+
+            var guid = Guid.NewGuid();
+
+            var client = new RollbarClient(_config);
+            var data = new Data(_config.Environment, body)
+            {
+                Custom = custom,
+                Level = level ?? _config.LogLevel
+            };
+
+            var payload = new Payload(_config.AccessToken, data);
+            payload.Data.GuidUuid = guid;
+            payload.Data.Person = _config.Person;
+
+            if (_config.Server != null)
+            {
+                payload.Data.Server = _config.Server;
+            }
+
+            _config.Transform?.Invoke(payload);
+            client.PostItem(payload);
+
+            return guid;
+        }
+
     }
 }

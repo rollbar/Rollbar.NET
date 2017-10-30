@@ -6,19 +6,19 @@
 
     public interface ILogger
     {
-        void Log(ErrorLevel level, object obj);
-        void Log(ErrorLevel level, string msg);
+        ILogger Log(ErrorLevel level, object obj);
+        ILogger Log(ErrorLevel level, string msg);
 
-        void LogCritical(string msg);
-        void LogError(string msg);
-        void LogWarning(string msg);
-        void LogInfo(string msg);
-        void LogDebug(string msg);
+        ILogger LogCritical(string msg);
+        ILogger LogError(string msg);
+        ILogger LogWarning(string msg);
+        ILogger LogInfo(string msg);
+        ILogger LogDebug(string msg);
 
-        void LogCritical(Exception error);
-        void LogError(Exception error);
+        ILogger LogCritical(Exception error);
+        ILogger LogError(Exception error);
 
-        void LogDebug(ITraceable traceableObj);
-        void LogDebug(object obj);
+        ILogger LogDebug(ITraceable traceableObj);
+        ILogger LogDebug(object obj);
     }
 }

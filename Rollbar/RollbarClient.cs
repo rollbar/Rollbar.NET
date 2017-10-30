@@ -9,7 +9,7 @@
     /// <summary>
     /// Client for accessing the Rollbar API
     /// </summary>
-    public class RollbarClient 
+    internal class RollbarClient 
     {
         public RollbarConfig Config { get; }
 

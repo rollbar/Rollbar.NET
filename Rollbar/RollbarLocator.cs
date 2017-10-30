@@ -9,12 +9,27 @@
     /// </summary>
     public class RollbarLocator
     {
+        /// <summary>
+        /// Gets the singleton-like IRollbar instance.
+        /// </summary>
+        /// <value>
+        /// The single shared IRollbar instance.
+        /// </value>
         public static IRollbar RollbarInstance
         {
             get
             {
-                throw new NotImplementedException();
+                return NestedSingleInstance.Instance;
             }
+        }
+
+        private sealed class NestedSingleInstance
+        {
+            static NestedSingleInstance()
+            {
+            }
+
+            internal static readonly RollbarLogger Instance = new RollbarLogger();
         }
     }
 }
