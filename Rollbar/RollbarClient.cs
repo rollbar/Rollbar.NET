@@ -39,7 +39,8 @@
         private string SendPost<T>(string url, T payload)
         {
             var webClient = this.BuildWebClient();
-            return webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+            var json = JsonConvert.SerializeObject(payload);
+            return webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), json);
         }
 
         private async Task<string> SendPostAsync<T>(string url, T payload)

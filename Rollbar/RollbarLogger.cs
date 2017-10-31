@@ -43,7 +43,9 @@ namespace Rollbar
 
         public ILogger Log(ErrorLevel level, string msg)
         {
-            throw new NotImplementedException();
+            this.Report(msg, level);
+
+            return this;
         }
 
         public ILogger LogCritical(string msg)

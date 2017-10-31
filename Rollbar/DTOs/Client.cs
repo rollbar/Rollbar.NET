@@ -3,7 +3,7 @@
     using Newtonsoft.Json;
     using Rollbar.Serialization.Json;
 
-    [JsonConverter(typeof(DictionaryConverter))]
+    //[JsonConverter(typeof(DictionaryConverter))]
     public class Client 
         : ExtendableDtoBase
     {
@@ -12,6 +12,7 @@
             public const string Javascript = "javascript";
         }
 
+        //[JsonIgnore]
         public JavascriptClient Javascript
         {
             get { return this._keyedValues[ReservedProperties.Javascript] as JavascriptClient; }

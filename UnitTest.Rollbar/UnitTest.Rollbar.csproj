@@ -1,7 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!--
+  NOTE1: next line will have to stay commented out 
+  until Microsoft fixes its UnitTest loader to allow project imports.
+  Also, see NOTE2 that relates to the very same issue:
+
+<Import Project="..\SolutionCommon.csproj" />
+  -->
+
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <!--NOTE2: remove next line once Microsoft fixes its UnitTest loader: -->
+    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net45;net471</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>

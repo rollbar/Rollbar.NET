@@ -4,7 +4,7 @@
     using Newtonsoft.Json;
     using Rollbar.Serialization.Json;
 
-    [JsonConverter(typeof(DictionaryConverter))]
+    //[JsonConverter(typeof(DictionaryConverter))]
     public class Server 
         : ExtendableDtoBase
     {
@@ -16,24 +16,28 @@
             public const string CodeVersion = "code_version";
         }
 
+        //[JsonIgnore]
         public string Host
         {
             get { return this._keyedValues[ReservedProperties.Host] as string; }
             set { this._keyedValues[ReservedProperties.Host] = value; }
         }
 
+        //[JsonIgnore]
         public string Root
         {
             get { return this._keyedValues[ReservedProperties.Root] as string; }
             set { this._keyedValues[ReservedProperties.Root] = value; }
         }
 
+        //[JsonIgnore]
         public string Branch
         {
             get { return this._keyedValues[ReservedProperties.Branch] as string; }
             set { this._keyedValues[ReservedProperties.Branch] = value; }
         }
 
+        //[JsonIgnore]
         public string CodeVersion
         {
             get { return this._keyedValues[ReservedProperties.CodeVersion] as string; }

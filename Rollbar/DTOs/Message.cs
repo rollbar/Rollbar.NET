@@ -4,7 +4,7 @@
     using Newtonsoft.Json;
     using Rollbar.Serialization.Json;
 
-    [JsonConverter(typeof(DictionaryConverter))]
+    //[JsonConverter(typeof(DictionaryConverter))]
     public class Message 
         : ExtendableDtoBase
     {
@@ -23,6 +23,7 @@
             Body = body;
         }
 
+        //[JsonIgnore]
         public string Body
         {
             get { return this._keyedValues[ReservedProperties.Body] as string; }
