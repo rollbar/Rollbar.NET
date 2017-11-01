@@ -38,7 +38,7 @@ namespace UnitTest.Rollbar
             }
             catch (System.Exception ex)
             {
-                _logger.LogError(new System.Exception("outer exception", ex));
+                _logger.Error(new System.Exception("outer exception", ex));
             }
         }
     }

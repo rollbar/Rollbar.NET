@@ -48,51 +48,51 @@ namespace Rollbar
             return this;
         }
 
-        public ILogger LogCritical(string msg)
+        public ILogger Critical(string msg)
         {
             return this.Log(ErrorLevel.Critical, msg);
         }
 
-        public ILogger LogCritical(System.Exception error)
+        public ILogger Critical(System.Exception error)
         {
             this.Report(error, ErrorLevel.Critical);
 
             return this;
         }
 
-        public ILogger LogDebug(string msg)
+        public ILogger Debug(string msg)
         {
             return this.Log(ErrorLevel.Debug, msg);
         }
 
-        public ILogger LogDebug(ITraceable traceableObj)
+        public ILogger Debug(ITraceable traceableObj)
         {
-            return this.LogDebug(traceableObj.Trace());
+            return this.Debug(traceableObj.Trace());
         }
 
-        public ILogger LogDebug(object obj)
+        public ILogger Debug(object obj)
         {
-            return this.LogDebug(obj.ToString());
+            return this.Debug(obj.ToString());
         }
 
-        public ILogger LogError(string msg)
+        public ILogger Error(string msg)
         {
             return this.Log(ErrorLevel.Error, msg);
         }
 
-        public ILogger LogError(System.Exception error)
+        public ILogger Error(System.Exception error)
         {
             this.Report(error, ErrorLevel.Error);
 
             return this;
         }
 
-        public ILogger LogInfo(string msg)
+        public ILogger Info(string msg)
         {
             return this.Log(ErrorLevel.Info, msg);
         }
 
-        public ILogger LogWarning(string msg)
+        public ILogger Warning(string msg)
         {
             return this.Log(ErrorLevel.Warning, msg);
         }

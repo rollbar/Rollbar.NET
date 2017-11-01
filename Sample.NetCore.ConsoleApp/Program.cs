@@ -11,10 +11,10 @@ namespace Sample.NetCore.ConsoleApp
 
             RollbarLocator.RollbarInstance
                 .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" })
-                .LogInfo("Basic info log example.")
-                .LogDebug("First debug log.")
-                .LogError(new NullReferenceException())
-                .LogError(new Exception("trying out the TraceChain", new NullReferenceException()))
+                .Info("Basic info log example.")
+                .Debug("First debug log.")
+                .Error(new NullReferenceException())
+                .Error(new Exception("trying out the TraceChain", new NullReferenceException()))
                 ;
         }
     }

@@ -9,16 +9,16 @@
         ILogger Log(ErrorLevel level, object obj);
         ILogger Log(ErrorLevel level, string msg);
 
-        ILogger LogCritical(string msg);
-        ILogger LogError(string msg);
-        ILogger LogWarning(string msg);
-        ILogger LogInfo(string msg);
-        ILogger LogDebug(string msg);
+        ILogger Critical(string msg);
+        ILogger Error(string msg);
+        ILogger Warning(string msg);
+        ILogger Info(string msg);
+        ILogger Debug(string msg);
 
-        ILogger LogCritical(Exception error);
-        ILogger LogError(Exception error);
+        ILogger Critical(Exception error);
+        ILogger Error(Exception error);
 
-        ILogger LogDebug(ITraceable traceableObj);
-        ILogger LogDebug(object obj);
+        ILogger Debug(ITraceable traceableObj);
+        ILogger Debug(object obj);
     }
 }
