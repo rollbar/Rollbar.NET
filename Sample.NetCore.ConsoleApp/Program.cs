@@ -14,6 +14,7 @@ namespace Sample.NetCore.ConsoleApp
                 .LogInfo("Basic info log example.")
                 .LogDebug("First debug log.")
                 .LogError(new NullReferenceException())
+                .LogError(new Exception("trying out the TraceChain", new NullReferenceException()))
                 ;
         }
     }

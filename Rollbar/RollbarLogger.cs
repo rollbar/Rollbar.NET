@@ -22,7 +22,7 @@ namespace Rollbar
 
         public IRollbar Configure(string accessToken)
         {
-            this._config.AccessToken = accessToken;
+            this._config = new RollbarConfig(accessToken);
 
             return this;
         }

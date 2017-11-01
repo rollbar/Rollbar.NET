@@ -2,9 +2,7 @@
 {
     using System;
     using Newtonsoft.Json;
-    using Rollbar.Serialization.Json;
 
-    //[JsonConverter(typeof(DictionaryConverter))]
     public class Message 
         : ExtendableDtoBase
     {

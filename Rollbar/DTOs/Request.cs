@@ -2,9 +2,7 @@
 {
     using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Rollbar.Serialization.Json;
 
-    //[JsonConverter(typeof(DictionaryConverter))]
     public class Request : ExtendableDtoBase
     {
         public static class ReservedProperties

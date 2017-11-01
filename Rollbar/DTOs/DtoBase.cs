@@ -1,9 +1,10 @@
 ﻿namespace Rollbar.DTOs
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
+    /// <summary>
+    /// Implements an abstract DTO type base.
+    /// </summary>
     public abstract class DtoBase
     {
     }
