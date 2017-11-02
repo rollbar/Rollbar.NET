@@ -2,6 +2,8 @@
 {
     using System;
     using Newtonsoft.Json;
+    using System.Collections.Generic;
+    using Rollbar.Diagnostics;
 
     public class Message 
         : ExtendableDtoBase
@@ -11,14 +13,12 @@
             public const string Body = "body";
         }
 
-        public Message(string body)
+        public Message(string body, IDictionary<string, object> arbitraryKeyValuePairs = null)
+            : base(arbitraryKeyValuePairs)
         {
-            if (string.IsNullOrWhiteSpace(body))
-            {
-                throw new ArgumentNullException(nameof(body));
-            }
-
             Body = body;
+
+            Validate();
         }
 
         //[JsonIgnore]
@@ -26,6 +26,11 @@
         {
             get { return this._keyedValues[ReservedProperties.Body] as string; }
             private set { this._keyedValues[ReservedProperties.Body] = value; }
+        }
+
+        public override void Validate()
+        {
+            Assumption.AssertNotNullOrWhiteSpace(this.Body, nameof(this.Body));
         }
 
     }

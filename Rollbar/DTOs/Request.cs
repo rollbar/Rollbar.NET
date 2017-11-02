@@ -5,6 +5,11 @@
 
     public class Request : ExtendableDtoBase
     {
+        protected Request(IDictionary<string, object> arbitraryKeyValuePairs) 
+            : base(arbitraryKeyValuePairs)
+        {
+        }
+
         public static class ReservedProperties
         {
             public const string Url = "url";

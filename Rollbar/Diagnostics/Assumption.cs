@@ -17,7 +17,7 @@
         /// <exception cref="ArgumentException"></exception>
         public static void FailValidation(string msg, string argumentName)
         {
-            //Debug.Assert(false, msg);
+            Debug.Assert(false, msg);
             throw new ArgumentException(msg, argumentName);
         }
 

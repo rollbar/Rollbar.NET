@@ -20,6 +20,22 @@
         protected readonly IDictionary<string, object> _keyedValues = 
             new Dictionary<string, object>();
 
+        private ExtendableDtoBase()
+        {
+
+        }
+
+        protected ExtendableDtoBase(IDictionary<string, object> arbitraryKeyValuePairs)
+        {
+            if (arbitraryKeyValuePairs != null)
+            {
+                foreach (var key in arbitraryKeyValuePairs.Keys)
+                {
+                    this[key] = arbitraryKeyValuePairs[key];
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets the <see cref="System.Object"/> with the specified key.
         /// </summary>

@@ -7,5 +7,11 @@
     /// </summary>
     public abstract class DtoBase
     {
+        /// <summary>
+        /// Validates this instance.
+        /// </summary>
+        public virtual void Validate()
+        {
+        }
     }
 }

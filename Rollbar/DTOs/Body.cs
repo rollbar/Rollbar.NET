@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Newtonsoft.Json;
+    using Rollbar.Diagnostics;
 
     public class Body
         : DtoBase
@@ -22,9 +23,12 @@
             }
 
             TraceChain = allExceptions.Select(e => new Trace(e)).ToArray();
+
+            Validate();
         }
 
-        public Body(AggregateException exception) : this(exception.InnerExceptions)
+        public Body(AggregateException exception) 
+            : this(exception.InnerExceptions)
         {
         }
 
@@ -52,31 +56,24 @@
             {
                 Trace = new Trace(exception);
             }
+
+            Validate();
         }
 
         public Body(Message message)
         {
-            if (message == null)
-            {
-                throw new ArgumentNullException(nameof(message));
-            }
-
             Message = message;
+            Validate();
         }
 
         public Body(string crashReport)
         {
-            if (string.IsNullOrWhiteSpace(crashReport))
-            {
-                throw new ArgumentNullException(nameof(crashReport));
-            }
-
-            CrashReport = new Dictionary<string, string>
-            {
-                { "raw", crashReport }
-            };
+            this.CrashReport = new CrashReport(crashReport);
+            Validate();
         }
 
+        #region These are mutually exclusive properties - only one of them can be not null
+        
         [JsonProperty("trace", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public Trace Trace { get; private set; }
 
@@ -87,6 +84,35 @@
         public Message Message { get; private set; }
 
         [JsonProperty("crash_report", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, string> CrashReport { get; private set; }
+        public CrashReport CrashReport { get; private set; }
+
+        #endregion These are mutually exclusive properties - only one of them can be not null
+
+        public override void Validate()
+        {
+            int bodyContentVariationsCount = 0;
+
+            if (this.Trace != null)
+            {
+                this.Trace.Validate();
+                bodyContentVariationsCount++;
+            }
+            if (this.TraceChain != null)
+            {
+                //this.TraceChain.va
+                bodyContentVariationsCount++;
+            }
+            if (this.Message != null)
+            {
+                this.Message.Validate();
+                bodyContentVariationsCount++;
+            }
+            if (this.CrashReport != null)
+            {
+                bodyContentVariationsCount++;
+            }
+
+            Assumption.AssertEqual(bodyContentVariationsCount, 1, nameof(bodyContentVariationsCount));
+        }
     }
 }

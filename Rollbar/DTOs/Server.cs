@@ -8,6 +8,11 @@
     public class Server 
         : ExtendableDtoBase
     {
+        protected Server(IDictionary<string, object> arbitraryKeyValuePairs) 
+            : base(arbitraryKeyValuePairs)
+        {
+        }
+
         public static class ReservedProperties
         {
             public const string Host = "host";
