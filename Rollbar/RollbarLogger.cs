@@ -36,65 +36,65 @@ namespace Rollbar
 
         #region ILogger
 
-        public ILogger Log(ErrorLevel level, object obj)
+        public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
-            return this.Log(level, obj.ToString());
+            return this.Log(level, obj.ToString(), custom);
         }
 
-        public ILogger Log(ErrorLevel level, string msg)
+        public ILogger Log(ErrorLevel level, string msg, IDictionary<string, object> custom = null)
         {
-            this.Report(msg, level);
+            this.Report(msg, level, custom);
 
             return this;
         }
 
-        public ILogger Critical(string msg)
+        public ILogger Critical(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Critical, msg);
+            return this.Log(ErrorLevel.Critical, msg, custom);
         }
 
-        public ILogger Critical(System.Exception error)
+        public ILogger Critical(System.Exception error, IDictionary<string, object> custom = null)
         {
-            this.Report(error, ErrorLevel.Critical);
+            this.Report(error, ErrorLevel.Critical, custom);
 
             return this;
         }
 
-        public ILogger Debug(string msg)
+        public ILogger Debug(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Debug, msg);
+            return this.Log(ErrorLevel.Debug, msg, custom);
         }
 
-        public ILogger Debug(ITraceable traceableObj)
+        public ILogger Debug(ITraceable traceableObj, IDictionary<string, object> custom = null)
         {
-            return this.Debug(traceableObj.Trace());
+            return this.Debug(traceableObj.Trace(), custom);
         }
 
-        public ILogger Debug(object obj)
+        public ILogger Debug(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Debug(obj.ToString());
+            return this.Debug(obj.ToString(), custom);
         }
 
-        public ILogger Error(string msg)
+        public ILogger Error(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Error, msg);
+            return this.Log(ErrorLevel.Error, msg, custom);
         }
 
-        public ILogger Error(System.Exception error)
+        public ILogger Error(System.Exception error, IDictionary<string, object> custom = null)
         {
-            this.Report(error, ErrorLevel.Error);
+            this.Report(error, ErrorLevel.Error, custom);
 
             return this;
         }
 
-        public ILogger Info(string msg)
+        public ILogger Info(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Info, msg);
+            return this.Log(ErrorLevel.Info, msg, custom);
         }
 
-        public ILogger Warning(string msg)
+        public ILogger Warning(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Warning, msg);
+            return this.Log(ErrorLevel.Warning, msg, custom);
         }
 
         #endregion ILogger
