@@ -4,6 +4,7 @@
     using global::Rollbar.DTOs;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
+    using System;
     using System.Collections.Generic;
 
     [TestClass]
@@ -59,17 +60,15 @@
         }
 
         [TestMethod]
-        public void MessageBodyCantBeNullifiedViaIndexer()
+        public void ValidMessageBodyCantBeNullifiedViaIndexer()
         {
-            _message["body"] = null;
-            Assert.AreEqual("{\"body\":\"Body of the message\"}", JsonConvert.SerializeObject(_message));
+            Assert.ThrowsException<ArgumentException>(() => _message["body"] = null);
         }
 
         [TestMethod]
         public void MessageBodyCantBeSetToIncorrectType()
         {
-            _message["body"] = 10;
-            Assert.AreEqual("{\"body\":\"Body of the message\"}", JsonConvert.SerializeObject(_message));
+            Assert.ThrowsException<ArgumentException>(() => _message["body"] = 10);
         }
 
     }

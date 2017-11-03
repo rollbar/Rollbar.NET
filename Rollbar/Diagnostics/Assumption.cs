@@ -14,10 +14,9 @@
         /// </summary>
         /// <param name="msg">The MSG.</param>
         /// <param name="argumentName">Name of the argument.</param>
-        /// <exception cref="ArgumentException"></exception>
         public static void FailValidation(string msg, string argumentName)
         {
-            Debug.Assert(false, msg);
+            //Debug.Assert(false, msg);
             throw new ArgumentException(msg, argumentName);
         }
 
@@ -26,7 +25,6 @@
         /// Asserts the  generic type parameter as an interface.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <exception cref="System.ArgumentException">Generic type parameter should be an interface only.</exception>
         public static void AssertIsInterface<T>() where T : class
         {
             if (!typeof(T).IsInterface)
@@ -42,7 +40,6 @@
         /// <param name="testedValue">if set to <c>true</c> [tested value].</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentException">Argument should be equal to  + true</exception>
         public static bool AssertTrue(bool testedValue, string parameterName)
         {
             if (!testedValue)
@@ -60,7 +57,6 @@
         /// <param name="testedValue">if set to <c>true</c> [tested value].</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentException">Argument should be equal to  + false</exception>
         public static bool AssertFalse(bool testedValue, string parameterName)
         {
             if (testedValue)
@@ -80,7 +76,6 @@
         /// <param name="compareToValue">The compare to value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentException">Argument should not be equal to  + compareToValue</exception>
         public static T AssertNotEqual<T>(T testedValue, T compareToValue, string parameterName)
             where T : IEquatable<T>
         {
@@ -101,7 +96,6 @@
         /// <param name="compareToValue">The compare to value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentException">Argument should be equal to  + compareToValue</exception>
         public static T AssertEqual<T>(T testedValue, T compareToValue, string parameterName)
             where T : IEquatable<T>
         {
@@ -124,8 +118,6 @@
         /// <param name="value">The value to test.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns>The specified value.</returns>
-        /// <exception cref="ArgumentNullException">Occurs if the specified value 
-        /// is <code>null</code>.</exception>
         /// <example>
         /// public UIElementAdapter(UIElement uiElement)
         /// {
@@ -149,8 +141,6 @@
         /// <param name="value">The value to test.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns>The specified value.</returns>
-        /// <exception cref="ArgumentNullException">Occurs if the specified value 
-        /// is <code>null</code> or empty (a zero length string).</exception>
         /// <example>
         /// public DoSomething(string message)
         /// {
@@ -182,8 +172,6 @@
         /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentException">
-        /// </exception>
         public static string AssertEqual(string value, string expectedValue, bool ignoreCase, string parameterName)
         {
             if (value == null && expectedValue == null)
@@ -207,8 +195,6 @@
         /// <param name="value">The value to test.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns>The specified value.</returns>
-        /// <exception cref="ArgumentNullException">Occurs if the specified value 
-        /// is <code>null</code> or consists of only white space.</exception>
         public static string AssertNotNullOrWhiteSpace(string value, string parameterName)
         {
             if (value == null || value.Trim().Length == 0)
@@ -226,8 +212,6 @@
         /// <param name="value">The value to test.</param>
         /// <param name="parameterName">The name of the member.</param>
         /// <returns>The specified value.</returns>
-        /// <exception cref="ArgumentNullException">Occurs if the specified value 
-        /// is an empty guid. That is, if <c>value</c> equals <c>Guid.Empty</c>.</exception>
         public static Guid AssertNotEmpty(Guid value, string parameterName)
         {
             if (value == Guid.Empty)
@@ -249,9 +233,6 @@
         /// <returns>
         /// The specified value.
         /// </returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be greater than  + expectedValue</exception>
-        /// <exception cref="ArgumentNullException">Occurs if the specified value
-        /// is not greater than the expected value.</exception>
         public static int AssertGreaterThan(int value, int expectedValue, string parameterName)
         {
             if (value <= expectedValue)
@@ -270,7 +251,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be greater than  + expectedValue</exception>
         public static double AssertGreaterThan(double value, double expectedValue, string parameterName)
         {
             if (value <= expectedValue)
@@ -289,7 +269,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be greater than  + expectedValue</exception>
         public static DateTimeOffset AssertGreaterThan(DateTimeOffset value, DateTimeOffset expectedValue, string parameterName)
         {
             if (value <= expectedValue)
@@ -308,7 +287,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be greater than or equal to  + expectedValue</exception>
         public static int AssertGreaterThanOrEqual(int value, int expectedValue, string parameterName)
         {
             if (value < expectedValue)
@@ -327,7 +305,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be greater than or equal to  + expectedValue</exception>
         public static double AssertGreaterThanOrEqual(double value, double expectedValue, string parameterName)
         {
             if (value < expectedValue)
@@ -346,7 +323,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be greater than or equal to  + expectedValue</exception>
         public static DateTimeOffset AssertGreaterThanOrEqual(DateTimeOffset value, DateTimeOffset expectedValue, string parameterName)
         {
             if (value < expectedValue)
@@ -365,7 +341,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be less than  + expectedValue</exception>
         public static int AssertLessThan(int value, int expectedValue, string parameterName)
         {
             if (value < expectedValue)
@@ -384,7 +359,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be less than  + expectedValue</exception>
         public static double AssertLessThan(double value, double expectedValue, string parameterName)
         {
             if (value < expectedValue)
@@ -403,7 +377,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be less than  + expectedValue</exception>
         public static DateTimeOffset AssertLessThan(DateTimeOffset value, DateTimeOffset expectedValue, string parameterName)
         {
             if (value >= expectedValue)
@@ -422,7 +395,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be less than or equal to  + expectedValue</exception>
         public static int AssertLessThanOrEqual(int value, int expectedValue, string parameterName)
         {
             if (value <= expectedValue)
@@ -441,7 +413,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be less than or equal to  + expected</exception>
         public static double AssertLessThanOrEqual(double value, double expectedValue, string parameterName)
         {
             if (value <= expectedValue)
@@ -460,7 +431,6 @@
         /// <param name="expectedValue">The expected value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">Argument should be less than or equal to  + expected</exception>
         public static DateTimeOffset AssertLessThanOrEqual(DateTimeOffset value, DateTimeOffset expectedValue, string parameterName)
         {
             if (value > expectedValue)
@@ -479,8 +449,6 @@
         /// <param name="value">The value to test.</param> 
         /// <param name="parameterName">The name of the parameter.</param>
         /// <returns>The value to test.</returns>
-        /// <exception cref="ArgumentNullException">Occurs if the specified value 
-        /// is <code>null</code> or of type not assignable from the specified type.</exception>
         /// <example>
         /// public DoSomething(object message)
         /// {

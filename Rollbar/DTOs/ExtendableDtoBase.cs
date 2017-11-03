@@ -1,8 +1,12 @@
 ﻿namespace Rollbar.DTOs
 {
+    using Rollbar.Diagnostics;
+    using Rollbar.Utils;
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
 
     /// <summary>
     /// Implements an abstract base for defining expendable DTO types.
@@ -17,8 +21,19 @@
         IEnumerable<KeyValuePair<string, object>>,
         IDictionary<string, object>
     {
+        internal const string reservedPropertiesNestedTypeName = "ReservedProperties";
+
+        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType = null;
+
+        private readonly ExtendableDtoMetadata _meatadata = null;
+
         protected readonly IDictionary<string, object> _keyedValues = 
             new Dictionary<string, object>();
+
+        static ExtendableDtoBase()
+        {
+            metadataByDerivedType = ExtendableDtoMetadata.BuildAll();
+        }
 
         private ExtendableDtoBase()
         {
@@ -27,6 +42,9 @@
 
         protected ExtendableDtoBase(IDictionary<string, object> arbitraryKeyValuePairs)
         {
+            this._meatadata = ExtendableDtoBase.metadataByDerivedType[this.GetType()];
+            Assumption.AssertNotNull(this._meatadata, nameof(this._meatadata));
+
             if (arbitraryKeyValuePairs != null)
             {
                 foreach (var key in arbitraryKeyValuePairs.Keys)
@@ -47,7 +65,24 @@
         public object this[string key]
         {
             get => this._keyedValues[key];
-            set => this._keyedValues[key] = value;
+            set
+            {
+                Assumption.AssertTrue(
+                    !this._keyedValues.ContainsKey(key)                                         // no such key preset yet
+                    || this._keyedValues[key] == null                                           // OR its not initialized yet
+                    || value != null                                                            // OR no-null value
+                    || !this._meatadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),   // OR not about reserved property/key
+                    "conditional " + nameof(value) + " assessment"
+                    );
+
+                Assumption.AssertTrue(
+                    !this._meatadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key)                       // not about reserved property/key
+                    || value.GetType() == this._meatadata.ReservedPropertyInfoByReservedKey[key].PropertyType,  // OR new value type matches reserved property type
+                    "conditional " + nameof(value) + " assessment"
+                    );
+
+                this._keyedValues[key] = value;
+            }
         }
 
         /// <summary>
