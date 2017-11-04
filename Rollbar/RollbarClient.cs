@@ -18,35 +18,25 @@
             Config = config;
         }
 
-        public Guid PostItem(Payload payload)
+        public RollbarResponse PostAsJson(Payload payload)
         {
-            var stringResult = SendPost("item/", payload);
-            return ParseResponse(stringResult);
+            var jsonData = JsonConvert.SerializeObject(payload);
+            var jsonResult = Post("item/", jsonData);
+            var response = JsonConvert.DeserializeObject<RollbarResponse>(jsonResult);
+            return response;
         }
 
-        public async Task<Guid> PostItemAsync(Payload payload)
+        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload)
         {
-            var stringResult = await SendPostAsync("item/", payload);
-            return ParseResponse(stringResult);
+            return await Task.Factory.StartNew(() => this.PostAsJson(payload));
         }
 
-        private static Guid ParseResponse(string stringResult)
+        private string Post(string urlSuffix, string data)
         {
-            var response = JsonConvert.DeserializeObject<RollbarResponse>(stringResult);
-            return Guid.Parse(response.Result.Uuid);
-        }
-
-        private string SendPost<T>(string url, T payload)
-        {
-            var webClient = this.BuildWebClient();
-            var json = JsonConvert.SerializeObject(payload);
-            return webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), json);
-        }
-
-        private async Task<string> SendPostAsync<T>(string url, T payload)
-        {
-            var webClient = this.BuildWebClient();
-            return await webClient.UploadStringTaskAsync(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+            using (var webClient = this.BuildWebClient())
+            {
+                return webClient.UploadString(new Uri($"{Config.EndPoint}{urlSuffix}"), data);
+            }
         }
 
         private WebClient BuildWebClient()

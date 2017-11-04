@@ -1,6 +1,7 @@
 ﻿using Rollbar.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Rollbar
 {
@@ -8,6 +9,8 @@ namespace Rollbar
         : IRollbar
     {
         private RollbarConfig _config;
+
+        public event EventHandler<RollbarEventArgs> InternalEvent;
 
         #region IRollbar
 
@@ -135,9 +138,60 @@ namespace Rollbar
             }
 
             _config.Transform?.Invoke(payload);
-            client.PostItem(payload);
+
+            RollbarResponse response = null;
+            int retries = 3;
+            while(retries > 0)
+            {
+                try
+                {
+                    response = client.PostAsJson(payload);
+                }
+                catch (WebException ex)
+                {
+                    retries--;
+                    this.OnRollbarEvent(
+                        new CommunicationErrorEventArgs(this._config, payload, ex, retries)
+                        );
+                    continue;
+                }
+                catch (ArgumentNullException ex)
+                {
+                    retries = 0;
+                    this.OnRollbarEvent(
+                        new CommunicationErrorEventArgs(this._config, payload, ex, retries)
+                        );
+                    continue;
+                }
+                catch (System.Exception ex)
+                {
+                    retries = 0;
+                    this.OnRollbarEvent(
+                        new CommunicationErrorEventArgs(this._config, payload, ex, retries)
+                        );
+                    continue;
+                }
+                retries = 0;
+            }
+
+            if (response != null)
+            {
+                this.OnRollbarEvent(
+                    new CommunicationEventArgs(this._config, payload, response)
+                    );
+            }
 
             return guid;
+        }
+
+        protected virtual void OnRollbarEvent(RollbarEventArgs e)
+        {
+            EventHandler<RollbarEventArgs> handler = InternalEvent;
+
+            if (handler != null)
+            {
+                handler(this, e);
+            }
         }
 
     }

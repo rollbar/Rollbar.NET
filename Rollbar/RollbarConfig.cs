@@ -6,6 +6,7 @@
     using System.Text;
 
     public struct RollbarConfig
+        : ITraceable
     {
         //public RollbarConfig() : this("")
         //{
@@ -46,5 +47,21 @@
         public Person Person { get;set; }
 
         public string ProxyAddress { get; set; }
+
+        public string Trace(string indent = "")
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(indent + this.GetType().Name + ":");
+            sb.AppendLine(indent + "  AccessToken: " + this.AccessToken);
+            sb.AppendLine(indent + "  EndPoint: " + this.EndPoint);
+            sb.AppendLine(indent + "  ScrubFields: " + this.ScrubFields);
+            sb.AppendLine(indent + "  Enabled: " + this.Enabled);
+            sb.AppendLine(indent + "  Environment: " + this.Environment);
+            sb.AppendLine(indent + "  Server: " + this.Server);
+            sb.AppendLine(indent + "  Person: " + this.Person);
+            sb.AppendLine(indent + "  ProxyAddress: " + this.ProxyAddress);
+            //sb.AppendLine(indent + this.Result.Trace(indent + "  "));
+            return sb.ToString();
+        }
     }
 }

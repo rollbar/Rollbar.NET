@@ -13,5 +13,7 @@
         RollbarConfig CloneConfiguration();
 
         ILogger Logger { get; }
+
+        event EventHandler<RollbarEventArgs> InternalEvent;
     }
 }

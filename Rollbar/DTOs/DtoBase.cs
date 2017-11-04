@@ -6,7 +6,13 @@
     /// Implements an abstract DTO type base.
     /// </summary>
     public abstract class DtoBase
+        : ITraceable
     {
+        public virtual string Trace(string indent = "")
+        {
+            return this.ToString();
+        }
+
         /// <summary>
         /// Validates this instance.
         /// </summary>
