@@ -29,7 +29,7 @@
             {
             }
 
-            internal static readonly RollbarLogger Instance = new RollbarLogger();
+            internal static readonly IRollbar Instance = RollbarFactory.CreateNew();
         }
     }
 }

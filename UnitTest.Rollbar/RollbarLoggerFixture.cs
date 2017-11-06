@@ -17,7 +17,7 @@ namespace UnitTest.Rollbar
         {
             RollbarConfig loggerConfig =
                 new RollbarConfig(accessToken) { Environment = environment, };
-            _logger = new RollbarLogger().Configure(loggerConfig);
+            _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
             //_logger = new RollbarLogger().Configure(accessToken);
         }
 

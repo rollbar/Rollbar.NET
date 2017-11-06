@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Rollbar
 {
-    public class RollbarLogger
+    internal class RollbarLogger
         : IRollbar
     {
         private RollbarConfig _config;
