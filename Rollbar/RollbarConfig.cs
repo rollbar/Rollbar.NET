@@ -14,18 +14,27 @@
 
         public RollbarConfig(string accessToken)
         {
-            AccessToken = accessToken;
+            this.AccessToken = accessToken;
 
             // let's set some default values:
-            Environment = "production";
-            Enabled = true;
-            LogLevel = ErrorLevel.Debug;
-            ScrubFields = new[] { "passwd", "password", "secret", "confirm_password", "password_confirmation" };
-            EndPoint = "https://api.rollbar.com/api/1/";
-            ProxyAddress = null;
-            Transform = null;
-            Server = null;
-            Person = null;
+            this.Environment = "production";
+            this.Enabled = true;
+            this.LogLevel = ErrorLevel.Debug;
+            this.ScrubFields = new[] 
+            {
+                "passwd",
+                "password",
+                "secret",
+                "confirm_password",
+                "password_confirmation",
+            };
+            this.EndPoint = "https://api.rollbar.com/api/1/";
+            this.ProxyAddress = null;
+            this.CheckIgnore = null;
+            this.Transform = null;
+            this.Truncate = null;
+            this.Server = null;
+            this.Person = null;
         }
 
         public string AccessToken { get; set; }
@@ -40,7 +49,11 @@
 
         public string Environment { get; set; }
 
+        public Func<Payload, bool> CheckIgnore { get; set; }
+
         public Action<Payload> Transform { get; set; }
+
+        public Action<Payload> Truncate { get; set; }
 
         public Server Server { get; set; }
 

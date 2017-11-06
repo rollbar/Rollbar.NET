@@ -137,7 +137,14 @@ namespace Rollbar
                 payload.Data.Server = _config.Server;
             }
 
+            if (_config.CheckIgnore != null && _config.CheckIgnore.Invoke(payload))
+            {
+                return null;
+            }
+
             _config.Transform?.Invoke(payload);
+
+            _config.Truncate?.Invoke(payload);
 
             RollbarResponse response = null;
             int retries = 3;
