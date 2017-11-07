@@ -11,13 +11,13 @@
 
         public RollbarResult Result { get; set; }
 
-        public string Trace(string indent = "")
+        public string TraceAsString(string indent = "")
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(indent + this.GetType().Name + ":");
             sb.AppendLine(indent + "  Error: " + this.Error);
             sb.AppendLine(indent + "  Result: ");
-            sb.AppendLine(indent  + this.Result.Trace(indent + "  "));
+            sb.AppendLine(indent  + this.Result.TraceAsString(indent + "  "));
             return sb.ToString();
         }
     }

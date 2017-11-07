@@ -6,6 +6,6 @@
 
     public interface ITraceable
     {
-        string Trace(string indent = "");
+        string TraceAsString(string indent = "");
     }
 }

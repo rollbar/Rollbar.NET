@@ -11,7 +11,7 @@
 
         public string Uuid { get; set; }
 
-        public string Trace(string indent = "")
+        public string TraceAsString(string indent = "")
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(indent + this.GetType().Name + ":");

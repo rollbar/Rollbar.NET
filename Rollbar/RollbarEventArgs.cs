@@ -34,11 +34,11 @@
         public RollbarConfig Config { get; private set; }
         public string Payload { get; private set; }
 
-        public virtual string Trace(string indent = "")
+        public virtual string TraceAsString(string indent = "")
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(indent + this.GetType().Name + ":");
-            sb.Append(indent + this.Config.Trace("  "));
+            sb.Append(indent + this.Config.TraceAsString("  "));
             sb.AppendLine(indent + "  Payload: " + this.Payload);
             return sb.ToString();
         }

@@ -39,17 +39,15 @@
                 throw new ArgumentNullException(nameof(exception));
             }
 
-            var exceptionList = new List<System.Exception>();
             if (exception.InnerException != null)
             {
-                exceptionList.Add(exception);
-                var currentException = exception;
-                while (currentException.InnerException != null)
+                var exceptionList = new List<System.Exception>();
+                var outerException = exception;
+                while (outerException != null)
                 {
-                    exceptionList.Add(currentException.InnerException);
-                    currentException = currentException.InnerException;
+                    exceptionList.Add(outerException);
+                    outerException = outerException.InnerException;
                 }
-
                 TraceChain = exceptionList.Select(e => new Trace(e)).ToArray();
             }
             else

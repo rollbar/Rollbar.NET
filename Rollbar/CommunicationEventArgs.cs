@@ -16,11 +16,11 @@
 
         public RollbarResponse Response { get; private set; }
 
-        public override string Trace(string indent = "")
+        public override string TraceAsString(string indent = "")
         {
-            StringBuilder sb = new StringBuilder(base.Trace(indent));
+            StringBuilder sb = new StringBuilder(base.TraceAsString(indent));
             sb.AppendLine(indent + "  Response: " );
-            sb.AppendLine(this.Response.Trace(indent + "  "));
+            sb.AppendLine(this.Response.TraceAsString(indent + "  "));
             return sb.ToString();
         }
     }

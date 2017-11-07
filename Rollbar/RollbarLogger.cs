@@ -70,7 +70,7 @@ namespace Rollbar
 
         public ILogger Debug(ITraceable traceableObj, IDictionary<string, object> custom = null)
         {
-            return this.Debug(traceableObj.Trace(), custom);
+            return this.Debug(traceableObj.TraceAsString(), custom);
         }
 
         public ILogger Debug(object obj, IDictionary<string, object> custom = null)

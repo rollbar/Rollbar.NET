@@ -8,7 +8,7 @@
     public abstract class DtoBase
         : ITraceable
     {
-        public virtual string Trace(string indent = "")
+        public virtual string TraceAsString(string indent = "")
         {
             return this.ToString();
         }

@@ -24,9 +24,9 @@
 
         public int RetriesLeft { get; private set; }
 
-        public override string Trace(string indent = "")
+        public override string TraceAsString(string indent = "")
         {
-            StringBuilder sb = new StringBuilder(base.Trace(indent));
+            StringBuilder sb = new StringBuilder(base.TraceAsString(indent));
             sb.AppendLine(indent + "  RetriesLeft: " + this.RetriesLeft);
             sb.AppendLine(indent + "  Error: " + this.Error);
             return sb.ToString();

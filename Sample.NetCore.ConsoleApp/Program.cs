@@ -37,7 +37,7 @@ namespace Sample.NetCore.ConsoleApp
             //    return;
             //}
 
-            Console.WriteLine(e.Trace());
+            Console.WriteLine(e.TraceAsString());
         }
     }
 }
