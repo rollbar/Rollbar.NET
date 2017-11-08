@@ -19,6 +19,7 @@
             // let's set some default values:
             this.Environment = "production";
             this.Enabled = true;
+            this.MaxReportsPerMinute = 60;
             this.LogLevel = ErrorLevel.Debug;
             this.ScrubFields = new[] 
             {
@@ -61,6 +62,8 @@
 
         public string ProxyAddress { get; set; }
 
+        public int MaxReportsPerMinute { get; set; }
+
         public string TraceAsString(string indent = "")
         {
             StringBuilder sb = new StringBuilder();
@@ -73,6 +76,7 @@
             sb.AppendLine(indent + "  Server: " + this.Server);
             sb.AppendLine(indent + "  Person: " + this.Person);
             sb.AppendLine(indent + "  ProxyAddress: " + this.ProxyAddress);
+            sb.AppendLine(indent + "  MaxReportsPerMinute: " + this.MaxReportsPerMinute);
             //sb.AppendLine(indent + this.Result.Trace(indent + "  "));
             return sb.ToString();
         }

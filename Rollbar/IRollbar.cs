@@ -6,6 +6,7 @@
 
     public interface IRollbar
         : ILogger
+        , IDisposable
     {
         IRollbar Configure(RollbarConfig settings);
         IRollbar Configure(string accessToken);

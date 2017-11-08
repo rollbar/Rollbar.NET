@@ -14,6 +14,8 @@ namespace Sample.NetCore.ConsoleApp
                 .InternalEvent += RollbarInstance_InternalEvent;
 
 
+            bool check = RollbarLocator.RollbarInstance is IDisposable;
+
             RollbarLocator.RollbarInstance
                 .Info("Basic info log example.")
                 .Debug("First debug log.")
