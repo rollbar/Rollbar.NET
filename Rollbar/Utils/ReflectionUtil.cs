@@ -9,6 +9,13 @@
 
     internal static class ReflectionUtil
     {
+        public static PropertyInfo[] GetAllPublicInstanceProperties(Type type)
+        {
+            var memberInfos = 
+                type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            return memberInfos;
+        }
+
         /// <summary>
         /// Gets all public static fields.
         /// </summary>

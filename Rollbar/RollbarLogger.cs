@@ -9,31 +9,46 @@ namespace Rollbar
         : IRollbar
         , IDisposable
     {
-        private RollbarConfig _config;
+        private readonly RollbarConfig _config = null;
+        private readonly PayloadQueue _payloadQueue = null;
 
         public event EventHandler<RollbarEventArgs> InternalEvent;
+
+        internal RollbarLogger(bool isSingleton)
+        {
+            this.IsSingleton = isSingleton;
+            this._config = new RollbarConfig(this);
+            this._payloadQueue = new PayloadQueue(this);
+        }
+
+        internal bool IsSingleton { get; private set; }
+
+        internal PayloadQueue Queue
+        {
+            get { return this._payloadQueue; }
+        }
 
         #region IRollbar
 
         public ILogger Logger => this;
 
+        public RollbarConfig Config
+        {
+            get { return this._config; }
+        }
+
         public IRollbar Configure(RollbarConfig settings)
         {
-            this._config = settings;
+            this._config.Reconfigure(settings);
 
             return this;
         }
 
         public IRollbar Configure(string accessToken)
         {
-            this._config = new RollbarConfig(accessToken);
+            this._config.Reconfigure(new RollbarConfig(accessToken));
 
             return this;
-        }
-
-        public RollbarConfig CloneConfiguration()
-        {
-            return this._config;
         }
 
         #endregion IRollbar

@@ -10,8 +10,7 @@
     {
         IRollbar Configure(RollbarConfig settings);
         IRollbar Configure(string accessToken);
-
-        RollbarConfig CloneConfiguration();
+        RollbarConfig Config { get; }
 
         ILogger Logger { get; }
 

@@ -8,7 +8,12 @@ namespace Rollbar
     {
         public static IRollbar CreateNew()
         {
-            return new RollbarLogger();
+            return RollbarFactory.CreateNew(false);
+        }
+
+        internal static IRollbar CreateNew(bool isSingleton)
+        {
+            return new RollbarLogger(isSingleton);
         }
     }
 }

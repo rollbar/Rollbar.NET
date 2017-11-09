@@ -1,25 +1,43 @@
 ﻿namespace Rollbar
 {
+    using Rollbar.Common;
+    using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
     using System.Text;
 
-    public struct RollbarConfig
-        : ITraceable
+    public class RollbarConfig
+        : ReconfigurableBase<RollbarConfig>
+        , ITraceable
     {
-        //public RollbarConfig() : this("")
-        //{
-        //}
+        private readonly RollbarLogger _logger = null;
+
+        private RollbarConfig()
+        {
+        }
+
+        internal RollbarConfig(RollbarLogger logger)
+        {
+            this._logger = logger;
+        }
+
+        internal RollbarLogger Logger
+        {
+            get { return this._logger; }
+        }
 
         public RollbarConfig(string accessToken)
         {
+            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
+
             this.AccessToken = accessToken;
 
             // let's set some default values:
             this.Environment = "production";
             this.Enabled = true;
             this.MaxReportsPerMinute = 60;
+            this.ReportingQueueDepth = 20;
             this.LogLevel = ErrorLevel.Debug;
             this.ScrubFields = new[] 
             {
@@ -38,7 +56,7 @@
             this.Person = null;
         }
 
-        public string AccessToken { get; set; }
+        public string AccessToken { get; internal set; }
 
         public string EndPoint { get; set; }
 
@@ -63,6 +81,8 @@
         public string ProxyAddress { get; set; }
 
         public int MaxReportsPerMinute { get; set; }
+
+        public int ReportingQueueDepth { get; set; }
 
         public string TraceAsString(string indent = "")
         {
