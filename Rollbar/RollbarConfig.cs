@@ -27,6 +27,15 @@
             get { return this._logger; }
         }
 
+        public override RollbarConfig Reconfigure(RollbarConfig likeMe)
+        {
+            base.Reconfigure(likeMe);
+
+            this.Logger.Queue.NextDequeueTime = DateTimeOffset.Now;
+
+            return this;
+        }
+
         public RollbarConfig(string accessToken)
         {
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));

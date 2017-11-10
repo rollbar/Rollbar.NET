@@ -25,6 +25,8 @@
             this._queue = new Queue<Payload>();
         }
 
+        public DateTimeOffset NextDequeueTime { get; internal set; }
+
         public RollbarLogger Logger
         {
             get { return this._logger; }

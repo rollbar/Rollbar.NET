@@ -1,4 +1,5 @@
-﻿using Rollbar.DTOs;
+﻿using Rollbar.Diagnostics;
+using Rollbar.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -19,6 +20,7 @@ namespace Rollbar
             this.IsSingleton = isSingleton;
             this._config = new RollbarConfig(this);
             this._payloadQueue = new PayloadQueue(this);
+            QueueController.Instance.Register(this._payloadQueue);
         }
 
         internal bool IsSingleton { get; private set; }
@@ -130,7 +132,9 @@ namespace Rollbar
 
         private Guid? SendBody(Body body, ErrorLevel? level, IDictionary<string, object> custom)
         {
-            if (string.IsNullOrWhiteSpace(_config.AccessToken) || _config.Enabled == false)
+            if (string.IsNullOrWhiteSpace(this._config.AccessToken) 
+                || this._config.Enabled == false
+                )
             {
                 return null;
             }
@@ -138,29 +142,33 @@ namespace Rollbar
             var guid = Guid.NewGuid();
 
             var client = new RollbarClient(_config);
-            var data = new Data(_config.Environment, body)
+            var data = new Data(this._config.Environment, body)
             {
                 Custom = custom,
-                Level = level ?? _config.LogLevel
+                Level = level ?? this._config.LogLevel
             };
 
-            var payload = new Payload(_config.AccessToken, data);
+            var payload = new Payload(this._config.AccessToken, data);
             payload.Data.GuidUuid = guid;
-            payload.Data.Person = _config.Person;
+            payload.Data.Person = this._config.Person;
 
-            if (_config.Server != null)
+            if (this._config.Server != null)
             {
-                payload.Data.Server = _config.Server;
+                payload.Data.Server = this._config.Server;
             }
 
-            if (_config.CheckIgnore != null && _config.CheckIgnore.Invoke(payload))
+            if (this._config.CheckIgnore != null 
+                && this._config.CheckIgnore.Invoke(payload)
+                )
             {
                 return null;
             }
 
-            _config.Transform?.Invoke(payload);
+            this._config.Transform?.Invoke(payload);
 
-            _config.Truncate?.Invoke(payload);
+            this._config.Truncate?.Invoke(payload);
+
+            this._payloadQueue.Enqueue(payload);
 
             RollbarResponse response = null;
             int retries = 3;
@@ -228,6 +236,7 @@ namespace Rollbar
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
+                    QueueController.Instance.Unregister(this._payloadQueue);
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -243,9 +252,19 @@ namespace Rollbar
         //   Dispose(false);
         // }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <remarks>
+        /// This code added to correctly implement the disposable pattern.
+        /// </remarks>
         public void Dispose()
         {
+            // RollbarLogger type supports both paradigms: singleton-like (via RollbarLocator) and
+            // multiple disposable instances (via RollbarFactory).
+            // Here we want to make sure that the singleton instance is never disposed:
+            Assumption.AssertTrue(!this.IsSingleton, nameof(this.IsSingleton));
+
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
             // TODO: uncomment the following line if the finalizer is overridden above.
