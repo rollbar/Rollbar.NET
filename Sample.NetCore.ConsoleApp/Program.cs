@@ -7,11 +7,14 @@ namespace Sample.NetCore.ConsoleApp
     {
         static void Main(string[] args)
         {
+            RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
+
             const string postServerItemAccessToken = "17965fa5041749b6bf7095a190001ded";
 
             RollbarLocator.RollbarInstance
                 .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" })
-                .InternalEvent += RollbarInstance_InternalEvent;
+                .InternalEvent += OnRollbarInternalEvent
+                ;
 
 
             bool check = RollbarLocator.RollbarInstance is IDisposable;
@@ -22,9 +25,11 @@ namespace Sample.NetCore.ConsoleApp
                 .Error(new NullReferenceException())
                 .Error(new Exception("trying out the TraceChain", new NullReferenceException()))
                 ;
+
+            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(10));
         }
 
-        private static void RollbarInstance_InternalEvent(object sender, RollbarEventArgs e)
+        private static void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
             //CommunicationEventArgs commEvent = e as CommunicationEventArgs;
             //if (commEvent != null)

@@ -1,13 +1,15 @@
 ﻿namespace Rollbar
 {
     using Rollbar.Diagnostics;
+    using Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Net;
     using System.Text;
     using System.Threading;
 
-    internal class QueueController
+    public sealed class RollbarQueueController
     {
         private readonly Thread _rollbarCommThread = null;
 
@@ -19,7 +21,7 @@
         /// <value>
         /// The instance.
         /// </value>
-        public static QueueController Instance
+        public static RollbarQueueController Instance
         {
             get
             {
@@ -30,7 +32,7 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="QueueController"/> class from being created.
         /// </summary>
-        private QueueController()
+        private RollbarQueueController()
         {
             this._rollbarCommThread = new Thread(this.KeepProcessingAllQueues);
             this._rollbarCommThread.IsBackground = true;
@@ -45,7 +47,8 @@
             {
             }
 
-            internal static readonly QueueController Instance = new QueueController();
+            internal static readonly RollbarQueueController Instance = 
+                new RollbarQueueController();
         }
 
         #endregion singleton implementation
@@ -60,17 +63,20 @@
 
         private void KeepProcessingAllQueues()
         {
-            TimeSpan sleepInterval = TimeSpan.FromSeconds(1);
+            TimeSpan sleepInterval = TimeSpan.FromMilliseconds(250);
 
             while(true)
             {
                 try
                 {
-                    //TODO:
+                    lock(this._syncLock)
+                    {
+                        ProcessAllQueuesOnce();
+                    }
 
                     Thread.Sleep(sleepInterval);
                 }
-                catch(Exception ex)
+                catch(System.Exception ex)
                 {
                     //TODO: do we want to direct the exception 
                     //      to some kind of Rollbar notifier maintenance "access token"?
@@ -78,11 +84,116 @@
             }
         }
 
+        private void ProcessAllQueuesOnce()
+        {
+            foreach(var token in this._queuesByAccessToken.Keys)
+            {
+                if (this._queuesByAccessToken[token].NextTimeTokenUsage.HasValue
+                    && this._queuesByAccessToken[token].NextTimeTokenUsage.Value > DateTimeOffset.Now
+                    )
+                {
+                    //skip this token's queue for now, until past NextTimeTokenUsage:
+                    continue;
+                }
+                ProcessQueues(this._queuesByAccessToken[token]);
+            }
+        }
+
+        private void ProcessQueues(AccessTokenQueuesMetadata tokenMetadata)
+        {
+            foreach (var queue in tokenMetadata.Queues)
+            {
+                if (DateTimeOffset.Now >= queue.NextDequeueTime)
+                {
+                    Payload payload = queue.Peek();
+                    if (payload == null)
+                    {
+                        continue;
+                    }
+
+                    var response = Process(payload, queue.Logger.Config);
+                    if (response == null)
+                    {
+                        continue;
+                    }
+
+                    switch (response.Error)
+                    {
+                        case (int) RollbarError.None:
+                            queue.Dequeue();
+                            tokenMetadata.ResetTokenUsageDelay();
+                            break;
+                        case (int)RollbarError.AccessTokenRateLimitExceeded:
+                            tokenMetadata.IncrementTokenUsageDelay();
+                            return;
+                        default:
+                            break;
+                    }
+
+                }
+            }
+        }
+
+        private enum RollbarError
+        {
+            None = 0,
+            AccessTokenRateLimitExceeded = 429,
+        }
+
+        private RollbarResponse Process(Payload payload, RollbarConfig config)
+        {
+            var client = new RollbarClient(config);
+
+            RollbarResponse response = null;
+            int retries = 3;
+            while (retries > 0)
+            {
+                try
+                {
+                    response = client.PostAsJson(payload);
+                }
+                catch (WebException ex)
+                {
+                    retries--;
+                    this.OnRollbarEvent(
+                        new CommunicationErrorEventArgs(config, payload, ex, retries)
+                        );
+                    continue;
+                }
+                catch (ArgumentNullException ex)
+                {
+                    retries = 0;
+                    this.OnRollbarEvent(
+                        new CommunicationErrorEventArgs(config, payload, ex, retries)
+                        );
+                    continue;
+                }
+                catch (System.Exception ex)
+                {
+                    retries = 0;
+                    this.OnRollbarEvent(
+                        new CommunicationErrorEventArgs(config, payload, ex, retries)
+                        );
+                    continue;
+                }
+                retries = 0;
+            }
+
+            if (response != null)
+            {
+                this.OnRollbarEvent(
+                    new CommunicationEventArgs(config, payload, response)
+                    );
+            }
+
+            return response;
+        }
+
         /// <summary>
         /// Registers the specified queue.
         /// </summary>
         /// <param name="queue">The queue.</param>
-        public void Register(PayloadQueue queue)
+        internal void Register(PayloadQueue queue)
         {
             lock(this._syncLock)
             {
@@ -99,7 +210,7 @@
         /// Unregisters the specified queue.
         /// </summary>
         /// <param name="queue">The queue.</param>
-        public void Unregister(PayloadQueue queue)
+        internal void Unregister(PayloadQueue queue)
         {
             lock (this._syncLock)
             {
@@ -158,6 +269,19 @@
                     tokenMetadata.Queues.Remove(queue);
                     break;
                 }
+            }
+        }
+
+
+        public event EventHandler<RollbarEventArgs> InternalEvent;
+
+        private void OnRollbarEvent(RollbarEventArgs e)
+        {
+            EventHandler<RollbarEventArgs> handler = InternalEvent;
+
+            if (handler != null)
+            {
+                handler(this, e);
             }
         }
 

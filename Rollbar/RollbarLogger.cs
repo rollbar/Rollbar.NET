@@ -20,7 +20,7 @@ namespace Rollbar
             this.IsSingleton = isSingleton;
             this._config = new RollbarConfig(this);
             this._payloadQueue = new PayloadQueue(this);
-            QueueController.Instance.Register(this._payloadQueue);
+            RollbarQueueController.Instance.Register(this._payloadQueue);
         }
 
         internal bool IsSingleton { get; private set; }
@@ -141,7 +141,6 @@ namespace Rollbar
 
             var guid = Guid.NewGuid();
 
-            var client = new RollbarClient(_config);
             var data = new Data(this._config.Environment, body)
             {
                 Custom = custom,
@@ -170,47 +169,48 @@ namespace Rollbar
 
             this._payloadQueue.Enqueue(payload);
 
-            RollbarResponse response = null;
-            int retries = 3;
-            while(retries > 0)
-            {
-                try
-                {
-                    response = client.PostAsJson(payload);
-                }
-                catch (WebException ex)
-                {
-                    retries--;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(this._config, payload, ex, retries)
-                        );
-                    continue;
-                }
-                catch (ArgumentNullException ex)
-                {
-                    retries = 0;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(this._config, payload, ex, retries)
-                        );
-                    continue;
-                }
-                catch (System.Exception ex)
-                {
-                    retries = 0;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(this._config, payload, ex, retries)
-                        );
-                    continue;
-                }
-                retries = 0;
-            }
+            //var client = new RollbarClient(_config);
+            //RollbarResponse response = null;
+            //int retries = 3;
+            //while (retries > 0)
+            //{
+            //    try
+            //    {
+            //        response = client.PostAsJson(payload);
+            //    }
+            //    catch (WebException ex)
+            //    {
+            //        retries--;
+            //        this.OnRollbarEvent(
+            //            new CommunicationErrorEventArgs(this._config, payload, ex, retries)
+            //            );
+            //        continue;
+            //    }
+            //    catch (ArgumentNullException ex)
+            //    {
+            //        retries = 0;
+            //        this.OnRollbarEvent(
+            //            new CommunicationErrorEventArgs(this._config, payload, ex, retries)
+            //            );
+            //        continue;
+            //    }
+            //    catch (System.Exception ex)
+            //    {
+            //        retries = 0;
+            //        this.OnRollbarEvent(
+            //            new CommunicationErrorEventArgs(this._config, payload, ex, retries)
+            //            );
+            //        continue;
+            //    }
+            //    retries = 0;
+            //}
 
-            if (response != null)
-            {
-                this.OnRollbarEvent(
-                    new CommunicationEventArgs(this._config, payload, response)
-                    );
-            }
+            //if (response != null)
+            //{
+            //    this.OnRollbarEvent(
+            //        new CommunicationEventArgs(this._config, payload, response)
+            //        );
+            //}
 
             return guid;
         }
@@ -236,7 +236,7 @@ namespace Rollbar
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    QueueController.Instance.Unregister(this._payloadQueue);
+                    RollbarQueueController.Instance.Unregister(this._payloadQueue);
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

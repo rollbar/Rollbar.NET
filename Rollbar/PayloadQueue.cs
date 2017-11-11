@@ -53,7 +53,7 @@
                     result = this._queue.Peek();
                 }
 
-                return null;
+                return result;
             }
         }
 
@@ -66,6 +66,11 @@
                 if (this._queue.Count > 0)
                 {
                     result = this._queue.Dequeue();
+
+                    TimeSpan delta = TimeSpan.FromTicks(
+                        TimeSpan.FromMinutes(1).Ticks / this.Logger.Config.MaxReportsPerMinute
+                        );
+                    this.NextDequeueTime = DateTimeOffset.Now.Add(delta);
                 }
 
                 return null;
