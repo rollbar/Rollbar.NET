@@ -21,7 +21,7 @@
         public RollbarResponse PostAsJson(Payload payload)
         {
             var jsonData = JsonConvert.SerializeObject(payload);
-            var jsonResult = Post("item/", jsonData);
+            var jsonResult = Post("item/", jsonData, payload.AccessToken);
             var response = JsonConvert.DeserializeObject<RollbarResponse>(jsonResult);
             return response;
         }
@@ -31,10 +31,11 @@
             return await Task.Factory.StartNew(() => this.PostAsJson(payload));
         }
 
-        private string Post(string urlSuffix, string data)
+        private string Post(string urlSuffix, string data, string accessToken)
         {
             using (var webClient = this.BuildWebClient())
             {
+                webClient.Headers.Add("X-Rollbar-Access-Token", accessToken);
                 return webClient.UploadString(new Uri($"{Config.EndPoint}{urlSuffix}"), data);
             }
         }
