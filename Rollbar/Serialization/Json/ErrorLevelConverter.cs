@@ -3,15 +3,43 @@
     using System;
     using Newtonsoft.Json;
 
+    /// <summary>
+    /// ErrorLevelConverter simplifies ErrorLevel Json de/serialization.
+    /// </summary>
+    /// <seealso cref="Rollbar.Serialization.Json.JsonConverter{Rollbar.ErrorLevel}" />
     public class ErrorLevelConverter 
         : JsonConverter<ErrorLevel>
     {
-        public override void WriteJson(JsonWriter writer, ErrorLevel value, JsonSerializer serializer)
+
+        /// <summary>
+        /// Writes the json.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="serializer">The serializer.</param>
+        public override void WriteJson(
+            JsonWriter writer, 
+            ErrorLevel value, 
+            JsonSerializer serializer
+            )
         {
             writer.WriteValue(value.ToString().ToLower());
         }
 
-        public override ErrorLevel ReadJson(JsonReader reader, ErrorLevel existingValue, JsonSerializer serializer)
+        /// <summary>
+        /// Reads the json.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
+        /// <param name="existingValue">The existing value.</param>
+        /// <param name="serializer">The serializer.</param>
+        /// <returns></returns>
+        /// <exception cref="JsonSerializationException">
+        /// </exception>
+        public override ErrorLevel ReadJson(
+            JsonReader reader, 
+            ErrorLevel existingValue, 
+            JsonSerializer serializer
+            )
         {
             string value;
             ErrorLevel level;

@@ -5,10 +5,17 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Text;
 
+    /// <summary>
+    /// A utility class aiding with .NET Reflection.
+    /// </summary>
     internal static class ReflectionUtil
     {
+        /// <summary>
+        /// Gets all public instance properties.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         public static PropertyInfo[] GetAllPublicInstanceProperties(Type type)
         {
             var memberInfos = 

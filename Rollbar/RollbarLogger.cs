@@ -6,6 +6,11 @@ using System.Net;
 
 namespace Rollbar
 {
+    /// <summary>
+    /// Implements disposable implementation of IRollbar.
+    /// </summary>
+    /// <seealso cref="Rollbar.IRollbar" />
+    /// <seealso cref="System.IDisposable" />
     internal class RollbarLogger
         : IRollbar
         , IDisposable

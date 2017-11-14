@@ -9,10 +9,15 @@
     using System.Text;
     using System.Threading;
 
+    /// <summary>
+    /// RollbarQueueController singleton.
+    /// It keeps track of payload queues of every instance of RollbarLogger.
+    /// It is also responsible for async processing of queues on its own worker thread 
+    /// (including retries as necessary).
+    /// It makes sure that Rollbar access token rate limits handled properly.
+    /// </summary>
     public sealed class RollbarQueueController
     {
-        private readonly Thread _rollbarCommThread = null;
-
         #region singleton implementation
 
         /// <summary>
@@ -53,7 +58,49 @@
 
         #endregion singleton implementation
 
+        /// <summary>
+        /// Occurs after a Rollbar internal event happens.
+        /// </summary>
+        public event EventHandler<RollbarEventArgs> InternalEvent;
+
+        /// <summary>
+        /// Registers the specified queue.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        internal void Register(PayloadQueue queue)
+        {
+            lock (this._syncLock)
+            {
+                Assumption.AssertTrue(!this._allQueues.Contains(queue), nameof(queue));
+
+                this._allQueues.Add(queue);
+                this.IndexByToken(queue);
+                queue.Logger.Config.Reconfigured += Config_Reconfigured;
+                Debug.WriteLine(this.GetType().Name + ": Registered a queue. Total queues count: " + this._allQueues.Count + ".");
+            }
+        }
+
+        /// <summary>
+        /// Unregisters the specified queue.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        internal void Unregister(PayloadQueue queue)
+        {
+            lock (this._syncLock)
+            {
+                Assumption.AssertTrue(!queue.Logger.IsSingleton, nameof(queue.Logger.IsSingleton));
+                Assumption.AssertTrue(this._allQueues.Contains(queue), nameof(queue));
+
+                this.DropIndexByToken(queue);
+                this._allQueues.Remove(queue);
+                queue.Logger.Config.Reconfigured -= Config_Reconfigured;
+                Debug.WriteLine(this.GetType().Name + ": Unregistered a queue. Total queues count: " + this._allQueues.Count + ".");
+            }
+        }
+
         private readonly object _syncLock = new object();
+
+        private readonly Thread _rollbarCommThread = null;
 
         private readonly HashSet<PayloadQueue> _allQueues =
             new HashSet<PayloadQueue>();
@@ -119,25 +166,25 @@
 
                     switch (response.Error)
                     {
-                        case (int) RollbarError.None:
+                        case (int)RollbarApiErrorEventArgs.RollbarError.None:
                             queue.Dequeue();
                             tokenMetadata.ResetTokenUsageDelay();
                             break;
-                        case (int)RollbarError.AccessTokenRateLimitExceeded:
+                        case (int)RollbarApiErrorEventArgs.RollbarError.TooManyRequests:
                             tokenMetadata.IncrementTokenUsageDelay();
+                            OnRollbarEvent(
+                                new RollbarApiErrorEventArgs(queue.Logger.Config, payload, response)
+                                );
                             return;
                         default:
+                            OnRollbarEvent(
+                                new RollbarApiErrorEventArgs(queue.Logger.Config, payload, response)
+                                );
                             break;
                     }
 
                 }
             }
-        }
-
-        private enum RollbarError
-        {
-            None = 0,
-            AccessTokenRateLimitExceeded = 429,
         }
 
         private RollbarResponse Process(Payload payload, RollbarConfig config)
@@ -189,41 +236,6 @@
             return response;
         }
 
-        /// <summary>
-        /// Registers the specified queue.
-        /// </summary>
-        /// <param name="queue">The queue.</param>
-        internal void Register(PayloadQueue queue)
-        {
-            lock(this._syncLock)
-            {
-                Assumption.AssertTrue(!this._allQueues.Contains(queue), nameof(queue));
-
-                this._allQueues.Add(queue);
-                this.IndexByToken(queue);
-                queue.Logger.Config.Reconfigured += Config_Reconfigured;
-                Debug.WriteLine(this.GetType().Name + ": Registered a queue. Total queues count: " + this._allQueues.Count + ".");
-            }
-        }
-
-        /// <summary>
-        /// Unregisters the specified queue.
-        /// </summary>
-        /// <param name="queue">The queue.</param>
-        internal void Unregister(PayloadQueue queue)
-        {
-            lock (this._syncLock)
-            {
-                Assumption.AssertTrue(!queue.Logger.IsSingleton, nameof(queue.Logger.IsSingleton));
-                Assumption.AssertTrue(this._allQueues.Contains(queue), nameof(queue));
-
-                this.DropIndexByToken(queue);
-                this._allQueues.Remove(queue);
-                queue.Logger.Config.Reconfigured -= Config_Reconfigured;
-                Debug.WriteLine(this.GetType().Name + ": Unregistered a queue. Total queues count: " + this._allQueues.Count + ".");
-            }
-        }
-
         private void Config_Reconfigured(object sender, EventArgs e)
         {
             lock (this._syncLock)
@@ -271,9 +283,6 @@
                 }
             }
         }
-
-
-        public event EventHandler<RollbarEventArgs> InternalEvent;
 
         private void OnRollbarEvent(RollbarEventArgs e)
         {

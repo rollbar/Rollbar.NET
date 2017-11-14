@@ -16,9 +16,6 @@ namespace Sample.NetCore.ConsoleApp
                 .InternalEvent += OnRollbarInternalEvent
                 ;
 
-
-            bool check = RollbarLocator.RollbarInstance is IDisposable;
-
             RollbarLocator.RollbarInstance
                 .Info("Basic info log example.")
                 .Debug("First debug log.")
@@ -31,20 +28,26 @@ namespace Sample.NetCore.ConsoleApp
 
         private static void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
-            //CommunicationEventArgs commEvent = e as CommunicationEventArgs;
-            //if (commEvent != null)
-            //{
-            //    Console.WriteLine(commEvent.Trace());
-            //    return;
-            //}
-            //CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
-            //if (commErrorEvent != null)
-            //{
-            //    Console.WriteLine(commErrorEvent.Trace());
-            //    return;
-            //}
-
             Console.WriteLine(e.TraceAsString());
+
+            RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
+            if (apiErrorEvent != null)
+            {
+                //TODO: handle/report Rollbar API communication error event...
+                return;
+            }
+            CommunicationEventArgs commEvent = e as CommunicationEventArgs;
+            if (commEvent != null)
+            {
+                //TODO: handle/report Rollbar API communication event...
+                return;
+            }
+            CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
+            if (commErrorEvent != null)
+            {
+                //TODO: handle/report basic communication error while attempting to reach Rollbar API service... 
+                return;
+            }
         }
     }
 }

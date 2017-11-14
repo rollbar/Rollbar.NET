@@ -3,9 +3,13 @@
     using Newtonsoft.Json;
     using Rollbar.DTOs;
     using System;
-    using System.Collections.Generic;
     using System.Text;
 
+    /// <summary>
+    /// An abstract base for implementing concrete Rollbar EventArgs.
+    /// </summary>
+    /// <seealso cref="System.EventArgs" />
+    /// <seealso cref="Rollbar.ITraceable" />
     public abstract class RollbarEventArgs 
         : EventArgs
         , ITraceable
