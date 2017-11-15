@@ -40,14 +40,14 @@
                 );
             Assumption.AssertNotNull(reservedPropertiesNestedType, nameof(reservedPropertiesNestedType));
 
-            var reservedAttribues =
+            var reservedAttributes =
                 ReflectionUtil.GetAllPublicStaticFields(reservedPropertiesNestedType);
 
             Dictionary<string, PropertyInfo> reservedPropertyInfoByName = 
-                new Dictionary<string, PropertyInfo>(reservedAttribues.Length);
+                new Dictionary<string, PropertyInfo>(reservedAttributes.Length);
             result.ReservedPropertyInfoByReservedKey = reservedPropertyInfoByName;
 
-            foreach(var reservedAttribue in reservedAttribues)
+            foreach(var reservedAttribue in reservedAttributes)
             {
                 var property = 
                     extendableDtoType.GetProperty(reservedAttribue.Name, BindingFlags.Public | BindingFlags.Instance);
