@@ -97,7 +97,6 @@
             }
             if (this.TraceChain != null)
             {
-                //this.TraceChain.va
                 bodyContentVariationsCount++;
             }
             if (this.Message != null)

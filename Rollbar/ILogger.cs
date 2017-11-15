@@ -17,8 +17,20 @@
 
         ILogger Critical(Exception error, IDictionary<string, object> custom = null);
         ILogger Error(Exception error, IDictionary<string, object> custom = null);
+        ILogger Warning(Exception error, IDictionary<string, object> custom = null);
+        ILogger Info(Exception error, IDictionary<string, object> custom = null);
+        ILogger Debug(Exception error, IDictionary<string, object> custom = null);
 
+        ILogger Critical(ITraceable traceableObj, IDictionary<string, object> custom = null);
+        ILogger Error(ITraceable traceableObj, IDictionary<string, object> custom = null);
+        ILogger Warning(ITraceable traceableObj, IDictionary<string, object> custom = null);
+        ILogger Info(ITraceable traceableObj, IDictionary<string, object> custom = null);
         ILogger Debug(ITraceable traceableObj, IDictionary<string, object> custom = null);
+
+        ILogger Critical(object obj, IDictionary<string, object> custom = null);
+        ILogger Error(object obj, IDictionary<string, object> custom = null);
+        ILogger Warning(object obj, IDictionary<string, object> custom = null);
+        ILogger Info(object obj, IDictionary<string, object> custom = null);
         ILogger Debug(object obj, IDictionary<string, object> custom = null);
     }
 }

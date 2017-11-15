@@ -53,9 +53,6 @@
                     extendableDtoType.GetProperty(reservedAttribue.Name, BindingFlags.Public | BindingFlags.Instance);
                 Assumption.AssertNotNull(property, nameof(property));
 
-                var propertyType = property.PropertyType;
-                Assumption.AssertNotNull(propertyType, nameof(propertyType));
-
                 string reservedKey = ReflectionUtil.GetStaticFieldValue<string>(reservedAttribue);
                 Assumption.AssertNotNullOrWhiteSpace(reservedKey, nameof(reservedKey));
 

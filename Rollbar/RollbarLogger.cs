@@ -74,16 +74,25 @@ namespace Rollbar
             return this;
         }
 
+
         public ILogger Critical(string msg, IDictionary<string, object> custom = null)
         {
             return this.Log(ErrorLevel.Critical, msg, custom);
         }
 
-        public ILogger Critical(System.Exception error, IDictionary<string, object> custom = null)
+        public ILogger Error(string msg, IDictionary<string, object> custom = null)
         {
-            this.Report(error, ErrorLevel.Critical, custom);
+            return this.Log(ErrorLevel.Error, msg, custom);
+        }
 
-            return this;
+        public ILogger Warning(string msg, IDictionary<string, object> custom = null)
+        {
+            return this.Log(ErrorLevel.Warning, msg, custom);
+        }
+
+        public ILogger Info(string msg, IDictionary<string, object> custom = null)
+        {
+            return this.Log(ErrorLevel.Info, msg, custom);
         }
 
         public ILogger Debug(string msg, IDictionary<string, object> custom = null)
@@ -91,19 +100,12 @@ namespace Rollbar
             return this.Log(ErrorLevel.Debug, msg, custom);
         }
 
-        public ILogger Debug(ITraceable traceableObj, IDictionary<string, object> custom = null)
-        {
-            return this.Debug(traceableObj.TraceAsString(), custom);
-        }
 
-        public ILogger Debug(object obj, IDictionary<string, object> custom = null)
+        public ILogger Critical(System.Exception error, IDictionary<string, object> custom = null)
         {
-            return this.Debug(obj.ToString(), custom);
-        }
+            this.Report(error, ErrorLevel.Critical, custom);
 
-        public ILogger Error(string msg, IDictionary<string, object> custom = null)
-        {
-            return this.Log(ErrorLevel.Error, msg, custom);
+            return this;
         }
 
         public ILogger Error(System.Exception error, IDictionary<string, object> custom = null)
@@ -113,14 +115,78 @@ namespace Rollbar
             return this;
         }
 
-        public ILogger Info(string msg, IDictionary<string, object> custom = null)
+        public ILogger Warning(System.Exception error, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Info, msg, custom);
+            this.Report(error, ErrorLevel.Error, custom);
+
+            return this;
         }
 
-        public ILogger Warning(string msg, IDictionary<string, object> custom = null)
+        public ILogger Info(System.Exception error, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Warning, msg, custom);
+            this.Report(error, ErrorLevel.Error, custom);
+
+            return this;
+        }
+
+        public ILogger Debug(System.Exception error, IDictionary<string, object> custom = null)
+        {
+            this.Report(error, ErrorLevel.Error, custom);
+
+            return this;
+        }
+
+
+        public ILogger Critical(ITraceable traceableObj, IDictionary<string, object> custom = null)
+        {
+            return this.Critical(traceableObj.TraceAsString(), custom);
+        }
+
+        public ILogger Error(ITraceable traceableObj, IDictionary<string, object> custom = null)
+        {
+            return this.Error(traceableObj.TraceAsString(), custom);
+        }
+
+        public ILogger Warning(ITraceable traceableObj, IDictionary<string, object> custom = null)
+        {
+            return this.Warning(traceableObj.TraceAsString(), custom);
+        }
+
+        public ILogger Info(ITraceable traceableObj, IDictionary<string, object> custom = null)
+        {
+            return this.Info(traceableObj.TraceAsString(), custom);
+        }
+
+        public ILogger Debug(ITraceable traceableObj, IDictionary<string, object> custom = null)
+        {
+            return this.Debug(traceableObj.TraceAsString(), custom);
+        }
+
+
+
+        public ILogger Critical(object obj, IDictionary<string, object> custom = null)
+        {
+            return this.Critical(obj.ToString(), custom);
+        }
+
+        public ILogger Error(object obj, IDictionary<string, object> custom = null)
+        {
+            return this.Error(obj.ToString(), custom);
+        }
+
+        public ILogger Warning(object obj, IDictionary<string, object> custom = null)
+        {
+            return this.Warning(obj.ToString(), custom);
+        }
+
+        public ILogger Info(object obj, IDictionary<string, object> custom = null)
+        {
+            return this.Info(obj.ToString(), custom);
+        }
+
+        public ILogger Debug(object obj, IDictionary<string, object> custom = null)
+        {
+            return this.Debug(obj.ToString(), custom);
         }
 
         #endregion ILogger
@@ -173,49 +239,6 @@ namespace Rollbar
             this._config.Truncate?.Invoke(payload);
 
             this._payloadQueue.Enqueue(payload);
-
-            //var client = new RollbarClient(_config);
-            //RollbarResponse response = null;
-            //int retries = 3;
-            //while (retries > 0)
-            //{
-            //    try
-            //    {
-            //        response = client.PostAsJson(payload);
-            //    }
-            //    catch (WebException ex)
-            //    {
-            //        retries--;
-            //        this.OnRollbarEvent(
-            //            new CommunicationErrorEventArgs(this._config, payload, ex, retries)
-            //            );
-            //        continue;
-            //    }
-            //    catch (ArgumentNullException ex)
-            //    {
-            //        retries = 0;
-            //        this.OnRollbarEvent(
-            //            new CommunicationErrorEventArgs(this._config, payload, ex, retries)
-            //            );
-            //        continue;
-            //    }
-            //    catch (System.Exception ex)
-            //    {
-            //        retries = 0;
-            //        this.OnRollbarEvent(
-            //            new CommunicationErrorEventArgs(this._config, payload, ex, retries)
-            //            );
-            //        continue;
-            //    }
-            //    retries = 0;
-            //}
-
-            //if (response != null)
-            //{
-            //    this.OnRollbarEvent(
-            //        new CommunicationEventArgs(this._config, payload, response)
-            //        );
-            //}
 
             return guid;
         }

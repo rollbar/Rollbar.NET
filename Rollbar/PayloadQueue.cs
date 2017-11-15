@@ -73,7 +73,7 @@
                     this.NextDequeueTime = DateTimeOffset.Now.Add(delta);
                 }
 
-                return null;
+                return result;
             }
         }
     }

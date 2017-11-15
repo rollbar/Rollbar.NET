@@ -14,11 +14,19 @@
         : EventArgs
         , ITraceable
     {
+        /// <summary>
+        /// Prevents a default instance of the <see cref="RollbarEventArgs"/> class from being created.
+        /// </summary>
         private RollbarEventArgs()
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarEventArgs"/> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="payload">The payload.</param>
         protected RollbarEventArgs(
             RollbarConfig config, 
             Payload payload
@@ -29,15 +37,31 @@
             {
                 this.Payload = JsonConvert.SerializeObject(payload);
             }
-            //else
-            //{
-            //    this.Payload = string.Empty;
-            //}
         }
 
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>
+        /// The configuration.
+        /// </value>
         public RollbarConfig Config { get; private set; }
+
+        /// <summary>
+        /// Gets the payload.
+        /// </summary>
+        /// <value>
+        /// The payload.
+        /// </value>
         public string Payload { get; private set; }
 
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
+        /// <param name="indent">The indent.</param>
+        /// <returns>
+        /// String rendering of this instance.
+        /// </returns>
         public virtual string TraceAsString(string indent = "")
         {
             StringBuilder sb = new StringBuilder();

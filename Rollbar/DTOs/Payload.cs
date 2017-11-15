@@ -14,11 +14,6 @@
             Validate();
         }
 
-        //public string ToJson()
-        //{
-        //    return JsonConvert.SerializeObject(this);
-        //}
-
         [JsonProperty("access_token", Required = Required.Always)]
         public string AccessToken { get; private set; }
 
