@@ -5,11 +5,11 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
-    using System.Text;
 
     internal class ExtendableDtoMetadata
     {
         public Type ExtendableDtoType { get; private set; }
+
         public IReadOnlyDictionary<string, PropertyInfo> ReservedPropertyInfoByReservedKey { get; private set; }
 
         public static IReadOnlyDictionary<Type, ExtendableDtoMetadata> BuildAll()

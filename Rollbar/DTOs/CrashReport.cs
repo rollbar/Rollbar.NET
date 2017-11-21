@@ -2,9 +2,6 @@
 {
     using Newtonsoft.Json;
     using Rollbar.Diagnostics;
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     public class CrashReport
         : DtoBase
@@ -20,7 +17,7 @@
             Validate();
         }
 
-        [JsonProperty("data", Required = Required.Always)]
+        [JsonProperty("raw", Required = Required.Always)]
         public string Raw { get; private set; }
 
         public override void Validate()

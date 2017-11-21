@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.DTOs
 {
-    using System;
 
     /// <summary>
     /// Implements an abstract DTO type base.
@@ -8,6 +7,13 @@
     public abstract class DtoBase
         : ITraceable
     {
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
+        /// <param name="indent">The indent.</param>
+        /// <returns>
+        /// String rendering of this instance.
+        /// </returns>
         public virtual string TraceAsString(string indent = "")
         {
             return this.ToString();

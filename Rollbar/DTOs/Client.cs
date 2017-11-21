@@ -1,12 +1,16 @@
 ﻿namespace Rollbar.DTOs
 {
     using System.Collections.Generic;
-    using Newtonsoft.Json;
 
     public class Client 
         : ExtendableDtoBase
     {
-        protected Client(IDictionary<string, object> arbitraryKeyValuePairs) 
+        public Client()
+            : this(null)
+        {
+        }
+
+        public Client(IDictionary<string, object> arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
         }

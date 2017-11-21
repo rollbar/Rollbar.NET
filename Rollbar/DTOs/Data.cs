@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Newtonsoft.Json;
+    using Rollbar.Diagnostics;
 
     public class Data
         : DtoBase
@@ -16,15 +17,8 @@
 
         public Data(string environment, Body body)
         {
-            if (string.IsNullOrWhiteSpace(environment))
-            {
-                throw new ArgumentNullException(nameof(environment));
-            }
-
-            if (body == null)
-            {
-                throw new ArgumentNullException(nameof(body));
-            }
+            Assumption.AssertNotNullOrWhiteSpace(environment, nameof(environment));
+            Assumption.AssertNotNull(body, nameof(body));
 
             Environment = environment;
             Body = body;

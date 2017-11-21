@@ -3,9 +3,16 @@
     using System.Collections.Generic;
     using Newtonsoft.Json;
 
-    public class Request : ExtendableDtoBase
-    {
-        protected Request(IDictionary<string, object> arbitraryKeyValuePairs) 
+    public class Request 
+        : ExtendableDtoBase
+    { 
+
+        public Request()
+            : this(null)
+        {
+        }
+
+        public Request(IDictionary<string, object> arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
         }

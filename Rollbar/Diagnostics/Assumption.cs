@@ -1,7 +1,9 @@
 ﻿namespace Rollbar.Diagnostics
 {
     using System;
+    using System.Collections;
     using System.Diagnostics;
+    using System.Linq;
 
     /// <summary>
     /// Utility class aiding in validating assumptions about arguments and their values.
@@ -158,6 +160,35 @@
             if (string.IsNullOrEmpty(value))
             {
                 string msg = "Argument should not be an empty string.";
+                FailValidation(msg, parameterName);
+            }
+
+            return value;
+        }
+
+        /// <summary>
+        /// Ensures the specified value is not <code>null</code> or empty enumerable.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="parameterName">Name of the parameter.</param>
+        /// <returns>The specified value.</returns>
+        public static IEnumerable AssertNotNullOrEmpty(IEnumerable value, string parameterName)
+        {
+            if (value == null)
+            {
+                string msg = "Argument should not be NULL.";
+                FailValidation(msg, parameterName);
+            }
+
+            bool any = false;
+            foreach(var i in value)
+            {
+                any = true;
+                break;
+            }
+            if (!any)
+            {
+                string msg = "Argument should not be an empty enumerable.";
                 FailValidation(msg, parameterName);
             }
 

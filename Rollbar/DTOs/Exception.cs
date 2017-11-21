@@ -1,7 +1,7 @@
 ﻿namespace Rollbar.DTOs
 {
-    using System;
     using Newtonsoft.Json;
+    using Rollbar.Diagnostics;
 
     public class Exception
         : DtoBase
@@ -13,10 +13,7 @@
 
         public Exception(System.Exception exception)
         {
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
+            Assumption.AssertNotNull(exception, nameof(exception));
 
             Class = exception.GetType().FullName;
             Message = exception.Message;

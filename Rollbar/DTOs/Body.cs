@@ -11,17 +11,9 @@
     {
         public Body(IEnumerable<System.Exception> exceptions)
         {
-            if (exceptions == null)
-            {
-                throw new ArgumentNullException(nameof(exceptions));
-            }
+            Assumption.AssertNotNullOrEmpty(exceptions, nameof(exceptions));
 
             var allExceptions = exceptions as System.Exception[] ?? exceptions.ToArray();
-            if (!allExceptions.Any())
-            {
-                throw new ArgumentException("Trace Chains must have at least one Trace", nameof(exceptions));
-            }
-
             TraceChain = allExceptions.Select(e => new Trace(e)).ToArray();
 
             Validate();
@@ -34,10 +26,7 @@
 
         public Body(System.Exception exception)
         {
-            if (exception == null)
-            {
-                throw new ArgumentNullException(nameof(exception));
-            }
+            Assumption.AssertNotNull(exception, nameof(exception));
 
             if (exception.InnerException != null)
             {
@@ -60,12 +49,16 @@
 
         public Body(Message message)
         {
+            Assumption.AssertNotNull(message, nameof(message));
+
             Message = message;
             Validate();
         }
 
         public Body(string crashReport)
         {
+            Assumption.AssertNotNullOrWhiteSpace(crashReport, nameof(crashReport));
+
             this.CrashReport = new CrashReport(crashReport);
             Validate();
         }

@@ -1,12 +1,10 @@
 ﻿namespace Rollbar.DTOs
 {
     using Rollbar.Diagnostics;
-    using Rollbar.Utils;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
     /// <summary>
     /// Implements an abstract base for defining expendable DTO types.

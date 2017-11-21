@@ -1,7 +1,5 @@
 ﻿namespace Rollbar.DTOs
 {
-    using System;
-    using Newtonsoft.Json;
     using System.Collections.Generic;
     using Rollbar.Diagnostics;
 
@@ -21,7 +19,6 @@
             Validate();
         }
 
-        //[JsonIgnore]
         public string Body
         {
             get { return this._keyedValues[ReservedProperties.Body] as string; }
