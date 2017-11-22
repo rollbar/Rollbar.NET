@@ -4,7 +4,6 @@
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using System;
-    using System.Collections.Generic;
     using System.Text;
 
     public class RollbarConfig

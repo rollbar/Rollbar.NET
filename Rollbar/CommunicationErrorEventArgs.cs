@@ -1,9 +1,7 @@
 ﻿namespace Rollbar
 {
-    using Rollbar.DTOs;
-    using System;
-    using System.Collections.Generic;
     using System.Text;
+    using Rollbar.DTOs;
 
     public class CommunicationErrorEventArgs
         : RollbarEventArgs

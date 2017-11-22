@@ -3,7 +3,6 @@
     using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Models metadata needed to keep track of a given Rollbar access token usage.

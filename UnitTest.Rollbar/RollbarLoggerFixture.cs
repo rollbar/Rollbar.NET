@@ -18,13 +18,25 @@ namespace UnitTest.Rollbar
             RollbarConfig loggerConfig =
                 new RollbarConfig(accessToken) { Environment = environment, };
             _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
-            //_logger = new RollbarLogger().Configure(accessToken);
         }
 
         [TestCleanup]
         public void TearDownFixture()
         {
 
+        }
+
+        [TestMethod]
+        public void ReportException()
+        {
+            try
+            {
+                _logger.Log(ErrorLevel.Error, new System.Exception("test exception"));
+            }
+            catch
+            {
+                Assert.IsTrue(false); 
+            }
         }
 
         [TestMethod]
@@ -38,7 +50,27 @@ namespace UnitTest.Rollbar
             }
             catch (System.Exception ex)
             {
-                _logger.Error(new System.Exception("outer exception", ex));
+                try
+                {
+                    _logger.Error(new System.Exception("outer exception", ex));
+                }
+                catch
+                {
+                    Assert.IsTrue(false);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void ReportMessage()
+        {
+            try
+            {
+                _logger.Log(ErrorLevel.Error, "test message");
+            }
+            catch
+            {
+                Assert.IsTrue(false);
             }
         }
     }

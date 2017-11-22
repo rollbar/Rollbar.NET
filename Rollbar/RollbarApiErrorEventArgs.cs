@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Rollbar.DTOs;
-using Rollbar.Diagnostics;
-
-namespace Rollbar
+﻿namespace Rollbar
 {
+    using System.Collections.Generic;
+    using Rollbar.DTOs;
+    using Rollbar.Diagnostics;
+
     public class RollbarApiErrorEventArgs
         : CommunicationEventArgs
     {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Rollbar
+﻿namespace Rollbar
 {
+    using System;
+
     /// <summary>
     /// RollbarFactory utility class.
     /// </summary>

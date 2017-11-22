@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.DTOs
 {
-    using System;
     using Newtonsoft.Json;
     using Rollbar.Diagnostics;
 
