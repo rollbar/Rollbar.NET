@@ -7,16 +7,13 @@ namespace UnitTest.Rollbar
     [TestCategory("RollbarLoggerFixture")]
     public class RollbarLoggerFixture
     {
-        private const string accessToken = "17965fa5041749b6bf7095a190001ded";
-        private const string environment = "unit-tests";
-
         private IRollbar _logger = null;
 
         [TestInitialize]
         public void SetupFixture()
         {
             RollbarConfig loggerConfig =
-                new RollbarConfig(accessToken) { Environment = environment, };
+                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
             _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
         }
 
