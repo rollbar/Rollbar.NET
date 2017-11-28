@@ -18,6 +18,8 @@
         [TestInitialize]
         public void SetupFixture()
         {
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
             RollbarConfig loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
             _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
@@ -32,10 +34,11 @@
         [TestMethod]
         public void LocatesTheSameInstance()
         {
-            Assert.AreEqual(RollbarLocator.RollbarInstance, RollbarLocator.RollbarInstance);
+            Assert.AreSame(RollbarLocator.RollbarInstance, RollbarLocator.RollbarInstance);
         }
 
         [TestMethod]
+        [Timeout(5000)]
         public void LocatesTheSameInstanceInMultithreadedEnvironment()
         {
             const int maxIterations = 100;

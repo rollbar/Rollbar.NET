@@ -1,5 +1,8 @@
-﻿namespace Rollbar
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+
+namespace Rollbar
 {
+
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using System;

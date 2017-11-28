@@ -1,11 +1,14 @@
-﻿using Rollbar.Diagnostics;
-using Rollbar.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Net;
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
+    using Rollbar.Diagnostics;
+    using Rollbar.DTOs;
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Implements disposable implementation of IRollbar.
     /// </summary>
@@ -15,6 +18,9 @@ namespace Rollbar
         : IRollbar
         , IDisposable
     {
+        private readonly object _syncRoot = new object();
+        private readonly TaskScheduler _nativeTaskScheduler = null;
+
         private readonly RollbarConfig _config = null;
         private readonly PayloadQueue _payloadQueue = null;
 
@@ -22,6 +28,16 @@ namespace Rollbar
 
         internal RollbarLogger(bool isSingleton)
         {
+            try
+            {
+                this._nativeTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            }
+            catch(InvalidOperationException ex)
+            {
+                // it could be a valid case in some environments:
+                this._nativeTaskScheduler = null;
+            }
+
             this.IsSingleton = isSingleton;
             this._config = new RollbarConfig(this);
             this._payloadQueue = new PayloadQueue(this);
@@ -191,66 +207,104 @@ namespace Rollbar
 
         #endregion ILogger
 
-        private Guid? Report(System.Exception e, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
+        private void Report(System.Exception e, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
         {
-            return SendBody(new Body(e), level, custom);
+            SendBodyAsync(new Body(e), level, custom);
         }
 
-        private Guid? Report(string message, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
+        private void Report(string message, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
         {
-            return SendBody(new Body(new Message(message)), level, custom);
+            SendBodyAsync(new Body(new Message(message)), level, custom);
         }
 
-        private Guid? SendBody(Body body, ErrorLevel? level, IDictionary<string, object> custom)
+        private void SendBodyAsync(Body body, ErrorLevel? level, IDictionary<string, object> custom)
         {
-            if (string.IsNullOrWhiteSpace(this._config.AccessToken) 
-                || this._config.Enabled == false
-                )
+            // we are taking here a fire-and-forget approach:
+            Task.Factory.StartNew(() => SendBody(body, level, custom));
+        }
+
+        private void SendBody(Body body, ErrorLevel? level, IDictionary<string, object> custom)
+        {
+            lock(this._syncRoot)
             {
-                return null;
+                if (string.IsNullOrWhiteSpace(this._config.AccessToken)
+                    || this._config.Enabled == false
+                    )
+                {
+                    return;
+                }
+
+                var data = new Data(this._config.Environment, body)
+                {
+                    Custom = custom,
+                    Level = level ?? this._config.LogLevel
+                };
+
+                var payload = new Payload(this._config.AccessToken, data);
+                payload.Data.GuidUuid = Guid.NewGuid();
+                payload.Data.Person = this._config.Person;
+
+                if (this._config.Server != null)
+                {
+                    payload.Data.Server = this._config.Server;
+                }
+
+                try
+                {
+                    if (this._config.CheckIgnore != null
+                        && this._config.CheckIgnore.Invoke(payload)
+                        )
+                    {
+                        return;
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  check-ignoring a payload..."));
+                    return;
+                }
+
+                try
+                {
+                    this._config.Transform?.Invoke(payload);
+                }
+                catch (System.Exception ex)
+                {
+                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  transforming a payload..."));
+                    return;
+                }
+
+                try
+                {
+                    this._config.Truncate?.Invoke(payload);
+                }
+                catch (System.Exception ex)
+                {
+                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  truncating a payload..."));
+                    return;
+                }
+
+                this._payloadQueue.Enqueue(payload);
+
+                return;
             }
 
-            var guid = Guid.NewGuid();
-
-            var data = new Data(this._config.Environment, body)
-            {
-                Custom = custom,
-                Level = level ?? this._config.LogLevel
-            };
-
-            var payload = new Payload(this._config.AccessToken, data);
-            payload.Data.GuidUuid = guid;
-            payload.Data.Person = this._config.Person;
-
-            if (this._config.Server != null)
-            {
-                payload.Data.Server = this._config.Server;
-            }
-
-            if (this._config.CheckIgnore != null 
-                && this._config.CheckIgnore.Invoke(payload)
-                )
-            {
-                return null;
-            }
-
-            this._config.Transform?.Invoke(payload);
-
-            this._config.Truncate?.Invoke(payload);
-
-            this._payloadQueue.Enqueue(payload);
-
-            return guid;
         }
 
         protected virtual void OnRollbarEvent(RollbarEventArgs e)
         {
-            EventHandler<RollbarEventArgs> handler = InternalEvent;
-
-            if (handler != null)
+            Task.Factory.StartNew(() => 
             {
-                handler(this, e);
-            }
+                EventHandler<RollbarEventArgs> handler = InternalEvent;
+                if (handler != null)
+                {
+                    handler(this, e);
+                }
+            },
+            new CancellationToken(),
+            TaskCreationOptions.None,
+            this._nativeTaskScheduler
+            );
         }
 
         #region IDisposable Support
