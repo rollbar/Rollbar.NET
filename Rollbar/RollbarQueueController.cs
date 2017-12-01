@@ -100,6 +100,26 @@ namespace Rollbar
             }
         }
 
+        internal int GetQueuesCount(string accessToken)
+        {
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                AccessTokenQueuesMetadata metadata = null;
+                if (this._queuesByAccessToken.TryGetValue(accessToken, out metadata))
+                {
+                    return metadata.Queues.Count;
+                }
+                return 0;
+            }
+
+            int result = 0;
+            foreach(var md in this._queuesByAccessToken.Values)
+            {
+                result += md.Queues.Count;
+            }
+            return result;
+        }
+
         private readonly object _syncLock = new object();
 
         private readonly Thread _rollbarCommThread = null;

@@ -48,6 +48,12 @@ namespace Sample.NetCore.ConsoleApp
                 //TODO: handle/report basic communication error while attempting to reach Rollbar API service... 
                 return;
             }
+            InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
+            if (internalErrorEvent != null)
+            {
+                //TODO: handle/report basic internal error while using the Rollbar Notifier... 
+                return;
+            }
         }
     }
 }

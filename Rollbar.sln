@@ -1,11 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{3635FA93-6994-4CE4-9923-BF330DF1A439}"
 	ProjectSection(SolutionItems) = preProject
 		ReadMe.txt = ReadMe.txt
+		Rollbar.NETNotifier.docx = Rollbar.NETNotifier.docx
 		SolutionCommon.csproj = SolutionCommon.csproj
 	EndProjectSection
 EndProject
@@ -13,7 +14,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar", "Rollbar\Rollbar.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar", "UnitTest.Rollbar\UnitTest.Rollbar.csproj", "{CC6A866D-F70D-467A-9C3B-2247ADD39EB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.NetCore.ConsoleApp", "Sample.NetCore.ConsoleApp\Sample.NetCore.ConsoleApp.csproj", "{03F99D21-9190-4FD3-BC1C-DFF271257F9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.NetCore.ConsoleApp", "Sample.NetCore.ConsoleApp\Sample.NetCore.ConsoleApp.csproj", "{03F99D21-9190-4FD3-BC1C-DFF271257F9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleApps", "SampleApps", "{F384356A-AB7F-4CC6-A870-BFB0738F973A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +39,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{03F99D21-9190-4FD3-BC1C-DFF271257F9D} = {F384356A-AB7F-4CC6-A870-BFB0738F973A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB9E5CFE-0437-4312-99E5-1EBF60FB8157}

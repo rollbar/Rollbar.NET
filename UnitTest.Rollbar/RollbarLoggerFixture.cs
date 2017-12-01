@@ -27,6 +27,25 @@ namespace UnitTest.Rollbar
 
         }
 
+
+        [TestMethod]
+        public void ScopedInstanceTest()
+        {
+            RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
+            {
+                Environment = RollbarUnitTestSettings.Environment,
+            };
+
+            int totalInitialQueues = RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken);
+            using (var logger = RollbarFactory.CreateNew().Configure(loggerConfig))
+            {
+                Assert.AreEqual(totalInitialQueues + 1, RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken));
+                logger.Log(ErrorLevel.Error, "test message");
+            }
+            Assert.AreEqual(totalInitialQueues, RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken));
+
+        }
+
         [TestMethod]
         public void ReportException()
         {
