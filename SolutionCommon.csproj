@@ -4,7 +4,7 @@
 
     <TargetFrameworks>netstandard2.0;netcoreapp2.0;net45;net471</TargetFrameworks>
 
-    <Authors>Chris Pfohl, Daniel Steuernol</Authors>
+    <Authors>Chris Pfohl, Daniel Steuernol, Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
     <Company>Rollbar Inc</Company>
     <Product>Rollbar</Product>
     <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
@@ -16,6 +16,10 @@
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
 
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Rollbar.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>
