@@ -7,6 +7,7 @@ namespace Rollbar
     using System.Threading.Tasks;
     using Newtonsoft.Json;
     using Rollbar.DTOs;
+    using Rollbar.Diagnostics;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -17,11 +18,15 @@ namespace Rollbar
 
         public RollbarClient(RollbarConfig config)
         {
+            Assumption.AssertNotNull(config, nameof(config));
+
             Config = config;
         }
 
         public RollbarResponse PostAsJson(Payload payload)
         {
+            Assumption.AssertNotNull(payload, nameof(payload));
+
             var jsonData = JsonConvert.SerializeObject(payload);
             var jsonResult = Post("item/", jsonData, payload.AccessToken);
             var response = JsonConvert.DeserializeObject<RollbarResponse>(jsonResult);

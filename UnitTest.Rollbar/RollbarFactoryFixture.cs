@@ -9,29 +9,39 @@
     [TestCategory("RollbarFactoryFixture")]
     public class RollbarFactoryFixture
     {
-        //private IRollbar _logger = null;
 
         [TestInitialize]
         public void SetupFixture()
         {
-            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            //RollbarConfig loggerConfig =
-            //    new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            //_logger = RollbarFactory.CreateNew().Configure(loggerConfig);
         }
 
         [TestCleanup]
         public void TearDownFixture()
         {
+        }
+
+        [TestMethod]
+        public void ProducesValidInstances()
+        {
+            var rollbar1 = RollbarFactory.CreateNew();
+            Assert.IsNotNull(rollbar1);
+
+            var rollbarLogger = rollbar1 as RollbarLogger;
+            Assert.IsNotNull(rollbarLogger);
+            Assert.IsFalse(rollbarLogger.IsSingleton);
 
         }
 
         [TestMethod]
-        public void Test()
+        public void ProducesUniqueInstances()
         {
-            //TODO:
-            Assert.Fail();
+            var rollbar1 = RollbarFactory.CreateNew();
+            Assert.IsNotNull(rollbar1);
+
+            var rollbar2 = RollbarFactory.CreateNew();
+            Assert.IsNotNull(rollbar2);
+
+            Assert.AreNotSame(rollbar2, rollbar1);
         }
     }
 }

@@ -27,6 +27,13 @@ namespace UnitTest.Rollbar
 
         }
 
+        [TestMethod]
+        public void ImplementsIDisposable()
+        {
+            IDisposable disposable = _logger as IDisposable;
+            Assert.IsNotNull(disposable);
+        }
+
 
         [TestMethod]
         public void ScopedInstanceTest()

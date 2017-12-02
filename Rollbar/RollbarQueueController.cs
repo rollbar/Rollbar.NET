@@ -100,7 +100,7 @@ namespace Rollbar
             }
         }
 
-        internal int GetQueuesCount(string accessToken)
+        internal int GetQueuesCount(string accessToken = null)
         {
             if (!string.IsNullOrWhiteSpace(accessToken))
             {

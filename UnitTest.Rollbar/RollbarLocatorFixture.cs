@@ -13,21 +13,24 @@
     [TestCategory("RollbarLocatorFixture")]
     public class RollbarLocatorFixture
     {
-        private IRollbar _logger = null;
 
         [TestInitialize]
         public void SetupFixture()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            RollbarConfig loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
         }
 
         [TestCleanup]
         public void TearDownFixture()
         {
+
+        }
+
+        public void ProducesValidInstance()
+        {
+            var rollbarLogger = RollbarLocator.RollbarInstance as RollbarLogger;
+            Assert.IsNotNull(rollbarLogger);
+            Assert.IsFalse(rollbarLogger.IsSingleton);
 
         }
 

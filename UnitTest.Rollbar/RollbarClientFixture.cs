@@ -9,29 +9,20 @@
     [TestCategory("RollbarClientFixture")]
     public class RollbarClientFixture
     {
-        //private IRollbar _logger = null;
 
         [TestInitialize]
         public void SetupFixture()
         {
-            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            //RollbarConfig loggerConfig =
-            //    new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            //_logger = RollbarFactory.CreateNew().Configure(loggerConfig);
         }
 
         [TestCleanup]
         public void TearDownFixture()
         {
-
         }
 
-        [TestMethod]
-        public void Test()
-        {
-            //TODO:
-            Assert.Fail();
-        }
+        //There is nothing really to unit test regarding the RollbarClient type.
+        //It does not have any processing logic at all and just makes a couple of 
+        //very straightforward into .NET type and Newtonsoft.Json SDKs.
+        
     }
 }
