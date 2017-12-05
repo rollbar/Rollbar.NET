@@ -4,33 +4,81 @@
     using Rollbar.DTOs;
     using Rollbar.Diagnostics;
 
+    /// <summary>
+    /// MOdels a Rollbar API error event.
+    /// </summary>
+    /// <seealso cref="Rollbar.CommunicationEventArgs" />
     public class RollbarApiErrorEventArgs
         : CommunicationEventArgs
     {
+        /// <summary>
+        /// Known error codes.
+        /// </summary>
         public enum RollbarError
         {
+            /// <summary>
+            /// Not an error.
+            /// </summary>
             None = 0,
+            /// <summary>
+            /// The bad request
+            /// </summary>
             BadRequest = 400,
+            /// <summary>
+            /// The access denied
+            /// </summary>
             AccessDenied = 403,
+            /// <summary>
+            /// Resource not found
+            /// </summary>
             NotFound = 404,
+            /// <summary>
+            /// The request entity too large
+            /// </summary>
             RequestEntityTooLarge = 413,
+            /// <summary>
+            /// The unprocessable entity
+            /// </summary>
             UnprocessableEntity = 422,
+            /// <summary>
+            /// Too many requests
+            /// </summary>
             TooManyRequests = 429,
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public class RollbarErrorDetails
         {
             private RollbarErrorDetails()
             {
             }
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="RollbarErrorDetails"/> class.
+            /// </summary>
+            /// <param name="error">The error.</param>
+            /// <param name="description">The description.</param>
             public RollbarErrorDetails(RollbarError error, string description)
             {
 
             }
 
+            /// <summary>
+            /// Gets the error.
+            /// </summary>
+            /// <value>
+            /// The error.
+            /// </value>
             public RollbarError Error { get; private set; }
 
+            /// <summary>
+            /// Gets the description.
+            /// </summary>
+            /// <value>
+            /// The description.
+            /// </value>
             public string Description { get; private set; }
         }
 
@@ -41,27 +89,27 @@
             RollbarErrorDetails[] errorDetails = new RollbarErrorDetails[]
             {
                 new RollbarErrorDetails(
-                    RollbarError.BadRequest, 
+                    RollbarError.BadRequest,
                     "The request was malformed and could not be parsed."
                     ),
                 new RollbarErrorDetails(
-                    RollbarError.AccessDenied, 
+                    RollbarError.AccessDenied,
                     "Access token was missing, invalid, or does not have the necessary permissions."
                     ),
                 new RollbarErrorDetails(
-                    RollbarError.NotFound, 
+                    RollbarError.NotFound,
                     "The requested resource was not found. This response will be returned if the URL is entirely invalid (i.e. /asdf), or if it is a URL that could be valid but is referencing something that does not exist (i.e. /item/12345)."
                     ),
                 new RollbarErrorDetails(
-                    RollbarError.RequestEntityTooLarge, 
+                    RollbarError.RequestEntityTooLarge,
                     "The request exceeded the maximum size of 128KB."
                     ),
                 new RollbarErrorDetails(
-                    RollbarError.UnprocessableEntity, 
+                    RollbarError.UnprocessableEntity,
                     "The request was parseable (i.e. valid JSON), but some parameters were missing or otherwise invalid."
                     ),
                 new RollbarErrorDetails(
-                    RollbarError.TooManyRequests, 
+                    RollbarError.TooManyRequests,
                     "If rate limiting is enabled for your access token, this return code signifies that the rate limit has been reached and the item was not processed."
                     ),
             };
@@ -70,19 +118,37 @@
 
             foreach (var item in errorDetails)
             {
-                errorDetailsByCode.Add((int) item.Error, item);
+                errorDetailsByCode.Add((int)item.Error, item);
             }
         }
 
-        public RollbarApiErrorEventArgs(RollbarConfig config, Payload payload, RollbarResponse response) 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarApiErrorEventArgs"/> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="payload">The payload.</param>
+        /// <param name="response">The response.</param>
+        public RollbarApiErrorEventArgs(RollbarConfig config, Payload payload, RollbarResponse response)
             : base(config, payload, response)
         {
             Assumption.AssertNotNull(response, nameof(response));
             Assumption.AssertGreaterThan(response.Error, 0, nameof(response.Error));
         }
 
+        /// <summary>
+        /// Gets the error code.
+        /// </summary>
+        /// <value>
+        /// The error code.
+        /// </value>
         public int ErrorCode { get { return this.Response.Error; } }
 
+        /// <summary>
+        /// Gets the type of the error.
+        /// </summary>
+        /// <value>
+        /// The type of the error.
+        /// </value>
         public RollbarError? ErrorType
         {
             get
@@ -98,6 +164,12 @@
             }
         }
 
+        /// <summary>
+        /// Gets the error description.
+        /// </summary>
+        /// <value>
+        /// The error description.
+        /// </value>
         public string ErrorDescription
         {
             get
@@ -115,8 +187,7 @@
 
         private static RollbarErrorDetails GetErrorDetailsByCode(int code)
         {
-            RollbarErrorDetails error = null;
-            if (errorDetailsByCode.TryGetValue(code, out error))
+            if (errorDetailsByCode.TryGetValue(code, out RollbarErrorDetails error))
             {
                 return error;
             }
@@ -124,6 +195,13 @@
             return null;
         }
 
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
+        /// <param name="indent">The indent.</param>
+        /// <returns>
+        /// String rendering of this instance.
+        /// </returns>
         public override string TraceAsString(string indent = "")
         {
             return base.TraceAsString(indent);

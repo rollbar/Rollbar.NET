@@ -32,7 +32,9 @@ namespace Rollbar
             {
                 this._nativeTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             }
+#pragma warning disable CS0168 // Variable is declared but never used
             catch(InvalidOperationException ex)
+#pragma warning restore CS0168 // Variable is declared but never used
             {
                 // it could be a valid case in some environments:
                 this._nativeTaskScheduler = null;

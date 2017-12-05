@@ -6,9 +6,17 @@
     using Newtonsoft.Json;
     using Rollbar.Diagnostics;
 
+    /// <summary>
+    /// Models Rollbar Body DTO.
+    /// </summary>
+    /// <seealso cref="Rollbar.DTOs.DtoBase" />
     public class Body
         : DtoBase
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Body"/> class.
+        /// </summary>
+        /// <param name="exceptions">The exceptions.</param>
         public Body(IEnumerable<System.Exception> exceptions)
         {
             Assumption.AssertNotNullOrEmpty(exceptions, nameof(exceptions));
@@ -19,11 +27,19 @@
             Validate();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Body"/> class.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
         public Body(AggregateException exception) 
             : this(exception.InnerExceptions)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Body"/> class.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
         public Body(System.Exception exception)
         {
             Assumption.AssertNotNull(exception, nameof(exception));
@@ -47,6 +63,10 @@
             Validate();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Body"/> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
         public Body(Message message)
         {
             Assumption.AssertNotNull(message, nameof(message));
@@ -55,6 +75,10 @@
             Validate();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Body"/> class.
+        /// </summary>
+        /// <param name="crashReport">The crash report.</param>
         public Body(string crashReport)
         {
             Assumption.AssertNotNullOrWhiteSpace(crashReport, nameof(crashReport));
@@ -64,21 +88,48 @@
         }
 
         #region These are mutually exclusive properties - only one of them can be not null
-        
+
+        /// <summary>
+        /// Gets the trace.
+        /// </summary>
+        /// <value>
+        /// The trace.
+        /// </value>
         [JsonProperty("trace", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public Trace Trace { get; private set; }
 
+        /// <summary>
+        /// Gets the trace chain.
+        /// </summary>
+        /// <value>
+        /// The trace chain.
+        /// </value>
         [JsonProperty("trace_chain", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public Trace[] TraceChain { get; private set; }
 
+        /// <summary>
+        /// Gets the message.
+        /// </summary>
+        /// <value>
+        /// The message.
+        /// </value>
         [JsonProperty("message", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public Message Message { get; private set; }
 
+        /// <summary>
+        /// Gets the crash report.
+        /// </summary>
+        /// <value>
+        /// The crash report.
+        /// </value>
         [JsonProperty("crash_report", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public CrashReport CrashReport { get; private set; }
 
         #endregion These are mutually exclusive properties - only one of them can be not null
 
+        /// <summary>
+        /// Validates this instance.
+        /// </summary>
         public override void Validate()
         {
             int bodyContentVariationsCount = 0;

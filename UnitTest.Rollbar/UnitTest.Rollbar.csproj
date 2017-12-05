@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|netcoreapp2.0'">
+    <NoWarn>NU1701;1701</NoWarn>
+  </PropertyGroup>
+
 </Project>

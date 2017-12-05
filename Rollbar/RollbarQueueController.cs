@@ -37,13 +37,15 @@ namespace Rollbar
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="QueueController"/> class from being created.
+        /// Prevents a default instance of the <see cref="RollbarQueueController"/> class from being created.
         /// </summary>
         private RollbarQueueController()
         {
-            this._rollbarCommThread = new Thread(this.KeepProcessingAllQueues);
-            this._rollbarCommThread.IsBackground = true;
-            this._rollbarCommThread.Name = "Rollbar Communication Thread";
+            this._rollbarCommThread = new Thread(this.KeepProcessingAllQueues)
+            {
+                IsBackground = true,
+                Name = "Rollbar Communication Thread"
+            };
 
             this._rollbarCommThread.Start();
         }
@@ -104,8 +106,7 @@ namespace Rollbar
         {
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
-                AccessTokenQueuesMetadata metadata = null;
-                if (this._queuesByAccessToken.TryGetValue(accessToken, out metadata))
+                if (this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata metadata))
                 {
                     return metadata.Queues.Count;
                 }
@@ -145,7 +146,9 @@ namespace Rollbar
 
                     Thread.Sleep(sleepInterval);
                 }
-                catch(System.Exception ex)
+#pragma warning disable CS0168 // Variable is declared but never used
+                catch (System.Exception ex)
+#pragma warning restore CS0168 // Variable is declared but never used
                 {
                     //TODO: do we want to direct the exception 
                     //      to some kind of Rollbar notifier maintenance "access token"?
@@ -285,8 +288,7 @@ namespace Rollbar
                 return;
             }
 
-            AccessTokenQueuesMetadata tokenMetadata = null;
-            if (!this._queuesByAccessToken.TryGetValue(queueToken, out tokenMetadata))
+            if (!this._queuesByAccessToken.TryGetValue(queueToken, out AccessTokenQueuesMetadata tokenMetadata))
             {
                 tokenMetadata = new AccessTokenQueuesMetadata(queueToken);
                 this._queuesByAccessToken.Add(queueToken, tokenMetadata);

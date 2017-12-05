@@ -6,6 +6,8 @@
     using System.Collections.Generic;
     using System.Linq;
 
+#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
+#pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
     /// Implements an abstract base for defining expendable DTO types.
     /// These types of DTOs can be extended with arbitrary extra 
@@ -15,6 +17,8 @@
     /// <seealso cref="System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String, System.Object}}" />
     /// <seealso cref="System.Collections.Generic.IDictionary{System.String, System.Object}" />
     public abstract class ExtendableDtoBase
+#pragma warning restore CS1658 // Warning is overriding an error
+#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
         : DtoBase,
         IEnumerable<KeyValuePair<string, object>>,
         IDictionary<string, object>
@@ -25,6 +29,9 @@
 
         private readonly ExtendableDtoMetadata _metadata = null;
 
+        /// <summary>
+        /// The keyed values
+        /// </summary>
         protected readonly IDictionary<string, object> _keyedValues = 
             new Dictionary<string, object>();
 
@@ -38,6 +45,10 @@
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExtendableDtoBase"/> class.
+        /// </summary>
+        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         protected ExtendableDtoBase(IDictionary<string, object> arbitraryKeyValuePairs)
         {
             this._metadata = ExtendableDtoBase.metadataByDerivedType[this.GetType()];

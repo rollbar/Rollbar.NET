@@ -8,7 +8,7 @@
     public interface ITraceable
     {
         /// <summary>
-        /// Traces as string.
+        /// Traces as a string.
         /// </summary>
         /// <param name="indent">The indent.</param>
         /// <returns>String rendering of this instance.</returns>
