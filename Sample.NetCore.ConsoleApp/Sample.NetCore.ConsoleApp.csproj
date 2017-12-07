@@ -1,4 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project>
+
+  <Import Project="..\SolutionCommon.csproj" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
