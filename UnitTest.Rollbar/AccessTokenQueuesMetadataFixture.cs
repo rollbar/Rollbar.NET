@@ -1,4 +1,6 @@
-﻿namespace UnitTest.Rollbar
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+namespace UnitTest.Rollbar
 {
     using global::Rollbar;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -1,4 +1,6 @@
-﻿namespace UnitTest.Rollbar.DTOs
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+
+namespace UnitTest.Rollbar.DTOs
 {
     using global::Rollbar;
     using global::Rollbar.DTOs;
