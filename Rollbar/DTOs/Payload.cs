@@ -4,7 +4,7 @@
     using Rollbar.Diagnostics;
 
     /// <summary>
-    /// MOdels Rollbar Payload DTO.
+    /// Models Rollbar Payload DTO.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.DtoBase" />
     public class Payload

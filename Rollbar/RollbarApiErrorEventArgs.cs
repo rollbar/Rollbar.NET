@@ -5,7 +5,7 @@
     using Rollbar.Diagnostics;
 
     /// <summary>
-    /// MOdels a Rollbar API error event.
+    /// Models a Rollbar API error event.
     /// </summary>
     /// <seealso cref="Rollbar.CommunicationEventArgs" />
     public class RollbarApiErrorEventArgs

@@ -3,7 +3,6 @@
   <Import Project="..\SolutionCommon.csproj" />
 
   <PropertyGroup>
-
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

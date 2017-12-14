@@ -4,7 +4,7 @@
     using Rollbar.DTOs;
 
     /// <summary>
-    /// MOdels an internal event.
+    /// Models an internal event.
     /// </summary>
     /// <seealso cref="Rollbar.RollbarEventArgs" />
     public class InternalErrorEventArgs

@@ -4,7 +4,7 @@
     using Rollbar.DTOs;
 
     /// <summary>
-    /// MOdels a communication event.
+    /// Models a communication event.
     /// </summary>
     /// <seealso cref="Rollbar.RollbarEventArgs" />
     public class CommunicationEventArgs

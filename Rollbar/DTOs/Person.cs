@@ -3,7 +3,7 @@
     using Newtonsoft.Json;
 
     /// <summary>
-    /// MOdels Rollbar Person DTO.
+    /// Models Rollbar Person DTO.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.DtoBase" />
     public class Person

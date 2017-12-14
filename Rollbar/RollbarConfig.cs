@@ -9,7 +9,7 @@
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
 #pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
-    /// MOdels Rollbar client/notifier configuration data.
+    /// Models Rollbar client/notifier configuration data.
     /// </summary>
     /// <seealso cref="Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
     /// <seealso cref="Rollbar.ITraceable" />

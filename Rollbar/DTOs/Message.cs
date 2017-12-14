@@ -4,7 +4,7 @@
     using Rollbar.Diagnostics;
 
     /// <summary>
-    /// MOdels Rollbar Message DTO.
+    /// Models Rollbar Message DTO.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.ExtendableDtoBase" />
     public class Message 

@@ -4,7 +4,7 @@
     using Rollbar.Diagnostics;
 
     /// <summary>
-    /// MOdels Rollbar Exception DTO.
+    /// Models Rollbar Exception DTO.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.DtoBase" />
     public class Exception
