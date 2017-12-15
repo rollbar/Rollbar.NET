@@ -263,7 +263,6 @@ namespace Rollbar
                 catch (System.Exception ex)
                 {
                     OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  check-ignoring a payload..."));
-                    return;
                 }
 
                 try
@@ -273,7 +272,6 @@ namespace Rollbar
                 catch (System.Exception ex)
                 {
                     OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  transforming a payload..."));
-                    return;
                 }
 
                 try
@@ -283,7 +281,6 @@ namespace Rollbar
                 catch (System.Exception ex)
                 {
                     OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  truncating a payload..."));
-                    return;
                 }
 
                 this._payloadQueue.Enqueue(payload);
