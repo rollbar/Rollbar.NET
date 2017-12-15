@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netstandard2.0;netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
+    <TargetFrameworks>net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0;netcoreapp2.0</TargetFrameworks>
     
     <Authors>Chris Pfohl, Daniel Steuernol, Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
     <Company>Rollbar Inc</Company>

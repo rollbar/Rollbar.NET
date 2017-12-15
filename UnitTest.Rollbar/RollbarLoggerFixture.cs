@@ -126,7 +126,8 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        public void ExceptionWhileTransformingPayload()
+        [Timeout(5000)]
+        public void ExceptionWhileTransformingPayloadAsync()
         {
             this._transformException = false;
 
@@ -145,15 +146,19 @@ namespace UnitTest.Rollbar
                 Assert.IsTrue(false);
             }
 
-            System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(3 * maxCallLengthInMillisec));
+            this._signal.Wait();
+
             Assert.IsTrue(this._transformException);
         }
 
         private bool _transformException = false;
 
+        private readonly SemaphoreSlim _signal = new SemaphoreSlim(0, 1);
+
         private void Logger_InternalEvent(object sender, RollbarEventArgs e)
         {
             this._transformException = true;
+            this._signal.Release();
         }
     }
 }
