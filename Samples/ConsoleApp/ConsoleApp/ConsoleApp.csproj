@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Rollbar\Rollbar.csproj">
-      <Project>{3a99c5e2-ae41-49ca-9cb3-2c3a70d2a8c1}</Project>
+      <Project>{24527ea6-d432-4d35-a011-cc1ca6a1fc26}</Project>
       <Name>Rollbar</Name>
     </ProjectReference>
   </ItemGroup>
