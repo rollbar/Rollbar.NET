@@ -23,12 +23,12 @@ namespace RollbarDotNet
             return ParseResponse(stringResult);
         }
 
-        public async Task<Guid> PostItemAsync(Payload payload)
+        public Task<Guid> PostItemAsync(Payload payload)
         {
-            var stringResult = await SendPostAsync("item/", payload);
-            return ParseResponse(stringResult);
+            var stringResult = SendPostAsync("item/", payload);            
+            return Task<Guid>.Factory.StartNew(()=> ParseResponse(stringResult));
         }
-
+        
         private static Guid ParseResponse(string stringResult)
         {
             var response = JsonConvert.DeserializeObject<RollbarResponse>(stringResult);
@@ -41,10 +41,11 @@ namespace RollbarDotNet
             return webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
         }
 
-        private async Task<string> SendPostAsync<T>(string url, T payload)
+        private string SendPostAsync<T>(string url, T payload)
         {
             var webClient = this.BuildWebClient();
-            return await webClient.UploadStringTaskAsync(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+            webClient.UploadStringAsync(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+            return string.Empty;
         }
 
         private WebClient BuildWebClient()
