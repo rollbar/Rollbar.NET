@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+  NOTE1: next line will have to stay commented out 
+  until Microsoft fixes its UnitTest loader to allow project imports.
+  Also, see NOTE2 that relates to the very same issue:
+
+  <Import Project="..\SolutionCommon.csproj" />
+  -->  
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0;netstandard2.0;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|netcoreapp2.0'">
+    <NoWarn>NU1701;1701</NoWarn>
+  </PropertyGroup>
+
+</Project>
