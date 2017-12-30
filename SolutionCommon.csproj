@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     
     <Authors>Chris Pfohl, Daniel Steuernol, Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
     <Company>Rollbar Inc</Company>
@@ -21,5 +21,15 @@
   <PropertyGroup>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Rollbar.xml</DocumentationFile>
   </PropertyGroup>
-  
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
+    <DefineConstants>NETCOREAPP2_0</DefineConstants>
+    <!---DefineConstants>NETCOREAPP2_0;NETSTANDARD2_0</DefineConstants-->
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+  </ItemGroup>
+
+
 </Project>
