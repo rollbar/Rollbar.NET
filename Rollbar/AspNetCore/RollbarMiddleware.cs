@@ -23,13 +23,16 @@ namespace Rollbar.AspNetCore
     /// // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     /// public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     /// {
-    ///     app.UseRollbarMiddleware();
-    ///     app.UseAnyOtherInnerMiddleware();
-    /// 
     ///     if (env.IsDevelopment())
     ///     {
     ///         app.UseDeveloperExceptionPage();
     ///     }
+    /// 
+    ///     app.UseRollbarMiddleware();
+    ///     
+    ///     // All the middleware components intended to be "monitored"
+    ///     // by the Rollbar middleware to be added below this line:
+    ///     app.UseAnyOtherInnerMiddleware();
     /// 
     ///     app.UseMvc();
     /// }
@@ -58,9 +61,18 @@ namespace Rollbar.AspNetCore
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>A middleware invocation/execution task.</returns>
-        public virtual Task Invoke(HttpContext context)
+        public virtual async Task Invoke(HttpContext context)
         {
-            return this._nextRequestProcessor(context);
+            try
+            {
+                await this._nextRequestProcessor(context);
+            }
+            catch(Exception ex)
+            {
+                RollbarLocator.RollbarInstance.Critical(ex);
+
+                throw new Exception("The included internal exception processed by the Rollbar middleware", ex);
+            }
         }
     }
 }
