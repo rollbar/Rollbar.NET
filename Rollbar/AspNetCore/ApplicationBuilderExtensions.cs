@@ -4,12 +4,19 @@ namespace Microsoft.AspNetCore.Builder
 {
     using Rollbar.AspNetCore;
 
-
+    /// <summary>
+    /// Implements Rollbar middleware extensions to IApplicationBuilder.
+    /// </summary>
     public static class ApplicationBuilderExtensions
     {
+        /// <summary>
+        /// Enables the rollbar middleware.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
         public static IApplicationBuilder UseRollbarMiddleware(
-            this IApplicationBuilder builder
-            )
+                    this IApplicationBuilder builder
+                    )
         {
             return builder.UseMiddleware<RollbarMiddleware>();
         }

@@ -3,9 +3,9 @@
 namespace Rollbar.AspNetCore
 {
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Configuration;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using System.Diagnostics;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -45,15 +45,39 @@ namespace Rollbar.AspNetCore
         /// <summary>
         /// The next request processor within the middleware pipeline
         /// </summary>
-        protected readonly RequestDelegate _nextRequestProcessor = null;
+        private readonly RequestDelegate _nextRequestProcessor = null;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarMiddleware"/> class.
+        /// Initializes a new instance of the <see cref="RollbarMiddleware" /> class.
         /// </summary>
         /// <param name="nextRequestProcessor">The next request processor.</param>
-        public RollbarMiddleware(RequestDelegate nextRequestProcessor)
+        /// <param name="configuration">The configuration.</param>
+        public RollbarMiddleware(RequestDelegate nextRequestProcessor, IConfiguration configuration)
         {
-            _nextRequestProcessor = nextRequestProcessor;
+            this._nextRequestProcessor = nextRequestProcessor;
+
+            if (RollbarLocator.RollbarInstance.Config.AccessToken == null)
+            {
+                // Here we assume that the Rollbar singleton was not explicitly preconfigured 
+                // anywhere in the code (Program.cs or Startup.cs), 
+                // so we are trying to configure it from IConfiguration:
+
+                const string defaultAccessToken = "none";
+                RollbarConfig rollbarConfig = new RollbarConfig(defaultAccessToken);
+                configuration.GetSection("Rollbar").Bind(rollbarConfig);
+
+                if (rollbarConfig.AccessToken == defaultAccessToken)
+                {
+                    const string error = "Rollbar.NET notifier is not configured properly.";
+                    //Debug.Assert(false, error);
+                    throw new Exception(error);
+                }
+
+                RollbarLocator.RollbarInstance
+                    // minimally required Rollbar configuration:
+                    .Configure(rollbarConfig);
+
+            }
         }
 
         /// <summary>
@@ -61,7 +85,7 @@ namespace Rollbar.AspNetCore
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>A middleware invocation/execution task.</returns>
-        public virtual async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context)
         {
             try
             {
