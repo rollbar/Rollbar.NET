@@ -6,6 +6,8 @@
     
     <AssemblyName>Rollbar</AssemblyName>
     <RootNamespace>Rollbar</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     
   </PropertyGroup>
 
