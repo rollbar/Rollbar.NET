@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+
+    <TargetFrameworks>net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0;netcoreapp2.0</TargetFrameworks>
+    
+    <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
+    <Company>Rollbar Inc</Company>
+    <Product>Rollbar.Net Notifier</Product>
+    <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
+    <Copyright>Copyright 2015-2018</Copyright>
+    <PackageTags>error exception tracking reporting log analysis monitoring aggregation crash reporting</PackageTags>
+    <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
+    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Rollbar.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
+    <DefineConstants>NETCOREAPP2_0</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+  </ItemGroup>
+
+
+</Project>

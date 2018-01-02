@@ -1,50 +1,50 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
-namespace RollbarDotNet
+namespace Rollbar
 {
+    using System;
+    using System.Net;
+    using System.Threading.Tasks;
+    using Newtonsoft.Json;
+    using Rollbar.DTOs;
+    using Rollbar.Diagnostics;
+
     /// <summary>
     /// Client for accessing the Rollbar API
     /// </summary>
-    public class RollbarClient : IRollbarClient
+    internal class RollbarClient 
     {
         public RollbarConfig Config { get; }
 
         public RollbarClient(RollbarConfig config)
         {
+            Assumption.AssertNotNull(config, nameof(config));
+
             Config = config;
         }
 
-        public Guid PostItem(Payload payload)
+        public RollbarResponse PostAsJson(Payload payload)
         {
-            var stringResult = SendPost("item/", payload);
-            return ParseResponse(stringResult);
+            Assumption.AssertNotNull(payload, nameof(payload));
+
+            var jsonData = JsonConvert.SerializeObject(payload);
+            var jsonResult = Post("item/", jsonData, payload.AccessToken);
+            var response = JsonConvert.DeserializeObject<RollbarResponse>(jsonResult);
+            return response;
         }
 
-        public async Task<Guid> PostItemAsync(Payload payload)
+        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload)
         {
-            var stringResult = await SendPostAsync("item/", payload);
-            return ParseResponse(stringResult);
+            return await Task.Factory.StartNew(() => this.PostAsJson(payload));
         }
 
-        private static Guid ParseResponse(string stringResult)
+        private string Post(string urlSuffix, string data, string accessToken)
         {
-            var response = JsonConvert.DeserializeObject<RollbarResponse>(stringResult);
-            return Guid.Parse(response.Result.Uuid);
-        }
-
-        private string SendPost<T>(string url, T payload)
-        {
-            var webClient = this.BuildWebClient();
-            return webClient.UploadString(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
-        }
-
-        private async Task<string> SendPostAsync<T>(string url, T payload)
-        {
-            var webClient = this.BuildWebClient();
-            return await webClient.UploadStringTaskAsync(new Uri($"{Config.EndPoint}{url}"), JsonConvert.SerializeObject(payload));
+            using (var webClient = this.BuildWebClient())
+            {
+                webClient.Headers.Add("X-Rollbar-Access-Token", accessToken);
+                return webClient.UploadString(new Uri($"{Config.EndPoint}{urlSuffix}"), data);
+            }
         }
 
         private WebClient BuildWebClient()
@@ -63,7 +63,7 @@ namespace RollbarDotNet
 
         private IWebProxy BuildWebProxy()
         {
-            if (this.Config != null && !string.IsNullOrWhiteSpace(this.Config.ProxyAddress))
+            if (!string.IsNullOrWhiteSpace(this.Config.ProxyAddress))
             {
                 return new WebProxy(this.Config.ProxyAddress);
             }
