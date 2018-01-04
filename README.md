@@ -10,6 +10,22 @@ Nuget Package Manager:
 
 ## Upgrading to v1.0.0 from earlier versions
 
+In order to upgrade to v1 from an earlier version, you should change your config from the old version
+
+```csharp
+Rollbar.Init(new RollbarConfig("POST_SERVER_ACCESS_TOKEN"));
+```
+
+to 
+
+```csharp
+const string postServerItemAccessToken = "POST_SERVER_ACCESS_TOKEN";
+RollbarLocator.RollbarInstance
+.Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" }) ;
+```
+
+Additionally, anywhere in your code that you were sending error reports via `Rollbar.Report(Exception)` or `Rollbar.Report(string)` will need to be replaced with either something like `RollbarLocator.RollbarInstance.Error(new Exception("trying out the TraceChain", new NullReferenceException()))` or `RollbarLocator.RollbarInstance.Info("Basic info log example.")`.
+
 ## Quick Start
 
 ### When Using the Singleton-like Instance of the Notifier
