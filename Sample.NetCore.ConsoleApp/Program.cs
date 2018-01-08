@@ -1,4 +1,5 @@
 ﻿using Rollbar;
+using Rollbar.DTOs;
 using System;
 
 namespace Sample.NetCore.ConsoleApp
@@ -12,18 +13,29 @@ namespace Sample.NetCore.ConsoleApp
             const string postServerItemAccessToken = "17965fa5041749b6bf7095a190001ded";
 
             RollbarLocator.RollbarInstance
-                .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" })
+                .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "RollbarNetSamples" })
                 .InternalEvent += OnRollbarInternalEvent
                 ;
 
+            SetRollbarReportingUser("007", "jbond@mi6.uk", "JBOND");
+
             RollbarLocator.RollbarInstance
-                .Info("Basic info log example.")
-                .Debug("First debug log.")
-                .Error(new NullReferenceException())
-                .Error(new Exception("trying out the TraceChain", new NullReferenceException()))
+                .Info("ConsoleApp sample: Basic info log example.")
+                .Debug("ConsoleApp sample: First debug log.")
+                .Error(new NullReferenceException("ConsoleApp sample: null reference exception."))
+                .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
                 ;
 
             System.Threading.Thread.Sleep(TimeSpan.FromSeconds(10));
+
+        }
+
+        private static void SetRollbarReportingUser(string id, string email, string userName)
+        {
+            Person person = new Person(id);
+            person.Email = email;
+            person.UserName = userName;
+            RollbarLocator.RollbarInstance.Config.Person = person;
         }
 
         private static void OnRollbarInternalEvent(object sender, RollbarEventArgs e)

@@ -14,7 +14,7 @@ namespace Sample.AspNetCore2.WebApi.Controllers
         public IEnumerable<string> Get()
         {
             // Let's simulate an unhandled exception:
-            throw new Exception("Unhandled exception within the ValueController");
+            throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController");
 
             return new string[] { "value1", "value2" };
         }

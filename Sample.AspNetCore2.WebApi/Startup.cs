@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Rollbar;
-
-namespace Sample.AspNetCore2.WebApi
+﻿namespace Sample.AspNetCore2.WebApi
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+    using Rollbar;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -54,7 +54,7 @@ namespace Sample.AspNetCore2.WebApi
 
             RollbarLocator.RollbarInstance
                 // minimally required Rollbar configuration:
-                .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "AspNetCoreMiddlewareTest" })
+                .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "RollbarNetSamples" })
                 // optional step if you would like to monitor Rollbar internal events within your application:
                 .InternalEvent += OnRollbarInternalEvent
                 ;
