@@ -418,7 +418,7 @@ initialize Rollbar
 protected void Application_Start()
 {
     ...
-    Rollbar.Init(new RollbarConfig
+    RollbarLocator.RollbarInstance.Configure( new RollbarConfig
     {
         AccessToken = ConfigurationManager.AppSettings["Rollbar.AccessToken"],
         Environment = ConfigurationManager.AppSettings["Rollbar.Environment"]
@@ -548,7 +548,7 @@ To use inside a Winforms Application, do the following inside your main method:
 [STAThread]
 static void Main()
 {
-    Rollbar.Init(new RollbarConfig
+    RollbarLocator.RollbarInstance.Configure( new RollbarConfig
     {
         AccessToken = "POST_SERVER_ACCESS_TOKEN",
         Environment = "production"
