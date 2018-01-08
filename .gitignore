@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 /Rollbar/obj
 /Rollbar/bin
+/Sample.WebForms.Site/obj
+/Sample.WebForms.Site/bin
