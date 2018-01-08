@@ -590,7 +590,7 @@ namespace Sample
             System.Diagnostics.Debug.WriteLine("App Start Up");
 
             //Initialize Rollbar
-            Rollbar.Init(new RollbarConfig
+            RollbarLocator.RollbarInstance.Configure(new RollbarConfig
             {
                 AccessToken = "POST_SERVER_ACCESS_TOKEN",
                 Environment = "production"          
