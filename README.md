@@ -29,7 +29,7 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
 </dd>
 <dt>Environment
 </dt>
-<dd>Environment name, e.g. `"production"` or `"development"` defaults to `"production"`
+<dd>Environment name, e.g. `"production"` or `"development"`, defaults to `"production"`
 </dd>
 <dt>Enabled
 </dt>
@@ -70,6 +70,42 @@ new RollbarConfig
 </dt>
 <dd>A string URI which will be used as the WebClient proxy by passing to the WebProxy constructor.
 </dd>
+<dt>CheckIgnore
+</dt>
+<dd>Function called before sending payload to Rollbar. Return `true` to stop the error from being sent to Rollbar.
+</dd>
+<dt>Truncate
+</dt>
+<dd>Truncates the payload before sending it to Rollbar.
+</dd>
+<dt>Server
+</dt>
+<dd>The server name, as a string.
+</dd>
+<dt>Person
+</dt>
+<dd>You can set the current person data like so
+
+```csharp
+private void SetRollbarReportingUser(string id, string email, string userName)
+       {
+           Person person = new Person(id);
+           person.Email = email;
+           person.UserName = userName;
+           RollbarLocator.RollbarInstance.Config.Person = person;
+       }
+```
+
+and this person will be attached to all future Rollbar calls.
+</dd>
+<dt>MaxReportsPerMinute
+</dt>
+<dd>The maximum reports sent to Rollbar per minute, as an integer.
+</dd>
+<dt>ReportingQueueDepth
+</dt>
+<dd>The reporting queue depth, as an integer. 
+</dd>
 
 </dl>
 
@@ -81,20 +117,6 @@ To send a caught exception to Rollbar, you must call Rollbar.Report(). You can s
 Rollbar.Report(exception, ErrorLevel.Critical);
 ```
 
-## Person Data
-
-You can set the current person data with a call to
-
-```csharp
-Rollbar.PersonData(() => new Person
-{
-    Id = 123,
-    UserName = "rollbar",
-    Email = "user@rollbar.com"
-});
-```
-
-and this person will be attached to all future Rollbar calls.
 
 ## Advanced Usage
 
@@ -273,10 +295,75 @@ namespace Sample
             Person person = new Person(id);
             person.Email = email;
             person.UserName = userName;
-            Rollbar.PersonData(() => person);
+            RollbarLocator.RollbarInstance.Config.Person = person;
         }
     }
 }
 ```
+
+### WebForms
+
+#### Application Level Error Handling
+
+From the application error handler in the `Global.asax` file: 
+
+       void Application_Error(object sender, EventArgs e)
+       {
+           Exception exception = Server.GetLastError();
+          
+           // Let's report to Rollbar on the Application/Global Level:
+           var metaData = new Dictionary<string, object>();
+           metaData.Add("reportLevel", "GlobalLevel");
+           RollbarLocator.RollbarInstance.Error(exception, metaData);
+           
+           if (exception is HttpUnhandledException)
+           {
+               // Pass the error on to the error page.
+               Server.Transfer("ErrorPage.aspx?handler=Application_Error%20-%20Global.asax", true);
+           }
+       }
+
+#### Page Level Error Handling
+
+From a page error handler in its code-behind file/class:
+
+       private void Page_Error(object sender, EventArgs e)
+       {
+           // Get last error from the server.
+           Exception exception = Server.GetLastError();
+           
+           // Let's report to Rollbar on the Page Level:
+           var metaData = new Dictionary<string, object>();
+           metaData.Add("reportLevel", "PageLevel");
+           metaData.Add("failedPage", this.AppRelativeVirtualPath);
+           RollbarLocator.RollbarInstance.Error(exception, metaData);
+           
+           // Handle specific exception.
+           if (exception is InvalidOperationException)
+           {
+               // Pass the error on to the error page.
+               Server.Transfer("ErrorPage.aspx?handler=Page_Error%20-%20Default.aspx", true);
+           }
+       }
+
+
+#### Code Level Error Handling
+
+From the catch block:
+
+           try
+           {
+               // Let's simulate an error:
+               throw new NullReferenceException("WebForms.Site sample: simulated exception");
+           }
+           catch (Exception exception)
+           {
+               // Let's report to Rollbar on the Code Level:
+               var metaData = new Dictionary<string, object>();
+               metaData.Add("reportLevel", "CodeLevel");
+               metaData.Add("failedPage", this.AppRelativeVirtualPath);
+               RollbarLocator.RollbarInstance.Error(exception, metaData);
+               throw exception;
+           }
 
 
