@@ -8,16 +8,7 @@ namespace Sample.NetCore.ConsoleApp
     {
         static void Main(string[] args)
         {
-            RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
-
-            const string postServerItemAccessToken = "17965fa5041749b6bf7095a190001ded";
-
-            RollbarLocator.RollbarInstance
-                .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "RollbarNetSamples" })
-                .InternalEvent += OnRollbarInternalEvent
-                ;
-
-            SetRollbarReportingUser("007", "jbond@mi6.uk", "JBOND");
+            ConfigureRollbarSingleton();
 
             RollbarLocator.RollbarInstance
                 .Info("ConsoleApp sample: Basic info log example.")
@@ -30,6 +21,31 @@ namespace Sample.NetCore.ConsoleApp
 
         }
 
+        /// <summary>
+        /// Configures the Rollbar singleton-like notifier.
+        /// </summary>
+        private static void ConfigureRollbarSingleton()
+        {
+            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
+            const string rollbarEnvironment = "RollbarNetSamples";
+
+            RollbarLocator.RollbarInstance
+                // minimally required Rollbar configuration:
+                .Configure(new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment })
+                // optional step if you would like to monitor Rollbar internal events within your application:
+                .InternalEvent += OnRollbarInternalEvent
+                ;
+
+            // Optional info about reporting Rollbar user:
+            SetRollbarReportingUser("007", "jbond@mi6.uk", "JBOND");
+        }
+
+        /// <summary>
+        /// Sets the rollbar reporting user.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="email">The email.</param>
+        /// <param name="userName">Name of the user.</param>
         private static void SetRollbarReportingUser(string id, string email, string userName)
         {
             Person person = new Person(id);
@@ -38,6 +54,11 @@ namespace Sample.NetCore.ConsoleApp
             RollbarLocator.RollbarInstance.Config.Person = person;
         }
 
+        /// <summary>
+        /// Called when rollbar internal event is detected.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private static void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
             Console.WriteLine(e.TraceAsString());

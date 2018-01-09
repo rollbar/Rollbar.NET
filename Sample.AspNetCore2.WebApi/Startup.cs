@@ -50,11 +50,12 @@
         /// </summary>
         private void ConfigureRollbarSingleton()
         {
-            const string postServerItemAccessToken = "17965fa5041749b6bf7095a190001ded";
+            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
+            const string rollbarEnvironment = "RollbarNetSamples";
 
             RollbarLocator.RollbarInstance
                 // minimally required Rollbar configuration:
-                .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "RollbarNetSamples" })
+                .Configure(new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment })
                 // optional step if you would like to monitor Rollbar internal events within your application:
                 .InternalEvent += OnRollbarInternalEvent
                 ;
