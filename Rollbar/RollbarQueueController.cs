@@ -4,9 +4,11 @@ namespace Rollbar
 {
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.Serialization.Json;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Net;
     using System.Text;
     using System.Threading;
@@ -212,9 +214,17 @@ namespace Rollbar
             }
         }
 
+        private readonly string[] criticalDataFields = new string[]
+        {
+            "access_token",
+        };
+
         private RollbarResponse Process(Payload payload, RollbarConfig config)
         {
             var client = new RollbarClient(config);
+
+            IEnumerable<string> safeScrubFields = 
+                JsonScrubber.FilterOutCriticalFields(config.ScrubFields, criticalDataFields);
 
             RollbarResponse response = null;
             int retries = 3;
@@ -222,7 +232,7 @@ namespace Rollbar
             {
                 try
                 {
-                    response = client.PostAsJson(payload);
+                    response = client.PostAsJson(payload, safeScrubFields);
                 }
                 catch (WebException ex)
                 {

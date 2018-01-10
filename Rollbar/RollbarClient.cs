@@ -8,6 +8,10 @@ namespace Rollbar
     using Newtonsoft.Json;
     using Rollbar.DTOs;
     using Rollbar.Diagnostics;
+    using Newtonsoft.Json.Linq;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Rollbar.Serialization.Json;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -23,19 +27,22 @@ namespace Rollbar
             Config = config;
         }
 
-        public RollbarResponse PostAsJson(Payload payload)
+        public RollbarResponse PostAsJson(Payload payload, IEnumerable<string> scrubFileds)
         {
             Assumption.AssertNotNull(payload, nameof(payload));
 
             var jsonData = JsonConvert.SerializeObject(payload);
+            jsonData = JsonScrubber.ScrubJson(jsonData, scrubFileds);
+
             var jsonResult = Post("item/", jsonData, payload.AccessToken);
+
             var response = JsonConvert.DeserializeObject<RollbarResponse>(jsonResult);
             return response;
         }
 
-        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload)
+        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload, IEnumerable<string> scrubFileds)
         {
-            return await Task.Factory.StartNew(() => this.PostAsJson(payload));
+            return await Task.Factory.StartNew(() => this.PostAsJson(payload, scrubFileds));
         }
 
         private string Post(string urlSuffix, string data, string accessToken)

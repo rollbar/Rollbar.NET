@@ -25,6 +25,6 @@ namespace UnitTest.Rollbar
         //There is nothing really to unit test regarding the RollbarClient type.
         //It does not have any processing logic at all and just makes a couple of 
         //very straightforward into .NET type and Newtonsoft.Json SDKs.
-        
+
     }
 }
