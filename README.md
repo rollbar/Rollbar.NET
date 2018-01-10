@@ -80,7 +80,7 @@ new RollbarConfig
 </dd>
 <dt>Server
 </dt>
-<dd>The server name, as a string.
+<dd>An object with the following properties: `Host`, `Root`, `Branch`, and `CodeVersion`. 
 </dd>
 <dt>Person
 </dt>
@@ -104,7 +104,7 @@ and this person will be attached to all future Rollbar calls.
 </dd>
 <dt>ReportingQueueDepth
 </dt>
-<dd>The reporting queue depth, as an integer. 
+<dd>The reporting queue depth, as an integer. The reporting queue depth can be used to limit error report bursts when connectivity to the Rollbar API server is poor.
 </dd>
 
 </dl>
