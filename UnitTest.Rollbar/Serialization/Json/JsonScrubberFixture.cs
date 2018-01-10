@@ -104,7 +104,7 @@ namespace UnitTest.Rollbar.Serialization.Json
         }
 
         [TestMethod]
-        public void DataFiledFilteringTest()
+        public void DataFieldFilteringTest()
         {
             string[] criticalDataFields = new string[]
             {

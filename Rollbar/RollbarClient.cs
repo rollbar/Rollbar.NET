@@ -27,12 +27,12 @@ namespace Rollbar
             Config = config;
         }
 
-        public RollbarResponse PostAsJson(Payload payload, IEnumerable<string> scrubFileds)
+        public RollbarResponse PostAsJson(Payload payload, IEnumerable<string> scrubFields)
         {
             Assumption.AssertNotNull(payload, nameof(payload));
 
             var jsonData = JsonConvert.SerializeObject(payload);
-            jsonData = JsonScrubber.ScrubJson(jsonData, scrubFileds);
+            jsonData = ScrubPayload(jsonData, scrubFields);
 
             var jsonResult = Post("item/", jsonData, payload.AccessToken);
 
@@ -40,9 +40,9 @@ namespace Rollbar
             return response;
         }
 
-        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload, IEnumerable<string> scrubFileds)
+        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload, IEnumerable<string> scrubFields)
         {
-            return await Task.Factory.StartNew(() => this.PostAsJson(payload, scrubFileds));
+            return await Task.Factory.StartNew(() => this.PostAsJson(payload, scrubFields));
         }
 
         private string Post(string urlSuffix, string data, string accessToken)
@@ -52,6 +52,15 @@ namespace Rollbar
                 webClient.Headers.Add("X-Rollbar-Access-Token", accessToken);
                 return webClient.UploadString(new Uri($"{Config.EndPoint}{urlSuffix}"), data);
             }
+        }
+
+        private string ScrubPayload(string payload, IEnumerable<string> scrubFields)
+        {
+            var jObj = JsonScrubber.CreateJsonObject(payload);
+            var dataProperty = JsonScrubber.GetChildPropertyByName(jObj, "data");
+            JsonScrubber.ScrubJson(dataProperty, scrubFields);
+            var scrubbedPayload = jObj.ToString();
+            return scrubbedPayload;
         }
 
         private WebClient BuildWebClient()

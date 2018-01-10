@@ -3,6 +3,7 @@
 namespace Rollbar.Serialization.Json
 {
     using Newtonsoft.Json.Linq;
+    using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -48,6 +49,39 @@ namespace Rollbar.Serialization.Json
         }
 
         /// <summary>
+        /// Creates the Json object.
+        /// </summary>
+        /// <param name="jsonData">The json data.</param>
+        /// <returns></returns>
+        public static JObject CreateJsonObject(string jsonData)
+        {
+            Assumption.AssertNotNullOrWhiteSpace(jsonData, nameof(jsonData));
+
+            JObject json = JObject.Parse(jsonData);
+            return json;
+        }
+
+        /// <summary>
+        /// Gets the child Json property by name.
+        /// </summary>
+        /// <param name="root">The root.</param>
+        /// <param name="childPropertyName">Name of the child property.</param>
+        /// <returns></returns>
+        public static JProperty GetChildPropertyByName(JContainer root, string childPropertyName)
+        {
+            foreach(var child in root.Children())
+            {
+                JProperty property = child as JProperty;
+                if (property != null && property.Name == childPropertyName)
+                {
+                    return property;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Scrubs the Json data string.
         /// </summary>
         /// <param name="jsonData">The json data.</param>
@@ -67,28 +101,34 @@ namespace Rollbar.Serialization.Json
             return json.ToString();
         }
 
-        private static JToken ScrubJson(JToken json, IEnumerable<string> scrubFields)
+        private static void ScrubJson(JToken json, IEnumerable<string> scrubFields)
         {
             JProperty property = json as JProperty;
             if (property != null)
             {
-                return ScrubJson(property, scrubFields);
+                ScrubJson(property, scrubFields);
+                return;
             }
 
             foreach (var child in json.Children())
             {
-                var result = ScrubJson(child, scrubFields);
+                ScrubJson(child, scrubFields);
             }
 
-            return json;
+            return;
         }
 
-        private static JToken ScrubJson(JProperty json, IEnumerable<string> scrubFields)
+        /// <summary>
+        /// Scrubs the Json.
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="scrubFields">The scrub fields.</param>
+        public static void ScrubJson(JProperty json, IEnumerable<string> scrubFields)
         {
             if (scrubFields.Contains(json.Name))
             {
                 json.Value = defaultScrubMask;
-                return json;
+                return;
             }
 
             JContainer propertyValue = json.Value as JContainer;
@@ -96,11 +136,9 @@ namespace Rollbar.Serialization.Json
             {
                 foreach(var child in propertyValue)
                 {
-                    var result = ScrubJson(child, scrubFields);
+                    ScrubJson(child, scrubFields);
                 }
             }
-
-            return json;
         }
 
     }
