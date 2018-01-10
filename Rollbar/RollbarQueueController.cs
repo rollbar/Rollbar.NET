@@ -4,9 +4,11 @@ namespace Rollbar
 {
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.Serialization.Json;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Net;
     using System.Text;
     using System.Threading;
@@ -216,13 +218,15 @@ namespace Rollbar
         {
             var client = new RollbarClient(config);
 
+            IEnumerable<string> safeScrubFields = config.ScrubFields;
+
             RollbarResponse response = null;
             int retries = 3;
             while (retries > 0)
             {
                 try
                 {
-                    response = client.PostAsJson(payload);
+                    response = client.PostAsJson(payload, safeScrubFields);
                 }
                 catch (WebException ex)
                 {

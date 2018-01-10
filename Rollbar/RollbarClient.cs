@@ -8,6 +8,10 @@ namespace Rollbar
     using Newtonsoft.Json;
     using Rollbar.DTOs;
     using Rollbar.Diagnostics;
+    using Newtonsoft.Json.Linq;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Rollbar.Serialization.Json;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -23,19 +27,22 @@ namespace Rollbar
             Config = config;
         }
 
-        public RollbarResponse PostAsJson(Payload payload)
+        public RollbarResponse PostAsJson(Payload payload, IEnumerable<string> scrubFields)
         {
             Assumption.AssertNotNull(payload, nameof(payload));
 
             var jsonData = JsonConvert.SerializeObject(payload);
+            jsonData = ScrubPayload(jsonData, scrubFields);
+
             var jsonResult = Post("item/", jsonData, payload.AccessToken);
+
             var response = JsonConvert.DeserializeObject<RollbarResponse>(jsonResult);
             return response;
         }
 
-        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload)
+        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload, IEnumerable<string> scrubFields)
         {
-            return await Task.Factory.StartNew(() => this.PostAsJson(payload));
+            return await Task.Factory.StartNew(() => this.PostAsJson(payload, scrubFields));
         }
 
         private string Post(string urlSuffix, string data, string accessToken)
@@ -45,6 +52,15 @@ namespace Rollbar
                 webClient.Headers.Add("X-Rollbar-Access-Token", accessToken);
                 return webClient.UploadString(new Uri($"{Config.EndPoint}{urlSuffix}"), data);
             }
+        }
+
+        private string ScrubPayload(string payload, IEnumerable<string> scrubFields)
+        {
+            var jObj = JsonScrubber.CreateJsonObject(payload);
+            var dataProperty = JsonScrubber.GetChildPropertyByName(jObj, "data");
+            JsonScrubber.ScrubJson(dataProperty, scrubFields);
+            var scrubbedPayload = jObj.ToString();
+            return scrubbedPayload;
         }
 
         private WebClient BuildWebClient()
