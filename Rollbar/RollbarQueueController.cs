@@ -214,17 +214,11 @@ namespace Rollbar
             }
         }
 
-        private readonly string[] criticalDataFields = new string[]
-        {
-            "access_token",
-        };
-
         private RollbarResponse Process(Payload payload, RollbarConfig config)
         {
             var client = new RollbarClient(config);
 
-            IEnumerable<string> safeScrubFields = 
-                JsonScrubber.FilterOutCriticalFields(config.ScrubFields, criticalDataFields);
+            IEnumerable<string> safeScrubFields = config.ScrubFields;
 
             RollbarResponse response = null;
             int retries = 3;
