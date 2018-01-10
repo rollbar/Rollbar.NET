@@ -106,6 +106,22 @@ and this person will be attached to all future Rollbar calls.
 </dt>
 <dd>The reporting queue depth, as an integer. The reporting queue depth can be used to limit error report bursts when connectivity to the Rollbar API server is poor.
 </dd>
+<dt>ScrubFields
+</dt>
+<dd> Array of field names to scrub out of `_POST` and `_SESSION`. Values will be replaced with asterisks. If overriding, make sure to list all fields you want to scrub, not just fields you want to add to the default. Param names are case-sensitive when comparing against the scrub list. Default: `{'passwd', 'password', 'secret', 'confirm_password', 'password_confirmation'}`
+
+```csharp
+var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
+    {
+        Environment = rollbarEnvironment,
+        ScrubFields = new string[]
+        { 
+            "password",
+            "username",
+        }
+    };
+```
+</dd>
 
 </dl>
 
