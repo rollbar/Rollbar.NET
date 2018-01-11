@@ -365,12 +365,12 @@ None of the fields on `Rollbar.DTOs.Body` are updatable, and all null fields in
 
 ### ASP.NET Core 2
 
-The SDK can be integrated into an Asp.Net Core 2 application on two levels:
+The SDK can be integrated into an ASP.NET Core 2 application on two levels:
 
-1.	Each ASP.Net Core controllers’ method implementation could be surrounded by a try-catch block where, within the `catch(…){…}` block, any caught exception is passed to a common exception handling routine which in turn reports the exception via the SDK.
+1.	Each ASP.NET Core controllers’ method implementation could be surrounded by a try-catch block where, within the `catch(…){…}` block, any caught exception is passed to a common exception handling routine which in turn reports the exception via the SDK.
 2.	A request processing pipeline of the application is extended with the Rollbar.NET middleware component that monitors all the inner middleware components of the pipeline for unhandled exceptions and reports them via the Rollbar.NET Notifier singleton instance and then rethrows the exceptions while wrapping them with a new Exception object.
 
-You can check out a sample ASP.Net Core 2 based application that demonstrates a proper use of the middleware component [here](https://github.com/rollbar/Rollbar.NET/tree/master/Sample.AspNetCore2.WebApi).
+You can check out a sample ASP.NET Core 2 based application that demonstrates a proper use of the middleware component [here](https://github.com/rollbar/Rollbar.NET/tree/master/Sample.AspNetCore2.WebApi).
 
 First, the singleton component needs to be properly configured. There are two approaches to doing this. If both approaches are used, the second option always overrides the first option.
 
@@ -457,7 +457,7 @@ That's it! Now every unhandled exception within the middleware pipeline under th
 
 ### ASP.NET MVC
 
-To use inside an ASP.Net Application, first in your `global.asax.cs` and `Application_Start` method initialize Rollbar
+To use inside an ASP.NET application, first in your `global.asax.cs` and `Application_Start` method initialize Rollbar
 
 ```csharp
 protected void Application_Start()
@@ -529,7 +529,7 @@ static void Main()
 
 ### WPF
 
-It is optional to set the user for Rollbar, and this can be reset to a different user at any time. This example includes a default user being set with `MainWindow.xml` loads by calling the `SetRollbarReportingUser` function. [Gist example code here](https://gist.github.com/cdesch/e08275e85a3f27a7b1b481430e12f308).
+It is optional to set the user for Rollbar, and this can be reset to a different user at any time. This example includes a default user being set with `MainWindow.xml` loads by calling the `SetRollbarReportingUser` function. Gist example code [here](https://gist.github.com/cdesch/e08275e85a3f27a7b1b481430e12f308).
 
 In `App.cs`:
 
