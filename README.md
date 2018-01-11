@@ -1,9 +1,6 @@
 # Rollbar.NET
 
-A .NET Rollbar Client that can be used in any application built on the following .NET versions:
-* .NET Core 2.0+
-* .NET Standard 2.0+
-* .NET Full Framework 4.5+
+A .NET Rollbar Client that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, and .NET Full Framework 4.5+.
 
 ## Install
 
