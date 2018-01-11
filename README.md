@@ -1,9 +1,9 @@
 # Rollbar.NET
 
-A .NET Rollbar Client that can be hosted by any application built based on following .NET versions:
-1. .NET Core 2.0 and newer;
-2. .NET Standard 2.0 and newer;
-3. .NET Full Framework 4.5 and newer.
+A .NET Rollbar Client that can be used in any application built on the following .NET versions:
+* .NET Core 2.0+
+* .NET Standard 2.0+
+* .NET Full Framework 4.5+
 
 ## Install
 
@@ -13,11 +13,31 @@ Nuget Package Manager:
 
 ## Basic Usage
 
-* Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ACCESS_TOKEN"))`
+* Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
 * Send errors to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
 * Send messages to Rollbar with `RollbarLocator.RollbarInstance.Info(string)`
 
-## RollbarConfig
+## Upgrading to v1.0.0+ from earlier versions
+
+In order to upgrade to v1.0.0+ from an earlier version, you should change your config from the old version
+
+```csharp
+Rollbar.Init(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"));
+```
+
+to 
+
+```csharp
+const string postServerItemAccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN";
+RollbarLocator.RollbarInstance
+.Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" }) ;
+```
+
+Additionally, anywhere in your code that you were sending error reports via `Rollbar.Report(Exception)` or `Rollbar.Report(string)` will need to be replaced with either something like `RollbarLocator.RollbarInstance.Error(new Exception("trying out the TraceChain", new NullReferenceException()))` or `RollbarLocator.RollbarInstance.Info("Basic info log example.")`.
+
+## Reference
+
+### RollbarConfig
 
 The `RollbarConfig` object allows you to configure the Rollbar library.
 
@@ -130,9 +150,9 @@ var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar
 
 ## Caught Exceptions
 
-To send a caught exception to Rollbar, you must call RollbarLocator.RollbarInstance.Log(). You can set an item's level when you call this function. The level can be 'Debug', 'Info', 'Warning', 'Error' and 'Critical'.
+To send a caught exception to Rollbar, you must call `RollbarLocator.RollbarInstance.Log()`. You can set an item's level when you call this function. The level can be `'Debug'`, `'Info'`, `'Warning'`, `'Error'`, or `'Critical'`.
 
-In addition there other conveninence methods for logging messages using different error levels that are named after the levels.
+In addition, there other conveninence methods for logging messages using different error levels that are named after the levels.
 
 ```csharp
 RollbarLocator.RollbarInstance.Error(exception);
@@ -142,13 +162,12 @@ RollbarLocator.RollbarInstance.Error(exception);
 
 ### When Using the Singleton-like Instance of the Notifier
 
-1.	Get a reference to the singleton-like instance of the Notifier by calling RollbarLocator.RollbarInstance.
-2.	Properly configure the instance (before any attempts to use it for logging) by calling its Configure(…) method while supplying valid configuration parameters.
-3.	Call any of the ILogger’s methods on the instance in order to log messages towards Rollbar API service.
+1.	Get a reference to the singleton-like instance of the Notifier by calling `RollbarLocator.RollbarInstance`.
+2.	Configure the instance (before any attempts to use it for logging) by calling its `Configure(…)` method while supplying valid configuration parameters.
+3.	Call any of the `ILogger`’s methods on the instance.
 
-For example:
 ```csharp
-            const string postServerItemAccessToken = "…65fa5041749b6bf7095a190001…";
+            const string postServerItemAccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN";
 
             RollbarLocator.RollbarInstance
                 .Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" })
@@ -164,12 +183,12 @@ For example:
 
 ### When Using a Scoped Instance of the Notifier
 
-1.	Get reference to a newly created instance of the Notifier by calling RollbarFactory.CreateNew() helper method.
-2.	Properly configure the instance (before any attempts to use it for logging) by calling its Configure(…) method while supplying valid configuration parameters.
-3.	Call any of the ILogger’s methods on the instance in order to log messages towards Rollbar API service.
-4.	Dispose of the Notifier instance at the end of its scope by casting it to IDisposable and calling Dispose() on the cast.
+1.	Get a reference to a newly created instance of the Notifier by calling the `RollbarFactory.CreateNew()` helper method.
+2.	Properly configure the instance (before any attempts to use it for logging) by calling its `Configure(…)` method while supplying valid configuration parameters.
+3.	Call any of the `ILogger`’s methods on the instance.
+4.	Dispose of the Notifier instance at the end of its scope by casting it to `IDisposable` and calling `Dispose()` on the cast.
 
-For example, here the scoped instance of the Notifier is disposed of with the help of the using(…){…} block:
+Here the scoped instance of the Notifier is disposed of with the help of the `using(…){…}` block:
 
 ```csharp
             RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
@@ -188,23 +207,21 @@ For example, here the scoped instance of the Notifier is disposed of with the he
             }
 ```
 
-## Monitoring Notifier’s Internal Events
+## Monitoring the Notifier’s Internal Events
 
-To monitor any Notifier library internal event regardless of specific instance of the Notifier:
+To monitor any internal event regardless of the specific instance of the Notifier:
 
-1.	Get a reference to the RollbarQueueController.Instnace singleton.
-2.	Subscribe to its InternalEvent event.
-3.	Implement the event handler the way you see it.
-4.	As the result of this subscription, at runtime, all the Rollbar internal events generated while using any instance of the Notifier will be reported into the event handler. 
+1.	Get a reference to the `RollbarQueueController.Instance` singleton.
+2.	Subscribe to its `InternalEvent` event.
+3.	Implement the event handler as you desire. As the result of this subscription, at runtime, all the Rollbar internal events generated while using any instance of the Notifier will be reported into the event handler. 
 
 To monitor internal events within any specific instance of the Notifier:
 
 1.	Get a reference to a specific instance of the Notifier. 
-2.	Subscribe to its InternalEvent event.
-3.	Implement the event handler the way you see it.
-4.	As the result of this subscription, at runtime, all the Rollbar internal events generated while using this specific instance of the Notifier will be reported into the event handler. 
+2.	Subscribe to its `InternalEvent` event.
+3.	Implement the event handler as you desire. As the result of this subscription, at runtime, all the Rollbar internal events generated while using this specific instance of the Notifier will be reported into the event handler. 
 
-For example, to demonstrate both levels of monitoring at the same time:
+Below is an example using both levels of monitoring at the same time:
 
 ```csharp
         static void Main(string[] args)
@@ -227,7 +244,7 @@ For example, to demonstrate both levels of monitoring at the same time:
         /// </summary>
         private static void ConfigureRollbarSingleton()
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
+            const string rollbarAccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN";
             const string rollbarEnvironment = "RollbarNetSamples";
 
             var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
@@ -235,7 +252,7 @@ For example, to demonstrate both levels of monitoring at the same time:
                 Environment = rollbarEnvironment,
                 ScrubFields = new string[]
                 {
-                    "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
+                    "pw",
                     "username",
                 }
             };
@@ -303,24 +320,24 @@ For example, to demonstrate both levels of monitoring at the same time:
 
 ## Advanced Usage
 
-If you want more control over sending the data to Rollbar, there is one interesting class
+If you want more control over sending data to Rollbar, there is one interesting class
 to worry about: `Rollbar.DTOs.Payload`. The class and the classes that compose the class cannot be
 constructed without all mandatory arguments, and mandatory fields cannot be set.
-Therefore, if you can construct a payload then it is valid for the purposes of
-sending to Rollbar. You can have a read/write access to instance reference of this type 
-within your own functions/actions defined as CheckIgnore, Transform and Truncate delegates of
+Therefore, if you can construct a payload, then it is valid for the purposes of
+sending to Rollbar. You can have read/write access to instance reference of this type 
+within your own functions/actions defined as `CheckIgnore`, `Transform`, and `Truncate` delegates of
 a `RollbarConfig` instance.
 
 There are two other *particularly* interesting classes to worry about:
 `Rollbar.DTOs.Data` and `Rollbar.DTOs.Body`. `Rollbar.DTOs.Data` can be filled out as completely
-or incompletely as you want, except for the `Environment` ("debug",
-"production", "test", etc) and and `Body` fields. The `Body` is
-where "what you're actually posting to Rollbar" lives. All the other fields on
-`Rollbar.DTOs.Data` answer contextual questions about the bug like "who saw this
-error" (`RollbarPerson`), "What HTTP request data can you give me about the
-error (if it happened during an HTTP Request, of course)" (`Rollbar.DTOs.Request`),
-"How severe was the error?" (`Level`). Anything you see on the
-[rollbar api website](https://rollbar.com/docs/api/items_post/) can be found in
+or incompletely as you want, except for the `Environment` (`"debug"`,
+`"production"`, `"test"`, etc) and `Body` fields. The `Body` is
+where what you're actually posting to Rollbar lives. All the other fields on
+`Rollbar.DTOs.Data` answer contextual questions about the bug, such as "who saw this
+error?" (`RollbarPerson`), "what HTTP request data can you give me about the
+error (if it happened during an HTTP Request)?" (`Rollbar.DTOs.Request`),
+and "how severe was the error?" (`Level`). Anything you see in the
+[Rollbar API docs](https://rollbar.com/docs/api/items_post/) can be found in
 `Rollbar.NET`.
 
 `Rollbar.DTOs.Body` can be constructed one of 5 ways:
@@ -346,21 +363,20 @@ None of the fields on `Rollbar.DTOs.Body` are updatable, and all null fields in
 
 ## Examples
 
-### Asp.Net Core 2
+### ASP.NET Core 2
 
-Rollbar.NET Notifier can be integrated into an Asp.Net Core 2 application on two levels:
+The SDK can be integrated into an Asp.Net Core 2 application on two levels:
 
-1.	Each Asp.Net Core controllers’ method implementation could be surrounded by a try-catch block where, within the catch(…){…} block, any caught  exception is passed to a common exception handling routine which, in turn, reports the exception via the Rollbar.NET Notifier (possibly, among other exception processing steps). 
-2.	A request processing pipeline of the application is extended with the Rollbar.NET middleware component that “monitors” all the “inner” middleware components of the pipeline for unhandled exceptions and reports them via the Rollbar.NET Notifier singleton instance and, then, rethrows the exceptions while wrapping them with a new Exception object.
-The codebase repository has a sample Asp.Net Core 2 based application (Sample.AspNetCore2.WebApi) that demonstrates a proper use of the middleware component. 
+1.	Each ASP.Net Core controllers’ method implementation could be surrounded by a try-catch block where, within the `catch(…){…}` block, any caught exception is passed to a common exception handling routine which in turn reports the exception via the SDK.
+2.	A request processing pipeline of the application is extended with the Rollbar.NET middleware component that monitors all the inner middleware components of the pipeline for unhandled exceptions and reports them via the Rollbar.NET Notifier singleton instance and then rethrows the exceptions while wrapping them with a new Exception object.
 
-Here is how it works:
+You can check out a sample ASP.Net Core 2 based application that demonstrates a proper use of the middleware component [here](https://github.com/rollbar/Rollbar.NET/tree/master/Sample.AspNetCore2.WebApi).
 
-#### As usually, the Rollbar.NET Notifier singleton component needs to be properly configured. 
+First, the singleton component needs to be properly configured. There are two approaches to doing this. If both approaches are used, the second option always overrides the first option.
 
-There are two ways of doing that:
+#### Option 1
 
-1.	Add at least minimum required configuration parameters to the hosting application’s appsettings.json file. For example:   
+Add at least the minimum required configuration parameters to the hosting application’s `appsettings.json` file. Any of the properties of the RollbarConfig class that has public setter can be set using this approach. 
 
 ```json
 {
@@ -379,14 +395,15 @@ There are two ways of doing that:
   },
 
   "Rollbar": {
-    "AccessToken": "17965fa5041749b6bf7095a190001ded",
+    "AccessToken": "POST_SERVER_ITEM_ACCESS_TOKEN",
     "Environment": "AspNetCoreMiddlewareTest"
   }
 }
 ```
-Note: any of the properties of the RollbarConfig class that has public setter can be set using this approach. 
 
-2.	Add proper Rollbar configuration within the ConfigureServices(…) method of Startup.cs like so:  
+#### Option 2
+
+Add proper Rollbar configuration within the `ConfigureServices(…)` method of `Startup.cs`.
 
 ```csharp
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -402,7 +419,7 @@ Note: any of the properties of the RollbarConfig class that has public setter ca
         /// </summary>
         private void ConfigureRollbarSingleton()
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
+            const string rollbarAccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN";
             const string rollbarEnvironment = "RollbarNetSamples";
 
             RollbarLocator.RollbarInstance
@@ -414,11 +431,8 @@ Note: any of the properties of the RollbarConfig class that has public setter ca
         }
 ```
 
-Note: if for some reason both approaches are used, the in-code one always “overrides” the app-settings one.
 
-#### Next, we need to add the Rollbar middleware to the application pipeline. 
-
-This is normally done by adding its usage within the Configure(…) method of the Startup.cs, like so: 
+Next, add the Rollbar middleware to the application pipeline. This is normally done by adding its usage within the `Configure(…)` method of `Startup.cs`.
 
 ```csharp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -438,12 +452,12 @@ This is normally done by adding its usage within the Configure(…) method of th
         }
 ```
 
-That is, it! At this point every unhandled exception within the middleware pipeline under the Rollbar middleware component monitoring will be reported to the Rollbar API service.
+That's it! Now every unhandled exception within the middleware pipeline under the Rollbar middleware component monitoring will be reported to Rollbar.
 
-### ASP.Net MVC
 
-To use inside an ASP.Net Application, first in your global.asax.cs and Application_Start method
-initialize Rollbar
+### ASP.NET MVC
+
+To use inside an ASP.Net Application, first in your `global.asax.cs` and `Application_Start` method initialize Rollbar
 
 ```csharp
 protected void Application_Start()
@@ -493,7 +507,7 @@ static void Main()
 {
     RollbarLocator.RollbarInstance.Configure(new RollbarConfig
     {
-        AccessToken = "POST_SERVER_ACCESS_TOKEN",
+        AccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN",
         Environment = "production"
     });
     Application.EnableVisualStyles();
@@ -515,9 +529,10 @@ static void Main()
 
 ### WPF
 
-Example of using Rollbar.NET inside of a WPF application. It is optional to set the user for Rollbar and can be reset to a different user at any time. This example includes a default user being set with `MainWindow.xml` loads by calling the `SetRollbarReportingUser` function. [Gist example code here](https://gist.github.com/cdesch/e08275e85a3f27a7b1b481430e12f308).
+It is optional to set the user for Rollbar, and this can be reset to a different user at any time. This example includes a default user being set with `MainWindow.xml` loads by calling the `SetRollbarReportingUser` function. [Gist example code here](https://gist.github.com/cdesch/e08275e85a3f27a7b1b481430e12f308).
 
-`App.cs`:
+In `App.cs`:
+
 ```csharp
 namespace Sample
 {
@@ -534,7 +549,7 @@ namespace Sample
             //Initialize Rollbar
             RollbarLocator.RollbarInstance.Configure(new RollbarConfig
             {
-                AccessToken = "<your rollbar token>",
+                AccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN",
                 Environment = "production"          
             });
             // Setup Exception Handler
@@ -547,7 +562,8 @@ namespace Sample
 }
 ```
 
-`MainWindow.cs`:
+In `MainWindow.cs`:
+
 ```csharp
 namespace Sample
 {
@@ -631,7 +647,7 @@ From a page error handler in its code-behind file/class:
 
 From the catch block:
 
- ```csharp
+```csharp
           try
            {
                // Let's simulate an error:
@@ -649,3 +665,19 @@ From the catch block:
 ```
 
 
+## Help / Support
+
+If you run into any issues, please email us at [support@rollbar.com](mailto:support@rollbar.com)
+
+You can also find us in IRC: [#rollbar on chat.freenode.net](irc://chat.freenode.net/rollbar)
+
+For bug reports, please [open an issue on GitHub](https://github.com/rollbar/Rollbar.NET/issues/new).
+
+
+## Contributing
+
+1. [Fork it](https://github.com/rollbar/Rollbar.NET)
+2. Create your feature branch (```git checkout -b my-new-feature```).
+3. Commit your changes (```git commit -am 'Added some feature'```)
+4. Push to the branch (```git push origin my-new-feature```)
+5. Create new Pull Request
