@@ -3,14 +3,17 @@
 namespace Rollbar
 {
     using System;
-    using System.Net;
+    using System.Text;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.Net;
+    using System.Net.Http;
+    using System.Net.Http.Headers;
+
     using Newtonsoft.Json;
+
     using Rollbar.DTOs;
     using Rollbar.Diagnostics;
-    using Newtonsoft.Json.Linq;
-    using System.Collections.Generic;
-    using System.Linq;
     using Rollbar.Serialization.Json;
 
     /// <summary>
@@ -31,26 +34,52 @@ namespace Rollbar
         {
             Assumption.AssertNotNull(payload, nameof(payload));
 
-            var jsonData = JsonConvert.SerializeObject(payload);
-            jsonData = ScrubPayload(jsonData, scrubFields);
+            var task = this.PostAsJsonAsync(payload, scrubFields);
 
-            var jsonResult = Post("item/", jsonData, payload.AccessToken);
+            task.Wait();
 
-            var response = JsonConvert.DeserializeObject<RollbarResponse>(jsonResult);
-            return response;
+            return task.Result;
         }
 
         public async Task<RollbarResponse> PostAsJsonAsync(Payload payload, IEnumerable<string> scrubFields)
         {
-            return await Task.Factory.StartNew(() => this.PostAsJson(payload, scrubFields));
-        }
+            Assumption.AssertNotNull(payload, nameof(payload));
 
-        private string Post(string urlSuffix, string data, string accessToken)
-        {
-            using (var webClient = this.BuildWebClient())
+            using (var httpClient = this.BuildWebClient())
             {
-                webClient.Headers.Add("X-Rollbar-Access-Token", accessToken);
-                return webClient.UploadString(new Uri($"{Config.EndPoint}{urlSuffix}"), data);
+                var jsonData = JsonConvert.SerializeObject(payload);
+                jsonData = ScrubPayload(jsonData, scrubFields);
+
+                httpClient.DefaultRequestHeaders
+                    .Add("X-Rollbar-Access-Token", payload.AccessToken);
+
+                httpClient.DefaultRequestHeaders
+                    .Accept
+                    .Add(new MediaTypeWithQualityHeaderValue("application/json")); //ACCEPT header
+
+                var postPayload = 
+                    new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
+                var uri = new Uri($"{Config.EndPoint}item/");
+                var postResponse = await httpClient.PostAsync(uri, postPayload);
+
+                RollbarResponse response = null;
+                if (postResponse.IsSuccessStatusCode)
+                {
+                    string reply = await postResponse.Content.ReadAsStringAsync();
+                    response = JsonConvert.DeserializeObject<RollbarResponse>(reply);
+                    response.HttpDetails = 
+                        $"Response: {postResponse}" 
+                        + Environment.NewLine 
+                        + $"Request: {postResponse.RequestMessage}" 
+                        + Environment.NewLine
+                        ;
+                }
+                else
+                {
+                    postResponse.EnsureSuccessStatusCode();
+                }
+
+                return response;
             }
         }
 
@@ -63,15 +92,24 @@ namespace Rollbar
             return scrubbedPayload;
         }
 
-        private WebClient BuildWebClient()
+        private HttpClient BuildWebClient()
         {
-            var webClient = new WebClient();
+            HttpClient webClient = null;
 
             var webProxy = this.BuildWebProxy();
 
             if (webProxy != null)
             {
-                webClient.Proxy = webProxy;
+                var httpHandler = new HttpClientHandler();
+                httpHandler.Proxy = webProxy;
+                httpHandler.PreAuthenticate = true;
+                httpHandler.UseDefaultCredentials = false;
+
+                webClient = new HttpClient(httpHandler);
+            }
+            else
+            {
+                webClient = new HttpClient();
             }
 
             return webClient;
