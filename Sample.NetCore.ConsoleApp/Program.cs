@@ -1,6 +1,7 @@
 ﻿using Rollbar;
 using Rollbar.DTOs;
 using System;
+using System.Collections.Generic;
 
 namespace Sample.NetCore.ConsoleApp
 {
@@ -10,8 +11,16 @@ namespace Sample.NetCore.ConsoleApp
         {
             ConfigureRollbarSingleton();
 
+            Dictionary<string, object> customFields = new Dictionary<string, object>();
+            customFields.Add("Hebrew", "אספירין");
+            customFields.Add("Hindi", "एस्पिरि");
+            customFields.Add("Chinese", "阿司匹林");
+            customFields.Add("Japanese", "アセチルサリチル酸");
+            customFields.Add("path1", "d:\\Work\\\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\\branches\\v2\\...");
+            customFields.Add("path2", @"d:\Work\אספירין\branches\v2\...");
+
             RollbarLocator.RollbarInstance
-                .Info("ConsoleApp sample: Basic info log example.")
+                .Info("ConsoleApp sample: Basic info log example.", customFields)
                 .Debug("ConsoleApp sample: First debug log.")
                 .Error(new NullReferenceException("ConsoleApp sample: null reference exception."))
                 .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
