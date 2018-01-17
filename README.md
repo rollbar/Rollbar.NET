@@ -61,7 +61,7 @@ The `RollbarConfig` object allows you to configure the Rollbar library.
 </dd>
 <dt>Transform
 </dt>
-<dd>Allows you to specify a transformation function to modify the payload before it is sent to Rollbar. Use this function to add any value that is in [Request.cs](https://github.com/rollbar/Rollbar.NET/blob/master/Rollbar/Request.cs), such as the user's IP address, query string, and URL of the request. 
+<dd>Allows you to specify a transformation function to modify the payload before it is sent to Rollbar. Use this function to add any value that is in [Request.cs](https://github.com/rollbar/Rollbar.NET/blob/master/Rollbar/DTOs/Request.cs), such as the user's IP address, query string, and URL of the request. 
 
 ```csharp
 new RollbarConfig
