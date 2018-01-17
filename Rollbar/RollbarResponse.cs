@@ -28,6 +28,15 @@
         public RollbarResult Result { get; set; }
 
         /// <summary>
+        /// Gets or sets the HTTP details.
+        /// </summary>
+        /// <value>
+        /// The HTTP details.
+        /// </value>
+        [JsonIgnore]
+        public string HttpDetails { get; set; }
+
+        /// <summary>
         /// Traces as string.
         /// </summary>
         /// <param name="indent">The indent.</param>
@@ -41,6 +50,8 @@
             sb.AppendLine(indent + "  Error: " + this.Error);
             sb.AppendLine(indent + "  Result: ");
             sb.AppendLine(indent  + this.Result.TraceAsString(indent + "  "));
+            sb.AppendLine(indent + "  Details: ");
+            sb.AppendLine(indent + this.HttpDetails);
             return sb.ToString();
         }
     }

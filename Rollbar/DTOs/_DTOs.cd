@@ -1,2 +1,111 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram /> 
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Rollbar.DTOs.Body" Collapsed="true">
+    <Position X="5.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAABAAAAIIIAAAAAA=</HashCode>
+      <FileName>DTOs\Body.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Client" Collapsed="true">
+    <Position X="1.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.CodeContext" Collapsed="true">
+    <Position X="5.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>DTOs\CodeContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.CrashReport" Collapsed="true">
+    <Position X="5.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\CrashReport.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Data" Collapsed="true">
+    <Position X="5.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAiCgAAAMAwAAADCAAAAIAAgAABCAAAAggRAAQ=</HashCode>
+      <FileName>DTOs\Data.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.DtoBase" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\DtoBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.DTOs.Exception" Collapsed="true">
+    <Position X="5.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAIAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>DTOs\Exception.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.ExtendableDtoBase" Collapsed="true">
+    <Position X="1.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>OQIAAAAEIAAEABAQCAAABAQAAAAAAAAEAAAgAABQIAA=</HashCode>
+      <FileName>DTOs\ExtendableDtoBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.DTOs.Frame" Collapsed="true">
+    <Position X="5.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAoCAAAAAAAAgAAAAQAAAAAAIAAQAAABEAAg=</HashCode>
+      <FileName>DTOs\Frame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Message" Collapsed="true">
+    <Position X="1.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Message.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Payload" Collapsed="true">
+    <Position X="5.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAEAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Payload.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Person" Collapsed="true">
+    <Position X="5.25" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Person.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Request" Collapsed="true">
+    <Position X="1.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAACAAAgAAgBCAAAgAAECAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Request.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Server" Collapsed="true">
+    <Position X="1.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAACAgAAAAAAAgAAAA=</HashCode>
+      <FileName>DTOs\Server.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Trace" Collapsed="true">
+    <Position X="5.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAE=</HashCode>
+      <FileName>DTOs\Trace.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
