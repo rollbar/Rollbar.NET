@@ -4,10 +4,33 @@
     using System.Collections.Generic;
 
     /// <summary>
+    /// 
     /// Defines ILogger interface.
+    /// 
+    /// NOTE: 
+    /// 
+    /// All the logging methods of this interface imply asynchronous/non-blocking implementation.
+    /// However, the interface defines the method (ILogger AsBlockingLogger(TimeSpan timeout))
+    /// that returns a synchronous implementation of ILogger.
+    /// This approach allows for easier code refactoring when switching between 
+    /// asynchronous and synchronous uses of the logger.
+    /// 
+    /// Normally, you would want to use asynchronous logging since it has virtually no instrumentational 
+    /// overhead on your application execution performance at runtime. It has "fire and forget"
+    /// approach to logging. However, in some specific situations, for example, while logging right before 
+    /// exiting an application, you may want to use it synchronously so that the application
+    /// does not quit before the logging completes.
+    /// 
     /// </summary>
     public interface ILogger
     {
+        /// <summary>
+        /// Returns blocking/synchronous implementation of this ILogger.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns></returns>
+        ILogger AsBlockingLogger(TimeSpan timeout);
+
         /// <summary>
         /// Logs the specified level.
         /// </summary>

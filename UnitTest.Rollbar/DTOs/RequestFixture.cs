@@ -12,7 +12,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Linq;
 
     [TestClass]
-    [TestCategory("RequestFixture")]
+    [TestCategory(nameof(RequestFixture))]
     public class RequestFixture
     {
         private Request _request;

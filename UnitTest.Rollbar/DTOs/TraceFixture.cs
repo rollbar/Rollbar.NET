@@ -11,7 +11,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Linq;
 
     [TestClass]
-    [TestCategory("TraceFixture")]
+    [TestCategory(nameof(TraceFixture))]
     public class TraceFixture
     {
         [TestInitialize]

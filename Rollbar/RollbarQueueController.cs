@@ -64,6 +64,10 @@ namespace Rollbar
 
         #endregion singleton implementation
 
+
+        private readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(250);
+
+
         /// <summary>
         /// Occurs after a Rollbar internal event happens.
         /// </summary>
@@ -135,8 +139,6 @@ namespace Rollbar
 
         private void KeepProcessingAllQueues()
         {
-            TimeSpan sleepInterval = TimeSpan.FromMilliseconds(250);
-
             while(true)
             {
                 try
@@ -146,7 +148,7 @@ namespace Rollbar
                         ProcessAllQueuesOnce();
                     }
 
-                    Thread.Sleep(sleepInterval);
+                    Thread.Sleep(this._sleepInterval);
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
                 catch (System.Exception ex)
@@ -194,16 +196,19 @@ namespace Rollbar
                     switch (response.Error)
                     {
                         case (int)RollbarApiErrorEventArgs.RollbarError.None:
+                            payload.Signal?.Release();
                             queue.Dequeue();
                             tokenMetadata.ResetTokenUsageDelay();
                             break;
                         case (int)RollbarApiErrorEventArgs.RollbarError.TooManyRequests:
+                            ObeyPayloadTimeout(payload, queue);
                             tokenMetadata.IncrementTokenUsageDelay();
                             OnRollbarEvent(
                                 new RollbarApiErrorEventArgs(queue.Logger.Config, payload, response)
                                 );
                             return;
                         default:
+                            ObeyPayloadTimeout(payload, queue);
                             OnRollbarEvent(
                                 new RollbarApiErrorEventArgs(queue.Logger.Config, payload, response)
                                 );
@@ -211,6 +216,14 @@ namespace Rollbar
                     }
 
                 }
+            }
+        }
+
+        private void ObeyPayloadTimeout(Payload payload, PayloadQueue queue)
+        {
+            if (payload.TimeoutAt.HasValue && (DateTime.Now.Add(this._sleepInterval) >= payload.TimeoutAt.Value))
+            {
+                queue.Dequeue();
             }
         }
 

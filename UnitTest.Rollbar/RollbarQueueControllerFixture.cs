@@ -8,7 +8,7 @@ namespace UnitTest.Rollbar
     using System.Threading;
 
     [TestClass]
-    [TestCategory("RollbarQueueControllerFixture")]
+    [TestCategory(nameof(RollbarQueueControllerFixture))]
     public class RollbarQueueControllerFixture
     {
         //private IRollbar _logger = null;

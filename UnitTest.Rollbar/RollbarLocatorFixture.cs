@@ -12,7 +12,7 @@ namespace UnitTest.Rollbar
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("RollbarLocatorFixture")]
+    [TestCategory(nameof(RollbarLocatorFixture))]
     public class RollbarLocatorFixture
     {
 

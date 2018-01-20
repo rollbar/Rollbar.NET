@@ -13,7 +13,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("PayloadFixture")]
+    [TestCategory(nameof(PayloadFixture))]
     public class PayloadFixture
     {
         private Payload _exceptionExample;

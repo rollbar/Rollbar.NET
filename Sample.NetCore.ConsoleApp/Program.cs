@@ -2,6 +2,7 @@
 using Rollbar.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Sample.NetCore.ConsoleApp
 {
@@ -26,8 +27,50 @@ namespace Sample.NetCore.ConsoleApp
                 .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
                 ;
 
-            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(10));
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            RollbarLocator.RollbarInstance
+                .Info("Via no-blocking mechanism.")
+                ;
+            stopwatch.Stop();
+            string msg = "*** 1. No-blocking report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
+            System.Diagnostics.Trace.WriteLine(msg);
+            Console.WriteLine(msg);
 
+            stopwatch = Stopwatch.StartNew();
+            try
+            {
+                RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(10000))
+                    .Info("Via blocking mechanism.")
+                    ;
+            }
+            catch (System.TimeoutException ex)
+            {
+                msg = "*** Blocking call with too short timeout. Exception: " + Environment.NewLine + ex;
+                System.Diagnostics.Trace.WriteLine(msg);
+                Console.WriteLine(msg);
+            }
+            stopwatch.Stop();
+            msg = "*** 2. Blocking (long timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
+            System.Diagnostics.Trace.WriteLine(msg);
+            Console.WriteLine(msg);
+
+            stopwatch = Stopwatch.StartNew();
+            try
+            {
+                RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(500))
+                    .Info("Via blocking mechanism with short timeout.")
+                    ;
+            }
+            catch (System.TimeoutException ex)
+            {
+                msg = "*** 3. Blocking call with too short timeout. Exception: " + Environment.NewLine + ex;
+                System.Diagnostics.Trace.WriteLine(msg);
+                Console.WriteLine(msg);
+            }
+            stopwatch.Stop();
+            msg = "*** Blocking (short timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
+            System.Diagnostics.Trace.WriteLine(msg);
+            Console.WriteLine(msg);
         }
 
         /// <summary>

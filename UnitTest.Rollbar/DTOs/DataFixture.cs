@@ -15,7 +15,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("DataFixture")]
+    [TestCategory(nameof(DataFixture))]
     public class DataFixture
     {
         private static readonly Regex WhiteSpace = new Regex(@"\s");

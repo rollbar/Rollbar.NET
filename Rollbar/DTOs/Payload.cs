@@ -2,6 +2,8 @@
 {
     using Newtonsoft.Json;
     using Rollbar.Diagnostics;
+    using System;
+    using System.Threading;
 
     /// <summary>
     /// Models Rollbar Payload DTO.
@@ -10,13 +12,38 @@
     public class Payload
         : DtoBase
     {
+        private readonly DateTime? _timeoutAt = null;
+        private readonly SemaphoreSlim _signal = null;
+
+        [JsonIgnore]
+        internal DateTime? TimeoutAt
+        {
+            get { return this._timeoutAt; }
+        }
+
+        [JsonIgnore]
+        internal SemaphoreSlim Signal
+        {
+            get { return this._signal; }
+        }
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="Payload"/> class.
+        /// Initializes a new instance of the <see cref="Payload" /> class.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="data">The data.</param>
-        public Payload(string accessToken, Data data)
+        /// <param name="timeoutAt">The timeout at.</param>
+        /// <param name="signal">The signal.</param>
+        public Payload(
+            string accessToken, 
+            Data data, 
+            DateTime? timeoutAt = null,
+            SemaphoreSlim signal = null
+            )
         {
+            this._timeoutAt = timeoutAt;
+            this._signal = signal;
+
             AccessToken = accessToken;
             Data = data;
             Validate();

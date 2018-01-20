@@ -8,7 +8,7 @@ namespace UnitTest.Rollbar
     using System.Threading;
 
     [TestClass]
-    [TestCategory("RollbarFactoryFixture")]
+    [TestCategory(nameof(RollbarFactoryFixture))]
     public class RollbarFactoryFixture
     {
 

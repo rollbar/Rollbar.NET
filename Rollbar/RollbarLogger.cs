@@ -11,6 +11,11 @@ namespace Rollbar
 
     /// <summary>
     /// Implements disposable implementation of IRollbar.
+    /// 
+    /// All the logging methods implemented in async "fire-and-forget" fashion.
+    /// Hence, the payload is not yet delivered to the Rollbar API service when
+    /// the methods return.
+    /// 
     /// </summary>
     /// <seealso cref="Rollbar.IRollbar" />
     /// <seealso cref="System.IDisposable" />
@@ -79,6 +84,11 @@ namespace Rollbar
         #endregion IRollbar
 
         #region ILogger
+
+        public ILogger AsBlockingLogger(TimeSpan timeout)
+        {
+            return new RollbarLoggerBlockingWrapper(this, timeout);
+        }
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
@@ -209,25 +219,55 @@ namespace Rollbar
 
         #endregion ILogger
 
-        private void Report(System.Exception e, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
+        internal void Report(
+            System.Exception e, 
+            ErrorLevel? level = ErrorLevel.Error, 
+            IDictionary<string, object> custom = null, 
+            TimeSpan? timeout = null,
+            SemaphoreSlim signal = null
+            )
         {
             SendBodyAsync(new Body(e), level, custom);
         }
 
-        private void Report(string message, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
+        internal void Report(
+            string message, 
+            ErrorLevel? level = ErrorLevel.Error, 
+            IDictionary<string, object> custom = null,
+            TimeSpan? timeout = null,
+            SemaphoreSlim signal = null
+            )
         {
-            SendBodyAsync(new Body(new Message(message)), level, custom);
+            SendBodyAsync(new Body(new Message(message)), level, custom, timeout, signal);
         }
 
-        private void SendBodyAsync(Body body, ErrorLevel? level, IDictionary<string, object> custom)
+        private void SendBodyAsync(
+            Body body, ErrorLevel? level, 
+            IDictionary<string, object> custom,
+            TimeSpan? timeout = null,
+            SemaphoreSlim signal = null
+            )
         {
+            DateTime? timeoutAt = null;
+            if (timeout.HasValue)
+            {
+                timeoutAt = DateTime.Now.Add(timeout.Value);
+            }
             // we are taking here a fire-and-forget approach:
-            Task.Factory.StartNew(() => SendBody(body, level, custom));
+            Task.Factory.StartNew(() => SendBody(body, level, custom, timeoutAt, signal));
         }
 
-        private void SendBody(Body body, ErrorLevel? level, IDictionary<string, object> custom)
+        private void SendBody(
+            Body body, 
+            ErrorLevel? level, 
+            IDictionary<string, object> custom,
+            DateTime? timeoutAt = null,
+            SemaphoreSlim signal = null
+            )
         {
-            lock(this._syncRoot)
+            Assumption.AssertTrue(timeoutAt.HasValue == (signal != null), nameof(timeoutAt) + " or " + nameof(signal));
+
+            lock (this._syncRoot)
             {
                 if (string.IsNullOrWhiteSpace(this._config.AccessToken)
                     || this._config.Enabled == false
@@ -242,7 +282,7 @@ namespace Rollbar
                     Level = level ?? this._config.LogLevel
                 };
 
-                var payload = new Payload(this._config.AccessToken, data);
+                var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
                 payload.Data.GuidUuid = Guid.NewGuid();
                 payload.Data.Person = this._config.Person;
 

@@ -15,7 +15,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("FrameFixture")]
+    [TestCategory(nameof(FrameFixture))]
     public class FrameFixture
     {
         [TestMethod]

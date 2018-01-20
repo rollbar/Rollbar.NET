@@ -7,7 +7,7 @@ namespace UnitTest.Rollbar
     using System.Threading;
 
     [TestClass]
-    [TestCategory("PayloadQueueFixture")]
+    [TestCategory(nameof(PayloadQueueFixture))]
     public class PayloadQueueFixture
     {
         [TestInitialize]

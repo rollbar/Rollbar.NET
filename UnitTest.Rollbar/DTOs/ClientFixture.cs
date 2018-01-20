@@ -11,7 +11,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("ClientFixture")]
+    [TestCategory(nameof(ClientFixture))]
     public class ClientFixture
     {
         private Client _client;
