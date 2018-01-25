@@ -227,7 +227,7 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
-            SendBodyAsync(new Body(e), level, custom);
+            SendBodyAsync(new Body(e), level, custom, timeout, signal);
         }
 
         internal void Report(

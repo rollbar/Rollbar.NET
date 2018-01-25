@@ -36,7 +36,7 @@ namespace UnitTest.Rollbar
             Stopwatch stopwatch = Stopwatch.StartNew();
             _logger.Info("Via no-blocking mechanism.");
             stopwatch.Stop();
-            var noblockingCallDuration = stopwatch.Elapsed.TotalMilliseconds ;
+            var noblockingCallDuration = stopwatch.Elapsed.TotalMilliseconds;
 
             stopwatch = Stopwatch.StartNew();
             try
