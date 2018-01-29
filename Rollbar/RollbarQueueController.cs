@@ -203,13 +203,13 @@ namespace Rollbar
                         case (int)RollbarApiErrorEventArgs.RollbarError.TooManyRequests:
                             ObeyPayloadTimeout(payload, queue);
                             tokenMetadata.IncrementTokenUsageDelay();
-                            OnRollbarEvent(
+                            this.OnRollbarEvent(
                                 new RollbarApiErrorEventArgs(queue.Logger.Config, payload, response)
                                 );
                             return;
                         default:
                             ObeyPayloadTimeout(payload, queue);
-                            OnRollbarEvent(
+                            this.OnRollbarEvent(
                                 new RollbarApiErrorEventArgs(queue.Logger.Config, payload, response)
                                 );
                             break;
@@ -333,6 +333,8 @@ namespace Rollbar
             {
                 handler(this, e);
             }
+
+            e?.Config?.Logger?.OnRollbarEvent(e);
         }
 
     }

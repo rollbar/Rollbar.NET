@@ -330,20 +330,13 @@ namespace Rollbar
 
         }
 
-        protected virtual void OnRollbarEvent(RollbarEventArgs e)
+        internal virtual void OnRollbarEvent(RollbarEventArgs e)
         {
-            Task.Factory.StartNew(() => 
+            EventHandler<RollbarEventArgs> handler = InternalEvent;
+            if (handler != null)
             {
-                EventHandler<RollbarEventArgs> handler = InternalEvent;
-                if (handler != null)
-                {
-                    handler(this, e);
-                }
-            },
-            new CancellationToken(),
-            TaskCreationOptions.None,
-            this._nativeTaskScheduler
-            );
+                handler(this, e);
+            }
         }
 
         #region IDisposable Support

@@ -93,9 +93,12 @@ namespace Sample.NetCore.ConsoleApp
             RollbarLocator.RollbarInstance
                 // minimally required Rollbar configuration:
                 .Configure(config)
-                // optional step if you would like to monitor Rollbar internal events within your application:
+                // optional step if you would like to monitor this Rollbar instance's internal events within your application:
                 .InternalEvent += OnRollbarInternalEvent
                 ;
+
+            // optional step if you would like to monitor all Rollbar instances' internal events within your application:
+            RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
 
             // Optional info about reporting Rollbar user:
             SetRollbarReportingUser("007", "jbond@mi6.uk", "JBOND");
