@@ -34,6 +34,17 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net47' 
+             Or '$(TargetFramework)' == 'net462' 
+             Or '$(TargetFramework)' == 'net461' 
+             Or '$(TargetFramework)' == 'net46'
+             Or '$(TargetFramework)' == 'net452'
+             Or '$(TargetFramework)' == 'net451'
+             Or '$(TargetFramework)' == 'net45'
+             ">
+    <DefineConstants>NETFX_MAX_47</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net471' 
              Or '$(TargetFramework)' == 'net47' 
              Or '$(TargetFramework)' == 'net462' 
@@ -43,6 +54,7 @@
              Or '$(TargetFramework)' == 'net451'
              Or '$(TargetFramework)' == 'net45'
              ">
+    <Reference Include="System.Configuration" Version="4.0.0.0" />
     <Reference Include="System.Net" Version="4.0.0.0" />
     <Reference Include="System.Net.Http" Version="4.0.0.0" />
   </ItemGroup>
