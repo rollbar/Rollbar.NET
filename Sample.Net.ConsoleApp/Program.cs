@@ -12,7 +12,15 @@
     {
         static void Main(string[] args)
         {
+            // NOTE: when the next line is commented out, 
+            // the Rollbar notifier will still be properly configured via app.config:
             //ConfigureRollbarSingleton();
+
+            // ConfigureRollbarSingleton() is called above,
+            // the next code line could be commented out:
+            RollbarLocator.RollbarInstance
+                .InternalEvent += OnRollbarInternalEvent
+                ;
 
             RollbarLocator.RollbarInstance
                 .Info("ConsoleApp sample: Basic info log example.")

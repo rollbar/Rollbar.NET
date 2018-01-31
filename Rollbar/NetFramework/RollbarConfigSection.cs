@@ -1,21 +1,17 @@
 ﻿namespace Rollbar.NetFramework
 {
-#if NETFX_MAX_47
+#if NETFX
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Configuration;
-    using System.Diagnostics;
 
     /// <summary>
-    /// Implements Rollbar custom configuration section for .NET4.5-4.7 only!
+    /// Implements Rollbar custom configuration section for .NET Framework only!
     /// </summary>
     /// <seealso cref="System.Configuration.ConfigurationSection" />
     /// <remarks>
     /// http://joelabrahamsson.com/creating-a-custom-configuration-section-in-net/
     /// https://msdn.microsoft.com/en-us/library/system.configuration.configurationsection.aspx
+    /// https://docs.microsoft.com/en-us/dotnet/api/system.configuration.configurationsection?view=netframework-4.7.1
     /// </remarks>
     public class RollbarConfigSection
             : ConfigurationSection
@@ -206,8 +202,5 @@
     }
 #endif
 
-#if NETFX_MIN_471
-
-#endif
 
 }

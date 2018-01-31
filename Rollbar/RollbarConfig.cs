@@ -12,6 +12,7 @@
     /// <summary>
     /// Models Rollbar client/notifier configuration data.
     /// </summary>
+    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
     /// <seealso cref="Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
     /// <seealso cref="Rollbar.ITraceable" />
     public class RollbarConfig
@@ -90,12 +91,13 @@
             this.Server = null;
             this.Person = null;
 
-#if NETFX_MAX_47
+#if NETFX
+            // initialize based on app.config settings of Rollbar section (if any):
             this.InitFromAppConfig();
 #endif
         }
 
-#if NETFX_MAX_47
+#if NETFX
         private void InitFromAppConfig()
         {
             Rollbar.NetFramework.RollbarConfigSection config = 
