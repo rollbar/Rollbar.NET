@@ -4,7 +4,10 @@
 
     <TargetFrameworks>net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0;netcoreapp2.0</TargetFrameworks>
 
-    <Version>1.0.1</Version>
+    <NotifierVersion>1.0.2</NotifierVersion>
+    <Version>$(NotifierVersion)</Version>
+    <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
+    <FileVersion>$(NotifierVersion)</FileVersion>
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
     <Company>Rollbar Inc</Company>
     <Product>Rollbar.Net Notifier</Product>
@@ -31,6 +34,18 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net471'
+             Or '$(TargetFramework)' == 'net47' 
+             Or '$(TargetFramework)' == 'net462' 
+             Or '$(TargetFramework)' == 'net461' 
+             Or '$(TargetFramework)' == 'net46'
+             Or '$(TargetFramework)' == 'net452'
+             Or '$(TargetFramework)' == 'net451'
+             Or '$(TargetFramework)' == 'net45'
+             ">
+    <DefineConstants>NETFX</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net471' 
              Or '$(TargetFramework)' == 'net47' 
              Or '$(TargetFramework)' == 'net462' 
@@ -40,8 +55,9 @@
              Or '$(TargetFramework)' == 'net451'
              Or '$(TargetFramework)' == 'net45'
              ">
-    <Reference Include="System.Net" Version="4.0.0.0" />
-    <Reference Include="System.Net.Http" Version="4.0.0.0" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
 
 </Project>

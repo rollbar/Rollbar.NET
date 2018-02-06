@@ -11,7 +11,7 @@ namespace UnitTest.Rollbar.Serialization.Json
     using System.Threading;
 
     [TestClass]
-    [TestCategory("JsonScrubberFixture")]
+    [TestCategory(nameof(JsonScrubberFixture))]
     public class JsonScrubberFixture
     {
         [TestInitialize]

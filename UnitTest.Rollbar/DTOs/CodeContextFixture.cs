@@ -13,7 +13,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("CodeContextFixture")]
+    [TestCategory(nameof(CodeContextFixture))]
     public class CodeContextFixture
     {
         private CodeContext _codeContext;

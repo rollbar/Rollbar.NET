@@ -11,7 +11,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("BodyFixture")]
+    [TestCategory(nameof(BodyFixture))]
     public class BodyFixture
     {
         [TestInitialize]

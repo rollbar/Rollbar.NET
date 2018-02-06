@@ -12,7 +12,7 @@ namespace UnitTest.Rollbar
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("RollbarLocatorFixture")]
+    [TestCategory(nameof(RollbarLocatorFixture))]
     public class RollbarLocatorFixture
     {
 
@@ -43,7 +43,7 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        [Timeout(5000)]
+        [Timeout(10000)]
         public void LocatesTheSameInstanceInMultithreadedEnvironment()
         {
             const int maxIterations = 100;

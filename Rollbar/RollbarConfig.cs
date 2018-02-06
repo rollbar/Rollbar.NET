@@ -4,6 +4,7 @@
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using System;
+    using System.Diagnostics;
     using System.Text;
 
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
@@ -11,6 +12,7 @@
     /// <summary>
     /// Models Rollbar client/notifier configuration data.
     /// </summary>
+    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
     /// <seealso cref="Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
     /// <seealso cref="Rollbar.ITraceable" />
     public class RollbarConfig
@@ -28,6 +30,8 @@
         internal RollbarConfig(RollbarLogger logger)
         {
             this._logger = logger;
+
+            this.SetDefaults();
         }
 
         internal RollbarLogger Logger
@@ -59,15 +63,19 @@
         {
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
 
+            this.SetDefaults();
             this.AccessToken = accessToken;
+        }
 
+        private void SetDefaults()
+        {
             // let's set some default values:
             this.Environment = "production";
             this.Enabled = true;
             this.MaxReportsPerMinute = 60;
             this.ReportingQueueDepth = 20;
             this.LogLevel = ErrorLevel.Debug;
-            this.ScrubFields = new[] 
+            this.ScrubFields = new[]
             {
                 "passwd",
                 "password",
@@ -82,8 +90,61 @@
             this.Truncate = null;
             this.Server = null;
             this.Person = null;
+
+#if NETFX
+            // initialize based on app.config settings of Rollbar section (if any):
+            this.InitFromAppConfig();
+#endif
         }
 
+#if NETFX
+        private void InitFromAppConfig()
+        {
+            Rollbar.NetFramework.RollbarConfigSection config = 
+                Rollbar.NetFramework.RollbarConfigSection.GetConfiguration();
+            if (config == null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(config.AccessToken))
+            {
+                this.AccessToken = config.AccessToken;
+            }
+            if (!string.IsNullOrWhiteSpace(config.Environment))
+            {
+                this.Environment = config.Environment;
+            }
+            if (config.Enabled.HasValue)
+            {
+                this.Enabled = config.Enabled.Value;
+            }
+            if (config.MaxReportsPerMinute.HasValue)
+            {
+                this.MaxReportsPerMinute = config.MaxReportsPerMinute.Value;
+            }
+            if (config.ReportingQueueDepth.HasValue)
+            {
+                this.ReportingQueueDepth = config.ReportingQueueDepth.Value;
+            }
+            if (config.LogLevel.HasValue)
+            {
+                this.LogLevel = config.LogLevel.Value;
+            }
+            if (config.ScrubFields != null && config.ScrubFields.Length > 0)
+            {
+                this.ScrubFields = config.ScrubFields;
+            }
+            if (!string.IsNullOrWhiteSpace(config.EndPoint))
+            {
+                this.EndPoint = config.EndPoint;
+            }
+            if (!string.IsNullOrWhiteSpace(config.ProxyAddress))
+            {
+                this.ProxyAddress = config.ProxyAddress;
+            }
+        }
+#endif
         /// <summary>
         /// Gets the access token.
         /// </summary>

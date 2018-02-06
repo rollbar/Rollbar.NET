@@ -1,76 +1,40 @@
-﻿using Rollbar;
-using Rollbar.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-
-namespace Sample.NetCore.ConsoleApp
+﻿namespace Sample.Net.ConsoleApp
 {
+    using Rollbar;
+    using Rollbar.DTOs;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
     class Program
     {
         static void Main(string[] args)
         {
-            ConfigureRollbarSingleton();
+            // NOTE: when the next line is commented out, 
+            // the Rollbar notifier will still be properly configured via app.config:
+            //ConfigureRollbarSingleton();
 
-            Dictionary<string, object> customFields = new Dictionary<string, object>();
-            customFields.Add("Hebrew", "אספירין");
-            customFields.Add("Hindi", "एस्पिरि");
-            customFields.Add("Chinese", "阿司匹林");
-            customFields.Add("Japanese", "アセチルサリチル酸");
-            customFields.Add("path1", "d:\\Work\\\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\\branches\\v2\\...");
-            customFields.Add("path2", @"d:\Work\אספירין\branches\v2\...");
+            // ConfigureRollbarSingleton() is called above,
+            // the next code line could be commented out:
+            RollbarLocator.RollbarInstance
+                .InternalEvent += OnRollbarInternalEvent
+                ;
 
             RollbarLocator.RollbarInstance
-                .Info("ConsoleApp sample: Basic info log example.", customFields)
+                .Info("ConsoleApp sample: Basic info log example.")
                 .Debug("ConsoleApp sample: First debug log.")
                 .Error(new NullReferenceException("ConsoleApp sample: null reference exception."))
                 .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
                 ;
 
-            Stopwatch stopwatch = Stopwatch.StartNew();
             RollbarLocator.RollbarInstance
                 .Info("Via no-blocking mechanism.")
                 ;
-            stopwatch.Stop();
-            string msg = "*** 1. No-blocking report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
-            System.Diagnostics.Trace.WriteLine(msg);
-            Console.WriteLine(msg);
 
-            stopwatch = Stopwatch.StartNew();
-            try
-            {
-                RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(10000))
-                    .Info("Via blocking mechanism.")
-                    ;
-            }
-            catch (System.TimeoutException ex)
-            {
-                msg = "*** Blocking call with too short timeout. Exception: " + Environment.NewLine + ex;
-                System.Diagnostics.Trace.WriteLine(msg);
-                Console.WriteLine(msg);
-            }
-            stopwatch.Stop();
-            msg = "*** 2. Blocking (long timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
-            System.Diagnostics.Trace.WriteLine(msg);
-            Console.WriteLine(msg);
-
-            stopwatch = Stopwatch.StartNew();
-            try
-            {
-                RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(500))
-                    .Info("Via blocking mechanism with short timeout.")
-                    ;
-            }
-            catch (System.TimeoutException ex)
-            {
-                msg = "*** 3. Blocking call with too short timeout. Exception: " + Environment.NewLine + ex;
-                System.Diagnostics.Trace.WriteLine(msg);
-                Console.WriteLine(msg);
-            }
-            stopwatch.Stop();
-            msg = "*** Blocking (short timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
-            System.Diagnostics.Trace.WriteLine(msg);
-            Console.WriteLine(msg);
+            Console.WriteLine("Press Enter key to exit...");
+            Console.ReadLine();
         }
 
         /// <summary>
@@ -98,7 +62,7 @@ namespace Sample.NetCore.ConsoleApp
                 ;
 
             // optional step if you would like to monitor all Rollbar instances' internal events within your application:
-            RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
+            //RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
 
             // Optional info about reporting Rollbar user:
             SetRollbarReportingUser("007", "jbond@mi6.uk", "JBOND");

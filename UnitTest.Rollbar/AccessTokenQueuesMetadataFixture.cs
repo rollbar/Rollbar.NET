@@ -7,7 +7,7 @@ namespace UnitTest.Rollbar
     using System;
 
     [TestClass]
-    [TestCategory("AccessTokenQueuesMetadataFixture")]
+    [TestCategory(nameof(AccessTokenQueuesMetadataFixture))]
     public class AccessTokenQueuesMetadataFixture
     {
         [TestInitialize]
