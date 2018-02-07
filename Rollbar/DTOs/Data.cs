@@ -2,7 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
+    using System.Runtime.Versioning;
+    using System.Text;
     using Newtonsoft.Json;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -12,8 +16,26 @@
     public class Data
         : DtoBase
     {
-        private static readonly string NotifierAssemblyVersion = 
-            typeof(Data).Assembly.GetName().Version.ToString(3);
+        private static readonly string NotifierAssemblyVersion = null;
+
+        private static readonly string DefaultFrameworkValue = null;
+
+        private static string DetectNotifierAssemblyVersion()
+        {
+            return RuntimeEnvironmentUtility.GetTypeAssemblyVersion(typeof(Data));
+        }
+
+        private static string DetectTargetFrameworks()
+        {
+            var targetFrameworks = RuntimeEnvironmentUtility.GetAssemblyTargetFrameworks(typeof(Data));
+            return StringUtility.Combine(targetFrameworks, "; ");
+        }
+
+        static Data()
+        {
+            Data.NotifierAssemblyVersion = Data.DetectNotifierAssemblyVersion();
+            Data.DefaultFrameworkValue = Data.DetectTargetFrameworks();
+        }
 
         /// <summary>
         /// Gets or sets the default platform.
@@ -41,11 +63,12 @@
             Assumption.AssertNotNullOrWhiteSpace(environment, nameof(environment));
             Assumption.AssertNotNull(body, nameof(body));
 
-            Environment = environment;
-            Body = body;
-            Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            Platform = DefaultPlatform;
-            Language = DefaultLanguage;
+            this.Environment = environment;
+            this.Body = body;
+            this.Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            this.Platform = Data.DefaultPlatform;
+            this.Framework = Data.DefaultFrameworkValue;
+            this.Language = Data.DefaultLanguage;
         }
 
         /// <summary>
