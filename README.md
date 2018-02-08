@@ -192,7 +192,7 @@ static void Main()
     
     TaskScheduler.UnobservedTaskException += (sender, args) =>
     {
-        Rollbar.Report(args.Exception);
+        RollbarLocator.RollbarInstance.Error(args.Exception);
     };
 
     Application.Run(new Form1());
