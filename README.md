@@ -539,6 +539,11 @@ static void Main()
     {
         RRollbarLocator.RollbarInstance.Error(args.ExceptionObject as System.Exception);
     };
+    
+    TaskScheduler.UnobservedTaskException += (sender, args) =>
+    {
+        RollbarLocator.RollbarInstance.Error(args.Exception);
+    };
 
     Application.Run(new Form1());
 }
