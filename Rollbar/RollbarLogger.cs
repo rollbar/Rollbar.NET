@@ -90,6 +90,12 @@ namespace Rollbar
             return new RollbarLoggerBlockingWrapper(this, timeout);
         }
 
+
+        public ILogger Log(Data data)
+        {
+            throw new NotImplementedException();
+        }
+
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
             return this.Log(level, obj.ToString(), custom);

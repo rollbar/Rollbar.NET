@@ -1,6 +1,23 @@
 ﻿namespace Rollbar.DTOs
 {
+    using Rollbar.Diagnostics;
     using System.Collections.Generic;
+    using System.Net.Http;
+    using System.Linq;
+    using Rollbar.Common;
+
+#if NETCOREAPP2_0
+    using Microsoft.AspNetCore.Http;
+#endif
+
+#if NETSTANDARD2_0
+    using Microsoft.AspNetCore.Http;
+#endif
+
+#if NETFX
+    using System.ServiceModel.Channels;
+    using System.Web;
+#endif
 
     /// <summary>
     /// Models Rollbar Request DTO.
@@ -19,12 +36,70 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// Initializes a new instance of the <see cref="Request" /> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Request(IDictionary<string, object> arbitraryKeyValuePairs) 
+        /// <param name="httpRequest">The HTTP request.</param>
+        public Request(IDictionary<string, object> arbitraryKeyValuePairs, HttpRequestMessage httpRequest = null) 
             : base(arbitraryKeyValuePairs)
         {
+            if (httpRequest != null)
+            {
+                this.SnapProperties(httpRequest);
+            }
+        }
+
+        private void SnapProperties(HttpRequestMessage httpRequest)
+        {
+            Assumption.AssertNotNull(httpRequest, nameof(httpRequest));
+
+            this.Url = httpRequest.RequestUri.AbsoluteUri;
+            this.QueryString = httpRequest.RequestUri.Query;
+            this.Params = null;
+
+            this.Headers = new Dictionary<string, string>(httpRequest.Headers.Count());
+            foreach (var header in httpRequest.Headers)
+            {
+                this.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+            }
+
+            this.Method = httpRequest.Method.Method;
+            switch(this.Method.ToUpper())
+            {
+                case "POST":
+                    var task = httpRequest.Content.ReadAsStringAsync();
+                    task.Wait();
+                    this.PostBody = task.Result;
+                    this.PostParams = null;
+                    break;
+                case "GET":
+                    this.GetParams = null;
+                    break;
+            }
+
+#if NETFX
+            string userIP = null;
+            const string HttpContextProperty = "MS_HttpContext";
+            const string RemoteEndpointMessagePropery = "System.ServiceModel.Channels.RemoteEndpointMessageProperty";
+            if (httpRequest.Properties.ContainsKey(HttpContextProperty))
+            {
+                HttpContext ctx = httpRequest.Properties[HttpContextProperty] as HttpContext;
+                if (ctx != null)
+                {
+                    userIP = ctx.Request.UserHostAddress;
+                }
+            }
+            else if (httpRequest.Properties.ContainsKey(RemoteEndpointMessagePropery))
+            {
+                RemoteEndpointMessageProperty remoteEndpoint = 
+                    httpRequest.Properties[RemoteEndpointMessagePropery] as RemoteEndpointMessageProperty;
+                if (remoteEndpoint != null)
+                {
+                    userIP = remoteEndpoint.Address;
+                }
+            }
+            this.UserIp = userIP;
+#endif
         }
 
         /// <summary>

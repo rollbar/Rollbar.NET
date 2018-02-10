@@ -86,18 +86,37 @@ namespace UnitTest.Rollbar.DTOs
 
             IEnumerable<string> keys = data.Properties().Select(p => p.Name).ToArray();
 
-            Assert.IsFalse(keys.Contains("level"), "level should not be present");
-            Assert.IsFalse(keys.Contains("code_version"), "code_version should not be present");
-            Assert.IsFalse(keys.Contains("framework"), "framework should not be present");
-            Assert.IsFalse(keys.Contains("context"), "context should not be present");
-            Assert.IsFalse(keys.Contains("request"), "request should not be present");
-            Assert.IsFalse(keys.Contains("person"), "person should not be present");
-            Assert.IsFalse(keys.Contains("server"), "server should not be present");
-            Assert.IsFalse(keys.Contains("client"), "client should not be present");
-            Assert.IsFalse(keys.Contains("custom"), "custom should not be present");
-            Assert.IsFalse(keys.Contains("fingerprint"), "fingerprint should not be present");
-            Assert.IsFalse(keys.Contains("title"), "title should not be present");
-            Assert.IsFalse(keys.Contains("uuid"), "uuid should not be present");
+            var expectedProperties = new string[] {
+                "environment",
+                "body",
+                "timestamp",
+                "platform",
+                "language",
+                "framework",
+                "notifier",
+            };
+            foreach(var property in expectedProperties)
+            {
+                Assert.IsTrue(keys.Contains(property), $"{property} should be present");
+            }
+
+            var notExpectedProperties = new string[] {
+                "level",
+                "code_version",
+                "context",
+                "request",
+                "person",
+                "server",
+                "client",
+                "custom",
+                "fingerprint",
+                "title",
+                "uuid",
+            };
+            foreach (var property in notExpectedProperties)
+            {
+                Assert.IsFalse(keys.Contains(property), $"{property} should not be present");
+            }
         }
 
         [TestMethod]
@@ -145,18 +164,37 @@ namespace UnitTest.Rollbar.DTOs
 
             IEnumerable<string> keys = data.Properties().Select(p => p.Name).ToArray();
 
-            Assert.IsFalse(keys.Contains("level"), "level should not be present");
-            Assert.IsFalse(keys.Contains("code_version"), "code_version should not be present");
-            Assert.IsFalse(keys.Contains("framework"), "framework should not be present");
-            Assert.IsFalse(keys.Contains("context"), "context should not be present");
-            Assert.IsFalse(keys.Contains("request"), "request should not be present");
-            Assert.IsFalse(keys.Contains("person"), "person should not be present");
-            Assert.IsFalse(keys.Contains("server"), "server should not be present");
-            Assert.IsFalse(keys.Contains("client"), "client should not be present");
-            Assert.IsFalse(keys.Contains("custom"), "custom should not be present");
-            Assert.IsFalse(keys.Contains("fingerprint"), "fingerprint should not be present");
-            Assert.IsFalse(keys.Contains("title"), "title should not be present");
-            Assert.IsFalse(keys.Contains("uuid"), "uuid should not be present");
+            var expectedProperties = new string[] {
+                "environment",
+                "body",
+                "timestamp",
+                "platform",
+                "language",
+                "framework",
+                "notifier",
+            };
+            foreach (var property in expectedProperties)
+            {
+                Assert.IsTrue(keys.Contains(property), $"{property} should be present");
+            }
+
+            var notExpectedProperties = new string[] {
+                "level",
+                "code_version",
+                "context",
+                "request",
+                "person",
+                "server",
+                "client",
+                "custom",
+                "fingerprint",
+                "title",
+                "uuid",
+            };
+            foreach (var property in notExpectedProperties)
+            {
+                Assert.IsFalse(keys.Contains(property), $"{property} should not be present");
+            }
         }
 
         [TestMethod]
@@ -227,18 +265,37 @@ namespace UnitTest.Rollbar.DTOs
 
             IEnumerable<string> keys = data.Properties().Select(p => p.Name).ToArray();
 
-            Assert.IsFalse(keys.Contains("level"), "level should not be present");
-            Assert.IsFalse(keys.Contains("code_version"), "code_version should not be present");
-            Assert.IsFalse(keys.Contains("framework"), "framework should not be present");
-            Assert.IsFalse(keys.Contains("context"), "context should not be present");
-            Assert.IsFalse(keys.Contains("request"), "request should not be present");
-            Assert.IsFalse(keys.Contains("person"), "person should not be present");
-            Assert.IsFalse(keys.Contains("server"), "server should not be present");
-            Assert.IsFalse(keys.Contains("client"), "client should not be present");
-            Assert.IsFalse(keys.Contains("custom"), "custom should not be present");
-            Assert.IsFalse(keys.Contains("fingerprint"), "fingerprint should not be present");
-            Assert.IsFalse(keys.Contains("title"), "title should not be present");
-            Assert.IsFalse(keys.Contains("uuid"), "uuid should not be present");
+            var expectedProperties = new string[] {
+                "environment",
+                "body",
+                "timestamp",
+                "platform",
+                "language",
+                "framework",
+                "notifier",
+            };
+            foreach (var property in expectedProperties)
+            {
+                Assert.IsTrue(keys.Contains(property), $"{property} should be present");
+            }
+
+            var notExpectedProperties = new string[] {
+                "level",
+                "code_version",
+                "context",
+                "request",
+                "person",
+                "server",
+                "client",
+                "custom",
+                "fingerprint",
+                "title",
+                "uuid",
+            };
+            foreach (var property in notExpectedProperties)
+            {
+                Assert.IsFalse(keys.Contains(property), $"{property} should not be present");
+            }
         }
 
         [TestMethod]
@@ -285,18 +342,37 @@ namespace UnitTest.Rollbar.DTOs
 
             IEnumerable<string> keys = data.Properties().Select(p => p.Name).ToArray();
 
-            Assert.IsFalse(keys.Contains("level"), "level should not be present");
-            Assert.IsFalse(keys.Contains("code_version"), "code_version should not be present");
-            Assert.IsFalse(keys.Contains("framework"), "framework should not be present");
-            Assert.IsFalse(keys.Contains("context"), "context should not be present");
-            Assert.IsFalse(keys.Contains("request"), "request should not be present");
-            Assert.IsFalse(keys.Contains("person"), "person should not be present");
-            Assert.IsFalse(keys.Contains("server"), "server should not be present");
-            Assert.IsFalse(keys.Contains("client"), "client should not be present");
-            Assert.IsFalse(keys.Contains("custom"), "custom should not be present");
-            Assert.IsFalse(keys.Contains("fingerprint"), "fingerprint should not be present");
-            Assert.IsFalse(keys.Contains("title"), "title should not be present");
-            Assert.IsFalse(keys.Contains("uuid"), "uuid should not be present");
+            var expectedProperties = new string[] {
+                "environment",
+                "body",
+                "timestamp",
+                "platform",
+                "language",
+                "framework",
+                "notifier",
+            };
+            foreach (var property in expectedProperties)
+            {
+                Assert.IsTrue(keys.Contains(property), $"{property} should be present");
+            }
+
+            var notExpectedProperties = new string[] {
+                "level",
+                "code_version",
+                "context",
+                "request",
+                "person",
+                "server",
+                "client",
+                "custom",
+                "fingerprint",
+                "title",
+                "uuid",
+            };
+            foreach (var property in notExpectedProperties)
+            {
+                Assert.IsFalse(keys.Contains(property), $"{property} should not be present");
+            }
         }
 
         [TestMethod]

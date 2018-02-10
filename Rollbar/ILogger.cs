@@ -1,5 +1,6 @@
 ﻿namespace Rollbar
 {
+    using dto = Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
 
@@ -31,6 +32,13 @@
         /// <returns></returns>
         ILogger AsBlockingLogger(TimeSpan timeout);
 
+        /// <summary>
+        /// Logs the specified data.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <returns></returns>
+        ILogger Log(dto.Data data);
+ 
         /// <summary>
         /// Logs the specified level.
         /// </summary>

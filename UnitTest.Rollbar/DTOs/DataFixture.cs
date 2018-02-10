@@ -51,7 +51,7 @@ namespace UnitTest.Rollbar.DTOs
         public void JsonDoesNotOutputNullFields()
         {
             var props = AsJson(_basicData).Properties().Select(x => x.Name).OrderBy(x => x).ToArray();
-            var expected = new[] { "body", "environment", "notifier" };
+            var expected = new[] { "body", "environment", "framework", "notifier" };
 
             Assert.AreEqual(expected.Length, props.Length);
             int i = 0;
