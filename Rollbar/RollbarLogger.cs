@@ -93,7 +93,9 @@ namespace Rollbar
 
         public ILogger Log(Data data)
         {
-            throw new NotImplementedException();
+            SendAsync(data);
+
+            return this;
         }
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
@@ -233,7 +235,7 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
-            SendBodyAsync(new Body(e), level, custom, timeout, signal);
+            SendAsync(new Body(e), level, custom, timeout, signal);
         }
 
         internal void Report(
@@ -244,11 +246,27 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
-            SendBodyAsync(new Body(new Message(message)), level, custom, timeout, signal);
+            SendAsync(new Body(new Message(message)), level, custom, timeout, signal);
         }
 
-        private void SendBodyAsync(
-            Body body, ErrorLevel? level, 
+        internal void SendAsync(
+            Data data,
+            TimeSpan? timeout = null,
+            SemaphoreSlim signal = null
+            )
+        {
+            DateTime? timeoutAt = null;
+            if (timeout.HasValue)
+            {
+                timeoutAt = DateTime.Now.Add(timeout.Value);
+            }
+            // we are taking here a fire-and-forget approach:
+            Task.Factory.StartNew(() => Send(data, timeoutAt, signal));
+        }
+
+        private void SendAsync(
+            Body body, 
+            ErrorLevel? level, 
             IDictionary<string, object> custom,
             TimeSpan? timeout = null,
             SemaphoreSlim signal = null
@@ -260,20 +278,12 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
             // we are taking here a fire-and-forget approach:
-            Task.Factory.StartNew(() => SendBody(body, level, custom, timeoutAt, signal));
+            Task.Factory.StartNew(() => Send(body, level, custom, timeoutAt, signal));
         }
 
-        private void SendBody(
-            Body body, 
-            ErrorLevel? level, 
-            IDictionary<string, object> custom,
-            DateTime? timeoutAt = null,
-            SemaphoreSlim signal = null
-            )
+        private void DoSend(Payload payload)
         {
-            Assumption.AssertTrue(timeoutAt.HasValue == (signal != null), nameof(timeoutAt) + " or " + nameof(signal));
-
-            lock (this._syncRoot)
+            //lock (this._syncRoot)
             {
                 if (string.IsNullOrWhiteSpace(this._config.AccessToken)
                     || this._config.Enabled == false
@@ -281,16 +291,6 @@ namespace Rollbar
                 {
                     return;
                 }
-
-                var data = new Data(this._config.Environment, body)
-                {
-                    Custom = custom,
-                    Level = level ?? this._config.LogLevel
-                };
-
-                var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
-                payload.Data.GuidUuid = Guid.NewGuid();
-                payload.Data.Person = this._config.Person;
 
                 if (this._config.Server != null)
                 {
@@ -333,7 +333,38 @@ namespace Rollbar
 
                 return;
             }
+        }
 
+        private void Send(
+            Data data,
+            DateTime? timeoutAt = null,
+            SemaphoreSlim signal = null
+            )
+        {
+            lock (this._syncRoot)
+            {
+                var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
+                DoSend(payload);
+            }
+        }
+
+        private void Send(
+            Body body,
+            ErrorLevel? level,
+            IDictionary<string, object> custom,
+            DateTime? timeoutAt = null,
+            SemaphoreSlim signal = null
+            )
+        {
+            lock (this._syncRoot)
+            {
+                var data = new Data(this._config, body, custom);
+                if (level.HasValue)
+                {
+                    data.Level = level;
+                }
+                Send(data, timeoutAt, signal);
+            }
         }
 
         internal virtual void OnRollbarEvent(RollbarEventArgs e)

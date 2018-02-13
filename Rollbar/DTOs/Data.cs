@@ -54,21 +54,34 @@
         public static string DefaultLanguage { get; set; } = "c#";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Data"/> class.
+        /// Initializes a new instance of the <see cref="Data" /> class.
         /// </summary>
-        /// <param name="environment">The environment.</param>
+        /// <param name="config">The configuration.</param>
         /// <param name="body">The body.</param>
-        public Data(string environment, Body body)
+        /// <param name="custom">The custom.</param>
+        /// <param name="request">The request.</param>
+        public Data(RollbarConfig config, Body body, IDictionary<string, object> custom = null, Request request = null)
         {
-            Assumption.AssertNotNullOrWhiteSpace(environment, nameof(environment));
+            Assumption.AssertNotNull(config, nameof(config));
             Assumption.AssertNotNull(body, nameof(body));
 
-            this.Environment = environment;
+            // snap config values:
+            this.Environment = config.Environment;
+            this.Level = config.LogLevel;
+            this.Person = config.Person;
+            this.Server = config.Server;
+
+            // set explicit values:
             this.Body = body;
+            this.Request = request;
+            this.Custom = custom;
+
+            // set calculated values:
             this.Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             this.Platform = Data.DefaultPlatform;
             this.Framework = Data.DefaultFrameworkValue;
             this.Language = Data.DefaultLanguage;
+            this.GuidUuid = Guid.NewGuid();
         }
 
         /// <summary>
@@ -234,7 +247,7 @@
         public Guid? GuidUuid
         {
             get { return Uuid == null ? (Guid?)null : Guid.Parse(Uuid); }
-            set { Uuid = value == null ? null : value.Value.ToString("N"); }
+            private set { Uuid = value == null ? null : value.Value.ToString("N"); }
         }
 
         /// <summary>

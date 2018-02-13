@@ -21,13 +21,24 @@ namespace UnitTest.Rollbar.DTOs
         private Payload _crashException;
         private Payload _aggregateExample;
 
+        private readonly RollbarConfig _config;
+
+        public PayloadFixture()
+        {
+            this._config = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
+            {
+                Environment = "test",
+            };
+
+        }
+
         [TestInitialize]
         public void SetupFixture()
         {
-            this._exceptionExample = new Payload("access-token", new Data("test", new Body(GetException())));
-            this._messageException = new Payload("access-token", new Data("test", new Body(new Message("A message I wish to send to the rollbar overlords"))));
-            this._crashException = new Payload("access-token", new Data("test", new Body("A terrible crash!")));
-            this._aggregateExample = new Payload("access-token", new Data("test", new Body(GetAggregateException())));
+            this._exceptionExample = new Payload("access-token", new Data(this._config, new Body(GetException())));
+            this._messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords"))));
+            this._crashException = new Payload("access-token", new Data(this._config, new Body("A terrible crash!")));
+            this._aggregateExample = new Payload("access-token", new Data(this._config, new Body(GetAggregateException())));
         }
 
         [TestCleanup]
@@ -88,12 +99,14 @@ namespace UnitTest.Rollbar.DTOs
 
             var expectedProperties = new string[] {
                 "environment",
+                "level",
                 "body",
                 "timestamp",
                 "platform",
                 "language",
                 "framework",
                 "notifier",
+                "uuid",
             };
             foreach(var property in expectedProperties)
             {
@@ -101,7 +114,6 @@ namespace UnitTest.Rollbar.DTOs
             }
 
             var notExpectedProperties = new string[] {
-                "level",
                 "code_version",
                 "context",
                 "request",
@@ -111,7 +123,6 @@ namespace UnitTest.Rollbar.DTOs
                 "custom",
                 "fingerprint",
                 "title",
-                "uuid",
             };
             foreach (var property in notExpectedProperties)
             {
@@ -166,12 +177,14 @@ namespace UnitTest.Rollbar.DTOs
 
             var expectedProperties = new string[] {
                 "environment",
+                "level",
                 "body",
                 "timestamp",
                 "platform",
                 "language",
                 "framework",
                 "notifier",
+                "uuid",
             };
             foreach (var property in expectedProperties)
             {
@@ -179,7 +192,6 @@ namespace UnitTest.Rollbar.DTOs
             }
 
             var notExpectedProperties = new string[] {
-                "level",
                 "code_version",
                 "context",
                 "request",
@@ -189,7 +201,6 @@ namespace UnitTest.Rollbar.DTOs
                 "custom",
                 "fingerprint",
                 "title",
-                "uuid",
             };
             foreach (var property in notExpectedProperties)
             {
@@ -267,12 +278,14 @@ namespace UnitTest.Rollbar.DTOs
 
             var expectedProperties = new string[] {
                 "environment",
+                "level",
                 "body",
                 "timestamp",
                 "platform",
                 "language",
                 "framework",
                 "notifier",
+                "uuid",
             };
             foreach (var property in expectedProperties)
             {
@@ -280,7 +293,6 @@ namespace UnitTest.Rollbar.DTOs
             }
 
             var notExpectedProperties = new string[] {
-                "level",
                 "code_version",
                 "context",
                 "request",
@@ -290,7 +302,6 @@ namespace UnitTest.Rollbar.DTOs
                 "custom",
                 "fingerprint",
                 "title",
-                "uuid",
             };
             foreach (var property in notExpectedProperties)
             {
@@ -344,12 +355,14 @@ namespace UnitTest.Rollbar.DTOs
 
             var expectedProperties = new string[] {
                 "environment",
+                "level",
                 "body",
                 "timestamp",
                 "platform",
                 "language",
                 "framework",
                 "notifier",
+                "uuid",
             };
             foreach (var property in expectedProperties)
             {
@@ -357,7 +370,6 @@ namespace UnitTest.Rollbar.DTOs
             }
 
             var notExpectedProperties = new string[] {
-                "level",
                 "code_version",
                 "context",
                 "request",
@@ -367,7 +379,6 @@ namespace UnitTest.Rollbar.DTOs
                 "custom",
                 "fingerprint",
                 "title",
-                "uuid",
             };
             foreach (var property in notExpectedProperties)
             {
@@ -380,7 +391,7 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                var x = new Payload(null, new Data("test", new Body("test")));
+                var x = new Payload(null, new Data(this._config, new Body("test")));
             });
         }
 
@@ -389,7 +400,7 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                var x = new Payload("test", null);
+                var x = new Payload(RollbarUnitTestSettings.AccessToken, null);
             });
         }
 

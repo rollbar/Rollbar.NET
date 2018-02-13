@@ -46,6 +46,16 @@ namespace Rollbar
             }
         }
 
+        private void Send(Data data)
+        {
+            using (var signal = this.CreateSignalObject())
+            {
+                this._asyncLogger.SendAsync(data, this._timeout, signal);
+
+                WaitAndCompleteReport(signal);
+            }
+        }
+
         private SemaphoreSlim CreateSignalObject()
         {
             SemaphoreSlim signal = 
@@ -81,7 +91,9 @@ namespace Rollbar
 
         public ILogger Log(Data data)
         {
-            throw new NotImplementedException();
+            this.Send(data);
+
+            return this;
         }
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)

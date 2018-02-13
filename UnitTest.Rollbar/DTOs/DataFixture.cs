@@ -19,15 +19,26 @@ namespace UnitTest.Rollbar.DTOs
     public class DataFixture
     {
         private static readonly Regex WhiteSpace = new Regex(@"\s");
-        private readonly Data _basicData =  
-            new Data("environment", new Body("test")) 
+        private readonly RollbarConfig _config;
+        private readonly Data _basicData;  
+
+        public DataFixture()
+        {
+            this._config = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
             {
-                Timestamp = null, 
-                Platform = null, 
-                Language = null
+                Environment = "test",
             };
 
-        [TestInitialize]
+            this._basicData = new Data(this._config,
+            new Body("test"))
+            {
+                Timestamp = null,
+                Platform = null,
+                Language = null
+            };
+    }
+
+    [TestInitialize]
         public void SetupFixture()
         {
         }
@@ -51,7 +62,7 @@ namespace UnitTest.Rollbar.DTOs
         public void JsonDoesNotOutputNullFields()
         {
             var props = AsJson(_basicData).Properties().Select(x => x.Name).OrderBy(x => x).ToArray();
-            var expected = new[] { "body", "environment", "framework", "notifier" };
+            var expected = new[] { "body", "environment", "framework", "level", "notifier", "uuid" };
 
             Assert.AreEqual(expected.Length, props.Length);
             int i = 0;
@@ -76,7 +87,7 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                new Data("whatever", null);
+                new Data(this._config, null);
             });
         }
 
@@ -84,7 +95,7 @@ namespace UnitTest.Rollbar.DTOs
         public void TimestampSetWhenCreated()
         {
             var timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            var data = new Data("whatever", new Body(new System.Exception("Oops.")));
+            var data = new Data(this._config, new Body(new System.Exception("Oops.")));
             Thread.Sleep(50);
             Assert.IsTrue(data.Timestamp - timestamp < 50, "Timestamp was created when it was fetched, not when it was created");
         }
@@ -92,7 +103,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void PlatformDefaultsToWindows()
         {
-            var data = new Data("whatever", new Body(new System.Exception("Oops.")));
+            var data = new Data(this._config, new Body(new System.Exception("Oops.")));
             Assert.AreEqual("windows", data.Platform);
         }
 
@@ -103,7 +114,7 @@ namespace UnitTest.Rollbar.DTOs
             try
             {
                 Data.DefaultPlatform = "mono";
-                var data = new Data("whatever", new Body(new System.Exception("Oops.")));
+                var data = new Data(this._config, new Body(new System.Exception("Oops.")));
                 Assert.AreEqual("mono", data.Platform);
             }
             finally
@@ -119,7 +130,7 @@ namespace UnitTest.Rollbar.DTOs
             try
             {
                 Data.DefaultLanguage = "f#";
-                var data = new Data("whatever", new Body(new System.Exception("Oops.")));
+                var data = new Data(this._config, new Body(new System.Exception("Oops.")));
                 Assert.AreEqual("f#", data.Language);
             }
             finally
@@ -141,7 +152,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void TimestampShowsUpInJson()
         {
-            var rollbarData = new Data("env", new Body("test"));
+            var rollbarData = new Data(this._config, new Body("test"));
             var timeStamp = rollbarData.Timestamp;
             Assert.AreEqual(timeStamp, GetJsonToken("timestamp", rollbarData));
             rollbarData.Timestamp = null;
@@ -280,14 +291,11 @@ namespace UnitTest.Rollbar.DTOs
         }
 
         [TestMethod]
-        public void GuidUpdatesUuid()
+        public void GuidSetAndUpdatesUuid()
         {
-            var rd = new Data("whatever", new Body(new System.Exception("Oops")));
-            Assert.IsNull(rd.Uuid);
-            var guid = Guid.NewGuid();
-            rd.GuidUuid = guid;
-            Assert.AreEqual(rd.Uuid, guid.ToString("n"));
-            Assert.AreEqual(rd.GuidUuid.Value, guid);
+            var rd = new Data(this._config, new Body(new System.Exception("Oops")));
+            Assert.IsTrue(rd.GuidUuid.HasValue);
+            Assert.AreEqual(rd.Uuid, rd.GuidUuid.Value.ToString("n"));
         }
 
         private void TestOptionalDataProperty<T>(string jsonName, Action<Data, T> set, T value) where T : class
