@@ -6,12 +6,9 @@
     using System.Linq;
     using Rollbar.Common;
 
-#if NETCOREAPP2_0
+#if (NETSTANDARD || NETCOREAPP)
     using Microsoft.AspNetCore.Http;
-#endif
-
-#if NETSTANDARD2_0
-    using Microsoft.AspNetCore.Http;
+    using System.IO;
 #endif
 
 #if NETFX
@@ -31,9 +28,38 @@
         /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
         public Request()
-            : this(null)
+            : base(null)
         {
         }
+
+#if (NETSTANDARD || NETCOREAPP)
+
+        public Request(IDictionary<string, object> arbitraryKeyValuePairs, HttpRequest httpRequest = null)
+            : base(arbitraryKeyValuePairs)
+        {
+            if (httpRequest != null)
+            {
+                this.SnapProperties(httpRequest);
+            }
+        }
+
+        private void SnapProperties(HttpRequest httpRequest)
+        {
+            Assumption.AssertNotNull(httpRequest, nameof(httpRequest));
+
+            this.Url = httpRequest.Host.Value + httpRequest.Path;
+            this.QueryString = httpRequest.QueryString.Value;
+            //this.Params = null;
+
+            this.Headers = new Dictionary<string, string>(httpRequest.Headers.Count());
+            foreach (var header in httpRequest.Headers)
+            {
+                this.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+            }
+
+            this.Method = httpRequest.Method;
+        }
+#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Request" /> class.

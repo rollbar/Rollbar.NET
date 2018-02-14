@@ -27,7 +27,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
-    <DefineConstants>NETCOREAPP2_0</DefineConstants>
+    <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
@@ -37,7 +37,7 @@
 
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-    <DefineConstants>NETSTANDARD2_0</DefineConstants>
+    <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">

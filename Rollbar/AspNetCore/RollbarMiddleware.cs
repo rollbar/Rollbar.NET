@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP2_0
+﻿#if NETCOREAPP
 
 namespace Rollbar.AspNetCore
 {
