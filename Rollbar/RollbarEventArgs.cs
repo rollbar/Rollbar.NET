@@ -28,7 +28,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="payload">The payload.</param>
         protected RollbarEventArgs(
-            RollbarConfig config, 
+            IRollbarConfig config, 
             Payload payload
             )
         {
@@ -45,7 +45,7 @@
         /// <value>
         /// The configuration.
         /// </value>
-        public RollbarConfig Config { get; private set; }
+        public IRollbarConfig Config { get; private set; }
 
         /// <summary>
         /// Gets the payload.

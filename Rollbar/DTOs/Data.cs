@@ -60,7 +60,7 @@
         /// <param name="body">The body.</param>
         /// <param name="custom">The custom.</param>
         /// <param name="request">The request.</param>
-        public Data(RollbarConfig config, Body body, IDictionary<string, object> custom = null, Request request = null)
+        public Data(IRollbarConfig config, Body body, IDictionary<string, object> custom = null, Request request = null)
         {
             Assumption.AssertNotNull(config, nameof(config));
             Assumption.AssertNotNull(body, nameof(body));

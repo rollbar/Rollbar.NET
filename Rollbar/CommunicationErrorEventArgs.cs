@@ -18,7 +18,7 @@
         /// <param name="error">The error.</param>
         /// <param name="retriesLeft">The retries left.</param>
         public CommunicationErrorEventArgs(
-            RollbarConfig config, 
+            IRollbarConfig config, 
             Payload payload, 
             System.Exception error, 
             int retriesLeft

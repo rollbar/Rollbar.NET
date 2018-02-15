@@ -16,7 +16,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="payload">The payload.</param>
         /// <param name="response">The response.</param>
-        public CommunicationEventArgs(RollbarConfig config, Payload payload, RollbarResponse response) 
+        public CommunicationEventArgs(IRollbarConfig config, Payload payload, RollbarResponse response) 
             : base(config, payload)
         {
             this.Response = response;

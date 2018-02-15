@@ -21,9 +21,9 @@ namespace Rollbar
     /// </summary>
     internal class RollbarClient 
     {
-        public RollbarConfig Config { get; }
+        public IRollbarConfig Config { get; }
 
-        public RollbarClient(RollbarConfig config)
+        public RollbarClient(IRollbarConfig config)
         {
             Assumption.AssertNotNull(config, nameof(config));
 

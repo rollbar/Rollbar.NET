@@ -7,7 +7,8 @@
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/[controller]")]
-    public class ValuesController : Controller
+    public class ValuesController 
+        : Controller
     {
         // GET api/values
         [HttpGet]
@@ -24,7 +25,7 @@
 
             var rollbar = Rollbar.RollbarFactory.CreateNew().Configure(loggerConfig);
             Rollbar.RollbarQueueController.Instance.InternalEvent += Rollbar_InternalEvent;
-            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(60)).Info("Hahah!");
+            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(60)).Info("Just a basic test...");
 
 
             Rollbar.DTOs.Data data = new Rollbar.DTOs.Data(

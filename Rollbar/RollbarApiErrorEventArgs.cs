@@ -128,7 +128,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="payload">The payload.</param>
         /// <param name="response">The response.</param>
-        public RollbarApiErrorEventArgs(RollbarConfig config, Payload payload, RollbarResponse response)
+        public RollbarApiErrorEventArgs(IRollbarConfig config, Payload payload, RollbarResponse response)
             : base(config, payload, response)
         {
             Assumption.AssertNotNull(response, nameof(response));

@@ -62,12 +62,12 @@ namespace Rollbar
 
         public ILogger Logger => this;
 
-        public RollbarConfig Config
+        public IRollbarConfig Config
         {
             get { return this._config; }
         }
 
-        public IRollbar Configure(RollbarConfig settings)
+        public IRollbar Configure(IRollbarConfig settings)
         {
             this._config.Reconfigure(settings);
 
@@ -76,9 +76,7 @@ namespace Rollbar
 
         public IRollbar Configure(string accessToken)
         {
-            this._config.Reconfigure(new RollbarConfig(accessToken));
-
-            return this;
+            return this.Configure(new RollbarConfig(accessToken));
         }
 
         #endregion IRollbar

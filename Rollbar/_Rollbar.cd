@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="Rollbar.RollbarLocator">
-    <Position X="0.5" Y="6.25" Width="3.5" />
+    <Position X="9" Y="0.5" Width="3.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -18,22 +18,22 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.RollbarConfig">
-    <Position X="0.5" Y="0.5" Width="3.5" />
+    <Position X="7" Y="2.75" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>AIACAAACAAIAQYAAAAAAkAUCMABAAAIQAAAAAgAAAAA=</HashCode>
+      <HashCode>AIACQAACQAIAQYAAAAAAkAUCMABAAAIQAAAAAgAAAAA=</HashCode>
       <FileName>RollbarConfig.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Rollbar.RollbarFactory">
-    <Position X="0.5" Y="8.5" Width="3.5" />
+    <Position X="5.25" Y="0.5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>RollbarFactory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.RollbarQueueController">
-    <Position X="4.25" Y="9" Width="5.5" />
+    <Position X="6.75" Y="9" Width="5.5" />
     <NestedTypes>
       <Class Name="Rollbar.RollbarQueueController.NestedSingleInstance" Collapsed="true">
         <TypeIdentifier>
@@ -42,12 +42,12 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAACAAAAAEAAgAUgAAAAAACIAJBAAAQAIAAAIAEAA=</HashCode>
+      <HashCode>AAAAACAAAAAEAAgAUgAAAAAACIAJBAEAQAIAAAIAEAA=</HashCode>
       <FileName>RollbarQueueController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.RollbarApiErrorEventArgs">
-    <Position X="10.75" Y="8.5" Width="6.5" />
+    <Position X="13" Y="8.5" Width="6.5" />
     <NestedTypes>
       <Enum Name="Rollbar.RollbarApiErrorEventArgs.RollbarError" Collapsed="true">
         <TypeIdentifier>
@@ -66,7 +66,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.RollbarEventArgs">
-    <Position X="10.75" Y="0.75" Width="6.5" />
+    <Position X="13" Y="0.75" Width="6.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgAAAAAAAAAQAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>RollbarEventArgs.cs</FileName>
@@ -74,42 +74,49 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Rollbar.CommunicationEventArgs">
-    <Position X="10.75" Y="6.25" Width="6.5" />
+    <Position X="13" Y="6.25" Width="6.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>CommunicationEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.CommunicationErrorEventArgs">
-    <Position X="10.75" Y="3.75" Width="6.5" />
+    <Position X="13" Y="3.75" Width="6.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAQAAAAAACAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>CommunicationErrorEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="Rollbar.IRollbar">
-    <Position X="4.25" Y="6" Width="5.5" />
+    <Position X="0.5" Y="10.5" Width="5.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgIAAAAAQABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IRollbar.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.ILogger">
-    <Position X="4.25" Y="0.5" Width="5.5" />
+    <Position X="0.5" Y="4.5" Width="5.5" />
     <TypeIdentifier>
-      <HashCode>AAAIAAAAAAAAAYAAAAAAABAAAAgAAAAAAAAAAEAAAAA=</HashCode>
+      <HashCode>AAAIAAAAAAAAAYAAAAAAABAAAAgAAAAAAAEAAEAAAAA=</HashCode>
       <FileName>ILogger.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.ITraceable">
-    <Position X="0.5" Y="10" Width="3.5" />
+    <Position X="3.5" Y="3.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>ITraceable.cs</FileName>
     </TypeIdentifier>
   </Interface>
+  <Interface Name="Rollbar.IRollbarConfig">
+    <Position X="0.5" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AIACAAACAAAAQYAAAAAAEAUCEABAAAIAAAAAAgAAAAA=</HashCode>
+      <FileName>IRollbarConfig.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Enum Name="Rollbar.ErrorLevel">
-    <Position X="0.5" Y="11.25" Width="1.5" />
+    <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAIAAAAAAAAAYAAAAAAABAAAAAAAAAAAAAAAEAAAAA=</HashCode>
       <FileName>ErrorLevel.cs</FileName>

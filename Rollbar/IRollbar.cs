@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <returns></returns>
-        IRollbar Configure(RollbarConfig settings);
+        IRollbar Configure(IRollbarConfig settings);
 
         /// <summary>
         /// Configures using the specified access token.
@@ -31,7 +31,7 @@
         /// <value>
         /// The configuration.
         /// </value>
-        RollbarConfig Config { get; }
+        IRollbarConfig Config { get; }
 
         /// <summary>
         /// Gets the logger.

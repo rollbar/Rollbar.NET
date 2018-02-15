@@ -224,28 +224,27 @@ namespace Rollbar
 
         #endregion ILogger
 
-
         #region IRollbar
 
         public ILogger Logger => this;
 
-        public RollbarConfig Config
+        public IRollbarConfig Config
         {
             get { return this._asyncLogger.Config; }
         }
 
-        public IRollbar Configure(RollbarConfig settings)
+        public IRollbar Configure(IRollbarConfig settings)
         {
-            this._asyncLogger.Config.Reconfigure(settings);
+            RollbarConfig config = this._asyncLogger.Config as RollbarConfig;
+            Assumption.AssertNotNull(config, nameof(config));
+            config.Reconfigure(settings);
 
             return this;
         }
 
         public IRollbar Configure(string accessToken)
         {
-            this._asyncLogger.Config.Reconfigure(new RollbarConfig(accessToken));
-
-            return this;
+            return this.Configure(new RollbarConfig(accessToken));
         }
 
         public event EventHandler<RollbarEventArgs> InternalEvent
