@@ -92,7 +92,23 @@ namespace Rollbar.AspNetCore
             }
             catch(Exception ex)
             {
-                RollbarLocator.RollbarInstance.Critical(ex);
+                // basic logging of the exception
+                Rollbar.RollbarLocator.RollbarInstance.Critical(ex);
+
+                // let's custom build the Data object that includes the exception 
+                // along with the current HTTP request context:
+                Rollbar.DTOs.Data data = new Rollbar.DTOs.Data(
+                    config:     RollbarLocator.RollbarInstance.Config,
+                    body:       new Rollbar.DTOs.Body(ex),
+                    custom:     null,
+                    request:    new Rollbar.DTOs.Request(null, context.Request)
+                    )
+                {
+                    Level = ErrorLevel.Critical,
+                };
+
+                // log the Data object (the exception + the HTTP request data):
+                Rollbar.RollbarLocator.RollbarInstance.Log(data);
 
                 throw new Exception("The included internal exception processed by the Rollbar middleware", ex);
             }

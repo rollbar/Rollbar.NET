@@ -14,27 +14,18 @@
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            //let's use a scoped instance of the notifier here:
             const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
             const string rollbarEnvironment = "RollbarNetSamples";
-
             Rollbar.RollbarConfig loggerConfig = new Rollbar.RollbarConfig(rollbarAccessToken)
             {
                 Environment = rollbarEnvironment,
             };
-
-
-            var rollbar = Rollbar.RollbarFactory.CreateNew().Configure(loggerConfig);
-            Rollbar.RollbarQueueController.Instance.InternalEvent += Rollbar_InternalEvent;
-            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(60)).Info("Just a basic test...");
-
-
-            Rollbar.DTOs.Data data = new Rollbar.DTOs.Data(
-                config: rollbar.Config,
-                body: new Rollbar.DTOs.Body(new Rollbar.DTOs.Message("WebApiCore GET handler is called.")),
-                custom: null,
-                request: new Rollbar.DTOs.Request(null, this.Request)
-                );
-            rollbar.Log(data);
+            using (var rollbar = Rollbar.RollbarFactory.CreateNew().Configure(loggerConfig))
+            {
+                Rollbar.RollbarQueueController.Instance.InternalEvent += Rollbar_InternalEvent;
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(60)).Info("Just a basic test...");
+            }
 
             //// Let's simulate an unhandled exception:
             throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController");
