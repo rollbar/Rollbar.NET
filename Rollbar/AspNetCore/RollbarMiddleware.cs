@@ -92,9 +92,6 @@ namespace Rollbar.AspNetCore
             }
             catch(Exception ex)
             {
-                // basic logging of the exception
-                Rollbar.RollbarLocator.RollbarInstance.Critical(ex);
-
                 // let's custom build the Data object that includes the exception 
                 // along with the current HTTP request context:
                 Rollbar.DTOs.Data data = new Rollbar.DTOs.Data(
