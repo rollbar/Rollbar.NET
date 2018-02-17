@@ -4,6 +4,7 @@ namespace Rollbar.AspNetCore
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
+    using Rollbar.NetCore;
     using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
@@ -64,7 +65,7 @@ namespace Rollbar.AspNetCore
 
                 const string defaultAccessToken = "none";
                 RollbarConfig rollbarConfig = new RollbarConfig(defaultAccessToken);
-                configuration.GetSection("Rollbar").Bind(rollbarConfig);
+                AppSettingsUtil.LoadAppSettings(ref rollbarConfig, configuration);
 
                 if (rollbarConfig.AccessToken == defaultAccessToken)
                 {
