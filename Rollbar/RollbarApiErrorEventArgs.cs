@@ -122,14 +122,8 @@
             }
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarApiErrorEventArgs"/> class.
-        /// </summary>
-        /// <param name="config">The configuration.</param>
-        /// <param name="payload">The payload.</param>
-        /// <param name="response">The response.</param>
-        public RollbarApiErrorEventArgs(IRollbarConfig config, Payload payload, RollbarResponse response)
-            : base(config, payload, response)
+        internal RollbarApiErrorEventArgs(RollbarLogger logger, Payload payload, RollbarResponse response)
+            : base(logger, payload, response)
         {
             Assumption.AssertNotNull(response, nameof(response));
             Assumption.AssertGreaterThan(response.Error, 0, nameof(response.Error));

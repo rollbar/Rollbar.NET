@@ -235,9 +235,8 @@ namespace Rollbar
 
         public IRollbar Configure(IRollbarConfig settings)
         {
-            RollbarConfig config = this._asyncLogger.Config as RollbarConfig;
-            Assumption.AssertNotNull(config, nameof(config));
-            config.Reconfigure(settings);
+            Assumption.AssertNotNull(settings, nameof(settings));
+            this._asyncLogger.Config.Reconfigure(settings);
 
             return this;
         }

@@ -187,7 +187,7 @@ namespace Rollbar
                         continue;
                     }
 
-                    var response = Process(payload, queue.Logger.Config);
+                    var response = Process(payload, queue.Logger);
                     if (response == null)
                     {
                         continue;
@@ -204,13 +204,13 @@ namespace Rollbar
                             ObeyPayloadTimeout(payload, queue);
                             tokenMetadata.IncrementTokenUsageDelay();
                             this.OnRollbarEvent(
-                                new RollbarApiErrorEventArgs(queue.Logger.Config, payload, response)
+                                new RollbarApiErrorEventArgs(queue.Logger, payload, response)
                                 );
                             return;
                         default:
                             ObeyPayloadTimeout(payload, queue);
                             this.OnRollbarEvent(
-                                new RollbarApiErrorEventArgs(queue.Logger.Config, payload, response)
+                                new RollbarApiErrorEventArgs(queue.Logger, payload, response)
                                 );
                             break;
                     }
@@ -227,11 +227,11 @@ namespace Rollbar
             }
         }
 
-        private RollbarResponse Process(Payload payload, IRollbarConfig config)
+        private RollbarResponse Process(Payload payload, RollbarLogger logger)
         {
-            var client = new RollbarClient(config);
+            var client = new RollbarClient(logger.Config);
 
-            IEnumerable<string> safeScrubFields = config.ScrubFields;
+            IEnumerable<string> safeScrubFields = logger.Config.ScrubFields;
 
             RollbarResponse response = null;
             int retries = 3;
@@ -245,7 +245,7 @@ namespace Rollbar
                 {
                     retries--;
                     this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(config, payload, ex, retries)
+                        new CommunicationErrorEventArgs(logger, payload, ex, retries)
                         );
                     continue;
                 }
@@ -253,7 +253,7 @@ namespace Rollbar
                 {
                     retries = 0;
                     this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(config, payload, ex, retries)
+                        new CommunicationErrorEventArgs(logger, payload, ex, retries)
                         );
                     continue;
                 }
@@ -261,7 +261,7 @@ namespace Rollbar
                 {
                     retries = 0;
                     this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(config, payload, ex, retries)
+                        new CommunicationErrorEventArgs(logger, payload, ex, retries)
                         );
                     continue;
                 }
@@ -271,7 +271,7 @@ namespace Rollbar
             if (response != null)
             {
                 this.OnRollbarEvent(
-                    new CommunicationEventArgs(config, payload, response)
+                    new CommunicationEventArgs(logger, payload, response)
                     );
             }
 
@@ -327,6 +327,9 @@ namespace Rollbar
 
         private void OnRollbarEvent(RollbarEventArgs e)
         {
+            Assumption.AssertNotNull(e, nameof(e));
+            Assumption.AssertNotNull(e.Logger, nameof(e.Logger));
+
             EventHandler<RollbarEventArgs> handler = InternalEvent;
 
             if (handler != null)
@@ -334,12 +337,7 @@ namespace Rollbar
                 handler(this, e);
             }
 
-            if (e != null && e.Config != null)
-            {
-                RollbarConfig config = e.Config as RollbarConfig;
-                Assumption.AssertNotNull(config, nameof(config));
-                config.Logger?.OnRollbarEvent(e);
-            }
+            e.Logger.OnRollbarEvent(e);
         }
 
     }

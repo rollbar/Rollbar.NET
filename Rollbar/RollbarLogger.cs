@@ -62,7 +62,7 @@ namespace Rollbar
 
         public ILogger Logger => this;
 
-        public IRollbarConfig Config
+        public RollbarConfig Config
         {
             get { return this._config; }
         }
@@ -225,6 +225,170 @@ namespace Rollbar
 
         #endregion ILogger
 
+        #region IRollbar explicitly
+
+        IRollbarConfig IRollbar.Config { get { return this.Config; } }
+
+        ILogger IRollbar.Logger { get { return this; } }
+
+        IRollbar IRollbar.Configure(IRollbarConfig settings)
+        {
+            return this.Configure(settings);
+        }
+
+        IRollbar IRollbar.Configure(string accessToken)
+        {
+            return this.Configure(accessToken);
+        }
+
+        event EventHandler<RollbarEventArgs> IRollbar.InternalEvent
+        {
+            add
+            {
+                this.InternalEvent += value;
+            }
+
+            remove
+            {
+                this.InternalEvent -= value;
+            }
+        }
+
+        #endregion IRollbar explicitly
+
+        #region ILogger explicitly
+
+        ILogger ILogger.AsBlockingLogger(TimeSpan timeout)
+        {
+            return this.AsBlockingLogger(timeout);
+        }
+
+        ILogger ILogger.Log(Data data)
+        {
+            return this.Log(data);
+        }
+
+        ILogger ILogger.Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
+        {
+            return this.Log(level, obj, custom);
+        }
+
+        ILogger ILogger.Log(ErrorLevel level, string msg, IDictionary<string, object> custom)
+        {
+            return this.Log(level, msg, custom);
+        }
+
+        ILogger ILogger.Critical(string msg, IDictionary<string, object> custom)
+        {
+            return this.Critical(msg, custom);
+        }
+
+        ILogger ILogger.Error(string msg, IDictionary<string, object> custom)
+        {
+            return this.Error(msg, custom);
+        }
+
+        ILogger ILogger.Warning(string msg, IDictionary<string, object> custom)
+        {
+            return this.Warning(msg, custom);
+        }
+
+        ILogger ILogger.Info(string msg, IDictionary<string, object> custom)
+        {
+            return this.Info(msg, custom);
+        }
+
+        ILogger ILogger.Debug(string msg, IDictionary<string, object> custom)
+        {
+            return this.Debug(msg, custom);
+        }
+
+        ILogger ILogger.Critical(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Critical(error, custom);
+        }
+
+        ILogger ILogger.Error(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Error(error, custom);
+        }
+
+        ILogger ILogger.Warning(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Warning(error, custom);
+        }
+
+        ILogger ILogger.Info(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Info(error, custom);
+        }
+
+        ILogger ILogger.Debug(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Debug(error, custom);
+        }
+
+        ILogger ILogger.Critical(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Critical(traceableObj, custom);
+        }
+
+        ILogger ILogger.Error(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Error(traceableObj, custom);
+        }
+
+        ILogger ILogger.Warning(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Warning(traceableObj, custom);
+        }
+
+        ILogger ILogger.Info(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Info(traceableObj, custom);
+        }
+
+        ILogger ILogger.Debug(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Debug(traceableObj, custom);
+        }
+
+        ILogger ILogger.Critical(object obj, IDictionary<string, object> custom)
+        {
+            return this.Critical(obj, custom);
+        }
+
+        ILogger ILogger.Error(object obj, IDictionary<string, object> custom)
+        {
+            return this.Error(obj, custom);
+        }
+
+        ILogger ILogger.Warning(object obj, IDictionary<string, object> custom)
+        {
+            return this.Warning(obj, custom);
+        }
+
+        ILogger ILogger.Info(object obj, IDictionary<string, object> custom)
+        {
+            return this.Info(obj, custom);
+        }
+
+        ILogger ILogger.Debug(object obj, IDictionary<string, object> custom)
+        {
+            return this.Debug(obj, custom);
+        }
+
+        #endregion ILogger explicitly 
+
+        #region IDisposable explicitly
+
+        void IDisposable.Dispose()
+        {
+            this.Dispose();
+        }
+
+        #endregion IDisposable explicitly
+
         internal void Report(
             System.Exception e, 
             ErrorLevel? level = ErrorLevel.Error, 
@@ -306,7 +470,7 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
-                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  check-ignoring a payload..."));
+                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
                 }
 
                 try
@@ -315,7 +479,7 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
-                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  transforming a payload..."));
+                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
                 }
 
                 try
@@ -324,7 +488,7 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
-                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  truncating a payload..."));
+                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
                 }
 
                 this._payloadQueue.Enqueue(payload);
