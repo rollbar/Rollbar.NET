@@ -49,7 +49,7 @@
 
             this.Url = httpRequest.Host.Value + httpRequest.Path;
             this.QueryString = httpRequest.QueryString.Value;
-            //this.Params = null;
+            this.Params = null;
 
             this.Headers = new Dictionary<string, string>(httpRequest.Headers.Count());
             foreach (var header in httpRequest.Headers)
