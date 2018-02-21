@@ -8,11 +8,33 @@ Nuget Package Manager:
 
     Install-Package Rollbar
 
+## Blocking vs Non-Blocking Use
+
+The SDK is designed to have as little impact on the hosting system or application as possible. Normally, you want to use asynchronous logging, since it has virtually no instrumentational overhead on your application execution performance at runtime. It has a "fire and forget" approach to logging. 
+
+However, in some specific situations (such as while logging right before exiting an application), you may want to use it synchronously so that the application does not quit before the logging completes.
+
+That is why all the logging methods of the `ILogger` interface imply asynchronous/non-blocking implementation. However, the `ILogger` interface defines the `AsBlockingLogger(TimeSpan timeout)` method that returns a synchronous implementation of the same `ILogger`. This approach allows for easier code refactoring when switching between asynchronous and synchronous uses of the logger.
+
+Therefore, the following call will perform async logging:
+
+```csharp
+RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, "test message");
+```
+
+While this call will perform blocking/synchronous logging with a timeout of 1 second:
+
+```csharp
+RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Log(ErrorLevel.Error, "test message");
+```
+
+In case of a timeout, all the blocking log methods throw `System.TimeoutException` instead of gracefully completing the call. Therefore you might want to make all the blocking log calls within a try-catch block while catching `System.TimeoutException` specifically to handle a timeout case.
+
 ## Basic Usage
 
 * Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
-* Send errors to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
-* Send messages to Rollbar with `RollbarLocator.RollbarInstance.Info(string)`
+* Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
+* Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
 
 ## Upgrading to v1.0.0+ from earlier versions
 
@@ -314,26 +336,6 @@ Below is an example using both levels of monitoring at the same time:
             }
         }
 ```
-
-## Blocking vs Non-Blocking Use
-
-The SDK is designed to have as little impact on the hosting system or application as possible. Normally, you want to use asynchronous logging, since it has virtually no instrumentational overhead on your application execution performance at runtime. It has a "fire and forget" approach to logging. However, in some specific situations (such as while logging right before exiting an application), you may want to use it synchronously so that the application does not quit before the logging completes.
-
-That is why all the logging methods of this interface imply asynchronous/non-blocking implementation. However, the interface defines the `AsBlockingLogger(TimeSpan timeout)` method that returns a synchronous implementation of `ILogger`. This approach allows for easier code refactoring when switching between asynchronous and synchronous uses of the logger.
-
-Therefore, the following call will perform async logging:
-
-```csharp
-logger.Log(ErrorLevel.Error, "test message");
-```
-
-While this call will perform blocking/synchronous logging with a timeout of 1 second:
-
-```csharp
-logger.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(ErrorLevel.Error, "test message");
-```
-
-In case of a timeout, all the blocking log methods throw `System.TimeoutException` instead of gracefully completing the call. Therefore you might want to make all the blocking log calls within a try-catch block while catching `System.TimeoutException` specifically to handle a timeout case.
 
 ## Advanced Usage
 

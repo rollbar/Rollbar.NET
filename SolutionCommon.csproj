@@ -4,7 +4,7 @@
 
     <TargetFrameworks>net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0;netcoreapp2.0</TargetFrameworks>
 
-    <NotifierVersion>1.0.2</NotifierVersion>
+    <NotifierVersion>1.0.3</NotifierVersion>
     <Version>$(NotifierVersion)</Version>
     <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
     <FileVersion>$(NotifierVersion)</FileVersion>
