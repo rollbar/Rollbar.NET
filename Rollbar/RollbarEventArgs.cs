@@ -1,6 +1,7 @@
 ﻿namespace Rollbar
 {
     using Newtonsoft.Json;
+    using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using System;
     using System.Text;
@@ -14,6 +15,13 @@
         : EventArgs
         , ITraceable
     {
+        private readonly RollbarLogger _logger = null;
+
+        internal RollbarLogger Logger
+        {
+            get { return this._logger; }
+        }
+
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarEventArgs"/> class from being created.
         /// </summary>
@@ -22,17 +30,14 @@
 
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarEventArgs"/> class.
-        /// </summary>
-        /// <param name="config">The configuration.</param>
-        /// <param name="payload">The payload.</param>
-        protected RollbarEventArgs(
-            RollbarConfig config, 
+        internal RollbarEventArgs(
+            RollbarLogger logger, 
             Payload payload
             )
         {
-            this.Config = config;
+            Assumption.AssertNotNull(logger, nameof(logger));
+
+            this._logger = logger;
             if (payload != null)
             {
                 this.Payload = JsonConvert.SerializeObject(payload);
@@ -45,7 +50,7 @@
         /// <value>
         /// The configuration.
         /// </value>
-        public RollbarConfig Config { get; private set; }
+        public IRollbarConfig Config { get { return this._logger.Config; } }
 
         /// <summary>
         /// Gets the payload.

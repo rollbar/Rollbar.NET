@@ -2,7 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Reflection;
+    using System.Runtime.Versioning;
+    using System.Text;
     using Newtonsoft.Json;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -12,8 +16,26 @@
     public class Data
         : DtoBase
     {
-        private static readonly string NotifierAssemblyVersion = 
-            typeof(Data).Assembly.GetName().Version.ToString(3);
+        private static readonly string NotifierAssemblyVersion = null;
+
+        private static readonly string DefaultFrameworkValue = null;
+
+        private static string DetectNotifierAssemblyVersion()
+        {
+            return RuntimeEnvironmentUtility.GetTypeAssemblyVersion(typeof(Data));
+        }
+
+        private static string DetectTargetFrameworks()
+        {
+            var targetFrameworks = RuntimeEnvironmentUtility.GetAssemblyTargetFrameworks(typeof(Data));
+            return StringUtility.Combine(targetFrameworks, "; ");
+        }
+
+        static Data()
+        {
+            Data.NotifierAssemblyVersion = Data.DetectNotifierAssemblyVersion();
+            Data.DefaultFrameworkValue = Data.DetectTargetFrameworks();
+        }
 
         /// <summary>
         /// Gets or sets the default platform.
@@ -32,20 +54,34 @@
         public static string DefaultLanguage { get; set; } = "c#";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Data"/> class.
+        /// Initializes a new instance of the <see cref="Data" /> class.
         /// </summary>
-        /// <param name="environment">The environment.</param>
+        /// <param name="config">The configuration.</param>
         /// <param name="body">The body.</param>
-        public Data(string environment, Body body)
+        /// <param name="custom">The custom.</param>
+        /// <param name="request">The request.</param>
+        public Data(IRollbarConfig config, Body body, IDictionary<string, object> custom = null, Request request = null)
         {
-            Assumption.AssertNotNullOrWhiteSpace(environment, nameof(environment));
+            Assumption.AssertNotNull(config, nameof(config));
             Assumption.AssertNotNull(body, nameof(body));
 
-            Environment = environment;
-            Body = body;
-            Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            Platform = DefaultPlatform;
-            Language = DefaultLanguage;
+            // snap config values:
+            this.Environment = config.Environment;
+            this.Level = config.LogLevel;
+            this.Person = config.Person;
+            this.Server = config.Server;
+
+            // set explicit values:
+            this.Body = body;
+            this.Request = request;
+            this.Custom = custom;
+
+            // set calculated values:
+            this.Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            this.Platform = Data.DefaultPlatform;
+            this.Framework = Data.DefaultFrameworkValue;
+            this.Language = Data.DefaultLanguage;
+            this.GuidUuid = Guid.NewGuid();
         }
 
         /// <summary>
@@ -211,7 +247,7 @@
         public Guid? GuidUuid
         {
             get { return Uuid == null ? (Guid?)null : Guid.Parse(Uuid); }
-            set { Uuid = value == null ? null : value.Value.ToString("N"); }
+            private set { Uuid = value == null ? null : value.Value.ToString("N"); }
         }
 
         /// <summary>

@@ -10,14 +10,8 @@
     public class CommunicationEventArgs
         : RollbarEventArgs
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CommunicationEventArgs"/> class.
-        /// </summary>
-        /// <param name="config">The configuration.</param>
-        /// <param name="payload">The payload.</param>
-        /// <param name="response">The response.</param>
-        public CommunicationEventArgs(RollbarConfig config, Payload payload, RollbarResponse response) 
-            : base(config, payload)
+        internal CommunicationEventArgs(RollbarLogger logger, Payload payload, RollbarResponse response) 
+            : base(logger, payload)
         {
             this.Response = response;
         }

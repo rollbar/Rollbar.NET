@@ -1,9 +1,10 @@
-﻿#if NETCOREAPP2_0
+﻿#if NETCOREAPP
 
 namespace Rollbar.AspNetCore
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
+    using Rollbar.NetCore;
     using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
@@ -64,7 +65,7 @@ namespace Rollbar.AspNetCore
 
                 const string defaultAccessToken = "none";
                 RollbarConfig rollbarConfig = new RollbarConfig(defaultAccessToken);
-                configuration.GetSection("Rollbar").Bind(rollbarConfig);
+                AppSettingsUtil.LoadAppSettings(ref rollbarConfig, configuration);
 
                 if (rollbarConfig.AccessToken == defaultAccessToken)
                 {
@@ -92,7 +93,20 @@ namespace Rollbar.AspNetCore
             }
             catch(Exception ex)
             {
-                RollbarLocator.RollbarInstance.Critical(ex);
+                // let's custom build the Data object that includes the exception 
+                // along with the current HTTP request context:
+                Rollbar.DTOs.Data data = new Rollbar.DTOs.Data(
+                    config:     RollbarLocator.RollbarInstance.Config,
+                    body:       new Rollbar.DTOs.Body(ex),
+                    custom:     null,
+                    request:    new Rollbar.DTOs.Request(null, context.Request)
+                    )
+                {
+                    Level = ErrorLevel.Critical,
+                };
+
+                // log the Data object (the exception + the HTTP request data):
+                Rollbar.RollbarLocator.RollbarInstance.Log(data);
 
                 throw new Exception("The included internal exception processed by the Rollbar middleware", ex);
             }

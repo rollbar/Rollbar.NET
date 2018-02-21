@@ -10,20 +10,13 @@
     public class InternalErrorEventArgs
         : RollbarEventArgs
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InternalErrorEventArgs"/> class.
-        /// </summary>
-        /// <param name="config">The configuration.</param>
-        /// <param name="payload">The payload.</param>
-        /// <param name="error">The error.</param>
-        /// <param name="details">The details.</param>
-        public InternalErrorEventArgs(
-            RollbarConfig config,
+        internal InternalErrorEventArgs(
+            RollbarLogger logger,
             Payload payload,
             System.Exception error,
             string details
             ) 
-            : base(config, payload)
+            : base(logger, payload)
         {
             this.Error = error;
             this.Details = details;

@@ -18,8 +18,7 @@
     public class RollbarConfig
 #pragma warning restore CS1658 // Warning is overriding an error
 #pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
-        : ReconfigurableBase<RollbarConfig>
-        , ITraceable
+        : ReconfigurableBase<RollbarConfig, IRollbarConfig>, ITraceable, IRollbarConfig
     {
         private readonly RollbarLogger _logger = null;
 
@@ -46,7 +45,7 @@
         /// <returns>
         /// Reconfigured instance.
         /// </returns>
-        public override RollbarConfig Reconfigure(RollbarConfig likeMe)
+        public override RollbarConfig Reconfigure(IRollbarConfig likeMe)
         {
             base.Reconfigure(likeMe);
 

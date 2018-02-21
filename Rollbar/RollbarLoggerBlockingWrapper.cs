@@ -46,6 +46,16 @@ namespace Rollbar
             }
         }
 
+        private void Send(Data data)
+        {
+            using (var signal = this.CreateSignalObject())
+            {
+                this._asyncLogger.SendAsync(data, this._timeout, signal);
+
+                WaitAndCompleteReport(signal);
+            }
+        }
+
         private SemaphoreSlim CreateSignalObject()
         {
             SemaphoreSlim signal = 
@@ -77,6 +87,13 @@ namespace Rollbar
         public ILogger AsBlockingLogger(TimeSpan timeout)
         {
             return new RollbarLoggerBlockingWrapper(this._asyncLogger, timeout);
+        }
+
+        public ILogger Log(Data data)
+        {
+            this.Send(data);
+
+            return this;
         }
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
@@ -207,18 +224,18 @@ namespace Rollbar
 
         #endregion ILogger
 
-
         #region IRollbar
 
         public ILogger Logger => this;
 
-        public RollbarConfig Config
+        public IRollbarConfig Config
         {
             get { return this._asyncLogger.Config; }
         }
 
-        public IRollbar Configure(RollbarConfig settings)
+        public IRollbar Configure(IRollbarConfig settings)
         {
+            Assumption.AssertNotNull(settings, nameof(settings));
             this._asyncLogger.Config.Reconfigure(settings);
 
             return this;
@@ -226,9 +243,7 @@ namespace Rollbar
 
         public IRollbar Configure(string accessToken)
         {
-            this._asyncLogger.Config.Reconfigure(new RollbarConfig(accessToken));
-
-            return this;
+            return this.Configure(new RollbarConfig(accessToken));
         }
 
         public event EventHandler<RollbarEventArgs> InternalEvent

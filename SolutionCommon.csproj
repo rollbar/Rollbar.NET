@@ -4,7 +4,7 @@
 
     <TargetFrameworks>net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0;netcoreapp2.0</TargetFrameworks>
 
-    <NotifierVersion>1.0.2</NotifierVersion>
+    <NotifierVersion>1.0.3</NotifierVersion>
     <Version>$(NotifierVersion)</Version>
     <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
     <FileVersion>$(NotifierVersion)</FileVersion>
@@ -27,12 +27,26 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
-    <DefineConstants>NETCOREAPP2_0</DefineConstants>
+    <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.1" />
   </ItemGroup>
+
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <DefineConstants>NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+  </ItemGroup>
+
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net471'
              Or '$(TargetFramework)' == 'net47' 
@@ -58,6 +72,8 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.ServiceModel" />
   </ItemGroup>
 
 </Project>

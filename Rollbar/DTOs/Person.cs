@@ -12,6 +12,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Person"/> class.
         /// </summary>
+        public Person()
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Person"/> class.
+        /// </summary>
         /// <param name="id">The identifier.</param>
         public Person(string id)
         {

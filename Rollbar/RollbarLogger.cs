@@ -67,7 +67,7 @@ namespace Rollbar
             get { return this._config; }
         }
 
-        public IRollbar Configure(RollbarConfig settings)
+        public IRollbar Configure(IRollbarConfig settings)
         {
             this._config.Reconfigure(settings);
 
@@ -76,9 +76,7 @@ namespace Rollbar
 
         public IRollbar Configure(string accessToken)
         {
-            this._config.Reconfigure(new RollbarConfig(accessToken));
-
-            return this;
+            return this.Configure(new RollbarConfig(accessToken));
         }
 
         #endregion IRollbar
@@ -88,6 +86,14 @@ namespace Rollbar
         public ILogger AsBlockingLogger(TimeSpan timeout)
         {
             return new RollbarLoggerBlockingWrapper(this, timeout);
+        }
+
+
+        public ILogger Log(Data data)
+        {
+            SendAsync(data);
+
+            return this;
         }
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
@@ -219,6 +225,170 @@ namespace Rollbar
 
         #endregion ILogger
 
+        #region IRollbar explicitly
+
+        IRollbarConfig IRollbar.Config { get { return this.Config; } }
+
+        ILogger IRollbar.Logger { get { return this; } }
+
+        IRollbar IRollbar.Configure(IRollbarConfig settings)
+        {
+            return this.Configure(settings);
+        }
+
+        IRollbar IRollbar.Configure(string accessToken)
+        {
+            return this.Configure(accessToken);
+        }
+
+        event EventHandler<RollbarEventArgs> IRollbar.InternalEvent
+        {
+            add
+            {
+                this.InternalEvent += value;
+            }
+
+            remove
+            {
+                this.InternalEvent -= value;
+            }
+        }
+
+        #endregion IRollbar explicitly
+
+        #region ILogger explicitly
+
+        ILogger ILogger.AsBlockingLogger(TimeSpan timeout)
+        {
+            return this.AsBlockingLogger(timeout);
+        }
+
+        ILogger ILogger.Log(Data data)
+        {
+            return this.Log(data);
+        }
+
+        ILogger ILogger.Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
+        {
+            return this.Log(level, obj, custom);
+        }
+
+        ILogger ILogger.Log(ErrorLevel level, string msg, IDictionary<string, object> custom)
+        {
+            return this.Log(level, msg, custom);
+        }
+
+        ILogger ILogger.Critical(string msg, IDictionary<string, object> custom)
+        {
+            return this.Critical(msg, custom);
+        }
+
+        ILogger ILogger.Error(string msg, IDictionary<string, object> custom)
+        {
+            return this.Error(msg, custom);
+        }
+
+        ILogger ILogger.Warning(string msg, IDictionary<string, object> custom)
+        {
+            return this.Warning(msg, custom);
+        }
+
+        ILogger ILogger.Info(string msg, IDictionary<string, object> custom)
+        {
+            return this.Info(msg, custom);
+        }
+
+        ILogger ILogger.Debug(string msg, IDictionary<string, object> custom)
+        {
+            return this.Debug(msg, custom);
+        }
+
+        ILogger ILogger.Critical(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Critical(error, custom);
+        }
+
+        ILogger ILogger.Error(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Error(error, custom);
+        }
+
+        ILogger ILogger.Warning(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Warning(error, custom);
+        }
+
+        ILogger ILogger.Info(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Info(error, custom);
+        }
+
+        ILogger ILogger.Debug(System.Exception error, IDictionary<string, object> custom)
+        {
+            return this.Debug(error, custom);
+        }
+
+        ILogger ILogger.Critical(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Critical(traceableObj, custom);
+        }
+
+        ILogger ILogger.Error(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Error(traceableObj, custom);
+        }
+
+        ILogger ILogger.Warning(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Warning(traceableObj, custom);
+        }
+
+        ILogger ILogger.Info(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Info(traceableObj, custom);
+        }
+
+        ILogger ILogger.Debug(ITraceable traceableObj, IDictionary<string, object> custom)
+        {
+            return this.Debug(traceableObj, custom);
+        }
+
+        ILogger ILogger.Critical(object obj, IDictionary<string, object> custom)
+        {
+            return this.Critical(obj, custom);
+        }
+
+        ILogger ILogger.Error(object obj, IDictionary<string, object> custom)
+        {
+            return this.Error(obj, custom);
+        }
+
+        ILogger ILogger.Warning(object obj, IDictionary<string, object> custom)
+        {
+            return this.Warning(obj, custom);
+        }
+
+        ILogger ILogger.Info(object obj, IDictionary<string, object> custom)
+        {
+            return this.Info(obj, custom);
+        }
+
+        ILogger ILogger.Debug(object obj, IDictionary<string, object> custom)
+        {
+            return this.Debug(obj, custom);
+        }
+
+        #endregion ILogger explicitly 
+
+        #region IDisposable explicitly
+
+        void IDisposable.Dispose()
+        {
+            this.Dispose();
+        }
+
+        #endregion IDisposable explicitly
+
         internal void Report(
             System.Exception e, 
             ErrorLevel? level = ErrorLevel.Error, 
@@ -227,7 +397,7 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
-            SendBodyAsync(new Body(e), level, custom, timeout, signal);
+            SendAsync(new Body(e), level, custom, timeout, signal);
         }
 
         internal void Report(
@@ -238,11 +408,27 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
-            SendBodyAsync(new Body(new Message(message)), level, custom, timeout, signal);
+            SendAsync(new Body(new Message(message)), level, custom, timeout, signal);
         }
 
-        private void SendBodyAsync(
-            Body body, ErrorLevel? level, 
+        internal void SendAsync(
+            Data data,
+            TimeSpan? timeout = null,
+            SemaphoreSlim signal = null
+            )
+        {
+            DateTime? timeoutAt = null;
+            if (timeout.HasValue)
+            {
+                timeoutAt = DateTime.Now.Add(timeout.Value);
+            }
+            // we are taking here a fire-and-forget approach:
+            Task.Factory.StartNew(() => Send(data, timeoutAt, signal));
+        }
+
+        private void SendAsync(
+            Body body, 
+            ErrorLevel? level, 
             IDictionary<string, object> custom,
             TimeSpan? timeout = null,
             SemaphoreSlim signal = null
@@ -254,20 +440,12 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
             // we are taking here a fire-and-forget approach:
-            Task.Factory.StartNew(() => SendBody(body, level, custom, timeoutAt, signal));
+            Task.Factory.StartNew(() => Send(body, level, custom, timeoutAt, signal));
         }
 
-        private void SendBody(
-            Body body, 
-            ErrorLevel? level, 
-            IDictionary<string, object> custom,
-            DateTime? timeoutAt = null,
-            SemaphoreSlim signal = null
-            )
+        private void DoSend(Payload payload)
         {
-            Assumption.AssertTrue(timeoutAt.HasValue == (signal != null), nameof(timeoutAt) + " or " + nameof(signal));
-
-            lock (this._syncRoot)
+            //lock (this._syncRoot)
             {
                 if (string.IsNullOrWhiteSpace(this._config.AccessToken)
                     || this._config.Enabled == false
@@ -275,16 +453,6 @@ namespace Rollbar
                 {
                     return;
                 }
-
-                var data = new Data(this._config.Environment, body)
-                {
-                    Custom = custom,
-                    Level = level ?? this._config.LogLevel
-                };
-
-                var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
-                payload.Data.GuidUuid = Guid.NewGuid();
-                payload.Data.Person = this._config.Person;
 
                 if (this._config.Server != null)
                 {
@@ -302,7 +470,7 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
-                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  check-ignoring a payload..."));
+                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
                 }
 
                 try
@@ -311,7 +479,7 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
-                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  transforming a payload..."));
+                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
                 }
 
                 try
@@ -320,14 +488,45 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
-                    OnRollbarEvent(new InternalErrorEventArgs(this._config, payload, ex, "While  truncating a payload..."));
+                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
                 }
 
                 this._payloadQueue.Enqueue(payload);
 
                 return;
             }
+        }
 
+        private void Send(
+            Data data,
+            DateTime? timeoutAt = null,
+            SemaphoreSlim signal = null
+            )
+        {
+            lock (this._syncRoot)
+            {
+                var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
+                DoSend(payload);
+            }
+        }
+
+        private void Send(
+            Body body,
+            ErrorLevel? level,
+            IDictionary<string, object> custom,
+            DateTime? timeoutAt = null,
+            SemaphoreSlim signal = null
+            )
+        {
+            lock (this._syncRoot)
+            {
+                var data = new Data(this._config, body, custom);
+                if (level.HasValue)
+                {
+                    data.Level = level;
+                }
+                Send(data, timeoutAt, signal);
+            }
         }
 
         internal virtual void OnRollbarEvent(RollbarEventArgs e)

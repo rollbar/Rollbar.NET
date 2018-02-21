@@ -10,20 +10,13 @@
     public class CommunicationErrorEventArgs
         : RollbarEventArgs
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CommunicationErrorEventArgs"/> class.
-        /// </summary>
-        /// <param name="config">The configuration.</param>
-        /// <param name="payload">The payload.</param>
-        /// <param name="error">The error.</param>
-        /// <param name="retriesLeft">The retries left.</param>
-        public CommunicationErrorEventArgs(
-            RollbarConfig config, 
+        internal CommunicationErrorEventArgs(
+            RollbarLogger logger, 
             Payload payload, 
             System.Exception error, 
             int retriesLeft
             ) 
-            : base(config, payload)
+            : base(logger, payload)
         {
             this.Error = error;
             this.RetriesLeft = retriesLeft;
