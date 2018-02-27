@@ -7,6 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Rollbar.AspNetCore;
 
 namespace Sample.AspNetCore2.WebApi
 {
@@ -19,7 +20,15 @@ namespace Sample.AspNetCore2.WebApi
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+
+                    .ConfigureLogging((hostingContext, logging) =>
+                    {
+                        //logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                        //logging.AddConsole();
+                        //logging.AddDebug();
+                        logging.AddRollbar();
+                    })
+                    .UseStartup<Startup>()
+                    .Build();
     }
 }

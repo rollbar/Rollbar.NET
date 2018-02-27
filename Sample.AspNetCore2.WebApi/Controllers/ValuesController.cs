@@ -5,27 +5,37 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
 
     [Route("api/[controller]")]
     public class ValuesController 
         : Controller
     {
+        public readonly ILogger _logger = null;
+
+        public ValuesController(ILogger<ValuesController> logger)
+        {
+            this._logger = logger;
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            this._logger.LogInformation(nameof(ValuesController) + ".Get() is called...");
+
             //let's use a scoped instance of the notifier here:
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
-            Rollbar.RollbarConfig loggerConfig = new Rollbar.RollbarConfig(rollbarAccessToken)
-            {
-                Environment = rollbarEnvironment,
-            };
-            using (var rollbar = Rollbar.RollbarFactory.CreateNew().Configure(loggerConfig))
-            {
-                Rollbar.RollbarQueueController.Instance.InternalEvent += Rollbar_InternalEvent;
-                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(60)).Info("Just a basic test...");
-            }
+            //const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
+            //const string rollbarEnvironment = "RollbarNetSamples";
+            //Rollbar.RollbarConfig loggerConfig = new Rollbar.RollbarConfig(rollbarAccessToken)
+            //{
+            //    Environment = rollbarEnvironment,
+            //};
+            //using (var rollbar = Rollbar.RollbarFactory.CreateNew().Configure(loggerConfig))
+            //{
+            //    Rollbar.RollbarQueueController.Instance.InternalEvent += Rollbar_InternalEvent;
+            //    rollbar.AsBlockingLogger(TimeSpan.FromSeconds(60)).Info("Just a basic test...");
+            //}
 
             //// Let's simulate an unhandled exception:
             throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController");

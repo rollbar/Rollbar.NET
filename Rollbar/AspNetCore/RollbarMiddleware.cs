@@ -57,27 +57,7 @@ namespace Rollbar.AspNetCore
         {
             this._nextRequestProcessor = nextRequestProcessor;
 
-            if (RollbarLocator.RollbarInstance.Config.AccessToken == null)
-            {
-                // Here we assume that the Rollbar singleton was not explicitly preconfigured 
-                // anywhere in the code (Program.cs or Startup.cs), 
-                // so we are trying to configure it from IConfiguration:
-
-                const string defaultAccessToken = "none";
-                RollbarConfig rollbarConfig = new RollbarConfig(defaultAccessToken);
-                AppSettingsUtil.LoadAppSettings(ref rollbarConfig, configuration);
-
-                if (rollbarConfig.AccessToken == defaultAccessToken)
-                {
-                    const string error = "Rollbar.NET notifier is not configured properly.";
-                    throw new Exception(error);
-                }
-
-                RollbarLocator.RollbarInstance
-                    // minimally required Rollbar configuration:
-                    .Configure(rollbarConfig);
-
-            }
+            RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
         }
 
         /// <summary>
