@@ -9,7 +9,7 @@
   -->  
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;netstandard2.0;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
     <IsPackable>false</IsPackable>
   </PropertyGroup>  
 
@@ -32,6 +32,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0'">
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|netcoreapp2.0'">
