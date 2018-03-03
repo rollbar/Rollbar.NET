@@ -2,6 +2,8 @@
 
 namespace Microsoft.AspNetCore.Builder
 {
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
     using Rollbar.AspNetCore;
 
     /// <summary>
@@ -18,6 +20,10 @@ namespace Microsoft.AspNetCore.Builder
                     this IApplicationBuilder builder
                     )
         {
+            var factory = builder.ApplicationServices.GetRequiredService<ILoggerFactory>();
+            var provider = builder.ApplicationServices.GetRequiredService<RollbarLoggerProvider>();
+            factory.AddProvider(provider);
+
             return builder.UseMiddleware<RollbarMiddleware>();
         }
     }

@@ -7,8 +7,16 @@ namespace Rollbar.AspNetCore
     using Rollbar.Diagnostics;
     using Rollbar.NetCore;
 
+    /// <summary>
+    /// Utility type aiding in Rollbar configuration options/alternatives.
+    /// </summary>
     public static class RollbarConfigurationUtil
     {
+        /// <summary>
+        /// Deduces the rollbar configuration.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns></returns>
         public static IRollbarConfig DeduceRollbarConfig(IConfiguration configuration)
         {
             if (RollbarLocator.RollbarInstance.Config.AccessToken != null)

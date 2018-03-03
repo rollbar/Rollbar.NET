@@ -1,23 +1,22 @@
 ﻿#if NETCOREAPP
 
-namespace Rollbar.AspNetCore
+namespace Microsoft.Extensions.Logging
 {
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Microsoft.Extensions.Logging;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using Rollbar.AspNetCore;
 
+    /// <summary>
+    /// Implements Rollbar extension to the Microsoft.Extensions.Logging.LoggingBuilderExtensions.
+    /// </summary>
     public static class LoggingBuilderExtensions
     {
         public static ILoggingBuilder AddRollbar(
-            this ILoggingBuilder builder 
+            this ILoggingBuilder builder
             )
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, RollbarLoggerProvider>());
+            builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerFactory, RollbarLoggerFactory>());
 
             return builder;
         }

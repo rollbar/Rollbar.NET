@@ -10,12 +10,21 @@ namespace Rollbar.AspNetCore
     using System.Reflection;
     using mslogging = Microsoft.Extensions.Logging;
     using Rollbar.Common;
+    using Rollbar.Diagnostics;
 
+    /// <summary>
+    /// Implements RollbarLogger.
+    /// </summary>
+    /// <seealso cref="Microsoft.Extensions.Logging.ILogger" />
+    /// <seealso cref="System.IDisposable" />
     public class RollbarLogger
-        : mslogging.ILogger
-        , IDisposable
+            : mslogging.ILogger
+            , IDisposable
     {
-        private readonly RollbarLoggerProvider _loggerProvider = null;
+        private readonly string _name = null;
+        private readonly RollbarOptions _rollbarOptions = null;
+
+        //private readonly RollbarLoggerProvider _loggerProvider = null;
 
         //[ThreadStatic]
         //private static readonly IRollbar rollbar = RollbarFactory.CreateNew(false);
@@ -23,13 +32,23 @@ namespace Rollbar.AspNetCore
         //private int perThreadInstanceCount = 0;
         private readonly IRollbar _rollbar = null;
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="RollbarLogger" /> class from being created.
+        /// </summary>
         private RollbarLogger()
         {
         }
 
-        public RollbarLogger(string name, IRollbarConfig rollbarConfig)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarOptions">The options.</param>
+        public RollbarLogger(string name, IRollbarConfig rollbarConfig, RollbarOptions rollbarOptions)
         {
-            this.Name = name;
+            this._name = name;
+            this._rollbarOptions = rollbarOptions;
 
             //perThreadInstanceCount++;
             //if (rollbar.Config == null || string.IsNullOrWhiteSpace(rollbar.Config.AccessToken))
@@ -39,27 +58,13 @@ namespace Rollbar.AspNetCore
             this._rollbar = RollbarFactory.CreateNew(false).Configure(rollbarConfig);
         }
 
-        public string Name { get; }
-
         /// <summary>
-        /// Begins a logical operation scope.
+        /// Gets the name.
         /// </summary>
-        /// <typeparam name="TState"></typeparam>
-        /// <param name="state">The identifier for the scope.</param>
-        /// <returns>
-        /// An IDisposable that ends the logical operation scope on dispose.
-        /// </returns>
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            //if (state == null)
-            //{
-            //    throw new ArgumentNullException(nameof(state));
-            //}
-
-            //return ScopeProperties.CreateFromState(state);
-
-            return EmptyDisposable.Instance;
-        }
+        /// <value>
+        /// The name.
+        /// </value>
+        public string Name { get { return this._name; } }
 
         /// <summary>
         /// Checks if the given <paramref name="logLevel" /> is enabled.
@@ -70,7 +75,7 @@ namespace Rollbar.AspNetCore
         /// </returns>
         public bool IsEnabled(mslogging.LogLevel logLevel)
         {
-            return true;
+            return _rollbarOptions.Filter(_name, logLevel);
         }
 
         /// <summary>
@@ -82,10 +87,21 @@ namespace Rollbar.AspNetCore
         /// <param name="state">The entry to be written. Can be also an object.</param>
         /// <param name="exception">The exception related to this entry.</param>
         /// <param name="formatter">Function to create a <c>string</c> message of the <paramref name="state" /> and <paramref name="exception" />.</param>
-        public void Log<TState>(mslogging.LogLevel logLevel, mslogging.EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(
+            mslogging.LogLevel logLevel
+            , mslogging.EventId eventId
+            , TState state
+            , Exception exception
+            , Func<TState, Exception, string> formatter
+            )
         {
             if (!this.IsEnabled(logLevel))
                 return;
+
+            if (state == null && exception == null)
+                return;
+
+            var currentContext = GetCurrentContext();
 
             // let's custom build the Data object that includes the exception 
             // along with the current HTTP request context:
@@ -112,19 +128,49 @@ namespace Rollbar.AspNetCore
                 customProperties.Add("LogMessage", message);
             }
 
-            Rollbar.DTOs.Data data = new Rollbar.DTOs.Data(
-                config: RollbarLocator.RollbarInstance.Config,
-                body: payloadBody,
-                custom: customProperties
-                //request: new Rollbar.DTOs.Request(null, context.Request)
+            var customRequestFields = new Dictionary<string, object>();
+            customRequestFields.Add("httpRequestTimestamp", currentContext.Timestamp);
+            customRequestFields.Add("httpRequestID", currentContext.HttpAttributes.RequestID);
+            customRequestFields.Add("statusCode", currentContext.HttpAttributes.StatusCode);
+            customRequestFields.Add("scheme", currentContext.HttpAttributes.Scheme);
+            customRequestFields.Add("protocol", currentContext.HttpAttributes.Protocol);
+
+            var requestDto = new Rollbar.DTOs.Request(customRequestFields, currentContext.HttpAttributes);
+
+            Rollbar.DTOs.Data dataDto = new Rollbar.DTOs.Data(
+                config: RollbarLocator.RollbarInstance.Config
+                , body: payloadBody
+                , custom: customProperties
+                , request: requestDto
                 )
             {
                 Level = RollbarLogger.Convert(logLevel),
             };
 
             // log the Data object (the exception + the HTTP request data):
-            Rollbar.RollbarLocator.RollbarInstance.Log(data);
+            Rollbar.RollbarLocator.RollbarInstance.Log(dataDto);
+        }
 
+        /// <summary>
+        /// Begins a logical operation scope.
+        /// </summary>
+        /// <typeparam name="TState"></typeparam>
+        /// <param name="state">The identifier for the scope.</param>
+        /// <returns>
+        /// An IDisposable that ends the logical operation scope on dispose.
+        /// </returns>
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            Assumption.AssertTrue(state != null, nameof(state));
+
+            var scope = new RollbarScope(_name, state);
+            scope.HttpContext = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
+            return RollbarScope.Push(scope);
+        }
+
+        private RollbarHttpContext GetCurrentContext()
+        {
+            return RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
         }
 
         private static ErrorLevel Convert(mslogging.LogLevel logLevel)
@@ -147,120 +193,17 @@ namespace Rollbar.AspNetCore
             }
         }
 
-        private class ScopeProperty
-            : IDisposable
-        {
-            private string _key;
-            private object _value;
-
-            public ScopeProperty(string key, object value)
-            {
-                this._key = key;
-                this._value = value;
-            }
-
-            #region IDisposable Support
-
-            private bool disposedValue = false; // To detect redundant calls
-
-            protected virtual void Dispose(bool disposing)
-            {
-                if (!disposedValue)
-                {
-                    if (disposing)
-                    {
-                        // TODO: dispose managed state (managed objects).
-                        this._key = null;
-                        this._value = null;
-                    }
-
-                    // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                    // TODO: set large fields to null.
-
-                    disposedValue = true;
-                }
-            }
-
-            // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-            // ~ScopeProperty() {
-            //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            //   Dispose(false);
-            // }
-
-            // This code added to correctly implement the disposable pattern.
-            public void Dispose()
-            {
-                // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-                Dispose(true);
-                // TODO: uncomment the following line if the finalizer is overridden above.
-                // GC.SuppressFinalize(this);
-            }
-
-            #endregion
-
-        }
-
-        private class ScopeProperties
-            : IDisposable
-        {
-            private List<object> _properties = new List<object>();
-
-            public List<object> Properties { get { return this._properties; } }
-
-            public static IDisposable CreateFromState<TState>(TState state)
-            {
-                ScopeProperties scope = new ScopeProperties();
-
-                if (state is IEnumerable<KeyValuePair<string, object>> messageProperties)
-                {
-                    foreach (var property in messageProperties)
-                    {
-                        if (String.IsNullOrEmpty(property.Key))
-                            continue;
-
-                        scope.AddProperty(property.Key, property.Value);
-                    }
-                }
-                else
-                {
-                    scope.AddProperty("Scope", state);
-                }
-
-                return scope;
-            }
-
-            public void AddProperty(object property)
-            {
-                Properties.Add(property);
-            }
-
-            public void AddProperty(string key, object value)
-            {
-                AddProperty(new ScopeProperty(key, value));
-            }
-
-            public void Dispose()
-            {
-                var properties = _properties;
-                if (properties != null)
-                {
-                    _properties = null;
-                    foreach (var property in properties)
-                    {
-                        IDisposable disposable = property as IDisposable;
-                        if (disposable != null)
-                        {
-                            disposable.Dispose();
-                        }
-                    }
-                }
-            }
-        }
-
         #region IDisposable Support
 
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///   <c>true</c> to release both managed and unmanaged resources; 
+        ///   <c>false</c> to release only unmanaged resources.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -290,7 +233,9 @@ namespace Rollbar.AspNetCore
         //   Dispose(false);
         // }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

@@ -3,10 +3,11 @@
 namespace Rollbar.AspNetCore
 {
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Http.Features;
     using Microsoft.Extensions.Configuration;
-    using Rollbar.NetCore;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using System;
-    using System.Diagnostics;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -48,14 +49,26 @@ namespace Rollbar.AspNetCore
         /// </summary>
         private readonly RequestDelegate _nextRequestProcessor = null;
 
+        private readonly ILogger _logger = null;
+        private readonly RollbarOptions _rollbarOptions = null;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarMiddleware" /> class.
         /// </summary>
         /// <param name="nextRequestProcessor">The next request processor.</param>
         /// <param name="configuration">The configuration.</param>
-        public RollbarMiddleware(RequestDelegate nextRequestProcessor, IConfiguration configuration)
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="rollbarOptions">The rollbar options.</param>
+        public RollbarMiddleware(
+            RequestDelegate nextRequestProcessor
+            , IConfiguration configuration
+            , ILoggerFactory loggerFactory
+            , IOptions<RollbarOptions> rollbarOptions
+            )
         {
             this._nextRequestProcessor = nextRequestProcessor;
+            this._logger = loggerFactory.CreateLogger<RollbarMiddleware>();
+            this._rollbarOptions = rollbarOptions.Value;
 
             RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
         }
@@ -67,28 +80,39 @@ namespace Rollbar.AspNetCore
         /// <returns>A middleware invocation/execution task.</returns>
         public async Task Invoke(HttpContext context)
         {
-            try
+            var requestId = context.Features
+                .Get<IHttpRequestIdentifierFeature>()
+                .TraceIdentifier;
+            using (_logger.BeginScope("Request: {RequestId}", requestId))
             {
-                await this._nextRequestProcessor(context);
-            }
-            catch(Exception ex)
-            {
-                // let's custom build the Data object that includes the exception 
-                // along with the current HTTP request context:
-                Rollbar.DTOs.Data data = new Rollbar.DTOs.Data(
-                    config:     RollbarLocator.RollbarInstance.Config,
-                    body:       new Rollbar.DTOs.Body(ex),
-                    custom:     null,
-                    request:    new Rollbar.DTOs.Request(null, context.Request)
-                    )
+                try
                 {
-                    Level = ErrorLevel.Critical,
-                };
+                    RollbarScope.Current.HttpContext.HttpAttributes = new RollbarHttpAttributes(context);
+                    await this._nextRequestProcessor(context);
+                }
+                catch (Exception ex)
+                {
+                    // let's custom build the Data object that includes the exception 
+                    // along with the current HTTP request context:
+                    Rollbar.DTOs.Data data = new Rollbar.DTOs.Data(
+                        config: RollbarLocator.RollbarInstance.Config,
+                        body: new Rollbar.DTOs.Body(ex),
+                        custom: null,
+                        request: new Rollbar.DTOs.Request(null, context.Request)
+                        )
+                    {
+                        Level = ErrorLevel.Critical,
+                    };
 
-                // log the Data object (the exception + the HTTP request data):
-                Rollbar.RollbarLocator.RollbarInstance.Log(data);
+                    // log the Data object (the exception + the HTTP request data):
+                    Rollbar.RollbarLocator.RollbarInstance.Log(data);
 
-                throw new Exception("The included internal exception processed by the Rollbar middleware", ex);
+                    throw new Exception("The included internal exception processed by the Rollbar middleware", ex);
+                }
+                finally
+                {
+                    RollbarScope.Current.HttpContext.HttpAttributes.StatusCode = context.Response.StatusCode;
+                }
             }
         }
     }

@@ -1,32 +1,34 @@
 ﻿#if NETCOREAPP
 
-namespace Rollbar.AspNetCore
+namespace Microsoft.Extensions.Logging
 {
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Logging;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
+    using Microsoft.Extensions.Options;
+    using Rollbar.AspNetCore;
+    using Rollbar.Diagnostics;
 
+    /// <summary>
+    /// Implements Rollbar extension to the Microsoft.Extensions.Logging.ILoggerFactory.
+    /// </summary>
     public static class LoggerFactoryExtensions
     {
+        /// <summary>
+        /// Adds the Rollbar logging client.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <param name="configuration">The configuration.</param>
+        /// <param name="rollbarOptions">The rollbar options.</param>
+        /// <returns></returns>
         public static ILoggerFactory AddRollbar(
-            this ILoggerFactory factory
-            , IConfiguration configuration
-            //,ILogger logger = null
-            //,bool dispose = false
-            )
+                    this ILoggerFactory factory
+                    , IConfiguration configuration
+                    , IOptions<RollbarOptions> rollbarOptions
+                    )
         {
-            //if (factory == null)
-            //{
-            //    throw new ArgumentNullException(nameof(factory));
-            //}
+            Assumption.AssertNotNull(configuration, nameof(configuration));
 
             factory.AddProvider(
-                new RollbarLoggerProvider(configuration)
-                //new RollbarLoggerProvider(logger, dispose)
+                new RollbarLoggerProvider(configuration, rollbarOptions)
                 );
 
             return factory;

@@ -4,30 +4,41 @@ namespace Rollbar.AspNetCore
 {
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
     using Rollbar.Diagnostics;
-    using Rollbar.NetCore;
-    using System;
     using System.Collections.Concurrent;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
+    /// <summary>
+    /// Implements Rollbar version of Microsoft.Extensions.Logging.ILoggerProvider.
+    /// </summary>
+    /// <seealso cref="Microsoft.Extensions.Logging.ILoggerProvider" />
     [ProviderAlias("Rollbar")]
     internal class RollbarLoggerProvider
-        : ILoggerProvider
+            : ILoggerProvider
     {
-        private readonly ConcurrentDictionary<string, RollbarLogger> _loggers = 
+        private readonly ConcurrentDictionary<string, RollbarLogger> _loggers =
             new ConcurrentDictionary<string, RollbarLogger>();
 
         private readonly IRollbarConfig _rollbarConfig = null;
 
+        private readonly RollbarOptions _rollbarOptions = null;
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="RollbarLoggerProvider" /> class from being created.
+        /// </summary>
         private RollbarLoggerProvider()
         {
         }
 
-        public RollbarLoggerProvider(IConfiguration configuration)
+        public RollbarLoggerProvider(
+            IConfiguration configuration
+            , IOptions<RollbarOptions> options
+            )
         {
+            Assumption.AssertNotNull(configuration, nameof(configuration));
+            Assumption.AssertNotNull(options, nameof(options));
+
+            this._rollbarOptions = options.Value;
             this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
 
             Assumption.AssertNotNull(this._rollbarConfig, nameof(this._rollbarConfig));
@@ -41,44 +52,22 @@ namespace Rollbar.AspNetCore
 
         private RollbarLogger CreateLoggerImplementation(string name)
         {
-            //var includeScopes = _settings?.IncludeScopes ?? _includeScopes;
-            //return new RollbarLogger(name, GetFilter(name, _settings), includeScopes ? _scopeProvider : null, _messageQueue);
-            return new RollbarLogger(name, this._rollbarConfig);
-        }
-
-        private IRollbarConfig DeduceRollbarConfig(IConfiguration configuration)
-        {
-            if (RollbarLocator.RollbarInstance.Config.AccessToken != null)
-            {
-                return RollbarLocator.RollbarInstance.Config;
-            }
-
-            // Here we assume that the Rollbar singleton was not explicitly preconfigured 
-            // anywhere in the code (Program.cs or Startup.cs), 
-            // so we are trying to configure it from IConfiguration:
-
-            Assumption.AssertNotNull(configuration, nameof(configuration));
-
-            const string defaultAccessToken = "none";
-            RollbarConfig rollbarConfig = new RollbarConfig(defaultAccessToken);
-            AppSettingsUtil.LoadAppSettings(ref rollbarConfig, configuration);
-
-            if (rollbarConfig.AccessToken == defaultAccessToken)
-            {
-                const string error = "Rollbar.NET notifier is not configured properly.";
-                throw new Exception(error);
-            }
-
-            RollbarLocator.RollbarInstance
-                .Configure(rollbarConfig);
-
-            return rollbarConfig;
+            return new RollbarLogger(
+                name
+                , this._rollbarConfig
+                , this._rollbarOptions
+                );
         }
 
         #region IDisposable Support
 
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///   <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -101,7 +90,9 @@ namespace Rollbar.AspNetCore
         //   Dispose(false);
         // }
 
-        // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

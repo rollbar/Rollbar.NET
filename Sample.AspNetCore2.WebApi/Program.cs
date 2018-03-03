@@ -26,7 +26,7 @@ namespace Sample.AspNetCore2.WebApi
                         //logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                         //logging.AddConsole();
                         //logging.AddDebug();
-                        logging.AddRollbar();
+                        //logging.AddRollbar();
                     })
                     .UseStartup<Startup>()
                     .Build();

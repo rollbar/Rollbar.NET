@@ -1,33 +1,37 @@
-﻿#if NETCOREAPP
-
-namespace Rollbar.AspNetCore
+﻿namespace Rollbar.Common
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
-    internal class RollbarLoggerScope
+    /// <summary>
+    /// Models a disposable action that is guaranteed to be invoked 
+    /// at least on disposal (if not explicitly invoked).
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
+    public class DisposableAction
         : IDisposable
     {
-        private const string defaultName = "None";
+        private Action _action;
 
-        private readonly RollbarLoggerProvider _loggerProvider = null;
-        private readonly object _state = null;
-        private readonly IDisposable _chainedDisposable = null;
-
-        public RollbarLoggerScope(RollbarLoggerProvider loggerProvider, object state, IDisposable chainedDisposable = null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DisposableAction"/> class.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        public DisposableAction(Action action)
         {
-            this._loggerProvider = loggerProvider;
-            this._state = state;
-            this._chainedDisposable = chainedDisposable;
+            _action = action;
         }
 
         #region IDisposable Support
 
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// <c>true</c> to release both managed and unmanaged resources; 
+        /// <c>false</c> to release only unmanaged resources.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -35,8 +39,11 @@ namespace Rollbar.AspNetCore
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-
-                    this._chainedDisposable?.Dispose();
+                    if (_action != null)
+                    {
+                        _action.Invoke();
+                        _action = null;
+                    }
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -47,13 +54,13 @@ namespace Rollbar.AspNetCore
         }
 
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~RollbarLoggerScope() {
+        // ~DisposableAction() {
         //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
         //   Dispose(false);
         // }
 
         // This code added to correctly implement the disposable pattern.
-        void IDisposable.Dispose()
+        public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
@@ -64,5 +71,3 @@ namespace Rollbar.AspNetCore
         #endregion
     }
 }
-
-#endif
