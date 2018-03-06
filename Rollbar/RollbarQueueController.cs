@@ -340,5 +340,35 @@ namespace Rollbar
             e.Logger.OnRollbarEvent(e);
         }
 
+        /// <summary>
+        /// Gets the total payload count across all the queues.
+        /// </summary>
+        /// <returns></returns>
+        public int GetTotalPayloadCount()
+        {
+            lock (this._syncLock)
+            {
+                int count = 0;
+                foreach (var queue in this._allQueues)
+                {
+                    count += queue.GetPayloadCount();
+                }
+                return count;
+            }
+        }
+
+        /// <summary>
+        /// Flushes the queues. All current payloads in every queue get removed.
+        /// </summary>
+        public void FlushQueues()
+        {
+            lock (this._syncLock)
+            {
+                foreach(var queue in this._allQueues)
+                {
+                    queue.Flush();
+                }
+            }
+        }
     }
 }
