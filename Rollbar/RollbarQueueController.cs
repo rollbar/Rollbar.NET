@@ -13,6 +13,10 @@ namespace Rollbar
     using System.Text;
     using System.Threading;
 
+#if NETFX
+    using System.Web.Hosting;
+#endif
+
     /// <summary>
     /// RollbarQueueController singleton.
     /// It keeps track of payload queues of every instance of RollbarLogger.
@@ -21,6 +25,9 @@ namespace Rollbar
     /// It makes sure that Rollbar access token rate limits handled properly.
     /// </summary>
     public sealed class RollbarQueueController
+#if NETFX
+        : IRegisteredObject
+#endif
     {
         #region singleton implementation
 
@@ -43,13 +50,7 @@ namespace Rollbar
         /// </summary>
         private RollbarQueueController()
         {
-            this._rollbarCommThread = new Thread(this.KeepProcessingAllQueues)
-            {
-                IsBackground = true,
-                Name = "Rollbar Communication Thread"
-            };
-
-            this._rollbarCommThread.Start();
+            this.Start();
         }
 
         private sealed class NestedSingleInstance
@@ -129,7 +130,7 @@ namespace Rollbar
 
         private readonly object _syncLock = new object();
 
-        private readonly Thread _rollbarCommThread = null;
+        private Thread _rollbarCommThread = null;
 
         private readonly HashSet<PayloadQueue> _allQueues =
             new HashSet<PayloadQueue>();
@@ -137,9 +138,11 @@ namespace Rollbar
         private readonly Dictionary<string, AccessTokenQueuesMetadata> _queuesByAccessToken = 
             new Dictionary<string, AccessTokenQueuesMetadata>();
 
-        private void KeepProcessingAllQueues()
+        private void KeepProcessingAllQueues(object data)
         {
-            while(true)
+            CancellationToken cancellationToken = (CancellationToken) data;
+
+            while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
@@ -147,17 +150,26 @@ namespace Rollbar
                     {
                         ProcessAllQueuesOnce();
                     }
-
-                    Thread.Sleep(this._sleepInterval);
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
+                catch (System.Threading.ThreadAbortException tae)
+                {
+                    return;
+                }
                 catch (System.Exception ex)
-#pragma warning restore CS0168 // Variable is declared but never used
                 {
                     //TODO: do we want to direct the exception 
                     //      to some kind of Rollbar notifier maintenance "access token"?
                 }
+#pragma warning restore CS0168 // Variable is declared but never used
+
+                if (cancellationToken.IsCancellationRequested)
+                    break;
+
+                Thread.Sleep(this._sleepInterval);
             }
+
+            CompleteProcessing();
         }
 
         private void ProcessAllQueuesOnce()
@@ -370,5 +382,56 @@ namespace Rollbar
                 }
             }
         }
+
+        private CancellationTokenSource _cancellationTokenSource = null;
+
+        private void Start()
+        {
+            if (this._rollbarCommThread == null)
+            {
+#if NETFX
+                HostingEnvironment.RegisterObject(this);
+#endif
+                this._rollbarCommThread = new Thread(new ParameterizedThreadStart(this.KeepProcessingAllQueues))
+                {
+                    IsBackground = true,
+                    Name = "Rollbar Communication Thread"
+                };
+
+                this._cancellationTokenSource = new CancellationTokenSource();
+                this._rollbarCommThread.Start(_cancellationTokenSource.Token);
+            }
+        }
+
+        private void CompleteProcessing()
+        {
+            Debug.WriteLine("Entering " +this.GetType().FullName + "." + nameof(this.CompleteProcessing) + "() method...");
+#if NETFX
+            HostingEnvironment.UnregisterObject(this);
+#endif
+            this._cancellationTokenSource.Dispose();
+            this._cancellationTokenSource = null;
+            this._rollbarCommThread = null;
+        }
+
+#if NETFX
+
+        public void Stop(bool immediate)
+        {
+            if (!immediate && this._cancellationTokenSource != null)
+            {
+                this._cancellationTokenSource.Cancel();
+                return;
+            }
+
+            this._cancellationTokenSource.Cancel();
+            if (this._rollbarCommThread != null)
+            {
+                this._rollbarCommThread.Join(TimeSpan.FromSeconds(60));
+                CompleteProcessing();
+            }
+        }
+
+#endif
     }
 }
