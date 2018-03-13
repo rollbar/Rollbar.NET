@@ -102,7 +102,7 @@ namespace Rollbar.AspNetCore
             }
 
             Rollbar.DTOs.Body payloadBody = null;
-            if (string.IsNullOrWhiteSpace(message))
+            if (!string.IsNullOrWhiteSpace(message))
             {
                 payloadBody = new DTOs.Body(new DTOs.Message(message));
             }
