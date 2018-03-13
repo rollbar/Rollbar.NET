@@ -24,12 +24,6 @@ namespace Rollbar.AspNetCore
         private readonly string _name = null;
         private readonly RollbarOptions _rollbarOptions = null;
 
-        //private readonly RollbarLoggerProvider _loggerProvider = null;
-
-        //[ThreadStatic]
-        //private static readonly IRollbar rollbar = RollbarFactory.CreateNew(false);
-        //[ThreadStatic]
-        //private int perThreadInstanceCount = 0;
         private readonly IRollbar _rollbar = null;
 
         /// <summary>
@@ -50,11 +44,6 @@ namespace Rollbar.AspNetCore
             this._name = name;
             this._rollbarOptions = rollbarOptions;
 
-            //perThreadInstanceCount++;
-            //if (rollbar.Config == null || string.IsNullOrWhiteSpace(rollbar.Config.AccessToken))
-            //{
-            //    rollbar.Configure(rollbarConfig);
-            //}
             this._rollbar = RollbarFactory.CreateNew(false).Configure(rollbarConfig);
         }
 
@@ -113,10 +102,14 @@ namespace Rollbar.AspNetCore
             }
 
             Rollbar.DTOs.Body payloadBody = null;
-            if (exception != null)
-                payloadBody = new DTOs.Body(exception);
-            else if (message != null)
+            if (string.IsNullOrWhiteSpace(message))
+            {
                 payloadBody = new DTOs.Body(new DTOs.Message(message));
+            }
+            else
+            {
+                payloadBody = new DTOs.Body(exception);
+            }
 
             Dictionary<string, object> customProperties = new Dictionary<string, object>();
             customProperties.Add(
@@ -212,11 +205,6 @@ namespace Rollbar.AspNetCore
                 {
                     // TODO: dispose managed state (managed objects).
 
-                    //perThreadInstanceCount--;
-                    //if (perThreadInstanceCount == 0)
-                    //{
-                    //    this.rollbar.Dispose();
-                    //}
                     this._rollbar.Dispose();
                 }
 

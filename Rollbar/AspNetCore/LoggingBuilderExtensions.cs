@@ -11,9 +11,14 @@ namespace Microsoft.Extensions.Logging
     /// </summary>
     public static class LoggingBuilderExtensions
     {
+        /// <summary>
+        /// Adds the rollbar.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns></returns>
         public static ILoggingBuilder AddRollbar(
-            this ILoggingBuilder builder
-            )
+                    this ILoggingBuilder builder
+                    )
         {
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerProvider, RollbarLoggerProvider>());
             builder.Services.TryAddEnumerable(ServiceDescriptor.Singleton<ILoggerFactory, RollbarLoggerFactory>());

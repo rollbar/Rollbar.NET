@@ -60,7 +60,7 @@
             Assumption.AssertNotNull(httpContext, nameof(httpContext));
 
             this.Url = httpContext.Host.Value + httpContext.Path;
-            this.QueryString = httpContext.Query.Value; //httpRequest.QueryString.Value;
+            this.QueryString = httpContext.Query.Value;
             this.Params = null;
 
             this.Headers = new Dictionary<string, string>(httpContext.Headers.Count());

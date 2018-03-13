@@ -53,14 +53,20 @@
             }
         }
 
+
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
         // ~DisposableAction() {
         //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
         //   Dispose(false);
         // }
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         // This code added to correctly implement the disposable pattern.
+#pragma warning disable CA1063 // Implement IDisposable Correctly
         public void Dispose()
+#pragma warning restore CA1063 // Implement IDisposable Correctly
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);

@@ -36,7 +36,7 @@ namespace Rollbar.AspNetCore
 
             if (rollbarConfig.AccessToken == defaultAccessToken)
             {
-                const string error = "Rollbar.NET notifier is not configured properly.";
+                const string error = "Rollbar.NET notifier is not configured properly. A valid access token needs to be specified.";
                 throw new Exception(error);
             }
 

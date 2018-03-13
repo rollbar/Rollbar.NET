@@ -20,7 +20,7 @@ namespace Rollbar
     /// <summary>
     /// RollbarQueueController singleton.
     /// It keeps track of payload queues of every instance of RollbarLogger.
-    /// It is also responsible for async processing of queues on its own worker thread 
+    /// It is also responsible for async processing of queues on its own worker thread
     /// (including retries as necessary).
     /// It makes sure that Rollbar access token rate limits handled properly.
     /// </summary>
@@ -109,6 +109,11 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Gets the queues count.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <returns></returns>
         internal int GetQueuesCount(string accessToken = null)
         {
             if (!string.IsNullOrWhiteSpace(accessToken))
@@ -416,6 +421,10 @@ namespace Rollbar
 
 #if NETFX
 
+
+        /// <summary>
+        /// Stops the queues processing.
+        /// </summary>
         public void Stop(bool immediate)
         {
             if (!immediate && this._cancellationTokenSource != null)
