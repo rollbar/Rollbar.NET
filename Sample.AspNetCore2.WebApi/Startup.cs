@@ -1,9 +1,6 @@
 ﻿namespace Sample.AspNetCore2.WebApi
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -11,6 +8,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar;
+    using Rollbar.AspNetCore;
 
     public class Startup
     {
@@ -25,6 +23,11 @@
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureRollbarSingleton();
+
+            services.AddRollbarLogger(loggerOptions =>
+            {
+                loggerOptions.Filter = (loggerName, loglevel) => loglevel >= LogLevel.Trace;
+            });
 
             services.AddMvc();
         }

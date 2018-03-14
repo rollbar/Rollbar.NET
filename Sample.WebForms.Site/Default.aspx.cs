@@ -15,7 +15,7 @@ namespace Sample.WebForms.Site
             try
             {
                 // Let's simulate an error:
-                throw new NullReferenceException("WebForms.Site sample: simulated exception");
+                throw new ApplicationException("WebForms.Site sample: simulated exception");
             }
             catch (Exception exception)
             {

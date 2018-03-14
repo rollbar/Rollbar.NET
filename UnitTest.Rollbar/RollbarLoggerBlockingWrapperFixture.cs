@@ -27,7 +27,7 @@ namespace UnitTest.Rollbar
         [TestCleanup]
         public void TearDownFixture()
         {
-
+            _logger.Dispose();
         }
 
         [TestMethod]

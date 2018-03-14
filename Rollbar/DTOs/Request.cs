@@ -9,6 +9,11 @@
 #if (NETSTANDARD || NETCOREAPP)
     using Microsoft.AspNetCore.Http;
     using System.IO;
+    //using Rollbar.AspNetCore;
+#endif
+
+#if (NETCOREAPP)
+    using Rollbar.AspNetCore;
 #endif
 
 #if NETFX
@@ -32,9 +37,55 @@
         {
         }
 
-#if (NETSTANDARD || NETCOREAPP)
+#if (NETCOREAPP)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// </summary>
+        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
+        /// <param name="httpContext">The HTTP context.</param>
+        public Request(
+            IDictionary<string, object> arbitraryKeyValuePairs
+            , RollbarHttpAttributes httpContext = null
+            )
+            : base(arbitraryKeyValuePairs)
+        {
+            if (httpContext != null)
+            {
+                this.SnapProperties(httpContext);
+            }
+        }
 
-        public Request(IDictionary<string, object> arbitraryKeyValuePairs, HttpRequest httpRequest = null)
+        private void SnapProperties(RollbarHttpAttributes httpContext)
+        {
+            Assumption.AssertNotNull(httpContext, nameof(httpContext));
+
+            this.Url = httpContext.Host.Value + httpContext.Path;
+            this.QueryString = httpContext.Query.Value;
+            this.Params = null;
+
+            this.Headers = new Dictionary<string, string>(httpContext.Headers.Count());
+            foreach (var header in httpContext.Headers)
+            {
+                if (header.Value.Count() == 0)
+                    continue;
+
+                this.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+            }
+
+            this.Method = httpContext.Method;
+        }
+#endif
+
+#if (NETSTANDARD || NETCOREAPP)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// </summary>
+        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
+        /// <param name="httpRequest">The HTTP request.</param>
+        public Request(
+            IDictionary<string, object> arbitraryKeyValuePairs
+            , HttpRequest httpRequest = null
+            )
             : base(arbitraryKeyValuePairs)
         {
             if (httpRequest != null)

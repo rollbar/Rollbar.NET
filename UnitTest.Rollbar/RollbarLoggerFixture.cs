@@ -5,22 +5,25 @@ namespace UnitTest.Rollbar
     using global::Rollbar;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
 
     [TestClass]
     [TestCategory(nameof(RollbarLoggerFixture))]
     public class RollbarLoggerFixture
     {
-        private IRollbar _logger = null;
+        RollbarConfig _loggerConfig =
+            new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
 
         [TestInitialize]
         public void SetupFixture()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-            RollbarConfig loggerConfig =
+            this._loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
         }
 
         [TestCleanup]
@@ -32,8 +35,11 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ImplementsIDisposable()
         {
-            IDisposable disposable = _logger as IDisposable;
-            Assert.IsNotNull(disposable);
+            using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
+            {
+                IDisposable disposable = logger as IDisposable;
+                Assert.IsNotNull(disposable);
+            }
         }
 
 
@@ -58,13 +64,16 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ReportException()
         {
-            try
+            using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
             {
-                _logger.Log(ErrorLevel.Error, new System.Exception("test exception"));
-            }
-            catch
-            {
-                Assert.IsTrue(false); 
+                try
+                {
+                    logger.Log(ErrorLevel.Error, new System.Exception("test exception"));
+                }
+                catch
+                {
+                    Assert.IsTrue(false);
+                }
             }
         }
 
@@ -79,13 +88,16 @@ namespace UnitTest.Rollbar
             }
             catch (System.Exception ex)
             {
-                try
+                using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
                 {
-                    _logger.Error(new System.Exception("outer exception", ex));
-                }
-                catch
-                {
-                    Assert.IsTrue(false);
+                    try
+                    {
+                        logger.Error(new System.Exception("outer exception", ex));
+                    }
+                    catch
+                    {
+                        Assert.IsTrue(false);
+                    }
                 }
             }
         }
@@ -93,13 +105,16 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ReportMessage()
         {
-            try
+            using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
             {
-                _logger.Log(ErrorLevel.Error, "test message");
-            }
-            catch
-            {
-                Assert.IsTrue(false);
+                try
+                {
+                    logger.Log(ErrorLevel.Error, "test message");
+                }
+                catch
+                {
+                    Assert.IsTrue(false);
+                }
             }
         }
 
@@ -113,15 +128,16 @@ namespace UnitTest.Rollbar
             RollbarConfig loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
             loggerConfig.Transform = delegate { System.Threading.Thread.Sleep(TimeSpan.FromMilliseconds(10 * maxCallLengthInMillisec)); };
-            IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig);
-
-            try
+            using (IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
-                logger.Log(ErrorLevel.Error, "test message");
-            }
-            catch
-            {
-                Assert.IsTrue(false);
+                try
+                {
+                    logger.Log(ErrorLevel.Error, "test message");
+                }
+                catch
+                {
+                    Assert.IsTrue(false);
+                }
             }
         }
 
@@ -134,21 +150,25 @@ namespace UnitTest.Rollbar
             RollbarConfig loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
             loggerConfig.Transform = delegate { throw new NullReferenceException(); };
-            IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig);
-            logger.InternalEvent += Logger_InternalEvent;
-
-            try
+            using (IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
-                logger.Log(ErrorLevel.Error, "test message");
-            }
-            catch
-            {
-                Assert.IsTrue(false);
-            }
+                logger.InternalEvent += Logger_InternalEvent;
 
-            this._signal.Wait();
+                try
+                {
+                    logger.Log(ErrorLevel.Error, "test message");
+                }
+                catch
+                {
+                    logger.InternalEvent -= Logger_InternalEvent;
+                    Assert.IsTrue(false);
+                }
 
-            Assert.IsTrue(this._transformException);
+                this._signal.Wait();
+                logger.InternalEvent -= Logger_InternalEvent;
+
+                Assert.IsTrue(this._transformException);
+            }
         }
 
         private bool _transformException = false;
@@ -160,5 +180,155 @@ namespace UnitTest.Rollbar
             this._transformException = true;
             this._signal.Release();
         }
+
+        #region Stress test
+
+        [TestMethod]
+        [Timeout(60000)]
+        public void MultithreadedStressTest_BlockingLogs()
+        {
+            RollbarLoggerFixture.stressLogsCount = 0;
+
+            RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
+            {
+                Environment = RollbarUnitTestSettings.Environment,
+                ReportingQueueDepth = 200,
+            };
+
+            TimeSpan rollbarBlockingTimeout = TimeSpan.FromMilliseconds(55000);
+
+            List<IRollbar> rollbars =
+                new List<IRollbar>(MultithreadedStressTestParams.TotalThreads);
+            List<ILogger> loggers = new List<ILogger>(MultithreadedStressTestParams.TotalThreads);
+
+            for (int i = 0; i < MultithreadedStressTestParams.TotalThreads; i++)
+            {
+                var rollbar = RollbarFactory.CreateNew().Configure(loggerConfig);
+                rollbar.InternalEvent += RollbarStress_InternalEvent;
+                loggers.Add(rollbar.AsBlockingLogger(rollbarBlockingTimeout));
+            }
+
+            PerformTheMultithreadedStressTest(loggers.ToArray());
+
+            rollbars.ForEach(r => {
+                r.InternalEvent -= RollbarStress_InternalEvent;
+                r.Dispose();
+            });
+        }
+
+        [TestMethod]
+        [Timeout(60000)]
+        public void MultithreadedStressTest()
+        {
+            RollbarLoggerFixture.stressLogsCount = 0;
+
+            RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
+            {
+                Environment = RollbarUnitTestSettings.Environment,
+                ReportingQueueDepth = 200,
+            };
+
+            List<IRollbar> rollbars = 
+                new List<IRollbar>(MultithreadedStressTestParams.TotalThreads);
+            for (int i = 0; i < MultithreadedStressTestParams.TotalThreads; i++)
+            {
+                var rollbar = RollbarFactory.CreateNew().Configure(loggerConfig);
+                rollbar.InternalEvent += RollbarStress_InternalEvent;
+                rollbars.Add(rollbar);
+            }
+
+            PerformTheMultithreadedStressTest(rollbars.ToArray());
+
+            rollbars.ForEach(r => {
+                r.InternalEvent -= RollbarStress_InternalEvent;
+                r.Dispose();
+            });
+        }
+
+        private void PerformTheMultithreadedStressTest(ILogger[] loggers)
+        {
+            //first let's make sure the controller queues are not populated by previous tests:
+            RollbarQueueController.Instance.FlushQueues();
+
+            RollbarQueueController.Instance.InternalEvent += RollbarStress_InternalEvent;
+
+            List<Task> tasks =
+                new List<Task>(MultithreadedStressTestParams.TotalThreads);
+            for (int t = 0; t < MultithreadedStressTestParams.TotalThreads; t++)
+            {
+                var task = new Task((state) =>
+                {
+                    int taskIndex = (int)state;
+                    TimeSpan sleepIntervalDelta = 
+                        TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
+                    var logger = loggers[taskIndex];
+                    int i = 0;
+                    while (i < MultithreadedStressTestParams.LogsPerThread)
+                    {
+                        var customFields = new Dictionary<string, object>(Fields.FieldsCount);
+                        customFields[Fields.ThreadID] = taskIndex + 1;
+                        customFields[Fields.ThreadLogID] = i + 1;
+                        customFields[Fields.Timestamp] = DateTimeOffset.UtcNow;
+
+                        logger.Info(
+                            //$"{customFields[Fields.Timestamp]} Stress test: thread #{customFields[Fields.ThreadID]}, log #{customFields[Fields.ThreadLogID]}"
+                            "Stress test"
+                            , customFields
+                            );
+
+                        Thread.Sleep(MultithreadedStressTestParams.LogIntervalBase.Add(sleepIntervalDelta));
+                        i++;
+                    }
+                }
+                , t
+                );
+
+                tasks.Add(task);
+            }
+
+            tasks.ForEach(t => t.Start());
+
+            Task.WaitAll(tasks.ToArray());
+
+            int expectedCount = 2 * //we are subscribing to the internal events twice: on individual rollbar level and on the queue controller level
+                MultithreadedStressTestParams.TotalThreads * MultithreadedStressTestParams.LogsPerThread;
+
+            //we need this delay loop for async logs:
+            while (RollbarQueueController.Instance.GetTotalPayloadCount() > 0)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(50));
+            }
+
+            RollbarQueueController.Instance.InternalEvent -= RollbarStress_InternalEvent;
+
+            Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
+        }
+
+        private static int stressLogsCount = 0;
+        private static void RollbarStress_InternalEvent(object sender, RollbarEventArgs e)
+        {
+            Interlocked.Increment(ref RollbarLoggerFixture.stressLogsCount);
+        }
+
+        private static class MultithreadedStressTestParams
+        {
+            public const int TotalThreads = 20;
+            public const int LogsPerThread = 10;
+            public static readonly TimeSpan LogIntervalDelta =
+                TimeSpan.FromMilliseconds(10);
+            public static readonly TimeSpan LogIntervalBase =
+                TimeSpan.FromMilliseconds(20);
+        }
+
+        private static class Fields
+        {
+            public const int FieldsCount = 3;
+            public const string Timestamp = "stress.timestamp";
+            public const string ThreadID = "stress.thread.id";
+            public const string ThreadLogID = "stress.thread.log.id";
+        }
+
+#endregion Stress test
+
     }
 }

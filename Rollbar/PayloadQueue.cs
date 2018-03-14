@@ -2,12 +2,10 @@
 
 namespace Rollbar
 {
-
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
-    using System.Text;
 
     internal class PayloadQueue
     {
@@ -77,6 +75,22 @@ namespace Rollbar
                 }
 
                 return result;
+            }
+        }
+
+        public int GetPayloadCount()
+        {
+            lock (this._syncLock)
+            {
+                return this._queue.Count;
+            }
+        }
+
+        public void Flush()
+        {
+            lock (this._syncLock)
+            {
+                this._queue.Clear();
             }
         }
     }
