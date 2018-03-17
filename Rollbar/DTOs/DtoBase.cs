@@ -1,9 +1,12 @@
 ﻿namespace Rollbar.DTOs
 {
 
+    using Xamarin.iOS.Foundation;
+
     /// <summary>
     /// Implements an abstract DTO type base.
     /// </summary>
+    [Preserve]
     public abstract class DtoBase
         : ITraceable
     {
