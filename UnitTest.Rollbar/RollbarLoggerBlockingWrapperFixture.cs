@@ -45,7 +45,7 @@ namespace UnitTest.Rollbar
                     .Info("Via blocking mechanism.")
                     ;
             }
-            catch (System.TimeoutException ex)
+            catch (TimeoutException ex)
             {
                 Assert.Fail("The timeout should be large enough for this test!");
             }

@@ -1,0 +1,46 @@
+﻿namespace Rollbar.PayloadTruncation
+{
+    using Newtonsoft.Json;
+    using Rollbar.DTOs;
+    using System.Text;
+
+    internal abstract class PayloadTruncationStrategyBase
+        : IPayloadTruncationStrategy
+    {
+        private const int maxPayloadSizeInBytes = 512 * 1024; //512 kB
+
+        /// <summary>
+        /// Gets the maximum payload size in bytes.
+        /// A truncation strategy attempts to truncate a provided payload to lesser or equal size.
+        /// </summary>
+        /// <value>
+        /// The maximum payload size in bytes.
+        /// </value>
+        public int MaxPayloadSizeInBytes
+        {
+            get { return PayloadTruncationStrategyBase.maxPayloadSizeInBytes; }
+        }
+
+        /// <summary>
+        /// Truncates the specified payload.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns>
+        /// Payload size (in bytes) after the truncation.
+        /// </returns>
+        public abstract int Truncate(Payload payload);
+
+        protected int GetSizeInBytes(Payload payload)
+        {
+            int result = 0;
+
+            var jsonData = JsonConvert.SerializeObject(payload);
+
+            Encoding stringEncoding = Encoding.UTF8;
+
+            result = stringEncoding.GetByteCount(jsonData);
+
+            return result;
+        }
+    }
+}
