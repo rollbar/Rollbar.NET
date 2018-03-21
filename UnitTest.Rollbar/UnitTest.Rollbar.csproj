@@ -43,6 +43,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.1" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462' &#xD;&#xA;             Or '$(TargetFramework)' == 'net461'&#xD;&#xA;             Or '$(TargetFramework)' == 'net46'&#xD;&#xA;             Or '$(TargetFramework)' == 'net452'&#xD;&#xA;             Or '$(TargetFramework)' == 'net451'&#xD;&#xA;             Or '$(TargetFramework)' == 'net45'&#xD;&#xA;             ">
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|netcoreapp2.0'">
     <NoWarn>NU1701;1701</NoWarn>
   </PropertyGroup>

@@ -11,8 +11,8 @@
         private readonly IPayloadTruncationStrategy[] _orderedTruncationStrategies = 
             new IPayloadTruncationStrategy[] {
                 new RawTruncationStrategy(),
-                new FramesTruncationStrategy(),
-                new RawTruncationStrategy(),
+                new FramesTruncationStrategy(totalHeadFramesToPreserve: 10, totalTailFramesToPreserve: 10),
+                new StringsTruncationStrategy(new int[] {1024, 512, 256}),
                 new MinBodyTruncationStrategy(),
             };
 
