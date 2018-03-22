@@ -5,6 +5,7 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
 
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
 #pragma warning disable CS1658 // Warning is overriding an error
@@ -286,5 +287,17 @@
             }
         }
 
+        #region strings truncation support
+
+        public override DtoBase TruncateStrings(Encoding encoding, int stringBytesLimit)
+        {
+            base.TruncateStrings(encoding, stringBytesLimit);
+
+            this.TruncateStringValues(this, encoding, stringBytesLimit);
+
+            return this;
+        }
+
+        #endregion strings truncation support
     }
 }

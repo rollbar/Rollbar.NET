@@ -10,6 +10,7 @@ namespace UnitTest.Rollbar.DTOs
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     [TestClass]
@@ -35,8 +36,14 @@ namespace UnitTest.Rollbar.DTOs
         [TestInitialize]
         public void SetupFixture()
         {
+            Dictionary<string, object> customMessageAttributes = new Dictionary<string, object>()
+            {
+                {"longString", "very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-" },
+                {"theNumber", 11 },
+            };
+
+            this._messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords", customMessageAttributes))));
             this._exceptionExample = new Payload("access-token", new Data(this._config, new Body(GetException())));
-            this._messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords"))));
             this._crashException = new Payload("access-token", new Data(this._config, new Body("A terrible crash!")));
             this._aggregateExample = new Payload("access-token", new Data(this._config, new Body(GetAggregateException())));
         }
@@ -44,6 +51,44 @@ namespace UnitTest.Rollbar.DTOs
         [TestCleanup]
         public void TearDownFixture()
         {
+        }
+
+        [TestMethod]
+        public void TestStringPropertiesTruncation()
+        {
+            Payload[] testPayloads = new Payload[]
+            {
+                this._exceptionExample,
+                this._messageException,
+                this._crashException,
+                this._aggregateExample,
+            };
+
+            string truncated = null;
+            foreach (var testPayload in testPayloads)
+            {
+                string original = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Original payload ({original.Length}): " + original);
+                System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+                testPayload.TruncateStrings(Encoding.UTF8, 10);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                testPayload.TruncateStrings(Encoding.UTF8, 7);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                testPayload.TruncateStrings(Encoding.UTF8, 0);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                sw.Stop();
+                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedMilliseconds} [msec].");
+                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedTicks} [ticks].");
+
+                Assert.IsTrue(truncated.Length < original.Length);
+            }
         }
 
         [TestMethod]

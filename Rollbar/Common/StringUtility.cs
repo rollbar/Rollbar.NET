@@ -60,14 +60,19 @@
 
         public static string Truncate(string input, Encoding encoding, int encodedBytesLimit)
         {
-            int maxEncodedBytes = encoding.GetMaxByteCount(input.Length);
-            if (maxEncodedBytes <= encodedBytesLimit)
+            if (input == null)
+            {
+                return input; //nothing to truncate...
+            }
+
+            byte[] inputEncodedBytes = encoding.GetBytes(input);
+            Assumption.AssertEqual(inputEncodedBytes.Length, encoding.GetByteCount(input), nameof(inputEncodedBytes.Length));
+            if (inputEncodedBytes.Length <= encodedBytesLimit)
             {
                 return input; //nothing to truncate...
             }
 
             int truncaionIndicatorTotalByte = encoding.GetByteCount(truncaionIndicator);
-            byte[] inputEncodedBytes = encoding.GetBytes(input);
             int totalBytes = encodedBytesLimit - truncaionIndicatorTotalByte;
             if (totalBytes < 0)
             {
