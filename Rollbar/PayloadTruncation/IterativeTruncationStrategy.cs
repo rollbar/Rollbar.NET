@@ -2,6 +2,10 @@
 {
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Implements "Iterative as needed" Payload truncation strategy.
+    /// </summary>
+    /// <seealso cref="Rollbar.PayloadTruncation.PayloadTruncationStrategyBase" />
     internal class IterativeTruncationStrategy
         : PayloadTruncationStrategyBase
     {

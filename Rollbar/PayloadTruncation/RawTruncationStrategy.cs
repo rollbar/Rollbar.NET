@@ -1,12 +1,9 @@
 ﻿namespace Rollbar.PayloadTruncation
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
     using Rollbar.DTOs;
 
     /// <summary>
-    /// No-Op payload truncation strategy implementation.
+    /// Implements "No-Op" Payload truncation strategy.
     /// </summary>
     /// <seealso cref="Rollbar.PayloadTruncation.PayloadTruncationStrategyBase" />
     internal class RawTruncationStrategy

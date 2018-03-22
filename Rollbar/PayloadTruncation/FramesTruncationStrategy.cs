@@ -2,16 +2,28 @@
 {
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Implements "middle Frames reduction" Payload truncation strategy.
+    /// </summary>
+    /// <seealso cref="Rollbar.PayloadTruncation.PayloadTruncationStrategyBase" />
     internal class FramesTruncationStrategy
         : PayloadTruncationStrategyBase
     {
         private readonly int _totalHeadFramesToPreserve;
         private readonly int _totalTailFramesToPreserve;
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="FramesTruncationStrategy"/> class from being created.
+        /// </summary>
         private FramesTruncationStrategy()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FramesTruncationStrategy"/> class.
+        /// </summary>
+        /// <param name="totalHeadFramesToPreserve">The total head frames to preserve.</param>
+        /// <param name="totalTailFramesToPreserve">The total tail frames to preserve.</param>
         public FramesTruncationStrategy(
             int totalHeadFramesToPreserve, 
             int totalTailFramesToPreserve
@@ -21,6 +33,13 @@
             this._totalTailFramesToPreserve = totalTailFramesToPreserve;
         }
 
+        /// <summary>
+        /// Truncates the specified payload.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns>
+        /// Payload size (in bytes) after the truncation.
+        /// </returns>
         public override int Truncate(Payload payload)
         {
             Trace[] traceChain = payload.Data.Body.TraceChain;

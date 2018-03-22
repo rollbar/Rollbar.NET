@@ -4,6 +4,10 @@
     using Rollbar.DTOs;
     using System.Text;
 
+    /// <summary>
+    /// An abstract base for implementing Payload truncation strategies.
+    /// </summary>
+    /// <seealso cref="Rollbar.PayloadTruncation.IPayloadTruncationStrategy" />
     internal abstract class PayloadTruncationStrategyBase
         : IPayloadTruncationStrategy
     {
@@ -30,6 +34,11 @@
         /// </returns>
         public abstract int Truncate(Payload payload);
 
+        /// <summary>
+        /// Gets the size in bytes.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns></returns>
         protected int GetSizeInBytes(Payload payload)
         {
             int result = 0;
