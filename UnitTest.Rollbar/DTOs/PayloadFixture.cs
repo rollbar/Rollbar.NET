@@ -36,13 +36,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestInitialize]
         public void SetupFixture()
         {
-            Dictionary<string, object> customMessageAttributes = new Dictionary<string, object>()
-            {
-                {"longString", "very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-" },
-                {"theNumber", 11 },
-            };
-
-            this._messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords", customMessageAttributes))));
+            this._messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords"))));
             this._exceptionExample = new Payload("access-token", new Data(this._config, new Body(GetException())));
             this._crashException = new Payload("access-token", new Data(this._config, new Body("A terrible crash!")));
             this._aggregateExample = new Payload("access-token", new Data(this._config, new Body(GetAggregateException())));
@@ -56,12 +50,18 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void TestStringPropertiesTruncation()
         {
+            Dictionary<string, object> customAttributes = new Dictionary<string, object>()
+            {
+                {"longString", "very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-" },
+                {"theNumber", 11 },
+            };
+
             Payload[] testPayloads = new Payload[]
             {
-                this._exceptionExample,
-                this._messageException,
-                this._crashException,
-                this._aggregateExample,
+                new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords", customAttributes)), customAttributes)),
+                new Payload("access-token", new Data(this._config, new Body(GetException()), customAttributes)),
+                new Payload("access-token", new Data(this._config, new Body("A terrible crash!"), customAttributes)),
+                new Payload("access-token", new Data(this._config, new Body(GetAggregateException()), customAttributes)),
             };
 
             string truncated = null;
@@ -84,8 +84,7 @@ namespace UnitTest.Rollbar.DTOs
                 System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
 
                 sw.Stop();
-                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedMilliseconds} [msec].");
-                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedTicks} [ticks].");
+                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedMilliseconds} [msec] or {sw.ElapsedTicks} [ticks].");
 
                 Assert.IsTrue(truncated.Length < original.Length);
             }

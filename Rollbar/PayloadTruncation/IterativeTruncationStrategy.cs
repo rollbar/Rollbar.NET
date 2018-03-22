@@ -1,8 +1,5 @@
 ﻿namespace Rollbar.PayloadTruncation
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
     using Rollbar.DTOs;
 
     internal class IterativeTruncationStrategy
@@ -12,7 +9,9 @@
             new IPayloadTruncationStrategy[] {
                 new RawTruncationStrategy(),
                 new FramesTruncationStrategy(totalHeadFramesToPreserve: 10, totalTailFramesToPreserve: 10),
-                new StringsTruncationStrategy(new int[] {1024, 512, 256}),
+                new StringsTruncationStrategy(stringBytesLimit: 1024),
+                new StringsTruncationStrategy(stringBytesLimit:  512),
+                new StringsTruncationStrategy(stringBytesLimit:  256),
                 new MinBodyTruncationStrategy(),
             };
 
@@ -30,6 +29,7 @@
             foreach(var strategy in _orderedTruncationStrategies)
             {
                 result = strategy.Truncate(payload);
+
                 if (result <= this.MaxPayloadSizeInBytes)
                 {
                     return result;
