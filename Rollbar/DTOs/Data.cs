@@ -262,7 +262,7 @@
         /// The notifier.
         /// </value>
         [JsonProperty("notifier", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, string> Notifier
+        public IDictionary<string, string> Notifier
         {
             get;
             private set;

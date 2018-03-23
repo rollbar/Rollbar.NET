@@ -229,26 +229,20 @@
                     continue;
                 }
 
+                Type[] typesOfInterest = new Type[] {
+                    typeof(IDictionary<string, object>),
+                    typeof(IDictionary<string, string>),
+                };
+
                 var properties =
                     type.GetProperties()
                     .Where(p => !derivedTypes.Contains(p.PropertyType) &&
-                        p.PropertyType.GetInterfaces().Where(i => i.IsGenericType).Select(i => i.GetGenericTypeDefinition()).Contains(typeof(IDictionary<,>))
+                        typesOfInterest.Contains(p.PropertyType)
                         )
                     .ToArray();
                 reflectedMetadata.Add(type, properties);
-            }
 
-            //StringBuilder sb = new StringBuilder();
-            //foreach(var key in reflectedMetadata.Keys)
-            //{
-            //    foreach(var value in reflectedMetadata[key])
-            //    {
-            //        sb.AppendLine(key.FullName + " : " + value.Name + " : " + value.PropertyType.FullName);
-            //    }
-            //}
-            //string allTheDictionaryProperties = sb.ToString();
-            //System.Diagnostics.Debug.WriteLine(allTheDictionaryProperties);
-            //System.Diagnostics.Trace.WriteLine(allTheDictionaryProperties);
+            }
 
             return reflectedMetadata;
         }

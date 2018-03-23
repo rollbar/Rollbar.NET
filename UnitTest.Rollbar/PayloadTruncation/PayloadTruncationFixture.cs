@@ -12,6 +12,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
 
     [TestClass]
@@ -32,6 +33,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
         [TestInitialize]
         public void SetupFixture()
         {
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
         [TestCleanup]
@@ -43,57 +45,119 @@ namespace UnitTest.Rollbar.PayloadTruncation
         public void TestTruncation()
         {
 
-            Dictionary<string, object> customAttributes = new Dictionary<string, object>()
-            {
-                {"longString", "very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-" },
-                {"theNumber", 11 },
-            };
-
             Payload[] testPayloads = new Payload[]
             {
-                new Payload(this._config.AccessToken, new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords", customAttributes)), customAttributes)),
-                new Payload(this._config.AccessToken, new Data(this._config, new Body("A terrible crash!"), customAttributes)),
-                new Payload(this._config.AccessToken, new Data(this._config, new Body(GetException()), customAttributes)),
-                new Payload(this._config.AccessToken, new Data(this._config, new Body(GetAggregateException()), customAttributes)),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config, 
+                    new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config, 
+                    new Body("A terrible crash!"),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config, 
+                    new Body(GetException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config, 
+                    new Body(GetAggregateException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
             };
+
+            TimeSpan blockingTimeout = TimeSpan.FromSeconds(5);
+            using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            {
+                foreach(var payload in testPayloads)
+                {
+                    logger.AsBlockingLogger(blockingTimeout).Log(payload.Data);
+                }
+            }
 
             IterativeTruncationStrategy trancationStrategy = null;
 
+            const int payloadByteSizeLimit = 10; //we are intentionally exaggerating here to force all the iterations to happen...
             List<IPayloadTruncationStrategy> iterations = new List<IPayloadTruncationStrategy>();
 
             iterations.Add(new RawTruncationStrategy());
             trancationStrategy = new IterativeTruncationStrategy(400, iterations);
             AssertPayloadSizeReduction(false, testPayloads, trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads, trancationStrategy);
+            using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            {
+                foreach (var payload in testPayloads)
+                {
+                    logger.AsBlockingLogger(blockingTimeout).Log(payload.Data);
+                }
+            }
 
             iterations.Add(new FramesTruncationStrategy(totalHeadFramesToPreserve: 1, totalTailFramesToPreserve: 1));
-            trancationStrategy = new IterativeTruncationStrategy(400, iterations);
+            trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(false, testPayloads.Take(3).ToArray(), trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads.Take(3).ToArray(), trancationStrategy);
             AssertPayloadSizeReduction(true, testPayloads.Reverse().Take(1).ToArray(), trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads.Reverse().Take(1).ToArray(), trancationStrategy);
+            using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            {
+                foreach (var payload in testPayloads)
+                {
+                    logger.AsBlockingLogger(blockingTimeout).Log(payload.Data);
+                }
+            }
 
             iterations.Add(new StringsTruncationStrategy(stringBytesLimit: 10));
-            trancationStrategy = new IterativeTruncationStrategy(400, iterations);
+            trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(true, testPayloads, trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads, trancationStrategy);
+            using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            {
+                foreach (var payload in testPayloads)
+                {
+                    logger.AsBlockingLogger(blockingTimeout).Log(payload.Data);
+                }
+            }
 
             iterations.Add(new StringsTruncationStrategy(stringBytesLimit:  7));
-            trancationStrategy = new IterativeTruncationStrategy(400, iterations);
+            trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(true, testPayloads, trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads, trancationStrategy);
+            using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            {
+                foreach (var payload in testPayloads)
+                {
+                    logger.AsBlockingLogger(blockingTimeout).Log(payload.Data);
+                }
+            }
 
             iterations.Add(new StringsTruncationStrategy(stringBytesLimit:  3));
-            trancationStrategy = new IterativeTruncationStrategy(400, iterations);
+            trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(true, testPayloads, trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads, trancationStrategy);
+            using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            {
+                foreach (var payload in testPayloads)
+                {
+                    logger.AsBlockingLogger(blockingTimeout).Log(payload.Data);
+                }
+            }
 
             iterations.Add(new MinBodyTruncationStrategy());
-            trancationStrategy = new IterativeTruncationStrategy(400, iterations);
+            trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
             AssertPayloadSizeReduction(true, testPayloads.Reverse().Take(2).ToArray(), trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads.Reverse().Take(2).ToArray(), trancationStrategy);
+            using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            {
+                foreach (var payload in testPayloads)
+                {
+                    logger.AsBlockingLogger(blockingTimeout).Log(payload.Data);
+                }
+            }
         }
 
         private void AssertPayloadSizeReduction(bool expectReduction, Payload[] testPayloads, IterativeTruncationStrategy trancationStrategy)

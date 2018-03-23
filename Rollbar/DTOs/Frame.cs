@@ -113,7 +113,7 @@
         /// The kwargs.
         /// </value>
         [JsonProperty("kwargs", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, object> Kwargs { get; set; }
+        public IDictionary<string, object> Kwargs { get; set; }
 
         #endregion Unautomatable
 

@@ -41,18 +41,29 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void TestStringPropertiesTruncation()
         {
-            Dictionary<string, object> customAttributes = new Dictionary<string, object>()
-            {
-                {"longString", "very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-very-long-string-" },
-                {"theNumber", 11 },
-            };
 
             Payload[] testPayloads = new Payload[]
             {
-                new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords", customAttributes)), customAttributes)),
-                new Payload("access-token", new Data(this._config, new Body(GetException()), customAttributes)),
-                new Payload("access-token", new Data(this._config, new Body("A terrible crash!"), customAttributes)),
-                new Payload("access-token", new Data(this._config, new Body(GetAggregateException()), customAttributes)),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body("A terrible crash!"),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(GetException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(GetAggregateException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
             };
 
             string truncated = null;

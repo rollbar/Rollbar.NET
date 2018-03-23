@@ -39,7 +39,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.DTOs.Data">
-    <Position X="5.5" Y="5.75" Width="5.75" />
+    <Position X="5.5" Y="6.25" Width="5.75" />
     <TypeIdentifier>
       <HashCode>AIAAgAAmCgAAAMAwAAADCAAAAIAAgAABCAAAAkgRAAQ=</HashCode>
       <FileName>DTOs\Data.cs</FileName>
@@ -48,7 +48,7 @@
   <Class Name="Rollbar.DTOs.DtoBase">
     <Position X="0.5" Y="0.5" Width="4.5" />
     <TypeIdentifier>
-      <HashCode>IAAgAAAAAECAAAAAAAQAAAAAAAAgAAAwAAAAAAAAAAA=</HashCode>
+      <HashCode>IAAiAAAAAMCAAAAAAASAAAAAAAAwAAAwAAAABAAACAE=</HashCode>
       <FileName>DTOs\DtoBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -61,9 +61,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.DTOs.ExtendableDtoBase">
-    <Position X="0.5" Y="5.25" Width="4.75" />
+    <Position X="0.5" Y="6.25" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>OQIAAAAEIAAEABAQCAAABAQAAAAAAAAEAAAgAABQIAA=</HashCode>
+      <HashCode>OQIAAAAEIAAEABAQCAAABAQAAAAgAAAEAAAgAABQIAA=</HashCode>
       <FileName>DTOs\ExtendableDtoBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -76,7 +76,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.DTOs.Message">
-    <Position X="7.25" Y="13.25" Width="4.25" />
+    <Position X="7.25" Y="13.5" Width="4.25" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
