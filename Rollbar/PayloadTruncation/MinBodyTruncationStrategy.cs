@@ -28,7 +28,9 @@
             }
 
             Trace[] traces = payload.Data.Body.TraceChain;
-            if (traces == null ||traces.LongLength == 0)
+            if ((traces == null || traces.LongLength == 0) 
+                && (payload.Data.Body.Trace != null)
+                )
             {
                 traces = new Trace[] { payload.Data.Body.Trace, };
             }

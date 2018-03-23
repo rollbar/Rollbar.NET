@@ -11,20 +11,6 @@
     internal abstract class PayloadTruncationStrategyBase
         : IPayloadTruncationStrategy
     {
-        private const int maxPayloadSizeInBytes = 512 * 1024; //512 kB
-
-        /// <summary>
-        /// Gets the maximum payload size in bytes.
-        /// A truncation strategy attempts to truncate a provided payload to lesser or equal size.
-        /// </summary>
-        /// <value>
-        /// The maximum payload size in bytes.
-        /// </value>
-        public int MaxPayloadSizeInBytes
-        {
-            get { return PayloadTruncationStrategyBase.maxPayloadSizeInBytes; }
-        }
-
         /// <summary>
         /// Truncates the specified payload.
         /// </summary>
