@@ -15,6 +15,7 @@ namespace Rollbar
     using Rollbar.DTOs;
     using Rollbar.Diagnostics;
     using Rollbar.Serialization.Json;
+    using Rollbar.PayloadTruncation;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -41,9 +42,19 @@ namespace Rollbar
             return task.Result;
         }
 
+        private readonly IterativeTruncationStrategy _payloadTruncationStrategy = new IterativeTruncationStrategy();
+
         public async Task<RollbarResponse> PostAsJsonAsync(Payload payload, IEnumerable<string> scrubFields)
         {
             Assumption.AssertNotNull(payload, nameof(payload));
+
+            if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
+            {
+                throw new ArgumentOutOfRangeException(
+                    paramName: nameof(payload),
+                    message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
+                    );
+            }
 
             using (var httpClient = this.BuildWebClient())
             {
