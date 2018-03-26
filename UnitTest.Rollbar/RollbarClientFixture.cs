@@ -34,16 +34,18 @@ namespace UnitTest.Rollbar
         //very straightforward into .NET type and Newtonsoft.Json SDKs.
 
         [TestMethod]
-        public void TestDeploysQuery()
+        public void TestGetDeploysPage()
         {
             RollbarClient rollbarClient = new RollbarClient(this._loggerConfig);
 
             //var result = 
-            rollbarClient.GetDeploymentsAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken).Wait();
+            rollbarClient.GetDeploymentsAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, 1).Wait();
+
+            rollbarClient.GetDeploymentsAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, int.MaxValue).Wait();
         }
 
         [TestMethod]
-        public void TestGetDeployment()
+        public void TestGetDeploy()
         {
             RollbarClient rollbarClient = new RollbarClient(this._loggerConfig);
 
@@ -52,11 +54,15 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        public void TestPostNewDeployment()
+        public void TestPostDeployment()
         {
             RollbarClient rollbarClient = new RollbarClient(this._loggerConfig);
 
-            var deployment = new Deployment(this._loggerConfig.AccessToken, this._loggerConfig.Environment, "99909a3a5a3dd4363f414161f340b582bb2e4161");
+            var deployment = new Deployment(this._loggerConfig.AccessToken, this._loggerConfig.Environment, "99909a3a5a3dd4363f414161f340b582bb2e4161") {
+                Comment = "Some new unit test deployment",
+                LocalUsername = "UnitTestRunner",
+                RollbarUsername = "rollbar",
+            };
 
             //var result = 
             rollbarClient.PostAsync(deployment).Wait();

@@ -150,7 +150,7 @@ namespace Rollbar
                 var uri = new Uri(this.Config.EndPoint + RollbarClient.deployApiPath);
 
                 var parameters = new Dictionary<string, string> {
-                    { "access_token", (!string.IsNullOrWhiteSpace(deployment.AccessToken)) ? deployment.AccessToken : this.Config.AccessToken },
+                    { "access_token", (!string.IsNullOrWhiteSpace(deployment.WriteAccessToken)) ? deployment.WriteAccessToken : this.Config.AccessToken },
                     { "environment", (!string.IsNullOrWhiteSpace(deployment.Environment)) ? deployment.Environment : this.Config.Environment  },
                     { "revision", deployment.Revision },
                     { "rollbar_username", deployment.RollbarUsername },
@@ -181,7 +181,7 @@ namespace Rollbar
             }
         }
 
-        public async Task<RollbarResponse> GetDeploymentAsync(string readAccessToken, string deploymentID)
+        public async Task<DeployResponse> GetDeploymentAsync(string readAccessToken, string deploymentID)
         {
             using (var httpClient = this.BuildWebClient())
             {
@@ -193,17 +193,11 @@ namespace Rollbar
 
                 var httpResponse = await httpClient.GetAsync(uri);//.ConfigureAwait(false);
 
-                RollbarResponse response = null;
+                DeployResponse response = null;
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     string reply = await httpResponse.Content.ReadAsStringAsync();
-                    response = JsonConvert.DeserializeObject<RollbarResponse>(reply);
-                    response.HttpDetails =
-                        $"Response: {httpResponse}"
-                        + Environment.NewLine
-                        + $"Request: {httpResponse.RequestMessage}"
-                        + Environment.NewLine
-                        ;
+                    response = JsonConvert.DeserializeObject<DeployResponse>(reply);
                 }
                 else
                 {
@@ -215,7 +209,7 @@ namespace Rollbar
         }
 
         private const string deploysQueryApiPath = @"deploys/";
-        public async Task<RollbarResponse> GetDeploymentsAsync(string readAccessToken, int pageNumber = 1)
+        public async Task<DeploysPageResponse> GetDeploymentsAsync(string readAccessToken, int pageNumber = 1)
         {
             using (var httpClient = this.BuildWebClient())
             {
@@ -227,17 +221,11 @@ namespace Rollbar
 
                 var httpResponse = await httpClient.GetAsync(uri);//.ConfigureAwait(false);
 
-                RollbarResponse response = null;
+                DeploysPageResponse response = null;
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     string reply = await httpResponse.Content.ReadAsStringAsync();
-                    response = JsonConvert.DeserializeObject<RollbarResponse>(reply);
-                    response.HttpDetails =
-                        $"Response: {httpResponse}"
-                        + Environment.NewLine
-                        + $"Request: {httpResponse.RequestMessage}"
-                        + Environment.NewLine
-                        ;
+                    response = JsonConvert.DeserializeObject<DeploysPageResponse>(reply);
                 }
                 else
                 {
