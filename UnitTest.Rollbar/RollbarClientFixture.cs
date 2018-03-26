@@ -3,6 +3,7 @@
 namespace UnitTest.Rollbar
 {
     using global::Rollbar;
+    using global::Rollbar.Deploys;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Threading;
@@ -12,9 +13,15 @@ namespace UnitTest.Rollbar
     public class RollbarClientFixture
     {
 
+        private IRollbarConfig _loggerConfig;
+
         [TestInitialize]
         public void SetupFixture()
         {
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
+            this._loggerConfig =
+                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
         }
 
         [TestCleanup]
@@ -26,5 +33,33 @@ namespace UnitTest.Rollbar
         //It does not have any processing logic at all and just makes a couple of 
         //very straightforward into .NET type and Newtonsoft.Json SDKs.
 
+        [TestMethod]
+        public void TestDeploysQuery()
+        {
+            RollbarClient rollbarClient = new RollbarClient(this._loggerConfig);
+
+            //var result = 
+            rollbarClient.GetDeploymentsAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken).Wait();
+        }
+
+        [TestMethod]
+        public void TestGetDeployment()
+        {
+            RollbarClient rollbarClient = new RollbarClient(this._loggerConfig);
+
+            //var result = 
+            rollbarClient.GetDeploymentAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, "8387647").Wait();
+        }
+
+        [TestMethod]
+        public void TestPostNewDeployment()
+        {
+            RollbarClient rollbarClient = new RollbarClient(this._loggerConfig);
+
+            var deployment = new Deployment(this._loggerConfig.AccessToken, this._loggerConfig.Environment, "99909a3a5a3dd4363f414161f340b582bb2e4161");
+
+            //var result = 
+            rollbarClient.PostAsync(deployment).Wait();
+        }
     }
 }
