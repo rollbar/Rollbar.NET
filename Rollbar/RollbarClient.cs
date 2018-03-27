@@ -17,6 +17,7 @@ namespace Rollbar
     using Rollbar.Serialization.Json;
     using Rollbar.PayloadTruncation;
     using Rollbar.Deploys;
+    using Rollbar.Common;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -137,20 +138,40 @@ namespace Rollbar
             return null;
         }
 
-
-
-        //for reference: https://blog.jayway.com/2012/03/13/httpclient-makes-get-and-post-very-simple/
-        // or https://docs.microsoft.com/en-us/aspnet/web-api/overview/advanced/calling-a-web-api-from-a-net-client
-
         private const string deployApiPath = @"deploy/";
-        public async Task<RollbarResponse> PostAsync(Deployment deployment)
+
+        /// <summary>
+        /// Posts the asynchronous.
+        /// </summary>
+        /// <param name="deployment">The deployment.</param>
+        /// <returns></returns>
+        public async Task PostAsync(IDeployment deployment)
         {
+            Assumption.AssertNotNull(this.Config, nameof(this.Config));
+            Assumption.AssertNotNullOrWhiteSpace(this.Config.AccessToken, nameof(this.Config.AccessToken));
+            Assumption.AssertFalse(string.IsNullOrWhiteSpace(deployment.Environment) && string.IsNullOrWhiteSpace(this.Config.Environment), nameof(deployment.Environment));
+            Assumption.AssertNotNullOrWhiteSpace(deployment.Revision, nameof(deployment.Revision));
+
+            Assumption.AssertLessThan(
+                deployment.Environment.Length, 256,
+                nameof(deployment.Environment.Length)
+                );
+            Assumption.AssertTrue(
+                deployment.LocalUsername == null || deployment.LocalUsername.Length < 256,
+                nameof(deployment.LocalUsername)
+                );
+            Assumption.AssertTrue(
+                deployment.Comment == null || StringUtility.CalculateExactEncodingBytes(deployment.Comment, Encoding.UTF8) <= (62 * 1024),
+                nameof(deployment.Comment)
+                );
+
+
             using (var httpClient = this.BuildWebClient())
             {
                 var uri = new Uri(this.Config.EndPoint + RollbarClient.deployApiPath);
 
                 var parameters = new Dictionary<string, string> {
-                    { "access_token", (!string.IsNullOrWhiteSpace(deployment.WriteAccessToken)) ? deployment.WriteAccessToken : this.Config.AccessToken },
+                    { "access_token", this.Config.AccessToken },
                     { "environment", (!string.IsNullOrWhiteSpace(deployment.Environment)) ? deployment.Environment : this.Config.Environment  },
                     { "revision", deployment.Revision },
                     { "rollbar_username", deployment.RollbarUsername },
@@ -158,31 +179,32 @@ namespace Rollbar
                     { "comment", deployment.Comment },
                 };
                 var httpContent = new FormUrlEncodedContent(parameters);
-                var postResponse = await httpClient.PostAsync(uri, httpContent);//.ConfigureAwait(false);
+                var postResponse = await httpClient.PostAsync(uri, httpContent);
 
-                RollbarResponse response = null;
                 if (postResponse.IsSuccessStatusCode)
                 {
                     string reply = await postResponse.Content.ReadAsStringAsync();
-                    response = JsonConvert.DeserializeObject<RollbarResponse>(reply);
-                    response.HttpDetails =
-                        $"Response: {postResponse}"
-                        + Environment.NewLine
-                        + $"Request: {postResponse.RequestMessage}"
-                        + Environment.NewLine
-                        ;
                 }
                 else
                 {
                     postResponse.EnsureSuccessStatusCode();
                 }
 
-                return response;
+                return;
             }
         }
 
+        /// <summary>
+        /// Gets the deployment asynchronous.
+        /// </summary>
+        /// <param name="readAccessToken">The read access token.</param>
+        /// <param name="deploymentID">The deployment identifier.</param>
+        /// <returns></returns>
         public async Task<DeployResponse> GetDeploymentAsync(string readAccessToken, string deploymentID)
         {
+            Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
+            Assumption.AssertNotNullOrWhiteSpace(deploymentID, nameof(deploymentID));
+
             using (var httpClient = this.BuildWebClient())
             {
                 var uri = new Uri(
@@ -191,7 +213,7 @@ namespace Rollbar
                     + $"?access_token={readAccessToken}"
                     );
 
-                var httpResponse = await httpClient.GetAsync(uri);//.ConfigureAwait(false);
+                var httpResponse = await httpClient.GetAsync(uri);
 
                 DeployResponse response = null;
                 if (httpResponse.IsSuccessStatusCode)
@@ -209,8 +231,17 @@ namespace Rollbar
         }
 
         private const string deploysQueryApiPath = @"deploys/";
+
+        /// <summary>
+        /// Gets the deployments asynchronous.
+        /// </summary>
+        /// <param name="readAccessToken">The read access token.</param>
+        /// <param name="pageNumber">The page number.</param>
+        /// <returns></returns>
         public async Task<DeploysPageResponse> GetDeploymentsAsync(string readAccessToken, int pageNumber = 1)
         {
+            Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
+
             using (var httpClient = this.BuildWebClient())
             {
                 var uri = new Uri(
@@ -219,7 +250,7 @@ namespace Rollbar
                     + $"?access_token={readAccessToken}&page={pageNumber}"
                     );
 
-                var httpResponse = await httpClient.GetAsync(uri);//.ConfigureAwait(false);
+                var httpResponse = await httpClient.GetAsync(uri);
 
                 DeploysPageResponse response = null;
                 if (httpResponse.IsSuccessStatusCode)

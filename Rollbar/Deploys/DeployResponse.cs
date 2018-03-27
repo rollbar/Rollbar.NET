@@ -1,13 +1,20 @@
 ﻿namespace Rollbar.Deploys
 {
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
 
-    public class DeployResponse
+    /// <summary>
+    /// Models a deploy query response.
+    /// </summary>
+    /// <seealso cref="Rollbar.Deploys.ResponseBase" />
+    internal class DeployResponse
         : ResponseBase
     {
+        /// <summary>
+        /// Gets or sets the deploy.
+        /// </summary>
+        /// <value>
+        /// The deploy.
+        /// </value>
         [JsonProperty("result", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public Deploy Deploy { get; set; }
     }

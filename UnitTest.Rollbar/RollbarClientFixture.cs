@@ -29,19 +29,19 @@ namespace UnitTest.Rollbar
         {
         }
 
-        //There is nothing really to unit test regarding the RollbarClient type.
-        //It does not have any processing logic at all and just makes a couple of 
-        //very straightforward into .NET type and Newtonsoft.Json SDKs.
-
         [TestMethod]
         public void TestGetDeploysPage()
         {
             RollbarClient rollbarClient = new RollbarClient(this._loggerConfig);
 
-            //var result = 
-            rollbarClient.GetDeploymentsAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, 1).Wait();
+            var task = rollbarClient.GetDeploymentsAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, 1);
 
-            rollbarClient.GetDeploymentsAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, int.MaxValue).Wait();
+            task.Wait(TimeSpan.FromSeconds(3));
+            Assert.IsNotNull(task.Result);
+            Assert.AreEqual(task.Result.ErrorCode, 0);
+            Assert.IsNotNull(task.Result.DeploysPage);
+            Assert.IsTrue(task.Result.DeploysPage.PageNumber > 0);
+
         }
 
         [TestMethod]
@@ -49,8 +49,14 @@ namespace UnitTest.Rollbar
         {
             RollbarClient rollbarClient = new RollbarClient(this._loggerConfig);
 
-            //var result = 
-            rollbarClient.GetDeploymentAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, "8387647").Wait();
+            var task = rollbarClient.GetDeploymentAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, "8387647");
+
+            task.Wait(TimeSpan.FromSeconds(3));
+            Assert.IsNotNull(task.Result);
+            Assert.AreEqual(task.Result.ErrorCode, 0);
+            Assert.IsNotNull(task.Result.Deploy);
+            Assert.IsTrue(!string.IsNullOrWhiteSpace(task.Result.Deploy.DeployID));
+
         }
 
         [TestMethod]
@@ -64,8 +70,10 @@ namespace UnitTest.Rollbar
                 RollbarUsername = "rollbar",
             };
 
-            //var result = 
-            rollbarClient.PostAsync(deployment).Wait();
+            var task = rollbarClient.PostAsync(deployment);
+
+            task.Wait(TimeSpan.FromSeconds(3));
+            Assert.IsNull(task.Exception);
         }
     }
 }
