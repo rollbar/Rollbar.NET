@@ -289,6 +289,12 @@
 
         #region strings truncation support
 
+        /// <summary>
+        /// Truncates the strings.
+        /// </summary>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="stringBytesLimit">The string bytes limit.</param>
+        /// <returns></returns>
         public override DtoBase TruncateStrings(Encoding encoding, int stringBytesLimit)
         {
             base.TruncateStrings(encoding, stringBytesLimit);

@@ -28,6 +28,12 @@
             return string.Join(substringSeparator, substrings);
         }
 
+        /// <summary>
+        /// Gets the encoding bytes.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <returns></returns>
         public static byte[] GetEncodingBytes(string input, Encoding encoding)
         {
             if (input == null)
@@ -38,6 +44,12 @@
             return encoding.GetBytes(input);
         }
 
+        /// <summary>
+        /// Calculates the maximum encoding bytes.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <returns></returns>
         public static int CalculateMaxEncodingBytes(string input, Encoding encoding)
         {
             if (input == null)
@@ -48,6 +60,12 @@
             return encoding.GetMaxByteCount(input.Length);
         }
 
+        /// <summary>
+        /// Calculates the exact encoding bytes.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <returns></returns>
         public static int CalculateExactEncodingBytes(string input, Encoding encoding)
         {
             if (input == null)
@@ -58,6 +76,13 @@
             return encoding.GetByteCount(input);
         }
 
+        /// <summary>
+        /// Truncates the specified input.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="encodedBytesLimit">The encoded bytes limit.</param>
+        /// <returns></returns>
         public static string Truncate(string input, Encoding encoding, int encodedBytesLimit)
         {
             if (input == null)
@@ -72,8 +97,8 @@
                 return input; //nothing to truncate...
             }
 
-            int truncaionIndicatorTotalByte = encoding.GetByteCount(truncaionIndicator);
-            int totalBytes = encodedBytesLimit - truncaionIndicatorTotalByte;
+            int truncationIndicatorTotalBytes = encoding.GetByteCount(truncationIndicator);
+            int totalBytes = encodedBytesLimit - truncationIndicatorTotalBytes;
             if (totalBytes < 0)
             {
                 totalBytes = 0;
@@ -86,16 +111,16 @@
                 truncatedInput = truncatedInput.Substring(0, truncatedInput.Length - 1);
             }
 
-            truncatedInput += truncaionIndicator;
+            truncatedInput += truncationIndicator;
 
             Assumption.AssertTrue(encoding.GetByteCount(
-                truncatedInput) <= encodedBytesLimit || encodedBytesLimit < truncaionIndicatorTotalByte, 
+                truncatedInput) <= encodedBytesLimit || encodedBytesLimit < truncationIndicatorTotalBytes, 
                 nameof(truncatedInput)
                 );
 
             return truncatedInput;
         }
 
-        private const string truncaionIndicator = "...";
+        private const string truncationIndicator = "...";
     }
 }

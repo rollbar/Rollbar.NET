@@ -46,6 +46,12 @@
             get { return DtoBase.enumerablePropertiesByType[this.GetType()]; }
         }
 
+        /// <summary>
+        /// Truncates the strings.
+        /// </summary>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="stringBytesLimit">The string bytes limit.</param>
+        /// <returns></returns>
         public virtual DtoBase TruncateStrings(Encoding encoding, int stringBytesLimit)
         {
             foreach(var property in this.StringProperties)
@@ -129,6 +135,12 @@
             return this;
         }
 
+        /// <summary>
+        /// Truncates the string values.
+        /// </summary>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="stringBytesLimit">The string bytes limit.</param>
         protected void TruncateStringValues(IDictionary<string, object> dictionary, Encoding encoding, int stringBytesLimit)
         {
             Assumption.AssertNotNull(dictionary, nameof(dictionary));
@@ -164,6 +176,12 @@
             }
         }
 
+        /// <summary>
+        /// Truncates the string values.
+        /// </summary>
+        /// <param name="dictionary">The dictionary.</param>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="stringBytesLimit">The string bytes limit.</param>
         protected void TruncateStringValues(IDictionary<string, string> dictionary, Encoding encoding, int stringBytesLimit)
         {
             Assumption.AssertNotNull(dictionary, nameof(dictionary));
