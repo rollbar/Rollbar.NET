@@ -4,7 +4,21 @@
 
     <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
 
-    <NotifierVersion>1.1.0</NotifierVersion>
+    <NotifierVersion>1.1.1</NotifierVersion>
+    <PackageReleaseNotes>
+
+      New features and enhancements:
+
+      #105: Truncate large payloads to ensure we don't drop them.
+      #104: Support deploy tracking.
+      #107: Xamarin Linker Behavior: Link All.
+      #112: Add parameterless overload for AddRollbarLogger(...) that supplies a default filter.
+      #111: Update Rollbar.NET documentation for ASP.NET Core to add RollbarLogger service registration.
+      #103: Split out every sample app into its own solution.
+      #106: Update to the latest Nuget packages.
+
+    </PackageReleaseNotes>
+
     <Version>$(NotifierVersion)</Version>
     <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
     <FileVersion>$(NotifierVersion)</FileVersion>
