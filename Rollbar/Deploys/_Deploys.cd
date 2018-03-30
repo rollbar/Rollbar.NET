@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.Deploys.Deployment">
+    <Position X="0.75" Y="5.25" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAGAAAAAAAAAAAAAAAAAEBAAAAAAAIAABAAAAA=</HashCode>
+      <FileName>Deploys\Deployment.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.Deploys.RollbarDeploysManager">
+    <Position X="6.5" Y="6" Width="6.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABACAAQAAAAAAAAAAAAgAAAAAABAAAA=</HashCode>
+      <FileName>Deploys\RollbarDeploysManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.Deploys.Deploy">
+    <Position X="8.5" Y="0.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAGCAAAAAAJAAAAAAAAJEBgAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Deploys\Deploy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.Deploys.DeployResponse">
+    <Position X="13.25" Y="3" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Deploys\DeployResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Deploys.DeploysPage">
+    <Position X="8.5" Y="4" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Deploys\DeploysPage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Deploys.DeploysPageResponse">
+    <Position X="13.25" Y="4.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Deploys\DeploysPageResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Deploys.ErrorResponse">
+    <Position X="13.25" Y="6.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Deploys\ErrorResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Deploys.ResponseBase">
+    <Position X="13" Y="0.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Deploys\ResponseBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Rollbar.Deploys.IDeployment">
+    <Position X="4.25" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAGAAAAAAAAAAAAAAAAAEBAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Deploys\IDeployment.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.Deploys.IRollbarDeploysManager">
+    <Position X="0.75" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAQAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Deploys\IRollbarDeploysManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.Deploys.IDeploymentDetails">
+    <Position X="4.25" Y="3" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAJAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Deploys\IDeploymentDetails.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

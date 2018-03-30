@@ -77,11 +77,16 @@
             this.Custom = custom;
 
             // set calculated values:
-            this.Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             this.Platform = Data.DefaultPlatform;
             this.Framework = Data.DefaultFrameworkValue;
             this.Language = Data.DefaultLanguage;
+            this.Notifier = new Dictionary<string, string>
+                {
+                    { "name", "Rollbar.NET" },
+                    { "version", Data.NotifierAssemblyVersion },
+                };
             this.GuidUuid = Guid.NewGuid();
+            this.Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
         }
 
         /// <summary>
@@ -257,16 +262,10 @@
         /// The notifier.
         /// </value>
         [JsonProperty("notifier", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, string> Notifier
+        public IDictionary<string, string> Notifier
         {
-            get
-            {
-                return new Dictionary<string, string>
-                {
-                    { "name", "Rollbar.NET" },
-                    { "version", NotifierAssemblyVersion },
-                };
-            }
+            get;
+            private set;
         }
     }
 }

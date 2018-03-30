@@ -45,9 +45,9 @@ namespace UnitTest.Rollbar
                     .Info("Via blocking mechanism.")
                     ;
             }
-            catch (System.TimeoutException ex)
+            catch (TimeoutException ex)
             {
-                Assert.Fail("The timeout should be large enough for this test!");
+                Assert.Fail("The timeout should be large enough for this test!", ex);
             }
             stopwatch.Stop();
             var blockingCallDuration = stopwatch.Elapsed.TotalMilliseconds;
@@ -76,7 +76,7 @@ namespace UnitTest.Rollbar
             {
                 stopwatch.Stop();
                 var blockingCallDuration = stopwatch.Elapsed.TotalMilliseconds;
-                Assert.IsTrue(blockingCallDuration > (3 * noblockingCallDuration)); 
+                Assert.IsTrue(blockingCallDuration > (3 * noblockingCallDuration), ex.ToString()); 
                 return;
             }
 

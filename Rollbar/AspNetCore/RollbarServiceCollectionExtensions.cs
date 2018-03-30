@@ -5,6 +5,7 @@ namespace Rollbar.AspNetCore
     using System;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.Logging;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -29,6 +30,21 @@ namespace Rollbar.AspNetCore
         /// Adds the rollbar logger.
         /// </summary>
         /// <param name="services">The services.</param>
+        /// <returns></returns>
+        public static IServiceCollection AddRollbarLogger(this IServiceCollection services)
+        {
+            services.AddRollbarLogger(loggerOptions =>
+            {
+                loggerOptions.Filter = (loggerName, loglevel) => loglevel >= LogLevel.Trace;
+            });
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the rollbar logger.
+        /// </summary>
+        /// <param name="services">The services.</param>
         /// <param name="rollbarOptionsConfigAction">The rollbar options configuration action.</param>
         /// <returns></returns>
         public static IServiceCollection AddRollbarLogger(this IServiceCollection services, Action<RollbarOptions> rollbarOptionsConfigAction)
@@ -40,6 +56,7 @@ namespace Rollbar.AspNetCore
 
             return services;
         }
+
     }
 }
 

@@ -74,6 +74,7 @@
         public string Method { get; set; }
 
         #region Unautomatable
+
         // These properties cannot be automated w/ normal C# StackFrames.
         // You may be able to fill this out from another .NET language.
         // They're there in case you're awesome.
@@ -112,7 +113,7 @@
         /// The kwargs.
         /// </value>
         [JsonProperty("kwargs", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, object> Kwargs { get; set; }
+        public IDictionary<string, object> Kwargs { get; set; }
 
         #endregion Unautomatable
 

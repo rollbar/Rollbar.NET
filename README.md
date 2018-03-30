@@ -422,7 +422,7 @@ Add at least the minimum required configuration parameters to the hosting applic
 
 #### Option 2
 
-Add proper Rollbar configuration within the `ConfigureServices(…)` method of `Startup.cs`.
+Within the `ConfigureServices(…)` method of `Startup.cs`, add proper Rollbar configuration and register the Rollbar logger with the application services:
 
 ```csharp
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -430,6 +430,11 @@ Add proper Rollbar configuration within the `ConfigureServices(…)` method of `
         {
             ConfigureRollbarSingleton();
 
+            services.AddRollbarLogger(loggerOptions =>
+            {
+                loggerOptions.Filter = (loggerName, loglevel) => loglevel >= LogLevel.Trace;
+            });
+        
             services.AddMvc();
         }
 

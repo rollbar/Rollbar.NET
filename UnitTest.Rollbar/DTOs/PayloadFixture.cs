@@ -10,17 +10,13 @@ namespace UnitTest.Rollbar.DTOs
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     [TestClass]
     [TestCategory(nameof(PayloadFixture))]
     public class PayloadFixture
     {
-        private Payload _exceptionExample;
-        private Payload _messageException;
-        private Payload _crashException;
-        private Payload _aggregateExample;
-
         private readonly RollbarConfig _config;
 
         public PayloadFixture()
@@ -35,10 +31,6 @@ namespace UnitTest.Rollbar.DTOs
         [TestInitialize]
         public void SetupFixture()
         {
-            this._exceptionExample = new Payload("access-token", new Data(this._config, new Body(GetException())));
-            this._messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords"))));
-            this._crashException = new Payload("access-token", new Data(this._config, new Body("A terrible crash!")));
-            this._aggregateExample = new Payload("access-token", new Data(this._config, new Body(GetAggregateException())));
         }
 
         [TestCleanup]
@@ -47,9 +39,65 @@ namespace UnitTest.Rollbar.DTOs
         }
 
         [TestMethod]
+        public void TestStringPropertiesTruncation()
+        {
+
+            Payload[] testPayloads = new Payload[]
+            {
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body("A terrible crash!"),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(GetException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(GetAggregateException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+            };
+
+            string truncated = null;
+            foreach (var testPayload in testPayloads)
+            {
+                string original = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Original payload ({original.Length}): " + original);
+                System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+                testPayload.TruncateStrings(Encoding.UTF8, 10);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                testPayload.TruncateStrings(Encoding.UTF8, 7);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                testPayload.TruncateStrings(Encoding.UTF8, 0);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                sw.Stop();
+                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedMilliseconds} [msec] or {sw.ElapsedTicks} [ticks].");
+
+                Assert.IsTrue(truncated.Length < original.Length);
+            }
+        }
+
+        [TestMethod]
         public void BasicExceptionCreatesValidRollbarObject()
         {
-            var asJson = JObject.Parse(JsonConvert.SerializeObject(_exceptionExample));
+            var exceptionExample = new Payload("access-token", new Data(this._config, new Body(GetException())));
+
+            var asJson = JObject.Parse(JsonConvert.SerializeObject(exceptionExample));
 
             Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
 
@@ -83,7 +131,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
-            var left = _exceptionExample.Data.Notifier.ToArray();
+            var left = exceptionExample.Data.Notifier.ToArray();
             var right = data["notifier"].ToObject<Dictionary<string, string>>();
 
             Assert.AreEqual(left.Length, right.Count);
@@ -133,7 +181,9 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void MessageCreatesValidRollbarObject()
         {
-            var asJson = JObject.Parse(JsonConvert.SerializeObject(_messageException));
+            var messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords"))));
+
+            var asJson = JObject.Parse(JsonConvert.SerializeObject(messageException));
 
             Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
 
@@ -161,7 +211,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
-            var left = _exceptionExample.Data.Notifier.ToArray();
+            var left = messageException.Data.Notifier.ToArray();
             var right = data["notifier"].ToObject<Dictionary<string, string>>();
 
             Assert.AreEqual(left.Length, right.Count);
@@ -211,7 +261,9 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void TraceChainCreatesValidRollbarObject()
         {
-            var asJson = JObject.Parse(JsonConvert.SerializeObject(_aggregateExample));
+            var aggregateExample = new Payload("access-token", new Data(this._config, new Body(GetAggregateException())));
+
+            var asJson = JObject.Parse(JsonConvert.SerializeObject(aggregateExample));
 
             Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
 
@@ -262,7 +314,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             //Assert.AreEqual(_exceptionExample.Data.Notifier.ToArray(), data["notifier"].ToObject<Dictionary<string, string>>());
-            var left = _exceptionExample.Data.Notifier.ToArray();
+            var left = aggregateExample.Data.Notifier.ToArray();
             var right = data["notifier"].ToObject<Dictionary<string, string>>();
 
             Assert.AreEqual(left.Length, right.Count);
@@ -312,7 +364,10 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void CrashReportCreatesValidRollbarObject()
         {
-            var asJson = JObject.Parse(JsonConvert.SerializeObject(_crashException));
+            var crashException = new Payload("access-token", new Data(this._config, new Body("A terrible crash!")));
+
+
+            var asJson = JObject.Parse(JsonConvert.SerializeObject(crashException));
 
             Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
 
@@ -339,7 +394,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
-            var left = _exceptionExample.Data.Notifier.ToArray();
+            var left = crashException.Data.Notifier.ToArray();
             var right = data["notifier"].ToObject<Dictionary<string, string>>();
 
             Assert.AreEqual(left.Length, right.Count);

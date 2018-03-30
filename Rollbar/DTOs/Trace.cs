@@ -47,7 +47,7 @@
         /// The frames.
         /// </value>
         [JsonProperty("frames", Required = Required.Always)]
-        public Frame[] Frames { get; private set; }
+        public Frame[] Frames { get; internal set; }
 
         /// <summary>
         /// Gets the exception.

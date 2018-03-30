@@ -2,12 +2,14 @@
 {
     using System;
     using Rollbar.Utils;
+    using Xamarin.iOS.Foundation;
 
     /// <summary>
     /// An abstract base for implementing IReconfigurable types.
     /// </summary>
     /// <typeparam name="T">A type that supports its reconfiguration.</typeparam>
     /// <seealso cref="Rollbar.Common.IReconfigurable{T}" />
+    [Preserve]
     public abstract class ReconfigurableBase<T>
         : IReconfigurable<T>
         where T : ReconfigurableBase<T>

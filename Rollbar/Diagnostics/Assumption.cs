@@ -374,7 +374,7 @@
         /// <returns></returns>
         public static int AssertLessThan(int value, int expectedValue, string parameterName)
         {
-            if (value < expectedValue)
+            if (value >= expectedValue)
             {
                 string msg = "Argument should be less than " + expectedValue;
                 FailValidation(msg, parameterName);
@@ -392,7 +392,7 @@
         /// <returns></returns>
         public static double AssertLessThan(double value, double expectedValue, string parameterName)
         {
-            if (value < expectedValue)
+            if (value >= expectedValue)
             {
                 string msg = "Argument should be less than " + expectedValue;
                 FailValidation(msg, parameterName);
@@ -428,7 +428,7 @@
         /// <returns></returns>
         public static int AssertLessThanOrEqual(int value, int expectedValue, string parameterName)
         {
-            if (value <= expectedValue)
+            if (value > expectedValue)
             {
                 string msg = "Argument should be less than or equal to " + expectedValue;
                 FailValidation(msg, parameterName);
@@ -446,7 +446,7 @@
         /// <returns></returns>
         public static double AssertLessThanOrEqual(double value, double expectedValue, string parameterName)
         {
-            if (value <= expectedValue)
+            if (value > expectedValue)
             {
                 string msg = "Argument should be less than or equal to " + expectedValue;
                 FailValidation(msg, parameterName);
