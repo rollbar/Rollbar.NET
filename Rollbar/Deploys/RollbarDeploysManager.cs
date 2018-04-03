@@ -1,15 +1,13 @@
 ﻿namespace Rollbar.Deploys
 {
     using Rollbar.Diagnostics;
-    using System;
-    using System.Text;
     using System.Threading.Tasks;
 
     /// <summary>
-    /// 
+    /// Implements IRollbarDeploysManager.
     /// </summary>
     /// <seealso cref="Rollbar.Deploys.IRollbarDeploysManager" />
-    internal class RollbarDeploysManager
+    public class RollbarDeploysManager
             : IRollbarDeploysManager
     {
         private readonly string _writeAccessToken;
