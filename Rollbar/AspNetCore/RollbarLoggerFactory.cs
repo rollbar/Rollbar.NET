@@ -2,6 +2,7 @@
 
 namespace Rollbar.AspNetCore
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -20,13 +21,15 @@ namespace Rollbar.AspNetCore
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <param name="rollbarOptions">The rollbar options.</param>
+        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public RollbarLoggerFactory(
                     IConfiguration config
                     , IOptions<RollbarOptions> rollbarOptions
+                    , IHttpContextAccessor httpContextAccessor
                     )
         {
             this._loggerProvider =
-                new RollbarLoggerProvider(config, rollbarOptions);
+                new RollbarLoggerProvider(config, rollbarOptions, httpContextAccessor);
         }
 
         /// <summary>
@@ -76,6 +79,7 @@ namespace Rollbar.AspNetCore
             }
         }
 
+
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
         // ~RollbarLoggerFactory() {
         //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -85,7 +89,9 @@ namespace Rollbar.AspNetCore
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
+#pragma warning disable CA1063 // Implement IDisposable Correctly
         public void Dispose()
+#pragma warning restore CA1063 // Implement IDisposable Correctly
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
@@ -11,11 +12,14 @@
     public class ValuesController 
         : Controller
     {
-        public readonly ILogger _logger = null;
+        private readonly ILogger _logger = null;
 
-        public ValuesController(ILogger<ValuesController> logger)
+        private readonly IHttpContextAccessor _httpContextAccessor = null;
+
+        public ValuesController(ILogger<ValuesController> logger, IHttpContextAccessor httpContextAccessor)
         {
             this._logger = logger;
+            this._httpContextAccessor = httpContextAccessor;
         }
 
         // GET api/values

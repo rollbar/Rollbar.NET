@@ -11,6 +11,7 @@ namespace Rollbar.AspNetCore
     using mslogging = Microsoft.Extensions.Logging;
     using Rollbar.Common;
     using Rollbar.Diagnostics;
+    using Microsoft.AspNetCore.Http;
 
     /// <summary>
     /// Implements RollbarLogger.
@@ -23,6 +24,7 @@ namespace Rollbar.AspNetCore
     {
         private readonly string _name = null;
         private readonly RollbarOptions _rollbarOptions = null;
+        private readonly IHttpContextAccessor _httpContextAccessor = null;
 
         private readonly IRollbar _rollbar = null;
 
@@ -39,10 +41,16 @@ namespace Rollbar.AspNetCore
         /// <param name="name">The name.</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarOptions">The options.</param>
-        public RollbarLogger(string name, IRollbarConfig rollbarConfig, RollbarOptions rollbarOptions)
+        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
+        public RollbarLogger(string name
+            , IRollbarConfig rollbarConfig
+            , RollbarOptions rollbarOptions
+            , IHttpContextAccessor httpContextAccessor
+            )
         {
             this._name = name;
             this._rollbarOptions = rollbarOptions;
+            this._httpContextAccessor = httpContextAccessor;
 
             this._rollbar = RollbarFactory.CreateNew(false).Configure(rollbarConfig);
         }
@@ -90,8 +98,6 @@ namespace Rollbar.AspNetCore
             if (state == null && exception == null)
                 return;
 
-            var currentContext = GetCurrentContext();
-
             // let's custom build the Data object that includes the exception 
             // along with the current HTTP request context:
 
@@ -121,16 +127,21 @@ namespace Rollbar.AspNetCore
                 customProperties.Add("LogMessage", message);
             }
 
+            var currentContext = GetCurrentContext();
+
             var customRequestFields = new Dictionary<string, object>();
             customRequestFields.Add("httpRequestTimestamp", currentContext.Timestamp);
-            customRequestFields.Add("httpRequestID", currentContext.HttpAttributes.RequestID);
-            customRequestFields.Add("statusCode", currentContext.HttpAttributes.StatusCode);
-            customRequestFields.Add("scheme", currentContext.HttpAttributes.Scheme);
-            customRequestFields.Add("protocol", currentContext.HttpAttributes.Protocol);
+            if (currentContext.HttpAttributes != null)
+            {
+                customRequestFields.Add("httpRequestID", currentContext.HttpAttributes.RequestID);
+                customRequestFields.Add("statusCode", currentContext.HttpAttributes.StatusCode);
+                customRequestFields.Add("scheme", currentContext.HttpAttributes.Scheme);
+                customRequestFields.Add("protocol", currentContext.HttpAttributes.Protocol);
+            }
 
-            var requestDto = new Rollbar.DTOs.Request(customRequestFields, currentContext.HttpAttributes);
+            var requestDto = new DTOs.Request(customRequestFields, currentContext.HttpAttributes);
 
-            Rollbar.DTOs.Data dataDto = new Rollbar.DTOs.Data(
+            DTOs.Data dataDto = new DTOs.Data(
                 config: RollbarLocator.RollbarInstance.Config
                 , body: payloadBody
                 , custom: customProperties
@@ -141,7 +152,7 @@ namespace Rollbar.AspNetCore
             };
 
             // log the Data object (the exception + the HTTP request data):
-            Rollbar.RollbarLocator.RollbarInstance.Log(dataDto);
+            RollbarLocator.RollbarInstance.Log(dataDto);
         }
 
         /// <summary>
@@ -163,7 +174,17 @@ namespace Rollbar.AspNetCore
 
         private RollbarHttpContext GetCurrentContext()
         {
-            return RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
+            var context = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
+
+            if (context.HttpAttributes == null 
+                && this._httpContextAccessor != null 
+                && this._httpContextAccessor.HttpContext != null
+                )
+            {
+                context.HttpAttributes = new RollbarHttpAttributes(this._httpContextAccessor.HttpContext);
+            }
+
+            return context;
         }
 
         private static ErrorLevel Convert(mslogging.LogLevel logLevel)
@@ -215,6 +236,7 @@ namespace Rollbar.AspNetCore
             }
         }
 
+
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
         // ~RollbarLogger() {
         //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -224,7 +246,9 @@ namespace Rollbar.AspNetCore
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
+#pragma warning disable CA1063 // Implement IDisposable Correctly
         public void Dispose()
+#pragma warning restore CA1063 // Implement IDisposable Correctly
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
