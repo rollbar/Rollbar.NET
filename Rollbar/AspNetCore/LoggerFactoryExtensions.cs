@@ -2,6 +2,7 @@
 
 namespace Microsoft.Extensions.Logging
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
     using Rollbar.AspNetCore;
@@ -18,17 +19,19 @@ namespace Microsoft.Extensions.Logging
         /// <param name="factory">The factory.</param>
         /// <param name="configuration">The configuration.</param>
         /// <param name="rollbarOptions">The rollbar options.</param>
+        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         /// <returns></returns>
         public static ILoggerFactory AddRollbar(
                     this ILoggerFactory factory
                     , IConfiguration configuration
                     , IOptions<RollbarOptions> rollbarOptions
+                    , IHttpContextAccessor httpContextAccessor
                     )
         {
             Assumption.AssertNotNull(configuration, nameof(configuration));
 
             factory.AddProvider(
-                new RollbarLoggerProvider(configuration, rollbarOptions)
+                new RollbarLoggerProvider(configuration, rollbarOptions, httpContextAccessor)
                 );
 
             return factory;

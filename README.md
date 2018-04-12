@@ -54,6 +54,12 @@ RollbarLocator.RollbarInstance
 
 Additionally, anywhere in your code that you were sending error reports via `Rollbar.Report(Exception)` or `Rollbar.Report(string)` will need to be replaced with either something like `RollbarLocator.RollbarInstance.Error(new Exception("trying out the TraceChain", new NullReferenceException()))` or `RollbarLocator.RollbarInstance.Info("Basic info log example.")`.
 
+## Using Rollbar.NET within Strongly Named (or Signed) Host Applications
+
+The Rollbar.NET assembly is not strongly named (or signed). Hence, you may get either build time warnings or run time assembly loading errors, depending on the exact type of the signed hosting application and its signing related settings.
+
+These signing related issues can be easily resolved by using StrongNamer (https://github.com/dsplaisted/strongnamer) that is available as a NuGet package. Just add StrongNamer package as a NuGet dependency to every project of your solution that also reference Rollbar.NET and the issues will be solved. 
+
 ## Reference
 
 ### RollbarConfig

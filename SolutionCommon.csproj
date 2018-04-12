@@ -4,18 +4,15 @@
 
     <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
 
-    <NotifierVersion>1.1.1</NotifierVersion>
+    <NotifierVersion>1.2.0</NotifierVersion>
     <PackageReleaseNotes>
 
       New features and enhancements:
 
-      #105: Truncate large payloads to ensure we don't drop them.
-      #104: Support deploy tracking.
-      #107: Xamarin Linker Behavior: Link All.
-      #112: Add parameterless overload for AddRollbarLogger(...) that supplies a default filter.
-      #111: Update Rollbar.NET documentation for ASP.NET Core to add RollbarLogger service registration.
-      #103: Split out every sample app into its own solution.
-      #106: Update to the latest Nuget packages.
+      #11: Signed version
+      #98: Asp .Net Core 2.0.1 - RollbarMiddleware Issues
+      #114: Let's relax our dependency packages minimal version requirements...
+      #115: Document Deploy API
 
     </PackageReleaseNotes>
 
@@ -51,15 +48,13 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0' 
              Or '$(TargetFramework)' == 'netstandard2.0'
              ">
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.2" />
-    
-    <!--PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" /-->
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net471'
