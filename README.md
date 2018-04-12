@@ -699,6 +699,66 @@ From the catch block:
            }
 ```
 
+## Rollbar Deployment API Client for .NET
+
+Rollbar Deployment API implements deployment tracking as a REST-based service.
+This Rollbar.NET Notifier SDK includes .NET compatible client to the Deployment API.
+
+The key API type is the RollbarDeploysManager that implements IRollbarDeploysManager interfaces. The interface defines async methods for 
+-	registering new deployment instance, 
+-	querying registered deployment instances page-by-page, 
+-	and querying deployment instance details by specified deploymentID.
+
+The RollbarDeploysManager does not have default parameterless constructor defined since it needs some required parameters to be provided at construction time, like Rollbar write and/or read access tokens. Once properly constructed it can be used for deployment registration (by supplying a valid instance of the Deployment class) and querying for previously registered deployments:
+
+```csharp
+        IRollbarDeploysManager deploysManager = 
+                    new RollbarDeploysManager(
+                        RollbarUnitTestSettings.AccessToken,
+                        RollbarUnitTestSettings.DeploymentsReadAccessToken
+                        );  
+        var deployment = 
+                        new Deployment(RollbarUnitTestSettings.Environment, "99909a3a5a3dd4363f414161f340b582bb2e999")
+                        {
+                            Comment = "Some new unit test deployment @ " + DateTimeOffset.Now,
+                            LocalUsername = "UnitTestRunner",
+                            RollbarUsername = "rollbar",
+                        };
+
+        var task = deploysManager.RegisterAsync(deployment);
+        task.Wait(TimeSpan.FromSeconds(3));
+
+        var deployments = GetAllDeployments();
+        var latestDeployment = deployments.FirstOrDefault();
+        var getDeploymentTask = deploysManager.GetDeploymentAsync(latestDeployment.DeployID);
+        getDeploymentTask.Wait(TimeSpan.FromSeconds(3));
+        var deploymentDetails = getDeploymentTask.Result;
+```
+
+where GetAllDeployments() could be implemented as: 
+
+```csharp
+        private ICollection<IDeploymentDetails> GetAllDeployments()
+        {
+            List<IDeploymentDetails> deployments = new List<IDeploymentDetails>();
+
+            int pageCount = 0;
+            int pageItems = 0;
+            do
+            {
+                var task = this._deploysManager.GetDeploymentsPageAsync(RollbarUnitTestSettings.Environment, ++pageCount);
+                task.Wait(TimeSpan.FromSeconds(1));
+                pageItems = task.Result.Length;
+                if (pageItems > 0)
+                {
+                    deployments.AddRange(task.Result);
+                }
+            }
+            while (pageItems > 0);
+
+            return deployments;
+        }
+```
 
 ## Help / Support
 
