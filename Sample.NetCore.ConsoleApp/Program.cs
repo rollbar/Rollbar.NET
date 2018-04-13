@@ -20,11 +20,15 @@ namespace Sample.NetCore.ConsoleApp
             customFields.Add("path1", "d:\\Work\\\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\\branches\\v2\\...");
             customFields.Add("path2", @"d:\Work\אספירין\branches\v2\...");
 
+            var exceptionWithData = new ArgumentNullException("Exception with Data");
+            exceptionWithData.Data["argumentName"] = "requiredOne";
+
             RollbarLocator.RollbarInstance
                 .Info("ConsoleApp sample: Basic info log example.", customFields)
                 .Debug("ConsoleApp sample: First debug log.")
                 .Error(new NullReferenceException("ConsoleApp sample: null reference exception."))
                 .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
+                .Error(exceptionWithData, customFields)
                 ;
 
             Stopwatch stopwatch = Stopwatch.StartNew();
