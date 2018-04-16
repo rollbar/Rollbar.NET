@@ -23,6 +23,13 @@ namespace Rollbar.AspNetCore
         /// <param name="context">The context.</param>
         public RollbarHttpAttributes(HttpContext context)
         {
+            // as we learned from a field issue, 
+            // apparently a middleware can be invoked without a valid HttPContext:
+            if (context == null)
+            {
+                return;
+            }
+
             this.RequestID = context.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
