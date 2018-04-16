@@ -23,17 +23,23 @@ namespace Rollbar.AspNetCore
         /// <param name="context">The context.</param>
         public RollbarHttpAttributes(HttpContext context)
         {
-            this.RequestID = context.Features
-                .Get<IHttpRequestIdentifierFeature>()
+            this.RequestID = context.Features?
+                .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
-            this.Host = context.Request.Host;
-            this.Path = context.Request.Path;
-            this.Headers = context.Request.Headers;
-            this.Method = context.Request.Method;
-            this.Query = context.Request.QueryString;
-            this.Protocol = context.Request.Protocol;
-            this.Scheme = context.Request.Scheme;
-            this.StatusCode = context.Response.StatusCode;
+            if (context.Request !=  null)
+            {
+                this.Host = context.Request.Host;
+                this.Path = context.Request.Path;
+                this.Headers = context.Request.Headers;
+                this.Method = context.Request.Method;
+                this.Query = context.Request.QueryString;
+                this.Protocol = context.Request.Protocol;
+                this.Scheme = context.Request.Scheme;
+            }
+            if (context.Response != null)
+            {
+                this.StatusCode = context.Response.StatusCode;
+            }
         }
 
         /// <summary>
