@@ -129,17 +129,21 @@ namespace Rollbar.AspNetCore
 
             var currentContext = GetCurrentContext();
 
-            var customRequestFields = new Dictionary<string, object>();
-            customRequestFields.Add("httpRequestTimestamp", currentContext.Timestamp);
-            if (currentContext.HttpAttributes != null)
+            Dictionary<string, object> customRequestFields = null;
+            if (currentContext != null)
             {
-                customRequestFields.Add("httpRequestID", currentContext.HttpAttributes.RequestID);
-                customRequestFields.Add("statusCode", currentContext.HttpAttributes.StatusCode);
-                customRequestFields.Add("scheme", currentContext.HttpAttributes.Scheme);
-                customRequestFields.Add("protocol", currentContext.HttpAttributes.Protocol);
+                customRequestFields = new Dictionary<string, object>();
+                customRequestFields.Add("httpRequestTimestamp", currentContext.Timestamp);
+                if (currentContext.HttpAttributes != null)
+                {
+                    customRequestFields.Add("httpRequestID", currentContext.HttpAttributes.RequestID);
+                    customRequestFields.Add("statusCode", currentContext.HttpAttributes.StatusCode);
+                    customRequestFields.Add("scheme", currentContext.HttpAttributes.Scheme);
+                    customRequestFields.Add("protocol", currentContext.HttpAttributes.Protocol);
+                }
             }
 
-            var requestDto = new DTOs.Request(customRequestFields, currentContext.HttpAttributes);
+            var requestDto = new DTOs.Request(customRequestFields, currentContext?.HttpAttributes);
 
             DTOs.Data dataDto = new DTOs.Data(
                 config: RollbarLocator.RollbarInstance.Config

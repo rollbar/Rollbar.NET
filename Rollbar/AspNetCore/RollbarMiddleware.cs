@@ -80,10 +80,12 @@ namespace Rollbar.AspNetCore
         /// <returns>A middleware invocation/execution task.</returns>
         public async Task Invoke(HttpContext context)
         {
-            var requestId = context.Features
-                .Get<IHttpRequestIdentifierFeature>()
+            // as we learned from a field issue, apparently a middleware can even be invoked without a valid HttPContext:
+            string requestId = null;
+            requestId = context?.Features?
+                .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
-            using (_logger.BeginScope("Request: {RequestId}", requestId))
+            using (_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
                 try
                 {
@@ -98,7 +100,7 @@ namespace Rollbar.AspNetCore
                         config: RollbarLocator.RollbarInstance.Config,
                         body: new DTOs.Body(ex),
                         custom: null,
-                        request: new DTOs.Request(null, context.Request)
+                        request: (context != null) ? new DTOs.Request(null, context.Request) : null
                         )
                     {
                         Level = ErrorLevel.Critical,
@@ -111,7 +113,10 @@ namespace Rollbar.AspNetCore
                 }
                 finally
                 {
-                    RollbarScope.Current.HttpContext.HttpAttributes.StatusCode = context.Response.StatusCode;
+                    if (context != null && context.Response != null)
+                    {
+                        RollbarScope.Current.HttpContext.HttpAttributes.StatusCode = context.Response.StatusCode;
+                    }
                 }
             }
         }
