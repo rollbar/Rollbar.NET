@@ -4,15 +4,13 @@
 
     <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
 
-    <NotifierVersion>1.2.0</NotifierVersion>
+    <NotifierVersion>1.2.1</NotifierVersion>
     <PackageReleaseNotes>
 
       New features and enhancements:
 
-      #11: Signed version
-      #98: Asp .Net Core 2.0.1 - RollbarMiddleware Issues
-      #114: Let's relax our dependency packages minimal version requirements...
-      #115: Document Deploy API
+      #118: Notifier does not send Exception.Data collection
+      #119: Exception running integration tests
 
     </PackageReleaseNotes>
 
