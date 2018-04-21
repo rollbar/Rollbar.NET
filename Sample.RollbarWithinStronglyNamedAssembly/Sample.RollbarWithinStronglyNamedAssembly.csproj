@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Rollbar" Version="1.1.1" />
+    <PackageReference Include="Rollbar" Version="1.2.0" />
     <PackageReference Include="StrongNamer" Version="0.0.6" />
   </ItemGroup>
 
