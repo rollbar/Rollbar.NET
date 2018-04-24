@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Prototype.RollbarTraceListener
@@ -13,6 +14,8 @@ namespace Prototype.RollbarTraceListener
         {
             Trace.WriteLine("Tracing something...");
             Trace.TraceError(new Exception().ToString());
+
+            Console.ReadLine();
         }
     }
 }
