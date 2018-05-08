@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!--
   NOTE1: next line will have to stay commented out 
@@ -10,31 +10,55 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
+    <!--
+    <TargetFramework>net471</TargetFramework>
+    -->
     <IsPackable>false</IsPackable>
-  </PropertyGroup>  
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <NetVariant>NET_STANDARD</NetVariant>
+    <DefineConstants>NETSTANDARD</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <NetVariant>NET_CORE</NetVariant>
+    <DefineConstants>NETCOREAPP</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net471' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net47' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net462' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net461' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net46' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net452' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net451' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net45' &#xD;&#xA;                 ">
+    <NetVariant>NET_FX</NetVariant>
+    <DefineConstants>NETFX</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="TestData\appsettings.json" Condition="'$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net47' Or '$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451' Or '$(TargetFramework)' == 'net45'" />
+    <None Remove="TestData\appsettings.json" Condition="'$(NetVariant)' == 'NET_FX'" />
+    <None Remove="TestData\app.config" Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'" />
   </ItemGroup>  
 
   <ItemGroup>
-    <Content Include="TestData\appsettings.json" Condition="'$(TargetFramework)' == 'netcoreapp2.0' Or '$(TargetFramework)' == 'netstandard2.0'">
+    <Content Include="TestData\appsettings.json" Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\app.config" Condition="'$(NetVariant)' == 'NET_FX'">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.6.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
+    <PackageReference Include="Moq" Version="4.8.2" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.2.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0' Or '$(TargetFramework)' == 'netstandard2.0'">
+  <ItemGroup Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'">
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.1" />
@@ -43,7 +67,16 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.1" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462' &#xD;&#xA;             Or '$(TargetFramework)' == 'net461'&#xD;&#xA;             Or '$(TargetFramework)' == 'net46'&#xD;&#xA;             Or '$(TargetFramework)' == 'net452'&#xD;&#xA;             Or '$(TargetFramework)' == 'net451'&#xD;&#xA;             Or '$(TargetFramework)' == 'net45'&#xD;&#xA;             ">
+  <ItemGroup Condition=" '$(NetVariant)' == 'NET_FX'">
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.ServiceModel" />
+  </ItemGroup>
+
+  <!--For older .NET Framework versions ONLY!-->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451' Or '$(TargetFramework)' == 'net45' ">
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 

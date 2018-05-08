@@ -3,14 +3,17 @@
   <PropertyGroup>
 
     <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
-
-    <NotifierVersion>1.2.1</NotifierVersion>
+    <!--
+    <TargetFrameworks>net471</TargetFrameworks>
+    -->
+    <NotifierVersion>1.3.0</NotifierVersion>
     <PackageReleaseNotes>
 
       New features and enhancements:
 
-      #118: Notifier does not send Exception.Data collection
-      #119: Exception running integration tests
+      - resolve #133: Fix unit tests broken by Visual Studio update v15.7.0
+      - resolve #121: Add an example/demo of a Rollbar.NET plug-in for a popular .NET logging library
+      - resolve #122: Update packages of the Samples
 
     </PackageReleaseNotes>
 
@@ -35,25 +38,15 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Rollbar.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-    <DefineConstants>NETCOREAPP</DefineConstants>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <NetVariant>NET_STANDARD</NetVariant>
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0' 
-             Or '$(TargetFramework)' == 'netstandard2.0'
-             ">
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+    <NetVariant>NET_CORE</NetVariant>
+    <DefineConstants>NETCOREAPP</DefineConstants>
+  </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'net471'
              Or '$(TargetFramework)' == 'net47' 
@@ -64,18 +57,25 @@
              Or '$(TargetFramework)' == 'net451'
              Or '$(TargetFramework)' == 'net45'
              ">
+    <NetVariant>NET_FX</NetVariant>
     <DefineConstants>NETFX</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net471' 
-             Or '$(TargetFramework)' == 'net47' 
-             Or '$(TargetFramework)' == 'net462' 
-             Or '$(TargetFramework)' == 'net461' 
-             Or '$(TargetFramework)' == 'net46'
-             Or '$(TargetFramework)' == 'net452'
-             Or '$(TargetFramework)' == 'net451'
-             Or '$(TargetFramework)' == 'net45'
+
+
+  <ItemGroup Condition="'$(NetVariant)' == 'NET_CORE' 
+             Or '$(NetVariant)' == 'NET_STANDARD'
              ">
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(NetVariant)' == 'NET_FX'">
     <Reference Include="System.Configuration" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
