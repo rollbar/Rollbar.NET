@@ -11,6 +11,11 @@
 
       New features and enhancements:
 
+      - resolve #128: Only collect person.id by default for person tracking
+      - resolve #129: Allow IP collection to be easily turned on and off in config
+      - resolve #130: Anonymize IP address config option
+      - resolve #135: Simplify/clean-up RollbarConfigSection implementation
+      - resolve #134: Enhance multi-targeting configuration by introducing NetVariant MSBuild property
       - resolve #133: Fix unit tests broken by Visual Studio update v15.7.0
       - resolve #121: Add an example/demo of a Rollbar.NET plug-in for a popular .NET logging library
       - resolve #122: Update packages of the Samples

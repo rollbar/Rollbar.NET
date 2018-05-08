@@ -120,5 +120,21 @@
         /// The server.
         /// </value>
         Server Server { get; set; }
+
+        /// <summary>
+        /// Gets or sets the person data collection policies.
+        /// </summary>
+        /// <value>
+        /// The person data collection policies.
+        /// </value>
+        PersonDataCollectionPolicies PersonDataCollectionPolicies { get; set; }
+
+        /// <summary>
+        /// Gets or sets the IP address collection policy.
+        /// </summary>
+        /// <value>
+        /// The IP address collection policy.
+        /// </value>
+        IpAddressCollectionPolicy IpAddressCollectionPolicy { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿namespace Rollbar
 {
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
     using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
@@ -18,7 +20,9 @@
     public class RollbarConfig
 #pragma warning restore CS1658 // Warning is overriding an error
 #pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
-        : ReconfigurableBase<RollbarConfig, IRollbarConfig>, ITraceable, IRollbarConfig
+        : ReconfigurableBase<RollbarConfig, IRollbarConfig>
+        , ITraceable
+        , IRollbarConfig
     {
         private readonly RollbarLogger _logger = null;
 
@@ -90,6 +94,9 @@
             this.Server = null;
             this.Person = null;
 
+            this.PersonDataCollectionPolicies = PersonDataCollectionPolicies.None;
+            this.IpAddressCollectionPolicy = IpAddressCollectionPolicy.Collect;
+
 #if NETFX
             // initialize based on app.config settings of Rollbar section (if any):
             this.InitFromAppConfig();
@@ -132,7 +139,9 @@
             }
             if (config.ScrubFields != null && config.ScrubFields.Length > 0)
             {
-                this.ScrubFields = config.ScrubFields;
+                this.ScrubFields = 
+                    string.IsNullOrEmpty(config.ScrubFields) ? new string[0] 
+                    : config.ScrubFields.Split(new string[] { ", ", "; ", " " }, StringSplitOptions.RemoveEmptyEntries);
             }
             if (!string.IsNullOrWhiteSpace(config.EndPoint))
             {
@@ -141,6 +150,14 @@
             if (!string.IsNullOrWhiteSpace(config.ProxyAddress))
             {
                 this.ProxyAddress = config.ProxyAddress;
+            }
+            if (config.PersonDataCollectionPolicies.HasValue)
+            {
+                this.PersonDataCollectionPolicies = config.PersonDataCollectionPolicies.Value;
+            }
+            if (config.IpAddressCollectionPolicy.HasValue)
+            {
+                this.IpAddressCollectionPolicy = config.IpAddressCollectionPolicy.Value;
             }
         }
 #endif
@@ -255,6 +272,24 @@
         /// The reporting queue depth.
         /// </value>
         public int ReportingQueueDepth { get; set; }
+
+        /// <summary>
+        /// Gets or sets the person data collection policies.
+        /// </summary>
+        /// <value>
+        /// The person data collection policies.
+        /// </value>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public PersonDataCollectionPolicies PersonDataCollectionPolicies { get; set; }
+
+        /// <summary>
+        /// Gets or sets the IP address collection policy.
+        /// </summary>
+        /// <value>
+        /// The IP address collection policy.
+        /// </value>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public IpAddressCollectionPolicy IpAddressCollectionPolicy { get; set; }
 
         /// <summary>
         /// Traces as a string.

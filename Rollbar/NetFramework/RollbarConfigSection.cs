@@ -62,18 +62,11 @@
         /// The scrub fields.
         /// </value>
         [ConfigurationProperty("scrubFields", IsRequired = false)]
-        public string[] ScrubFields
+        public string ScrubFields
         {
             get
             {
-                string scrubFields = this["scrubFields"] as string;
-                if (string.IsNullOrWhiteSpace(scrubFields))
-                {
-                    return new string[0];
-                }
-
-                return 
-                    scrubFields.Split(new string[] { ", ", "; " }, StringSplitOptions.RemoveEmptyEntries);
+                return this["scrubFields"] as string;
             }
         }
 
@@ -88,18 +81,7 @@
         {
             get
             {
-                string logLevelString = this["logLevel"] as string;
-                if (string.IsNullOrWhiteSpace(logLevelString))
-                {
-                    return null;
-                }
-
-                ErrorLevel logLevel;
-                if (Enum.TryParse<ErrorLevel>(logLevelString, out logLevel))
-                {
-                    return logLevel;
-                }
-                return null;
+                return this["logLevel"] as ErrorLevel?;
             }
         }
 
@@ -114,18 +96,7 @@
         {
             get
             {
-                string stringValue = this["enabled"] as string;
-                if (string.IsNullOrWhiteSpace(stringValue))
-                {
-                    return null;
-                }
-
-                bool enabled;
-                if (bool.TryParse(stringValue, out enabled))
-                {
-                    return enabled;
-                }
-                return null;
+                return this["enabled"] as bool?;
             }
         }
 
@@ -164,7 +135,7 @@
         {
             get
             {
-                return ReadOptionalInt("maxReportsPerMinute");
+                return this["maxReportsPerMinute"] as int?;
             }
         }
 
@@ -179,25 +150,26 @@
         {
             get
             {
-                return ReadOptionalInt("reportingQueueDepth");
+                return this["reportingQueueDepth"] as int?;
             }
         }
 
-        private int? ReadOptionalInt(string fieldName)
+        [ConfigurationProperty("personDataCollectionPolicies", IsRequired = false)]
+        public PersonDataCollectionPolicies? PersonDataCollectionPolicies
         {
-            string stringValue = this[fieldName] as string;
-            if (string.IsNullOrWhiteSpace(stringValue))
+            get
             {
-                return null;
+                return this["personDataCollectionPolicies"] as PersonDataCollectionPolicies?;
             }
+        }
 
-            int intValue;
-            if (int.TryParse(stringValue, out intValue))
+        [ConfigurationProperty("ipAddressCollectionPolicy", IsRequired = false)]
+        public IpAddressCollectionPolicy? IpAddressCollectionPolicy
+        {
+            get
             {
-                return intValue;
+                return this["ipAddressCollectionPolicy"] as IpAddressCollectionPolicy?;
             }
-            return null;
-
         }
     }
 #endif
