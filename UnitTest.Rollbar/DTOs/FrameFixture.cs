@@ -32,7 +32,7 @@ namespace UnitTest.Rollbar.DTOs
         public void FrameFromStackFrameFillsOutEverythign()
         {
             var frame = new Frame(GetFrame());
-            Assert.IsTrue(frame.FileName.EndsWith("FrameFixture.cs"));
+            Assert.IsTrue(frame.FileName.EndsWith("FrameFixture.cs") || frame.FileName.EndsWith("FrameFixture"));
             Assert.IsNotNull(frame.LineNo);
             Assert.IsNotNull(frame.ColNo);
             Assert.IsNotNull(frame.Method);
