@@ -19,6 +19,8 @@
       - resolve #133: Fix unit tests broken by Visual Studio update v15.7.0
       - resolve #121: Add an example/demo of a Rollbar.NET plug-in for a popular .NET logging library
       - resolve #122: Update packages of the Samples
+      - resolve #120: Add custom fingerprinting (similar to other SDKs)
+      - resolve #137: Fix code snippets formatting at https://dash.readme.io/project/rollbar/v1.0.0/docs/dotnet
 
     </PackageReleaseNotes>
 

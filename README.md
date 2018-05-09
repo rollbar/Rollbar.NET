@@ -177,7 +177,7 @@ var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar
 
 To send a caught exception to Rollbar, you must call `RollbarLocator.RollbarInstance.Log()`. You can set an item's level when you call this function. The level can be `'Debug'`, `'Info'`, `'Warning'`, `'Error'`, or `'Critical'`.
 
-In addition, there other conveninence methods for logging messages using different error levels that are named after the levels.
+In addition, there other convenience methods for logging messages using different error levels that are named after the levels.
 
 ```csharp
 RollbarLocator.RollbarInstance.Error(exception);
@@ -352,6 +352,12 @@ Therefore, if you can construct a payload, then it is valid for the purposes of
 sending to Rollbar. You can have read/write access to instance reference of this type 
 within your own functions/actions defined as `CheckIgnore`, `Transform`, and `Truncate` delegates of
 a `RollbarConfig` instance.
+
+If you would like to define you own filtering rules to disallow reports some specific payload instances, 
+implement a `CheckIgnore` delegate and assign it to a proper `RollbarConfig` instance.
+ 
+Similarly, you can implement your own `Transform` delegate to modify any payload to be sent. For example, 
+by calculating your own fingerprint of an exception payload or adding extra custom attributes to any payload. 
 
 There are two other *particularly* interesting classes to worry about:
 `Rollbar.DTOs.Data` and `Rollbar.DTOs.Body`. `Rollbar.DTOs.Data` can be filled out as completely
