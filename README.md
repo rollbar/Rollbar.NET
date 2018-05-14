@@ -146,6 +146,23 @@ private void SetRollbarReportingUser(string id, string email, string userName)
 
 and this person will be attached to all future Rollbar calls.
 </dd>
+<dt>PersonDataCollectionPolicies
+</dt>
+<dd>
+Allows to explicitly specify Person's data auto-collection policy flags. 
+Supported values are None, Username, Email. 
+Multiple policies can be combined (they are not mutually exclusive).
+Note: when combined, any other value takes priority over None even if None is explicitly mentioned.
+Default value is None.
+</dd>
+<dt>IpAddressCollectionPolicy 
+</dt>
+<dd>
+Allows to explicitly specify User IP address auto-collection policy.
+Supported values are Collect, CollectAnonymized (a portion of the IP address is masked out), DoNotCollect.
+These values are mutually exclusive.
+Default value is Collect.
+</dd>
 <dt>MaxReportsPerMinute
 </dt>
 <dd>The maximum reports sent to Rollbar per minute, as an integer.
