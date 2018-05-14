@@ -11,6 +11,7 @@
 
       New features and enhancements:
 
+      - resolve #127: Add scrub whitelist config option
       - resolve #139: Document GDRP related settings
       - resolve #128: Only collect person.id by default for person tracking
       - resolve #129: Allow IP collection to be easily turned on and off in config

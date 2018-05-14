@@ -82,6 +82,18 @@
         string[] ScrubFields { get; }
 
         /// <summary>
+        /// Gets the scrub white-list fields.
+        /// </summary>
+        /// <value>
+        /// The scrub white-list fields.
+        /// </value>
+        /// <remarks>
+        /// The fields mentioned in this list are guaranteed to be excluded 
+        /// from the ScrubFields list in cases when the lists overlap.
+        /// </remarks>
+        string[] ScrubWhitelistFields { get; }
+
+        /// <summary>
         /// Gets the transform.
         /// </summary>
         /// <value>

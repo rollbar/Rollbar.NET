@@ -6,7 +6,9 @@
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Text;
 
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
@@ -78,13 +80,16 @@
             this.MaxReportsPerMinute = 60;
             this.ReportingQueueDepth = 20;
             this.LogLevel = ErrorLevel.Debug;
-            this.ScrubFields = new[]
+            this.ScrubFields = new string[]
             {
                 "passwd",
                 "password",
                 "secret",
                 "confirm_password",
                 "password_confirmation",
+            };
+            this.ScrubWhitelistFields = new string[]
+            {
             };
             this.EndPoint = "https://api.rollbar.com/api/1/";
             this.ProxyAddress = null;
@@ -184,6 +189,18 @@
         /// The scrub fields.
         /// </value>
         public string[] ScrubFields { get; set; }
+
+        /// <summary>
+        /// Gets the scrub white-list fields.
+        /// </summary>
+        /// <value>
+        /// The scrub white-list fields.
+        /// </value>
+        /// <remarks>
+        /// The fields mentioned in this list are guaranteed to be excluded
+        /// from the ScrubFields list in cases when the lists overlap.
+        /// </remarks>
+        public string[] ScrubWhitelistFields { get; set; }
 
         /// <summary>
         /// Gets or sets the log level.
@@ -305,14 +322,39 @@
             sb.AppendLine(indent + "  AccessToken: " + this.AccessToken);
             sb.AppendLine(indent + "  EndPoint: " + this.EndPoint);
             sb.AppendLine(indent + "  ScrubFields: " + this.ScrubFields);
+            sb.AppendLine(indent + "  ScrubWhitelistFields: " + this.ScrubWhitelistFields);
             sb.AppendLine(indent + "  Enabled: " + this.Enabled);
             sb.AppendLine(indent + "  Environment: " + this.Environment);
             sb.AppendLine(indent + "  Server: " + this.Server);
             sb.AppendLine(indent + "  Person: " + this.Person);
             sb.AppendLine(indent + "  ProxyAddress: " + this.ProxyAddress);
             sb.AppendLine(indent + "  MaxReportsPerMinute: " + this.MaxReportsPerMinute);
+            sb.AppendLine(indent + "  IpAddressCollectionPolicy: " + this.IpAddressCollectionPolicy);
+            sb.AppendLine(indent + "  PersonDataCollectionPolicies: " + this.PersonDataCollectionPolicies);
             //sb.AppendLine(indent + this.Result.Trace(indent + "  "));
             return sb.ToString();
         }
+
+        /// <summary>
+        /// Gets the safe scrub fields. 
+        /// Basically this.ScrubFields "minus" this.ScrubWhitelistFields.
+        /// </summary>
+        /// <returns></returns>
+        internal IReadOnlyCollection<string> GetSafeScrubFields()
+        {
+            if (this.ScrubFields == null || this.ScrubFields.Length == 0)
+            {
+                return new string[0];
+            }
+
+            if (this.ScrubWhitelistFields == null || this.ScrubWhitelistFields.Length == 0)
+            {
+                return this.ScrubFields.ToArray();
+            }
+
+            var whitelist = this.ScrubWhitelistFields.ToArray();
+            return this.ScrubFields.Where(i => !whitelist.Contains(i)).ToArray();
+        }
+
     }
 }
