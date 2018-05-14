@@ -33,7 +33,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual(2, trace.Frames.Length);
             Assert.AreEqual("UnitTest.Rollbar.DTOs.TraceFixture.ThrowException()", trace.Frames[0].Method);
             Assert.AreEqual("UnitTest.Rollbar.DTOs.TraceFixture.GetException()", trace.Frames[1].Method);
-            Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs")));
+            Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture")));
         }
 
         [TestMethod]

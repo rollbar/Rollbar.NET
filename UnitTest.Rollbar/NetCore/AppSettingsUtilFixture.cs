@@ -35,7 +35,7 @@ namespace UnitTest.Rollbar.NetCore
             //===============================
             //"Rollbar": {
             //    "AccessToken": "17965fa5041749b6bf7095a190001ded",
-            //    "Environment": "AspNetCoreMiddlewareTest",
+            //    "Environment": "unit-tests",
             //    "Enabled": true,
             //    "MaxReportsPerMinute": 160,
             //    "ReportingQueueDepth": 120,
@@ -46,18 +46,27 @@ namespace UnitTest.Rollbar.NetCore
             //    ],
             //    "Person": {
             //      "UserName": "jbond"
-
-            //    }
+            //    },
+            //    "PersonDataCollectionPolicies": "Username, Email",
+            //    "IpAddressCollectionPolicy": "CollectAnonymized",
             //  }
 
             Assert.AreEqual("17965fa5041749b6bf7095a190001ded", config.AccessToken);
-            Assert.AreEqual("AspNetCoreMiddlewareTest", config.Environment);
+            Assert.AreEqual("unit-tests", config.Environment);
             Assert.AreEqual(true, config.Enabled);
             Assert.AreEqual(160, config.MaxReportsPerMinute);
             Assert.AreEqual(120, config.ReportingQueueDepth);
             Assert.AreEqual(ErrorLevel.Info, config.LogLevel.Value);
             Assert.IsTrue(config.ScrubFields.Length >= 2);
             Assert.AreEqual("jbond", config.Person.UserName);
+            Assert.AreEqual(
+                PersonDataCollectionPolicies.Username | PersonDataCollectionPolicies.Email
+                , config.PersonDataCollectionPolicies
+                );
+            Assert.AreEqual(
+                IpAddressCollectionPolicy.CollectAnonymized
+                , config.IpAddressCollectionPolicy
+                );
         }
     }
 }

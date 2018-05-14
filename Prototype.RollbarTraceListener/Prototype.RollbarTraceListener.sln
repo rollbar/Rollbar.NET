@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Prototype.RollbarTraceListener", "Prototype.RollbarTraceListener\Prototype.RollbarTraceListener.csproj", "{97301627-3427-4E6A-B3C1-565F0272252E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C3B978B9-C6D0-4E07-ADFB-720122E61659} = {C3B978B9-C6D0-4E07-ADFB-720122E61659}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.PlugIns", "Rollbar.PlugIns\Rollbar.PlugIns.csproj", "{C3B978B9-C6D0-4E07-ADFB-720122E61659}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{97301627-3427-4E6A-B3C1-565F0272252E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97301627-3427-4E6A-B3C1-565F0272252E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97301627-3427-4E6A-B3C1-565F0272252E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97301627-3427-4E6A-B3C1-565F0272252E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3B978B9-C6D0-4E07-ADFB-720122E61659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3B978B9-C6D0-4E07-ADFB-720122E61659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3B978B9-C6D0-4E07-ADFB-720122E61659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3B978B9-C6D0-4E07-ADFB-720122E61659}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9B0AF84D-8B19-4E6F-A4F3-88AE193FA1B5}
+	EndGlobalSection
+EndGlobal

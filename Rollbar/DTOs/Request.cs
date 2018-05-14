@@ -116,22 +116,28 @@
         /// Initializes a new instance of the <see cref="Request" /> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="httpRequest">The HTTP request.</param>
-        public Request(IDictionary<string, object> arbitraryKeyValuePairs, HttpRequestMessage httpRequest = null) 
+        public Request(
+            IDictionary<string, object> arbitraryKeyValuePairs
+            , IRollbarConfig rollbarConfig
+            , HttpRequestMessage httpRequest = null
+            ) 
             : base(arbitraryKeyValuePairs)
         {
             if (httpRequest != null)
             {
-                this.SnapProperties(httpRequest);
+                Assumption.AssertNotNull(rollbarConfig, nameof(rollbarConfig));
+                this.SnapProperties(httpRequest, rollbarConfig);
             }
         }
 
-        private void SnapProperties(HttpRequestMessage httpRequest)
+        private void SnapProperties(HttpRequestMessage httpRequest, IRollbarConfig rollbarConfig)
         {
             Assumption.AssertNotNull(httpRequest, nameof(httpRequest));
 
-            this.Url = httpRequest.RequestUri.AbsoluteUri;
-            this.QueryString = httpRequest.RequestUri.Query;
+            this.Url = httpRequest.RequestUri?.AbsoluteUri;
+            this.QueryString = httpRequest.RequestUri?.Query;
             this.Params = null;
 
             this.Headers = new Dictionary<string, string>(httpRequest.Headers.Count());
@@ -160,7 +166,7 @@
             const string RemoteEndpointMessagePropery = "System.ServiceModel.Channels.RemoteEndpointMessageProperty";
             if (httpRequest.Properties.ContainsKey(HttpContextProperty))
             {
-                HttpContext ctx = httpRequest.Properties[HttpContextProperty] as HttpContext;
+                HttpContextBase ctx = httpRequest.Properties[HttpContextProperty] as HttpContextBase;
                 if (ctx != null)
                 {
                     userIP = ctx.Request.UserHostAddress;
@@ -175,8 +181,30 @@
                     userIP = remoteEndpoint.Address;
                 }
             }
-            this.UserIp = userIP;
+            this.UserIp = 
+                Request.DecideCollectableUserIPValue(userIP, rollbarConfig.IpAddressCollectionPolicy);
 #endif
+        }
+
+        private static string DecideCollectableUserIPValue(string initialIPAddress, IpAddressCollectionPolicy ipAddressCollectionPolicy)
+        {
+            switch(ipAddressCollectionPolicy)
+            {
+                case IpAddressCollectionPolicy.Collect:
+                    return initialIPAddress;
+                case IpAddressCollectionPolicy.CollectAnonymized:
+                    return IpAddressUtility.Anonymize(initialIPAddress);
+                case IpAddressCollectionPolicy.DoNotCollect:
+                    return null;
+                default:
+                    Assumption.FailValidation(
+                        "Unexpected enumeration value!"
+                        , nameof(ipAddressCollectionPolicy)
+                        );
+                    break;
+            }
+
+            return null;
         }
 
         /// <summary>
