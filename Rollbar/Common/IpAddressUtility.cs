@@ -24,16 +24,16 @@
             string[] components = null;
 
             // try IPv4 format:
-            const char ipv4CompontsSeparator = '.';
+            const char ipv4ComponentsSeparator = '.';
             const int ipv4TotalComponents = 4;
             const string ipv4Anonymizer = "0/24";
-            components = exactIpAddress.Split(ipv4CompontsSeparator);
+            components = exactIpAddress.Split(ipv4ComponentsSeparator);
             if (components != null 
                 && components.Length == ipv4TotalComponents
                 )
             {
                 components[ipv4TotalComponents - 1] = ipv4Anonymizer;
-                return string.Join($"{ipv4CompontsSeparator}", components);
+                return string.Join($"{ipv4ComponentsSeparator}", components);
             }
 
             // try IPv6 format:
@@ -45,12 +45,12 @@
                 && components.Length > 0 //&& components.Length == ipv6CompontsSeparator
                 )
             {
-                //components[ipv6CompontsSeparator - 1] = ipv6Anonymizer;
-                //return string.Join($"{ipv6CompontsSeparator}", components);
-                const int ipv6CutOffLenght = 12;
-                if (exactIpAddress.Length > ipv6CutOffLenght)
+                //components[ipv6ComponentsSeparator - 1] = ipv6Anonymizer;
+                //return string.Join($"{ipv6ComponentsSeparator}", components);
+                const int ipv6CutOffLength = 12;
+                if (exactIpAddress.Length > ipv6CutOffLength)
                 {
-                    return exactIpAddress.Substring(0, ipv6CutOffLenght) + ipv6Anonymizer;
+                    return exactIpAddress.Substring(0, ipv6CutOffLength) + ipv6Anonymizer;
                 }
                 else
                 {
