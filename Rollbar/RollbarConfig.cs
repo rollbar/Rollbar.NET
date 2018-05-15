@@ -26,6 +26,8 @@
         , ITraceable
         , IRollbarConfig
     {
+        private static readonly string[] listValueSplitters = new string[] { ", ", "; ", " " };
+
         private readonly RollbarLogger _logger = null;
 
         private RollbarConfig()
@@ -146,7 +148,13 @@
             {
                 this.ScrubFields = 
                     string.IsNullOrEmpty(config.ScrubFields) ? new string[0] 
-                    : config.ScrubFields.Split(new string[] { ", ", "; ", " " }, StringSplitOptions.RemoveEmptyEntries);
+                    : config.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
+            }
+            if (config.ScrubWhitelistFields != null && config.ScrubWhitelistFields.Length > 0)
+            {
+                this.ScrubWhitelistFields =
+                    string.IsNullOrEmpty(config.ScrubWhitelistFields) ? new string[0]
+                    : config.ScrubWhitelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
             }
             if (!string.IsNullOrWhiteSpace(config.EndPoint))
             {
