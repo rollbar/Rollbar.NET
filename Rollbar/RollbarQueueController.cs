@@ -248,7 +248,7 @@ namespace Rollbar
         {
             var client = new RollbarClient(logger.Config);
 
-            IEnumerable<string> safeScrubFields = logger.Config.ScrubFields;
+            IEnumerable<string> safeScrubFields = logger.Config.GetSafeScrubFields();
 
             RollbarResponse response = null;
             int retries = 3;

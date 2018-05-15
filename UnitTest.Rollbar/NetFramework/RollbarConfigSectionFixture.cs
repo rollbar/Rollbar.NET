@@ -37,7 +37,10 @@ namespace UnitTest.Rollbar.NetFramework
 
             //<rollbar
             // accessToken = "17965fa5041749b6bf7095a190001ded"
-            // environment = "RollbarNetSamples"
+            // environment = "unit-tests"
+            // enabled="true"
+            // scrubFields="ThePassword, Secret"
+            // scrubWhitelistFields="ThePassword"
             // personDataCollectionPolicies = "Username | Email"
             // ipAddressCollectionPolicy = "CollectAnonymized"
             // />

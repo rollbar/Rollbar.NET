@@ -71,6 +71,21 @@
         }
 
         /// <summary>
+        /// Gets or sets the scrub fields.
+        /// </summary>
+        /// <value>
+        /// The scrub fields.
+        /// </value>
+        [ConfigurationProperty("scrubWhitelistFields", IsRequired = false)]
+        public string ScrubWhitelistFields
+        {
+            get
+            {
+                return this["scrubWhitelistFields"] as string;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the log level.
         /// </summary>
         /// <value>
