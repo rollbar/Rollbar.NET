@@ -187,6 +187,10 @@ var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar
     };
 ```
 </dd>
+<dt>ScrubWhitelistFields
+</dt>
+<dd>The fields mentioned in this list are guaranteed to be excluded from the ScrubFields list in cases when the lists overlap.
+</dd>
 
 </dl>
 
