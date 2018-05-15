@@ -9,10 +9,12 @@
   -->  
 
   <PropertyGroup>
+
     <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
     <!--
     <TargetFramework>net471</TargetFramework>
     -->
+
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
