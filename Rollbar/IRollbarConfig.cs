@@ -50,14 +50,6 @@
         ErrorLevel? LogLevel { get; set; }
 
         /// <summary>
-        /// Gets the maximum reports per minute.
-        /// </summary>
-        /// <value>
-        /// The maximum reports per minute.
-        /// </value>
-        int MaxReportsPerMinute { get; }
-
-        /// <summary>
         /// Gets the proxy address.
         /// </summary>
         /// <value>
@@ -66,12 +58,42 @@
         string ProxyAddress { get; }
 
         /// <summary>
+        /// Gets the maximum reports per minute.
+        /// </summary>
+        /// <value>
+        /// The maximum reports per minute.
+        /// </value>
+        int MaxReportsPerMinute { get; }
+
+        /// <summary>
         /// Gets the reporting queue depth.
         /// </summary>
         /// <value>
         /// The reporting queue depth.
         /// </value>
         int ReportingQueueDepth { get; }
+
+        /// <summary>
+        /// Gets the maximum items limit.
+        /// </summary>
+        /// <value>
+        /// The maximum items.
+        /// </value>
+        /// <remarks>
+        /// Max number of items to report per page load or per web request. 
+        /// When this limit is reached, an additional item will be reported stating that the limit was reached. 
+        /// Like MaxReportsPerMinute, this limit counts uncaught errors and any direct calls to Rollbar.log/debug/info/warning/error/critical().
+        /// Default: 0 (no limit)
+        /// </remarks>
+        int MaxItems { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether to auto-capture uncaught exceptions.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if auto-capture uncaught exceptions is enabled; otherwise, <c>false</c>.
+        /// </value>
+        bool CaptureUncaughtExceptions { get; }
 
         /// <summary>
         /// Gets the scrub fields.

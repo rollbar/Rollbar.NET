@@ -81,6 +81,8 @@
             this.Enabled = true;
             this.MaxReportsPerMinute = 60;
             this.ReportingQueueDepth = 20;
+            this.MaxItems = 0;
+            this.CaptureUncaughtExceptions = true;
             this.LogLevel = ErrorLevel.Debug;
             this.ScrubFields = new string[]
             {
@@ -139,6 +141,14 @@
             if (config.ReportingQueueDepth.HasValue)
             {
                 this.ReportingQueueDepth = config.ReportingQueueDepth.Value;
+            }
+            if (config.MaxItems.HasValue)
+            {
+                this.MaxItems = config.MaxItems.Value;
+            }
+            if (config.CaptureUncaughtExceptions.HasValue)
+            {
+                this.CaptureUncaughtExceptions = config.CaptureUncaughtExceptions.Value;
             }
             if (config.LogLevel.HasValue)
             {
@@ -299,6 +309,28 @@
         public int ReportingQueueDepth { get; set; }
 
         /// <summary>
+        /// Gets or sets the maximum items limit.
+        /// </summary>
+        /// <value>
+        /// The maximum items.
+        /// </value>
+        /// <remarks>
+        /// Max number of items to report per page load or per web request.
+        /// When this limit is reached, an additional item will be reported stating that the limit was reached.
+        /// Like MaxReportsPerMinute, this limit counts uncaught errors and any direct calls to Rollbar.log/debug/info/warning/error/critical().
+        /// Default: 0 (no limit)
+        /// </remarks>
+        public int MaxItems { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to auto-capture uncaught exceptions.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if auto-capture uncaught exceptions is enabled; otherwise, <c>false</c>.
+        /// </value>
+        public bool CaptureUncaughtExceptions { get; set; }
+
+        /// <summary>
         /// Gets or sets the person data collection policies.
         /// </summary>
         /// <value>
@@ -337,6 +369,9 @@
             sb.AppendLine(indent + "  Person: " + this.Person);
             sb.AppendLine(indent + "  ProxyAddress: " + this.ProxyAddress);
             sb.AppendLine(indent + "  MaxReportsPerMinute: " + this.MaxReportsPerMinute);
+            sb.AppendLine(indent + "  ReportingQueueDepth: " + this.ReportingQueueDepth);
+            sb.AppendLine(indent + "  MaxItems: " + this.MaxItems);
+            sb.AppendLine(indent + "  CaptureUncaughtExceptions: " + this.CaptureUncaughtExceptions);
             sb.AppendLine(indent + "  IpAddressCollectionPolicy: " + this.IpAddressCollectionPolicy);
             sb.AppendLine(indent + "  PersonDataCollectionPolicies: " + this.PersonDataCollectionPolicies);
             //sb.AppendLine(indent + this.Result.Trace(indent + "  "));

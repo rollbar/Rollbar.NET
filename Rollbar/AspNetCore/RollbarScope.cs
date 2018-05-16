@@ -12,13 +12,17 @@ namespace Rollbar.AspNetCore
     /// </summary>
     internal class RollbarScope
     {
+        public const string MaxItemsReachedWarning = "MaxItems limit was reached! Suspending further reports per current scope.";
+
         private readonly string _name = null;
         private readonly object _state = null;
+        private int _logItemsCount; // counts log items instances per scope...
 
         public RollbarScope(string name, object state)
         {
             this._name = name;
             this._state = state;
+            this._logItemsCount = 0;
         }
 
         public RollbarHttpContext HttpContext { get; set; }
@@ -32,6 +36,16 @@ namespace Rollbar.AspNetCore
         {
             set { currentScope.Value = value; }
             get { return currentScope.Value; }
+        }
+
+        public void IncrementLogItemsCount()
+        {
+            Interlocked.Increment(ref this._logItemsCount);
+        }
+
+        public int LogItemsCount
+        {
+            get { return this._logItemsCount; }
         }
 
         public static IDisposable Push(RollbarScope scope)

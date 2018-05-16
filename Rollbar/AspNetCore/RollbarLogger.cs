@@ -98,6 +98,15 @@ namespace Rollbar.AspNetCore
             if (state == null && exception == null)
                 return;
 
+            if (RollbarScope.Current != null
+                && RollbarLocator.RollbarInstance.Config.MaxItems > 0
+                && RollbarScope.Current.LogItemsCount >= RollbarLocator.RollbarInstance.Config.MaxItems
+                )
+            {
+                RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
+                return;
+            }
+
             // let's custom build the Data object that includes the exception 
             // along with the current HTTP request context:
 
