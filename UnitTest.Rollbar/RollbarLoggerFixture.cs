@@ -124,7 +124,7 @@ namespace UnitTest.Rollbar
             {
                 try
                 {
-                    logger.Log(ErrorLevel.Error, new System.Exception("test exception"));
+                    logger.Error(new System.Exception("test exception"));
                 }
                 catch
                 {
