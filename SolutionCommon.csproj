@@ -14,6 +14,7 @@
 
       - resolve #126: Add max items config option
       - resolve #125: Add capture uncaught config option
+      - resolve #132: Point docs from README to Rollbar's site
 
     </PackageReleaseNotes>
 
