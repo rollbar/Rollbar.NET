@@ -11,6 +11,31 @@
     /// </summary>
     internal static class ReflectionUtil
     {
+        public static FieldInfo[] GetAllDataFields(Type type)
+        {
+            if (type == null)
+            {
+                return new FieldInfo[0];
+            }
+
+            List<Type> relevantTypes = new List<Type>();
+            Type relevantType = type;
+            while (relevantType != null)
+            {
+                relevantTypes.Add(relevantType);
+                relevantType = relevantType.BaseType;
+            }
+
+            List<FieldInfo> fieldInfos = new List<FieldInfo>();
+            relevantTypes.Reverse(); // eventually, we want following order: most base type's data fields first...
+            foreach (var t in relevantTypes)
+            {
+                fieldInfos.AddRange(t.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic));
+            }
+
+            return fieldInfos.ToArray();
+        }
+
         /// <summary>
         /// Gets all public instance properties.
         /// </summary>
