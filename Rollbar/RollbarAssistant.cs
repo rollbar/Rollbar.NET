@@ -13,11 +13,17 @@
     public static class RollbarAssistant
     {
         /// <summary>
-        /// Captures the state.
+        /// Captures the state (all the data fields' values of the provided instance).
+        /// 
+        /// It captures all the static and instance data fields (public and non-public) 
+        /// including the inherited ones (if there is any).
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <param name="instanceName">Name of the instance.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// either a dictionary of data field name/value pairs representing the captured state of the supplied instance object
+        /// or null whenever the state capture is not applicable (for example, when instance argument happened to be uninitialized)
+        /// </returns>
         public static IDictionary<string, object> CaptureState(object instance, string instanceName = null)
         {
             if (instance == null)
@@ -52,10 +58,14 @@
         }
 
         /// <summary>
-        /// Captures the state.
+        /// Captures the state of a static type (all the data fields' values of the provided static type).
         /// </summary>
         /// <param name="staticType">Type of a static class.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// either a dictionary of data field name/value pairs representing the captured state of the supplied static type
+        /// or null whenever the state capture is not applicable 
+        /// (for example, when static type argument happened to represent an Enum or an interface).
+        /// </returns>
         public static IDictionary<string, object> CaptureState(Type staticType)
         {
             //Assumption.AssertTrue(
@@ -69,13 +79,13 @@
                 return null;
             }
 
-            string dataMemberNamePrefix = $"{staticType.FullName}.";
+            string dataMemberNamePrefix = $"[{staticType.FullName}].";
             var memberInfos = ReflectionUtil.GetAllDataFields(staticType);
 
             IDictionary<string, object> stateCapture = new Dictionary<string, object>(memberInfos.Length);
             foreach (var memberInfo in memberInfos)
             {
-                stateCapture[memberInfo.Name] = memberInfo.GetValue(null);
+                stateCapture[dataMemberNamePrefix + memberInfo.Name] = memberInfo.GetValue(null);
             }
 
             return stateCapture;

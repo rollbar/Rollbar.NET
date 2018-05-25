@@ -3,6 +3,7 @@ using Rollbar.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Sample.NetCore.ConsoleApp
 {
@@ -30,6 +31,9 @@ namespace Sample.NetCore.ConsoleApp
                 .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
                 .Error(exceptionWithData, customFields)
                 ;
+
+            var demoObj = new InstanceType();
+            demoObj.DemonstrateStateCapture();
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             RollbarLocator.RollbarInstance
@@ -156,5 +160,85 @@ namespace Sample.NetCore.ConsoleApp
                 return;
             }
         }
+
+        #region data mocks
+
+        static class StaticType
+        {
+            // 1
+            private const int BaseConstant = 10;
+
+            // 2
+            private static int _baseIntField = 3;
+
+            // 3
+            public static object BaseNullProperty
+            {
+                get { return StaticType._baseNullField; }
+            }
+            private static object _baseNullField = null;
+
+            // 4
+            public static string BaseAutoProperty { get; set; } = "BaseAutoProperty value";
+
+        }
+
+        class InstanceType
+            : InstanceTypeBase
+        {
+            // 1
+            public int AutoProperty { get; set; } = 99;
+
+            // 2
+            public static string TypeName { get; } = nameof(InstanceType);
+
+            public void DemonstrateStateCapture()
+            {
+                var criticalObj = new InstanceType();
+                criticalObj.AutoProperty = -100;
+
+                try
+                {
+                    ///...
+                    /// oh, no - we have an exception:
+                    throw new System.Exception("An exception with state capture!");
+                    ///...
+                }
+                catch (System.Exception ex)
+                {
+                    // capture state of this instance:
+                    var state = RollbarAssistant.CaptureState(this, "Self"); 
+                    // also, capture state of some other critical object:
+                    state = new Dictionary<string, object>(state.Concat(RollbarAssistant.CaptureState(criticalObj, nameof(criticalObj))));
+                    // also, capture current state of a static type:
+                    state = new Dictionary<string, object>(state.Concat(RollbarAssistant.CaptureState(typeof(StaticType))));
+
+                    // report the captured states along with the caught exception:
+                    RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(10000)).Error(ex, state);
+                }
+            }
+        }
+
+        abstract class InstanceTypeBase
+        {
+            // 1
+            private const int BaseConstant = 10;
+
+            // 2
+            private int _baseIntField = 3;
+
+            // 3
+            public object BaseNullProperty
+            {
+                get { return this._baseNullField; }
+            }
+            private object _baseNullField = null;
+
+            // 4
+            public string BaseAutoProperty { get; set; } = "BaseAutoProperty value";
+        }
+
+        #endregion data mocks
+
     }
 }
