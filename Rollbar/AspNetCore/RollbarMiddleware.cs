@@ -102,11 +102,20 @@ namespace Rollbar.AspNetCore
 
                     if (RollbarScope.Current != null 
                         && RollbarLocator.RollbarInstance.Config.MaxItems > 0
-                        && RollbarScope.Current.LogItemsCount >= RollbarLocator.RollbarInstance.Config.MaxItems
                         )
                     {
-                        RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
-                        throw ex;
+                        RollbarScope.Current.IncrementLogItemsCount();
+                        if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.MaxItems)
+                        {
+                            // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
+                            RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
+                            throw ex;
+                        }
+                        else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.MaxItems)
+                        {
+                            // just rethrow since the Rollbar SDK already exceeded MaxItems limit:
+                            throw ex;
+                        }
                     }
                     else
                     {

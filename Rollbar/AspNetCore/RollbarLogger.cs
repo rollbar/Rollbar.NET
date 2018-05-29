@@ -98,13 +98,22 @@ namespace Rollbar.AspNetCore
             if (state == null && exception == null)
                 return;
 
-            if (RollbarScope.Current != null
+            if (RollbarScope.Current != null 
                 && RollbarLocator.RollbarInstance.Config.MaxItems > 0
-                && RollbarScope.Current.LogItemsCount >= RollbarLocator.RollbarInstance.Config.MaxItems
                 )
             {
-                RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
-                return;
+                RollbarScope.Current.IncrementLogItemsCount();
+                if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.MaxItems)
+                {
+                    // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
+                    RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
+                    return;
+                }
+                else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.MaxItems)
+                {
+                    // the Rollbar SDK already exceeded MaxItems limit, do not log for this scope:
+                    return;
+                }
             }
 
             // let's custom build the Data object that includes the exception 
