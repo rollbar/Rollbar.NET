@@ -7,23 +7,16 @@
     <TargetFrameworks>net471</TargetFrameworks>
     -->
 
-    <NotifierVersion>1.3.0</NotifierVersion>
+    <NotifierVersion>1.4.0</NotifierVersion>
     <PackageReleaseNotes>
 
       New features and enhancements:
 
-      - resolve #127: Add scrub whitelist config option
-      - resolve #139: Document GDRP related settings
-      - resolve #128: Only collect person.id by default for person tracking
-      - resolve #129: Allow IP collection to be easily turned on and off in config
-      - resolve #130: Anonymize IP address config option
-      - resolve #135: Simplify/clean-up RollbarConfigSection implementation
-      - resolve #134: Enhance multi-targeting configuration by introducing NetVariant MSBuild property
-      - resolve #133: Fix unit tests broken by Visual Studio update v15.7.0
-      - resolve #121: Add an example/demo of a Rollbar.NET plug-in for a popular .NET logging library
-      - resolve #122: Update packages of the Samples
-      - resolve #120: Add custom fingerprinting (similar to other SDKs)
-      - resolve #137: Fix code snippets formatting at https://dash.readme.io/project/rollbar/v1.0.0/docs/dotnet
+      - resolve #124: Capture local variables
+      - resolve #142: Update the .NET Core console sample app to demonstrate state capture
+      - resolve #126: Add max items config option
+      - resolve #125: Add capture uncaught config option
+      - resolve #132: Point docs from README to Rollbar's site
 
     </PackageReleaseNotes>
 
@@ -32,6 +25,7 @@
     <FileVersion>$(NotifierVersion)</FileVersion>
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
     <Company>Rollbar Inc</Company>
+    <Title>Rollbar.NET Notifier SDK</Title>
     <Product>Rollbar.Net Notifier</Product>
     <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
     <Copyright>Copyright 2015-2018</Copyright>

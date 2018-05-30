@@ -94,20 +94,46 @@ namespace Rollbar.AspNetCore
                 }
                 catch (Exception ex)
                 {
-                    // let's custom build the Data object that includes the exception 
-                    // along with the current HTTP request context:
-                    DTOs.Data data = new DTOs.Data(
-                        config: RollbarLocator.RollbarInstance.Config,
-                        body: new DTOs.Body(ex),
-                        custom: null,
-                        request: (context != null) ? new DTOs.Request(null, context.Request) : null
+                    if (!RollbarLocator.RollbarInstance.Config.CaptureUncaughtExceptions)
+                    {
+                        // just rethrow since the Rollbar SDK is configured not to auto-capture uncaught exceptions:
+                        throw ex; 
+                    }
+
+                    if (RollbarScope.Current != null 
+                        && RollbarLocator.RollbarInstance.Config.MaxItems > 0
                         )
                     {
-                        Level = ErrorLevel.Critical,
-                    };
+                        RollbarScope.Current.IncrementLogItemsCount();
+                        if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.MaxItems)
+                        {
+                            // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
+                            RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
+                            throw ex;
+                        }
+                        else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.MaxItems)
+                        {
+                            // just rethrow since the Rollbar SDK already exceeded MaxItems limit:
+                            throw ex;
+                        }
+                    }
+                    else
+                    {
+                        // let's custom build the Data object that includes the exception 
+                        // along with the current HTTP request context:
+                        DTOs.Data data = new DTOs.Data(
+                            config: RollbarLocator.RollbarInstance.Config,
+                            body: new DTOs.Body(ex),
+                            custom: null,
+                            request: (context != null) ? new DTOs.Request(null, context.Request) : null
+                            )
+                        {
+                            Level = ErrorLevel.Critical,
+                        };
 
-                    // log the Data object (the exception + the HTTP request data):
-                    RollbarLocator.RollbarInstance.Log(data);
+                        // log the Data object (the exception + the HTTP request data):
+                        RollbarLocator.RollbarInstance.Log(data);
+                    }
 
                     throw new Exception("The included internal exception processed by the Rollbar middleware", ex);
                 }
