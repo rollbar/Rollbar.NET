@@ -10,7 +10,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
     <!--
     <TargetFramework>net471</TargetFramework>
     -->
@@ -23,12 +23,12 @@
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp2.0'">
     <NetVariant>NET_CORE</NetVariant>
     <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net471' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net47' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net462' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net461' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net46' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net452' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net451' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net45' &#xD;&#xA;                 ">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net472' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net471'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net47'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net462'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net461'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net46'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net452'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net451'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net45'&#xD;&#xA;                 ">
     <NetVariant>NET_FX</NetVariant>
     <DefineConstants>NETFX</DefineConstants>
   </PropertyGroup>

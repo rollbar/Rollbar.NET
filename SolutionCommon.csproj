@@ -2,21 +2,17 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <!--
     <TargetFrameworks>net471</TargetFrameworks>
     -->
 
-    <NotifierVersion>1.4.0</NotifierVersion>
+    <NotifierVersion>1.4.1</NotifierVersion>
     <PackageReleaseNotes>
 
-      New features and enhancements:
+      New features, enhancements and fixes:
 
-      - resolve #124: Capture local variables
-      - resolve #142: Update the .NET Core console sample app to demonstrate state capture
-      - resolve #126: Add max items config option
-      - resolve #125: Add capture uncaught config option
-      - resolve #132: Point docs from README to Rollbar's site
+      - resolve #146: Add explicit support of .net core 2.1 and .net 4.7.2 targets
 
     </PackageReleaseNotes>
 
@@ -47,12 +43,14 @@
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'
+                 Or '$(TargetFramework)' == 'netcoreapp2.0'">
     <NetVariant>NET_CORE</NetVariant>
     <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net471'
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net472'
+             Or '$(TargetFramework)' == 'net471'
              Or '$(TargetFramework)' == 'net47' 
              Or '$(TargetFramework)' == 'net462' 
              Or '$(TargetFramework)' == 'net461' 
