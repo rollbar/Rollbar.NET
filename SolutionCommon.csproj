@@ -14,6 +14,7 @@
 
       - resolve #146: Add explicit support of .net core 2.1 and .net 4.7.2 targets
       - resolve #145: Update sample apps to target latest .net SDKs and latest dependencies
+      - resolve #131: Not able to run Xamarin sample app with Rollbar Notifier.
 
     </PackageReleaseNotes>
 
