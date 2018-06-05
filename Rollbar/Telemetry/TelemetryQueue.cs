@@ -1,57 +1,50 @@
 ﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
-namespace Rollbar
+namespace Rollbar.Telemetry
 {
     using Rollbar.Diagnostics;
-    using Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
 
-    internal class PayloadQueue
+    public class TelemetryQueue
     {
         private readonly object _syncLock = null;
-        private readonly Queue<Payload> _queue = null;
-        private readonly RollbarLogger _logger = null;
+        private readonly Queue<TelemetryData> _queue = null;
+        public int QueueDepth { get; set; } = 5;
 
-        private PayloadQueue()
+        public TelemetryQueue()
         {
-        }
-
-        public PayloadQueue(RollbarLogger logger)
-        {
-            Assumption.AssertNotNull(logger, nameof(logger));
-
-            this._logger = logger;
             this._syncLock = new object();
-            this._queue = new Queue<Payload>();
+            this._queue = new Queue<TelemetryData>();
         }
 
-        public DateTimeOffset NextDequeueTime { get; internal set; }
-
-        public RollbarLogger Logger
-        {
-            get { return this._logger; }
-        }
-
-        public void Enqueue(Payload payload)
-        {
-            Assumption.AssertNotNull(payload, nameof(payload));
-
-            lock (this._syncLock)
-            {
-                if (this._logger.Config.ReportingQueueDepth == this._queue.Count)
-                {
-                    this._queue.Dequeue();
-                }
-                this._queue.Enqueue(payload);
-            }
-        }
-
-        public Payload Peek()
+        public IEnumerable<TelemetryData> GetQueueContent()
         {
             lock(this._syncLock)
             {
-                Payload result = null;
+                return this._queue.ToArray();
+            }
+        }
+
+        public void Enqueue(TelemetryData telemetryData)
+        {
+            Assumption.AssertNotNull(telemetryData, nameof(telemetryData));
+
+            lock (this._syncLock)
+            {
+                if (this._queue.Count == this.QueueDepth)
+                {
+                    this._queue.Dequeue();
+                }
+                this._queue.Enqueue(telemetryData);
+            }
+        }
+
+        public TelemetryData Peek()
+        {
+            lock (this._syncLock)
+            {
+                TelemetryData result = null;
 
                 if (this._queue.Count > 0)
                 {
@@ -62,20 +55,15 @@ namespace Rollbar
             }
         }
 
-        public Payload Dequeue()
+        public TelemetryData Dequeue()
         {
             lock (this._syncLock)
             {
-                Payload result = null;
+                TelemetryData result = null;
 
                 if (this._queue.Count > 0)
                 {
                     result = this._queue.Dequeue();
-
-                    TimeSpan delta = TimeSpan.FromTicks(
-                        TimeSpan.FromMinutes(1).Ticks / this.Logger.Config.MaxReportsPerMinute
-                        );
-                    this.NextDequeueTime = DateTimeOffset.Now.Add(delta);
                 }
 
                 return result;
@@ -98,4 +86,5 @@ namespace Rollbar
             }
         }
     }
+
 }

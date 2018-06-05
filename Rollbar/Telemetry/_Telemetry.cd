@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.Telemetry.TelemetryConfig">
+    <Position X="3" Y="3.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAEAAAAAAAAAAAAQABAAAAA=</HashCode>
+      <FileName>Telemetry\TelemetryConfig.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Telemetry.TelemetryQueue">
+    <Position X="13" Y="1.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAkAAAAEAAAEAAAAEAABAAAAAIAAAAIAAA=</HashCode>
+      <FileName>Telemetry\TelemetryQueue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Telemetry.TelemetryData">
+    <Position X="3" Y="5.5" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Telemetry\TelemetryData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Telemetry.TelemetryCollector">
+    <Position X="8.25" Y="1.5" Width="3.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.Telemetry.TelemetryCollector.NestedSingleInstance">
+        <TypeIdentifier>
+          <NewMemberFileName>Telemetry\TelemetryCollector.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAiAAAAAAAAAAAACAAAAAgAAAYQACAAIAAAA=</HashCode>
+      <FileName>Telemetry\TelemetryCollector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Telemetry.TelemetryUtil">
+    <Position X="8.75" Y="7.5" Width="6.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Telemetry\TelemetryUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Rollbar.Telemetry.TelemetrySettings">
+    <Position X="3" Y="1.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAABAAAAAAgAAAAAAAAAgAAAAAEAAAA=</HashCode>
+      <FileName>Telemetry\TelemetrySettings.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Rollbar.Telemetry.TelemetryAttribute">
+    <Position X="3" Y="7" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAABAAAAAAgAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Telemetry\TelemetryAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
