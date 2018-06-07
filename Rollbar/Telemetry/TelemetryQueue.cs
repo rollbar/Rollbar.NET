@@ -70,7 +70,7 @@ namespace Rollbar.Telemetry
             }
         }
 
-        public int GetPayloadCount()
+        public int GetItemsCount()
         {
             lock (this._syncLock)
             {

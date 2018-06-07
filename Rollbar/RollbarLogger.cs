@@ -4,6 +4,7 @@ namespace Rollbar
 {
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.Telemetry;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -43,6 +44,11 @@ namespace Rollbar
             {
                 // it could be a valid case in some environments:
                 this._nativeTaskScheduler = null;
+            }
+
+            if (!TelemetryCollector.Instance.IsAutocollecting)
+            {
+                TelemetryCollector.Instance.StartAutocollection();
             }
 
             this.IsSingleton = isSingleton;

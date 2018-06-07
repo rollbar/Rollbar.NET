@@ -1,9 +1,9 @@
-﻿namespace Rollbar.Telemetry
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+
+namespace Rollbar.Telemetry
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Text;
     using System.Threading;
 
     public class TelemetryCollector
@@ -20,7 +20,7 @@
         {
             get
             {
-                return TelemetryCollector.Instance;
+                return NestedSingleInstance.Instance;
             }
         }
 
@@ -29,7 +29,7 @@
         /// </summary>
         private TelemetryCollector()
         {
-            this.Start();
+            this.StartAutocollection();
         }
 
         private sealed class NestedSingleInstance
@@ -44,12 +44,74 @@
 
         #endregion singleton implementation
 
-        public TelemetryConfig Config { get; private set; } = new TelemetryConfig();
+        public TelemetryConfig Config { get; } = new TelemetryConfig();
 
         public TelemetryQueue TelemetryQueue { get; } = new TelemetryQueue();
 
+        private void CollectThisProcessTelemetry(TelemetryData telemetryData)
+        {
+            Process currentProcess = null;
+            if (TelemetrySettings.ProcessCpuUtilization == (this.Config.TelemetrySettings & TelemetrySettings.ProcessCpuUtilization)
+                || TelemetrySettings.ProcessMemoryUtilization == (this.Config.TelemetrySettings & TelemetrySettings.ProcessMemoryUtilization)
+                )
+            {
+                currentProcess = Process.GetCurrentProcess();
+            }
+            if (currentProcess != null)
+            {
+                telemetryData.TelemetrySnapshot[TelemetryAttribute.ProcessCpuUtilization] = currentProcess.TotalProcessorTime;
+                telemetryData.TelemetrySnapshot[TelemetryAttribute.ProcessMemoryUtilization] = currentProcess.WorkingSet64;
+            }
+        }
+
+        private void CollectMachineTelemetry(TelemetryData telemetryData)
+        {
+            //NOTE: getting properties of some of other processes causes access denied exceptions.
+            //      Making the current process run with admin privileges may solve it but that would
+            //      require users to do the same for their apps hosting the SDK.
+            //      I guess we can not count on that...
+            TimeSpan? totalProcessorTime = null;
+            long? totalWorkingSet = null;
+            if (TelemetrySettings.MachineCpuUtilization == (this.Config.TelemetrySettings & TelemetrySettings.MachineCpuUtilization))
+            {
+                totalProcessorTime = TimeSpan.Zero;
+            }
+            if (TelemetrySettings.MachineMemoryUtilization == (this.Config.TelemetrySettings & TelemetrySettings.MachineMemoryUtilization))
+            {
+                totalWorkingSet = 0;
+            }
+            if (totalProcessorTime.HasValue || totalWorkingSet.HasValue)
+            {
+                foreach (var process in Process.GetProcesses())
+                {
+                    if (totalProcessorTime.HasValue)
+                    {
+                        totalProcessorTime += process.TotalProcessorTime;
+                    }
+                    if (totalWorkingSet.HasValue)
+                    {
+                        totalWorkingSet += process.WorkingSet64;
+                    }
+                }
+            }
+            if (totalProcessorTime.HasValue)
+            {
+                telemetryData.TelemetrySnapshot[TelemetryAttribute.MachineCpuUtilization] = totalProcessorTime.Value;
+            }
+            if (totalWorkingSet.HasValue)
+            {
+                telemetryData.TelemetrySnapshot[TelemetryAttribute.MachineMemoryUtilization] = totalWorkingSet.Value;
+            }
+        }
+
         private void CollectTelemetry()
         {
+            var telemetryData = new TelemetryData();
+
+            CollectThisProcessTelemetry(telemetryData);
+            //CollectMachineTelemetry(telemetryData);
+
+            this.TelemetryQueue.Enqueue(telemetryData);
         }
 
         private void KeepCollectingTelemetry(object data)
@@ -69,6 +131,7 @@
                 }
                 catch (System.Exception ex)
                 {
+                    string msg = ex.Message;
                     //TODO: do we want to direct the exception 
                     //      to some kind of Rollbar notifier maintenance "access token"?
                 }
@@ -85,43 +148,77 @@
 
         private Thread _telemetryThread = null;
         private CancellationTokenSource _cancellationTokenSource = null;
+        private readonly object _syncRoot = new object();
 
-        private void Start()
+        public void StartAutocollection()
         {
-            if (this._telemetryThread == null)
+            if (!this.Config.TelemetryEnabled)
             {
-                this._telemetryThread = new Thread(new ParameterizedThreadStart(this.KeepCollectingTelemetry))
-                {
-                    IsBackground = true,
-                    Name = "Rollbar Telemetry Thread"
-                };
+                return; // no need to start at all...
+            }
+            if (this.Config.TelemetrySettings == TelemetrySettings.None)
+            {
+                return; // nothing really to collect...
+            }
 
-                this._cancellationTokenSource = new CancellationTokenSource();
-                this._telemetryThread.Start(_cancellationTokenSource.Token);
+            // let's resync with relevant config settings: 
+            this.TelemetryQueue.QueueDepth = this.Config.TelemetryQueueDepth;
+
+            lock (_syncRoot)
+            {
+                if (this._telemetryThread == null)
+                {
+                    this._telemetryThread = new Thread(new ParameterizedThreadStart(this.KeepCollectingTelemetry))
+                    {
+                        IsBackground = true,
+                        Name = "Rollbar Telemetry Thread"
+                    };
+
+                    this._cancellationTokenSource = new CancellationTokenSource();
+                    this._telemetryThread.Start(_cancellationTokenSource.Token);
+                }
             }
         }
 
         private void CompleteProcessing()
         {
+            if (this._cancellationTokenSource == null)
+            {
+                return;
+            }
+
             Debug.WriteLine("Entering " + this.GetType().FullName + "." + nameof(this.CompleteProcessing) + "() method...");
             this._cancellationTokenSource.Dispose();
             this._cancellationTokenSource = null;
             this._telemetryThread = null;
         }
 
-        public void Stop(bool immediate)
+        public void StopAutocollection(bool immediate)
         {
-            if (!immediate && this._cancellationTokenSource != null)
+            lock(_syncRoot)
             {
-                this._cancellationTokenSource.Cancel();
-                return;
-            }
+                if (this._cancellationTokenSource == null)
+                {
+                    return;
+                }
 
-            this._cancellationTokenSource.Cancel();
-            if (this._telemetryThread != null)
+                this._cancellationTokenSource.Cancel();
+                if (immediate && this._telemetryThread != null)
+                {
+                    this._telemetryThread.Join(TimeSpan.FromSeconds(60));
+                    CompleteProcessing();
+                }
+            }
+        }
+
+        public bool IsAutocollecting
+        {
+            get
             {
-                this._telemetryThread.Join(TimeSpan.FromSeconds(60));
-                CompleteProcessing();
+                lock(this._syncRoot)
+                {
+                    return !(this._cancellationTokenSource == null || this._cancellationTokenSource.IsCancellationRequested);
+                }
             }
         }
 
