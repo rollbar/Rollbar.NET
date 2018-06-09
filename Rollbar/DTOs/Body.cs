@@ -90,6 +90,18 @@
         #region These are mutually exclusive properties - only one of them can be not null
 
         /// <summary>
+        /// Gets the optional telemetry.
+        /// </summary>
+        /// <value>
+        /// The telemetry.
+        /// </value>
+        [JsonProperty("telemetry", 
+            Required = Required.AllowNull, 
+            DefaultValueHandling = DefaultValueHandling.Ignore
+            )]
+        public Telemetry[] Telemetry { get; internal set; }
+
+        /// <summary>
         /// Gets the trace.
         /// </summary>
         /// <value>
