@@ -31,12 +31,13 @@ namespace UnitTest.Rollbar.Telemetry
         [Timeout(150000)]
         public void BasicTest()
         {
-            Assert.IsTrue(TelemetryCollector.Instance.IsAutocollecting);
+            Assert.IsFalse(TelemetryCollector.Instance.IsAutocollecting);
 
             var config = TelemetryCollector.Instance.Config;
 
             Thread.Sleep(TimeSpan.FromMilliseconds(config.TelemetryCollectionInterval.TotalMilliseconds * config.TelemetryQueueDepth));
-            Assert.AreEqual(config.TelemetryQueueDepth, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
+            Assert.IsTrue(!config.TelemetryEnabled);
+            Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
             foreach (var item in TelemetryCollector.Instance.TelemetryQueue.GetQueueContent())
             {
                 Console.WriteLine(item);
@@ -44,11 +45,13 @@ namespace UnitTest.Rollbar.Telemetry
 
             TelemetryCollector.Instance.StopAutocollection(true);
             Assert.IsTrue(!TelemetryCollector.Instance.IsAutocollecting);
-            config.TelemetryQueueDepth = 100;
+            config.TelemetryEnabled = true;
+            config.TelemetryCollectionInterval = TimeSpan.FromSeconds(1);
+            config.TelemetryQueueDepth = 20;
             TelemetryCollector.Instance.StartAutocollection();
             Assert.IsTrue(TelemetryCollector.Instance.IsAutocollecting);
 
-            Thread.Sleep(TimeSpan.FromMilliseconds(config.TelemetryCollectionInterval.TotalMilliseconds * config.TelemetryQueueDepth));
+            Thread.Sleep(TimeSpan.FromMilliseconds(config.TelemetryCollectionInterval.TotalMilliseconds * config.TelemetryQueueDepth *2));
             Assert.AreEqual(config.TelemetryQueueDepth, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
             foreach (var item in TelemetryCollector.Instance.TelemetryQueue.GetQueueContent())
             {

@@ -24,8 +24,8 @@
             string method
             , string url
             , int statusCode
-            , bool startEvent
-            , bool endEvent
+            , DateTime? eventStart
+            , DateTime? eventEnd
             , string subtype = null
             , IDictionary<string, object> arbitraryKeyValuePairs = null
             )
@@ -34,13 +34,13 @@
             this.Method = method;
             this.Url = url;
             this.StatusCode = $"{statusCode}";
-            if (startEvent)
+            if (eventStart.HasValue)
             {
-                this.StartTimestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+                this.StartTimestamp = (long)eventStart.Value.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             }
-            if (endEvent)
+            if (eventEnd.HasValue)
             {
-                this.EndTimestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+                this.EndTimestamp = (long)eventEnd.Value.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             }
             if (string.IsNullOrWhiteSpace(subtype))
             {

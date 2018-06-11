@@ -75,6 +75,9 @@
         public override void Validate()
         {
             base.Validate();
+
+            Assumption.AssertNotNull(this.Body, nameof(this.Body));
+            Assumption.AssertTrue(this.Body.GetType().Name.Contains(this.Type.ToString()), nameof(this.Body));
         }
     }
 }

@@ -4,6 +4,7 @@ namespace Rollbar.Telemetry
 {
     using System;
     using System.Diagnostics;
+    using System.Runtime.InteropServices;
     using System.Threading;
 
     public class TelemetryCollector
@@ -59,9 +60,26 @@ namespace Rollbar.Telemetry
             }
             if (currentProcess != null)
             {
-                telemetryData.TelemetrySnapshot[TelemetryAttribute.ProcessCpuUtilization] = currentProcess.TotalProcessorTime;
+                telemetryData.TelemetrySnapshot[TelemetryAttribute.ProcessCpuUtilization] = GetCpuUsage();// currentProcess.TotalProcessorTime;
                 telemetryData.TelemetrySnapshot[TelemetryAttribute.ProcessMemoryUtilization] = currentProcess.WorkingSet64;
             }
+
+            //we can also try using performance counters (but it would not work for .Net Core)
+            // https://gavindraper.com/2011/03/01/retrieving-accurate-cpu-usage-in-c/
+
+        }
+
+        private PerformanceCounter _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+        public int GetCpuUsage()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return (int)_cpuCounter.NextValue();
+            }
+
+            var os = System.Runtime.InteropServices.RuntimeInformation.OSDescription;
+
+            return 0;
         }
 
         private void CollectMachineTelemetry(TelemetryData telemetryData)
