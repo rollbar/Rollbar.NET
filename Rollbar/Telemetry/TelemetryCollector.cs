@@ -31,7 +31,15 @@ namespace Rollbar.Telemetry
         /// </summary>
         private TelemetryCollector()
         {
+            this._config = new TelemetryConfig();
+            this._config.Reconfigured += _config_Reconfigured;
+
             this.StartAutocollection();
+        }
+
+        private void _config_Reconfigured(object sender, EventArgs e)
+        {
+            this.TelemetryQueue.QueueDepth = this._config.TelemetryQueueDepth;
         }
 
         private sealed class NestedSingleInstance
@@ -55,7 +63,8 @@ namespace Rollbar.Telemetry
             return this;
         }
 
-        public TelemetryConfig Config { get; } = new TelemetryConfig();
+        public TelemetryConfig Config { get { return this._config; } }
+        private readonly TelemetryConfig _config;
 
         public TelemetryQueue TelemetryQueue { get; } = new TelemetryQueue();
 

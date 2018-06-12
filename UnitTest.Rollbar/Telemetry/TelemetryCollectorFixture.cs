@@ -103,7 +103,7 @@ namespace UnitTest.Rollbar.Telemetry
             }
             Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
 
-            config.TelemetryEnabled = true;
+            config.Reconfigure(new TelemetryConfig(true, telemetryItems.Count, TimeSpan.FromSeconds(1)));
             Assert.IsTrue(config.TelemetryEnabled);
             Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
 
@@ -112,6 +112,7 @@ namespace UnitTest.Rollbar.Telemetry
                 TelemetryCollector.Instance.Capture(item);
             }
             Assert.IsTrue(TelemetryCollector.Instance.TelemetryQueue.GetItemsCount() > 0);
+            Assert.AreEqual(telemetryItems.Count, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
         }
 
         [TestMethod]
@@ -120,8 +121,8 @@ namespace UnitTest.Rollbar.Telemetry
             Assert.IsFalse(TelemetryCollector.Instance.IsAutocollecting);
 
             var config = TelemetryCollector.Instance.Config;
-            config.TelemetryEnabled = true;
-            config.TelemetryQueueDepth = 10;
+            var config1 = new TelemetryConfig(true, 10, TimeSpan.FromSeconds(1));
+            config.Reconfigure(config1);
 
             List<dto.Telemetry> telemetryItems = new List<dto.Telemetry>(2 * config.TelemetryQueueDepth);
             while(telemetryItems.Count <= config.TelemetryQueueDepth)
@@ -141,7 +142,8 @@ namespace UnitTest.Rollbar.Telemetry
 
             TelemetryCollector.Instance.TelemetryQueue.Flush();
             Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
-            config.TelemetryQueueDepth /= 2;
+            var config2 = new TelemetryConfig(true, config1.TelemetryQueueDepth / 2, TimeSpan.FromSeconds(1));
+            config.Reconfigure(config2);
             foreach (var item in telemetryItems)
             {
                 TelemetryCollector.Instance.Capture(item);
