@@ -7,21 +7,50 @@
     using System.Runtime.Serialization;
     using System.Text;
 
+    /// <summary>
+    /// Enumerates supported telemetry types.
+    /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
+    [Flags]
     public enum TelemetryType
     {
+        None = 0x000,
+
+        /// <summary>
+        /// The log
+        /// </summary>
         [EnumMember(Value = "log")]
-        Log,
+        Log = 0x0001 << 0,
+
+        /// <summary>
+        /// The network
+        /// </summary>
         [EnumMember(Value = "network")]
-        Network,
+        Network = 0x0001 << 1,
+
+        /// <summary>
+        /// The DOM
+        /// </summary>
         [EnumMember(Value = "dom")]
-        Dom,
+        Dom = 0x0001 << 2,
+
+        /// <summary>
+        /// The navigation
+        /// </summary>
         [EnumMember(Value = "navigation")]
-        Navigation,
+        Navigation = 0x0001 << 3,
+
+        /// <summary>
+        /// The error
+        /// </summary>
         [EnumMember(Value = "error")]
-        Error,
+        Error = 0x0001 << 4,
+
+        /// <summary>
+        /// The manual
+        /// </summary>
         [EnumMember(Value = "manual")]
-        Manual,
+        Manual = 0x0001 << 5,
     }
 
 }

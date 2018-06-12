@@ -4,6 +4,10 @@
     using System.Collections.Generic;
     using System.Text;
 
+    /// <summary>
+    /// Implements network tlemetry body.
+    /// </summary>
+    /// <seealso cref="Rollbar.DTOs.TelemetryBody" />
     public class NetworkTelemetry
         : TelemetryBody
     {
@@ -20,6 +24,16 @@
             public const string EndTimestamp = "end_timestamp_ms";
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkTelemetry"/> class.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="statusCode">The status code.</param>
+        /// <param name="eventStart">The event start.</param>
+        /// <param name="eventEnd">The event end.</param>
+        /// <param name="subtype">The subtype.</param>
+        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public NetworkTelemetry(
             string method
             , string url
@@ -51,36 +65,72 @@
             }
         }
 
+        /// <summary>
+        /// Gets the subtype.
+        /// </summary>
+        /// <value>
+        /// The subtype.
+        /// </value>
         public string Subtype
         {
             get { return this[ReservedProperties.Subtype] as string; }
             private set { this[ReservedProperties.Subtype] = value; }
         }
 
+        /// <summary>
+        /// Gets the method.
+        /// </summary>
+        /// <value>
+        /// The method.
+        /// </value>
         public string Method
         {
             get { return this[ReservedProperties.Method] as string; }
             private set { this[ReservedProperties.Method] = value; }
         }
 
+        /// <summary>
+        /// Gets the URL.
+        /// </summary>
+        /// <value>
+        /// The URL.
+        /// </value>
         public string Url
         {
             get { return this[ReservedProperties.Url] as string; }
             private set { this[ReservedProperties.Url] = value; }
         }
 
+        /// <summary>
+        /// Gets the status code.
+        /// </summary>
+        /// <value>
+        /// The status code.
+        /// </value>
         public string StatusCode
         {
             get { return this[ReservedProperties.StatusCode] as string; }
             private set { this[ReservedProperties.StatusCode] = value; }
         }
 
+        /// <summary>
+        /// Gets the start timestamp.
+        /// </summary>
+        /// <value>
+        /// The start timestamp.
+        /// </value>
         public long StartTimestamp
         {
             get { return (long) this[ReservedProperties.StartTimestamp]; }
             private set { this[ReservedProperties.StartTimestamp] = value; }
         }
 
+        /// <summary>
+        /// Gets the end timestamp.
+        /// </summary>
+        /// <value>
+        /// The end timestamp.
+        /// </value>
         public long? EndTimestamp
         {
             get { return this[ReservedProperties.EndTimestamp] as long?; }

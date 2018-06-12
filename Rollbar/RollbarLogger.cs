@@ -7,6 +7,7 @@ namespace Rollbar
     using Rollbar.Telemetry;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -459,6 +460,12 @@ namespace Rollbar
                     )
                 {
                     return;
+                }
+
+                if (TelemetryCollector.Instance.Config.TelemetryEnabled)
+                {
+                    payload.Data.Body.Telemetry = 
+                        TelemetryCollector.Instance.TelemetryQueue.GetQueueContent();
                 }
 
                 if (this._config.Server != null)

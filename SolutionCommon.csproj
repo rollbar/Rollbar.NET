@@ -12,7 +12,7 @@
 
       New features, enhancements and fixes:
 
-      - ref #123: Telemetry support
+      - resolve #123: Telemetry support
       - resolve #146: Add explicit support of .net core 2.1 and .net 4.7.2 targets.
       - resolve #145: Update sample apps to target latest .net SDKs and latest dependencies.
       - resolve #143: Document state capture feature.

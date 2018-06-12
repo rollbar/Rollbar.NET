@@ -22,7 +22,7 @@ namespace Rollbar.Telemetry
             this._queue = new Queue<Telemetry>();
         }
 
-        public IEnumerable<Telemetry> GetQueueContent()
+        public Telemetry[] GetQueueContent()
         {
             lock(this._syncLock)
             {
