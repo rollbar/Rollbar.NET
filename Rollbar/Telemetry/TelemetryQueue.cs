@@ -2,23 +2,27 @@
 
 namespace Rollbar.Telemetry
 {
-    using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
+    using Rollbar.Diagnostics;
+    using Rollbar.DTOs;
 
+    /// <summary>
+    /// Fixed depth queue of telemetry items.
+    /// </summary>
     public class TelemetryQueue
     {
         private readonly object _syncLock = null;
-        private readonly Queue<TelemetryData> _queue = null;
+        private readonly Queue<Telemetry> _queue = null;
         public int QueueDepth { get; set; } = 5;
 
         public TelemetryQueue()
         {
             this._syncLock = new object();
-            this._queue = new Queue<TelemetryData>();
+            this._queue = new Queue<Telemetry>();
         }
 
-        public IEnumerable<TelemetryData> GetQueueContent()
+        public IEnumerable<Telemetry> GetQueueContent()
         {
             lock(this._syncLock)
             {
@@ -26,9 +30,9 @@ namespace Rollbar.Telemetry
             }
         }
 
-        public void Enqueue(TelemetryData telemetryData)
+        internal void Enqueue(Telemetry telemetry)
         {
-            Assumption.AssertNotNull(telemetryData, nameof(telemetryData));
+            Assumption.AssertNotNull(telemetry, nameof(telemetry));
 
             lock (this._syncLock)
             {
@@ -36,15 +40,15 @@ namespace Rollbar.Telemetry
                 {
                     this._queue.Dequeue();
                 }
-                this._queue.Enqueue(telemetryData);
+                this._queue.Enqueue(telemetry);
             }
         }
 
-        public TelemetryData Peek()
+        internal Telemetry Peek()
         {
             lock (this._syncLock)
             {
-                TelemetryData result = null;
+                Telemetry result = null;
 
                 if (this._queue.Count > 0)
                 {
@@ -55,11 +59,11 @@ namespace Rollbar.Telemetry
             }
         }
 
-        public TelemetryData Dequeue()
+        internal Telemetry Dequeue()
         {
             lock (this._syncLock)
             {
-                TelemetryData result = null;
+                Telemetry result = null;
 
                 if (this._queue.Count > 0)
                 {

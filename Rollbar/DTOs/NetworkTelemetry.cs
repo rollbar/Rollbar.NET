@@ -24,8 +24,8 @@
             string method
             , string url
             , int statusCode
-            , DateTime? eventStart
-            , DateTime? eventEnd
+            , DateTime eventStart
+            , DateTime? eventEnd = null
             , string subtype = null
             , IDictionary<string, object> arbitraryKeyValuePairs = null
             )
@@ -34,10 +34,13 @@
             this.Method = method;
             this.Url = url;
             this.StatusCode = $"{statusCode}";
-            if (eventStart.HasValue)
-            {
-                this.StartTimestamp = (long)eventStart.Value.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
-            }
+
+            //if (eventStart.HasValue)
+            //{
+            //    this.StartTimestamp = (long)eventStart.Value.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            //}
+            this.StartTimestamp = (long)eventStart.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+
             if (eventEnd.HasValue)
             {
                 this.EndTimestamp = (long)eventEnd.Value.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
@@ -72,9 +75,9 @@
             private set { this[ReservedProperties.StatusCode] = value; }
         }
 
-        public long? StartTimestamp
+        public long StartTimestamp
         {
-            get { return this[ReservedProperties.StartTimestamp] as long?; }
+            get { return (long) this[ReservedProperties.StartTimestamp]; }
             private set { this[ReservedProperties.StartTimestamp] = value; }
         }
 

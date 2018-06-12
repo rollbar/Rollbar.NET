@@ -16,7 +16,12 @@
         }
 
         public LogTelemetry(string message, IDictionary<string, object> arbitraryKeyValuePairs = null)
-            : base(TelemetryType.Log, arbitraryKeyValuePairs)
+            : this(TelemetryType.Log, message, arbitraryKeyValuePairs)
+        {
+        }
+
+        protected LogTelemetry(TelemetryType type, string message, IDictionary<string, object> arbitraryKeyValuePairs = null)
+            : base(type, arbitraryKeyValuePairs)
         {
             this.Message = message;
         }

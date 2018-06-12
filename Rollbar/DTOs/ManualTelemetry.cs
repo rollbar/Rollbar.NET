@@ -7,7 +7,7 @@
     public class ManualTelemetry
         : TelemetryBody
     {
-        public ManualTelemetry(IDictionary<string, object> arbitraryKeyValuePairs = null) 
+        public ManualTelemetry(IDictionary<string, object> arbitraryKeyValuePairs) 
             : base(TelemetryType.Manual, arbitraryKeyValuePairs)
         {
         }

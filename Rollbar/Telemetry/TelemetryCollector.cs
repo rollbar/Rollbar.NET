@@ -6,6 +6,7 @@ namespace Rollbar.Telemetry
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using System.Threading;
+    using Rollbar.DTOs;
 
     public class TelemetryCollector
     {
@@ -45,102 +46,39 @@ namespace Rollbar.Telemetry
 
         #endregion singleton implementation
 
+        public TelemetryCollector Capture(Telemetry telemetry)
+        {
+            if (this.Config.TelemetryEnabled)
+            {
+                this.TelemetryQueue.Enqueue(telemetry);
+            }
+            return this;
+        }
+
         public TelemetryConfig Config { get; } = new TelemetryConfig();
 
         public TelemetryQueue TelemetryQueue { get; } = new TelemetryQueue();
 
-        private void CollectThisProcessTelemetry(TelemetryData telemetryData)
+        private void CaptureEvent(Telemetry telemetry)
         {
-            Process currentProcess = null;
-            if (TelemetrySettings.ProcessCpuUtilization == (this.Config.TelemetrySettings & TelemetrySettings.ProcessCpuUtilization)
-                || TelemetrySettings.ProcessMemoryUtilization == (this.Config.TelemetrySettings & TelemetrySettings.ProcessMemoryUtilization)
-                )
-            {
-                currentProcess = Process.GetCurrentProcess();
-            }
-            if (currentProcess != null)
-            {
-                telemetryData.TelemetrySnapshot[TelemetryAttribute.ProcessCpuUtilization] = GetCpuUsage();// currentProcess.TotalProcessorTime;
-                telemetryData.TelemetrySnapshot[TelemetryAttribute.ProcessMemoryUtilization] = currentProcess.WorkingSet64;
-            }
-
-            //we can also try using performance counters (but it would not work for .Net Core)
-            // https://gavindraper.com/2011/03/01/retrieving-accurate-cpu-usage-in-c/
-
         }
 
-        private PerformanceCounter _cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-        public int GetCpuUsage()
+        private void AutoCollectTelemetry()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                return (int)_cpuCounter.NextValue();
-            }
-
-            var os = System.Runtime.InteropServices.RuntimeInformation.OSDescription;
-
-            return 0;
+            //TBD...
         }
-
-        private void CollectMachineTelemetry(TelemetryData telemetryData)
-        {
-            //NOTE: getting properties of some of other processes causes access denied exceptions.
-            //      Making the current process run with admin privileges may solve it but that would
-            //      require users to do the same for their apps hosting the SDK.
-            //      I guess we can not count on that...
-            TimeSpan? totalProcessorTime = null;
-            long? totalWorkingSet = null;
-            if (TelemetrySettings.MachineCpuUtilization == (this.Config.TelemetrySettings & TelemetrySettings.MachineCpuUtilization))
-            {
-                totalProcessorTime = TimeSpan.Zero;
-            }
-            if (TelemetrySettings.MachineMemoryUtilization == (this.Config.TelemetrySettings & TelemetrySettings.MachineMemoryUtilization))
-            {
-                totalWorkingSet = 0;
-            }
-            if (totalProcessorTime.HasValue || totalWorkingSet.HasValue)
-            {
-                foreach (var process in Process.GetProcesses())
-                {
-                    if (totalProcessorTime.HasValue)
-                    {
-                        totalProcessorTime += process.TotalProcessorTime;
-                    }
-                    if (totalWorkingSet.HasValue)
-                    {
-                        totalWorkingSet += process.WorkingSet64;
-                    }
-                }
-            }
-            if (totalProcessorTime.HasValue)
-            {
-                telemetryData.TelemetrySnapshot[TelemetryAttribute.MachineCpuUtilization] = totalProcessorTime.Value;
-            }
-            if (totalWorkingSet.HasValue)
-            {
-                telemetryData.TelemetrySnapshot[TelemetryAttribute.MachineMemoryUtilization] = totalWorkingSet.Value;
-            }
-        }
-
-        private void CollectTelemetry()
-        {
-            var telemetryData = new TelemetryData();
-
-            CollectThisProcessTelemetry(telemetryData);
-            //CollectMachineTelemetry(telemetryData);
-
-            this.TelemetryQueue.Enqueue(telemetryData);
-        }
-
         private void KeepCollectingTelemetry(object data)
         {
+            //for now, until AutoCollectTelemetry() is implemented:
+            return;
+
             CancellationToken cancellationToken = (CancellationToken)data;
 
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
-                    this.CollectTelemetry();
+                    this.AutoCollectTelemetry();
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
                 catch (System.Threading.ThreadAbortException tae)
