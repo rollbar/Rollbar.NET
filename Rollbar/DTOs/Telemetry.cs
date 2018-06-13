@@ -42,6 +42,7 @@
             Assumption.AssertNotNull(body, nameof(body));
 
             this.Timestamp = (long) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            this.Source = source;
             this.Level = level;
             this.Type = body.Type;
             this.Body = body;

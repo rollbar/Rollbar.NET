@@ -1,5 +1,6 @@
 ﻿using Rollbar;
 using Rollbar.DTOs;
+using Rollbar.Telemetry;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +13,15 @@ namespace Sample.NetCore.ConsoleApp
         static void Main(string[] args)
         {
             ConfigureRollbarSingleton();
+            ConfigureRollbarTelemetry();
+
+            TelemetryCollector.Instance.Capture(
+                new Telemetry(
+                    TelemetrySource.Client, 
+                    TelemetryLevel.Info, 
+                    new LogTelemetry("Info log telemetry")
+                    )
+                );
 
             Dictionary<string, object> customFields = new Dictionary<string, object>();
             customFields.Add("Hebrew", "אספירין");
@@ -25,10 +35,47 @@ namespace Sample.NetCore.ConsoleApp
             exceptionWithData.Data["argumentName"] = "requiredOne";
 
             RollbarLocator.RollbarInstance
-                .Info("ConsoleApp sample: Basic info log example.", customFields)
-                .Debug("ConsoleApp sample: First debug log.")
-                .Error(new NullReferenceException("ConsoleApp sample: null reference exception."))
-                .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
+                .Info("ConsoleApp sample: Basic info log example.", customFields);
+
+            TelemetryCollector.Instance.Capture(
+                new Telemetry(
+                    TelemetrySource.Client,
+                    TelemetryLevel.Info,
+                    new LogTelemetry("Something interesting happened.")
+                    )
+                );
+            RollbarLocator.RollbarInstance
+                .Debug("ConsoleApp sample: First debug log.");
+
+            TelemetryCollector.Instance.Capture(
+                new Telemetry(
+                    TelemetrySource.Client,
+                    TelemetryLevel.Error,
+                    new ErrorTelemetry(new System.Exception("Worth mentioning!"))
+                    )
+                );
+            RollbarLocator.RollbarInstance
+                .Error(new NullReferenceException("ConsoleApp sample: null reference exception."));
+
+            TelemetryCollector.Instance.Capture(
+                new Telemetry(
+                    TelemetrySource.Client,
+                    TelemetryLevel.Error,
+                    new ManualTelemetry(new Dictionary<string, object>() { { "somthing", "happened" }, })
+                    )
+                );
+            RollbarLocator.RollbarInstance
+                .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()));
+
+
+            TelemetryCollector.Instance.Capture(
+                new Telemetry(
+                    TelemetrySource.Client,
+                    TelemetryLevel.Error,
+                    new ManualTelemetry(new Dictionary<string, object>() { { "param1", "value1" }, { "param2", "value2" }, })
+                    )
+                );
+            RollbarLocator.RollbarInstance
                 .Error(exceptionWithData, customFields)
                 ;
 
@@ -79,6 +126,19 @@ namespace Sample.NetCore.ConsoleApp
             msg = "*** Blocking (short timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
             System.Diagnostics.Trace.WriteLine(msg);
             Console.WriteLine(msg);
+        }
+
+        /// <summary>
+        /// Configures the rollbar telemetry.
+        /// </summary>
+        private static void ConfigureRollbarTelemetry()
+        {
+            TelemetryConfig telemetryConfig = new TelemetryConfig(
+                telemetryEnabled: true,
+                telemetryQueueDepth: 3,
+                telemetryCollectionInterval: TimeSpan.Zero
+                );
+            TelemetryCollector.Instance.Config.Reconfigure(telemetryConfig);
         }
 
         /// <summary>
