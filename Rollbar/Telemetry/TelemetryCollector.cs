@@ -8,7 +8,11 @@ namespace Rollbar.Telemetry
     using System.Threading;
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Implements Rollbar telemetry collector service.
+    /// </summary>
     public class TelemetryCollector
+        : ITelemetryCollector
     {
         #region singleton implementation
 
@@ -37,17 +41,15 @@ namespace Rollbar.Telemetry
             this.StartAutocollection();
         }
 
-        private void _config_Reconfigured(object sender, EventArgs e)
-        {
-            this.TelemetryQueue.QueueDepth = this._config.TelemetryQueueDepth;
-        }
-
         private sealed class NestedSingleInstance
         {
             static NestedSingleInstance()
             {
             }
 
+            /// <summary>
+            /// The singleton-like instance of the service.
+            /// </summary>
             internal static readonly TelemetryCollector Instance =
                 new TelemetryCollector();
         }
@@ -63,8 +65,46 @@ namespace Rollbar.Telemetry
         {
             if (this.Config.TelemetryEnabled)
             {
-                this.TelemetryQueue.Enqueue(telemetry);
+                this._telemetryQueue.Enqueue(telemetry);
             }
+            return this;
+        }
+
+        /// <summary>
+        /// Captures the specified telemetry.
+        /// </summary>
+        /// <param name="telemetry">The telemetry.</param>
+        /// <returns></returns>
+        ITelemetryCollector ITelemetryCollector.Capture(Telemetry telemetry)
+        {
+            return this.Capture(telemetry);
+        }
+
+        /// <summary>
+        /// Gets the items count.
+        /// </summary>
+        /// <returns></returns>
+        public int GetItemsCount()
+        {
+            return this._telemetryQueue.GetItemsCount();
+        }
+
+        /// <summary>
+        /// Gets the content of the queue.
+        /// </summary>
+        /// <returns></returns>
+        public Telemetry[] GetQueueContent()
+        {
+            return this._telemetryQueue.GetQueueContent();
+        }
+
+        /// <summary>
+        /// Flushes the queue.
+        /// </summary>
+        /// <returns></returns>
+        public ITelemetryCollector FlushQueue()
+        {
+            this._telemetryQueue.Flush();
             return this;
         }
 
@@ -77,29 +117,25 @@ namespace Rollbar.Telemetry
         public TelemetryConfig Config { get { return this._config; } }
 
         /// <summary>
-        /// Gets the telemetry queue.
-        /// </summary>
-        /// <value>
-        /// The telemetry queue.
-        /// </value>
-        public TelemetryQueue TelemetryQueue { get; } = new TelemetryQueue();
-
-        /// <summary>
         /// Starts the auto-collection.
         /// </summary>
-        public void StartAutocollection()
+        public ITelemetryCollector StartAutocollection()
         {
             if (!this.Config.TelemetryEnabled)
             {
-                return; // no need to start at all...
+                return this; // no need to start at all...
             }
             if (this.Config.TelemetryAutoCollectionTypes == TelemetryType.None)
             {
-                return; // nothing really to collect...
+                return this; // nothing really to collect...
+            }
+            if (this.Config.TelemetryAutoCollectionInterval == TimeSpan.Zero)
+            {
+                return this; // this, essentially, means the auto-collection is off...
             }
 
             // let's resync with relevant config settings: 
-            this.TelemetryQueue.QueueDepth = this.Config.TelemetryQueueDepth;
+            this._telemetryQueue.QueueDepth = this.Config.TelemetryQueueDepth;
 
             lock (_syncRoot)
             {
@@ -115,19 +151,21 @@ namespace Rollbar.Telemetry
                     this._telemetryThread.Start(_cancellationTokenSource.Token);
                 }
             }
+
+            return this;
         }
 
         /// <summary>
         /// Stops the auto-collection.
         /// </summary>
         /// <param name="immediate">if set to <c>true</c> [immediate].</param>
-        public void StopAutocollection(bool immediate)
+        public ITelemetryCollector StopAutocollection(bool immediate)
         {
             lock(_syncRoot)
             {
                 if (this._cancellationTokenSource == null)
                 {
-                    return;
+                    return this;
                 }
 
                 this._cancellationTokenSource.Cancel();
@@ -136,6 +174,7 @@ namespace Rollbar.Telemetry
                     this._telemetryThread.Join(TimeSpan.FromSeconds(60));
                     CompleteProcessing();
                 }
+                return this;
             }
         }
 
@@ -156,10 +195,29 @@ namespace Rollbar.Telemetry
             }
         }
 
+        /// <summary>
+        /// Gets the queue depth.
+        /// </summary>
+        /// <value>
+        /// The queue depth.
+        /// </value>
+        public int QueueDepth { get { return this._telemetryQueue.QueueDepth; } }
+
         private readonly TelemetryConfig _config;
+        private readonly TelemetryQueue _telemetryQueue = new TelemetryQueue();
         private Thread _telemetryThread = null;
         private CancellationTokenSource _cancellationTokenSource = null;
         private readonly object _syncRoot = new object();
+
+        private void _config_Reconfigured(object sender, EventArgs e)
+        {
+            this._telemetryQueue.QueueDepth = this._config.TelemetryQueueDepth;
+
+            if (this.IsAutocollecting && this._config.TelemetryAutoCollectionInterval == TimeSpan.Zero)
+            {
+                this.StopAutocollection(false);
+            }
+        }
 
         private void CompleteProcessing()
         {
@@ -213,6 +271,5 @@ namespace Rollbar.Telemetry
 
             CompleteProcessing();
         }
-
     }
 }

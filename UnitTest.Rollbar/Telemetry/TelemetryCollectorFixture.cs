@@ -92,7 +92,7 @@ namespace UnitTest.Rollbar.Telemetry
             var config = TelemetryCollector.Instance.Config;
 
             Assert.IsFalse(config.TelemetryEnabled);
-            Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
+            Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
 
             var telemetryItems = GenerateTelemetryItems();
             Assert.IsTrue(telemetryItems.Count > 0);
@@ -101,18 +101,18 @@ namespace UnitTest.Rollbar.Telemetry
             {
                 TelemetryCollector.Instance.Capture(item);
             }
-            Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
+            Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
 
-            config.Reconfigure(new TelemetryConfig(true, telemetryItems.Count, TimeSpan.FromSeconds(1)));
+            config.Reconfigure(new TelemetryConfig(true, telemetryItems.Count));
             Assert.IsTrue(config.TelemetryEnabled);
-            Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
+            Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
 
             foreach (var item in telemetryItems)
             {
                 TelemetryCollector.Instance.Capture(item);
             }
-            Assert.IsTrue(TelemetryCollector.Instance.TelemetryQueue.GetItemsCount() > 0);
-            Assert.AreEqual(telemetryItems.Count, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
+            Assert.IsTrue(TelemetryCollector.Instance.GetItemsCount() > 0);
+            Assert.AreEqual(telemetryItems.Count, TelemetryCollector.Instance.GetItemsCount());
         }
 
         [TestMethod]
@@ -121,7 +121,7 @@ namespace UnitTest.Rollbar.Telemetry
             Assert.IsFalse(TelemetryCollector.Instance.IsAutocollecting);
 
             var config = TelemetryCollector.Instance.Config;
-            var config1 = new TelemetryConfig(true, 10, TimeSpan.FromSeconds(1));
+            var config1 = new TelemetryConfig(true, 10);
             config.Reconfigure(config1);
 
             List<dto.Telemetry> telemetryItems = new List<dto.Telemetry>(2 * config.TelemetryQueueDepth);
@@ -131,25 +131,25 @@ namespace UnitTest.Rollbar.Telemetry
             }
 
             Assert.IsTrue(config.TelemetryEnabled);
-            Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
+            Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
             Assert.IsTrue(telemetryItems.Count > config.TelemetryQueueDepth);
             foreach (var item in telemetryItems)
             {
                 TelemetryCollector.Instance.Capture(item);
             }
-            Assert.AreEqual(config.TelemetryQueueDepth, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
-            int oldCount = TelemetryCollector.Instance.TelemetryQueue.GetItemsCount();
+            Assert.AreEqual(config.TelemetryQueueDepth, TelemetryCollector.Instance.GetItemsCount());
+            int oldCount = TelemetryCollector.Instance.GetItemsCount();
 
-            TelemetryCollector.Instance.TelemetryQueue.Flush();
-            Assert.AreEqual(0, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
-            var config2 = new TelemetryConfig(true, config1.TelemetryQueueDepth / 2, TimeSpan.FromSeconds(1));
+            TelemetryCollector.Instance.FlushQueue();
+            Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
+            var config2 = new TelemetryConfig(true, config1.TelemetryQueueDepth / 2);
             config.Reconfigure(config2);
             foreach (var item in telemetryItems)
             {
                 TelemetryCollector.Instance.Capture(item);
             }
-            Assert.AreEqual(config.TelemetryQueueDepth, TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
-            Assert.IsTrue(oldCount > TelemetryCollector.Instance.TelemetryQueue.GetItemsCount());
+            Assert.AreEqual(config.TelemetryQueueDepth, TelemetryCollector.Instance.GetItemsCount());
+            Assert.IsTrue(oldCount > TelemetryCollector.Instance.GetItemsCount());
         }
 
         //NOTE: keep this one disabled until we decide on what telemetry to auto collect and

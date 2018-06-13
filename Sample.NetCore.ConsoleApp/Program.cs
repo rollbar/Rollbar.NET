@@ -135,8 +135,7 @@ namespace Sample.NetCore.ConsoleApp
         {
             TelemetryConfig telemetryConfig = new TelemetryConfig(
                 telemetryEnabled: true,
-                telemetryQueueDepth: 3,
-                telemetryCollectionInterval: TimeSpan.Zero
+                telemetryQueueDepth: 3
                 );
             TelemetryCollector.Instance.Config.Reconfigure(telemetryConfig);
         }

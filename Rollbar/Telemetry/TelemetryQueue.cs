@@ -12,16 +12,30 @@ namespace Rollbar.Telemetry
     /// </summary>
     public class TelemetryQueue
     {
-        private readonly object _syncLock = null;
-        private readonly Queue<Telemetry> _queue = null;
-        public int QueueDepth { get; set; } = 5;
+        private readonly object _syncLock;
+        private readonly Queue<Telemetry> _queue;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TelemetryQueue"/> class.
+        /// </summary>
         public TelemetryQueue()
         {
             this._syncLock = new object();
             this._queue = new Queue<Telemetry>();
         }
 
+        /// <summary>
+        /// Gets or sets the queue depth.
+        /// </summary>
+        /// <value>
+        /// The queue depth.
+        /// </value>
+        public int QueueDepth { get; set; } = 5;
+
+        /// <summary>
+        /// Gets the content of the queue.
+        /// </summary>
+        /// <returns></returns>
         public Telemetry[] GetQueueContent()
         {
             lock(this._syncLock)
@@ -30,13 +44,17 @@ namespace Rollbar.Telemetry
             }
         }
 
+        /// <summary>
+        /// Enqueues the specified telemetry.
+        /// </summary>
+        /// <param name="telemetry">The telemetry.</param>
         internal void Enqueue(Telemetry telemetry)
         {
             Assumption.AssertNotNull(telemetry, nameof(telemetry));
 
             lock (this._syncLock)
             {
-                if (this._queue.Count == this.QueueDepth)
+                while (this._queue.Count >= this.QueueDepth)
                 {
                     this._queue.Dequeue();
                 }
@@ -44,6 +62,33 @@ namespace Rollbar.Telemetry
             }
         }
 
+        /// <summary>
+        /// Gets the items count.
+        /// </summary>
+        /// <returns></returns>
+        public int GetItemsCount()
+        {
+            lock (this._syncLock)
+            {
+                return this._queue.Count;
+            }
+        }
+
+        /// <summary>
+        /// Flushes this instance.
+        /// </summary>
+        public void Flush()
+        {
+            lock (this._syncLock)
+            {
+                this._queue.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Peeks this instance.
+        /// </summary>
+        /// <returns></returns>
         internal Telemetry Peek()
         {
             lock (this._syncLock)
@@ -59,6 +104,10 @@ namespace Rollbar.Telemetry
             }
         }
 
+        /// <summary>
+        /// Dequeues this instance.
+        /// </summary>
+        /// <returns></returns>
         internal Telemetry Dequeue()
         {
             lock (this._syncLock)
@@ -74,21 +123,6 @@ namespace Rollbar.Telemetry
             }
         }
 
-        public int GetItemsCount()
-        {
-            lock (this._syncLock)
-            {
-                return this._queue.Count;
-            }
-        }
-
-        public void Flush()
-        {
-            lock (this._syncLock)
-            {
-                this._queue.Clear();
-            }
-        }
     }
 
 }

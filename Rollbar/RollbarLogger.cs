@@ -465,7 +465,7 @@ namespace Rollbar
                 if (TelemetryCollector.Instance.Config.TelemetryEnabled)
                 {
                     payload.Data.Body.Telemetry = 
-                        TelemetryCollector.Instance.TelemetryQueue.GetQueueContent();
+                        TelemetryCollector.Instance.GetQueueContent();
                 }
 
                 if (this._config.Server != null)

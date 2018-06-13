@@ -3,7 +3,7 @@
     using System;
 
     [Flags]
-    public enum TelemetrySettings
+    public enum TelemetryAutoCollectionSettings
     {
         None = 0x000,
 
