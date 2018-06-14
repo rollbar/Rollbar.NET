@@ -7,6 +7,7 @@ namespace Rollbar.AspNetCore
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar.Diagnostics;
+    using Rollbar.Telemetry;
     using System.Collections.Concurrent;
 
     /// <summary>
@@ -48,6 +49,8 @@ namespace Rollbar.AspNetCore
             Assumption.AssertNotNull(configuration, nameof(configuration));
             Assumption.AssertNotNull(options, nameof(options));
 
+            RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
+            TelemetryCollector.Instance.StartAutocollection();
             this._rollbarOptions = options.Value;
             this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
             this._httpContextAccessor = httpContextAccessor;

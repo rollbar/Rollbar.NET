@@ -7,6 +7,7 @@ namespace Rollbar.AspNetCore
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Rollbar.Telemetry;
     using System;
     using System.Threading.Tasks;
 
@@ -70,6 +71,8 @@ namespace Rollbar.AspNetCore
             this._logger = loggerFactory.CreateLogger<RollbarMiddleware>();
             this._rollbarOptions = rollbarOptions.Value;
 
+            RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
+            TelemetryCollector.Instance.StartAutocollection();
             RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
         }
 

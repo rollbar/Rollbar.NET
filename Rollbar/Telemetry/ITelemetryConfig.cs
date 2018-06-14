@@ -35,10 +35,10 @@
         TelemetryType TelemetryAutoCollectionTypes { get; }
 
         /// <summary>
-        /// Gets the telemetry collection interval.
+        /// Gets the telemetry automatic collection interval.
         /// </summary>
         /// <value>
-        /// The telemetry collection interval.
+        /// The telemetry automatic collection interval.
         /// </value>
         TimeSpan TelemetryAutoCollectionInterval { get; }
     }

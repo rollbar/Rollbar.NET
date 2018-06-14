@@ -144,7 +144,7 @@ namespace Rollbar.Telemetry
                     this._telemetryThread = new Thread(new ParameterizedThreadStart(this.KeepCollectingTelemetry))
                     {
                         IsBackground = true,
-                        Name = "Rollbar Telemetry Thread"
+                        Name = "RollbarAutoTelemetry Thread"
                     };
 
                     this._cancellationTokenSource = new CancellationTokenSource();

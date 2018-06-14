@@ -55,12 +55,12 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether [telemetry enabled].
+        /// Gets a value indicating whether telemetry is enabled.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [telemetry enabled]; otherwise, <c>false</c>.
+        /// <c>true</c> if telemetry is enabled; otherwise, <c>false</c>.
         /// </value>
-        public bool TelemetryEnabled { get; private set; }
+        public bool TelemetryEnabled { get; set; }
             = false;
 
         /// <summary>
@@ -69,7 +69,7 @@
         /// <value>
         /// The telemetry queue depth.
         /// </value>
-        public int TelemetryQueueDepth { get; private set; }
+        public int TelemetryQueueDepth { get; set; }
             = 5;
 
         /// <summary>
@@ -81,14 +81,13 @@
         public TelemetryType TelemetryAutoCollectionTypes { get; set; }
             = TelemetryType.None;
 
-
         /// <summary>
         /// Gets the telemetry automatic collection interval.
         /// </summary>
         /// <value>
         /// The telemetry automatic collection interval.
         /// </value>
-        public TimeSpan TelemetryAutoCollectionInterval { get; private set; }
+        public TimeSpan TelemetryAutoCollectionInterval { get; set; }
             = TimeSpan.Zero;
 
         /// <summary>
