@@ -19,7 +19,7 @@ namespace UnitTest.Rollbar.Telemetry
         [TestInitialize]
         public void SetupFixture()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
         [TestCleanup]
@@ -88,6 +88,8 @@ namespace UnitTest.Rollbar.Telemetry
         public void TestTelemetryEnabling()
         {
             Assert.IsFalse(TelemetryCollector.Instance.IsAutocollecting);
+
+            //TelemetryCollector.Instance.Config.InitFromAppConfig();
 
             var config = TelemetryCollector.Instance.Config;
 

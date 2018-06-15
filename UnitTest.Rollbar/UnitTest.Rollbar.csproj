@@ -45,7 +45,7 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestData\app.config" Condition="'$(NetVariant)' == 'NET_FX'">
+    <Content Include="TestData\appTest.config" Condition="'$(NetVariant)' == 'NET_FX'">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

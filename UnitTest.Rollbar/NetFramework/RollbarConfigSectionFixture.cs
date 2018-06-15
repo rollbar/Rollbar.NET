@@ -30,7 +30,7 @@ namespace UnitTest.Rollbar.NetFramework
         public void LoadRollbarConfigSectionTest()
         {
             ExeConfigurationFileMap exeConfigurationFileMap = new ExeConfigurationFileMap(); //new ExeConfigurationFileMap(@"TestData\App.config");
-            exeConfigurationFileMap.ExeConfigFilename = @"TestData\App.config";
+            exeConfigurationFileMap.ExeConfigFilename = @"TestData\AppTest.config";
             var testAppConfig  = ConfigurationManager.OpenMappedExeConfiguration(exeConfigurationFileMap, ConfigurationUserLevel.None);
             RollbarConfigSection config =
                 testAppConfig.GetSection("rollbar") as RollbarConfigSection;

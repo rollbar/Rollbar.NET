@@ -22,6 +22,7 @@
         /// </summary>
         internal TelemetryConfig()
         {
+            this.SetDefaults();
         }
 
         /// <summary>
@@ -48,6 +49,8 @@
             TimeSpan telemetryCollectionInterval
             )
         {
+            this.SetDefaults();
+
             this.TelemetryEnabled = telemetryEnabled;
             this.TelemetryQueueDepth = telemetryQueueDepth;
             this.TelemetryAutoCollectionTypes = telemetryAutoCollectionTypes;
@@ -61,7 +64,6 @@
         /// <c>true</c> if telemetry is enabled; otherwise, <c>false</c>.
         /// </value>
         public bool TelemetryEnabled { get; set; }
-            = false;
 
         /// <summary>
         /// Gets the telemetry queue depth.
@@ -70,7 +72,6 @@
         /// The telemetry queue depth.
         /// </value>
         public int TelemetryQueueDepth { get; set; }
-            = 5;
 
         /// <summary>
         /// Gets the telemetry automatic collection types.
@@ -79,7 +80,6 @@
         /// The telemetry automatic collection types.
         /// </value>
         public TelemetryType TelemetryAutoCollectionTypes { get; set; }
-            = TelemetryType.None;
 
         /// <summary>
         /// Gets the telemetry automatic collection interval.
@@ -88,7 +88,6 @@
         /// The telemetry automatic collection interval.
         /// </value>
         public TimeSpan TelemetryAutoCollectionInterval { get; set; }
-            = TimeSpan.Zero;
 
         /// <summary>
         /// Traces as a string.
@@ -101,5 +100,50 @@
         {
             return this.RenderAsString(indent);
         }
+
+        private void SetDefaults()
+        {
+            // let's set some default values:
+            this.TelemetryEnabled = false;
+            this.TelemetryQueueDepth = 5;
+            this.TelemetryAutoCollectionTypes = TelemetryType.None;
+            this.TelemetryAutoCollectionInterval = TimeSpan.Zero;
+
+#if NETFX
+            // initialize based on app.config settings of Rollbar section (if any):
+            this.InitFromAppConfig();
+#endif
+        }
+
+#if NETFX
+        private void InitFromAppConfig()
+        {
+            Rollbar.NetFramework.RollbarTelemetryConfigSection config =
+                Rollbar.NetFramework.RollbarTelemetryConfigSection.GetConfiguration();
+            if (config == null)
+            {
+                return;
+            }
+
+            if (config.TelemetryEnabled.HasValue)
+            {
+                this.TelemetryEnabled = config.TelemetryEnabled.Value;
+            }
+            if (config.TelemetryQueueDepth.HasValue)
+            {
+                this.TelemetryQueueDepth = config.TelemetryQueueDepth.Value;
+            }
+            if (config.TelemetryAutoCollectionTypes.HasValue)
+            {
+                this.TelemetryAutoCollectionTypes = config.TelemetryAutoCollectionTypes.Value;
+            }
+            if (config.TelemetryAutoCollectionInterval.HasValue)
+            {
+                this.TelemetryAutoCollectionInterval = config.TelemetryAutoCollectionInterval.Value;
+            }
+
+        }
+#endif
+
     }
 }
