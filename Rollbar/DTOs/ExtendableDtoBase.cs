@@ -81,12 +81,13 @@
                     !this._keyedValues.ContainsKey(key)                                         // no such key preset yet
                     || this._keyedValues[key] == null                                           // OR its not initialized yet
                     || value != null                                                            // OR no-null value
-                    || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),   // OR not about reserved property/key
+                    || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),    // OR not about reserved property/key
                     "conditional " + nameof(value) + " assessment"
                     );
 
                 Assumption.AssertTrue(
                     !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key)                       // not about reserved property/key
+                    || value == null                                                                           // the value happened to be null
                     || value.GetType() == this._metadata.ReservedPropertyInfoByReservedKey[key].PropertyType,  // OR new value type matches reserved property type
                     "conditional " + nameof(value) + " assessment"
                     );

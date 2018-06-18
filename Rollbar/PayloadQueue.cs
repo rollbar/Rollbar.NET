@@ -39,6 +39,10 @@ namespace Rollbar
 
             lock (this._syncLock)
             {
+                if (this._logger.Config.ReportingQueueDepth == this._queue.Count)
+                {
+                    this._queue.Dequeue();
+                }
                 this._queue.Enqueue(payload);
             }
         }

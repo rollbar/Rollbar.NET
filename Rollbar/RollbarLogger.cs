@@ -4,8 +4,10 @@ namespace Rollbar
 {
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.Telemetry;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -43,6 +45,11 @@ namespace Rollbar
             {
                 // it could be a valid case in some environments:
                 this._nativeTaskScheduler = null;
+            }
+
+            if (!TelemetryCollector.Instance.IsAutocollecting)
+            {
+                TelemetryCollector.Instance.StartAutocollection();
             }
 
             this.IsSingleton = isSingleton;
@@ -453,6 +460,12 @@ namespace Rollbar
                     )
                 {
                     return;
+                }
+
+                if (TelemetryCollector.Instance.Config.TelemetryEnabled)
+                {
+                    payload.Data.Body.Telemetry = 
+                        TelemetryCollector.Instance.GetQueueContent();
                 }
 
                 if (this._config.Server != null)

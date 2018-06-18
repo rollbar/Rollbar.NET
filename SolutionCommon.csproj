@@ -2,21 +2,26 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <!--
-    <TargetFrameworks>net471</TargetFrameworks>
+    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.4.0</NotifierVersion>
+    <NotifierVersion>1.5.0</NotifierVersion>
     <PackageReleaseNotes>
 
-      New features and enhancements:
-
-      - resolve #124: Capture local variables
-      - resolve #142: Update the .NET Core console sample app to demonstrate state capture
-      - resolve #126: Add max items config option
-      - resolve #125: Add capture uncaught config option
-      - resolve #132: Point docs from README to Rollbar's site
+      New features, enhancements and fixes:
+      
+      - resolve #151: Telemetry - add relevant documentation
+      - resolve #148: Telemetry - configuration via app.config
+      - resolve #149: Telemetry - configuration via appsettings.json
+      - resolve #150: Telemetry - demo manual telemetry in one of the sample apps
+      - resolve #123: Telemetry support
+      - resolve #146: Add explicit support of .net core 2.1 and .net 4.7.2 targets.
+      - resolve #145: Update sample apps to target latest .net SDKs and latest dependencies.
+      - resolve #143: Document state capture feature.
+      - resolve #131: Not able to run Xamarin sample app with Rollbar Notifier.
 
     </PackageReleaseNotes>
 
@@ -47,12 +52,14 @@
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'
+                 Or '$(TargetFramework)' == 'netcoreapp2.0'">
     <NetVariant>NET_CORE</NetVariant>
     <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net471'
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net472'
+             Or '$(TargetFramework)' == 'net471'
              Or '$(TargetFramework)' == 'net47' 
              Or '$(TargetFramework)' == 'net462' 
              Or '$(TargetFramework)' == 'net461' 

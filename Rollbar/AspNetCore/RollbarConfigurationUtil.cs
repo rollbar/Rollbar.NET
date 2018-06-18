@@ -6,6 +6,7 @@ namespace Rollbar.AspNetCore
     using Microsoft.Extensions.Configuration;
     using Rollbar.Diagnostics;
     using Rollbar.NetCore;
+    using Rollbar.Telemetry;
 
     /// <summary>
     /// Utility type aiding in Rollbar configuration options/alternatives.
@@ -46,6 +47,20 @@ namespace Rollbar.AspNetCore
             return rollbarConfig;
         }
 
+        /// <summary>
+        /// Deduces the rollbar telemetry configuration.
+        /// </summary>
+        /// <param name="configuration">The configuration.</param>
+        /// <returns></returns>
+        public static ITelemetryConfig DeduceRollbarTelemetryConfig(IConfiguration configuration)
+        {
+            TelemetryConfig config = new TelemetryConfig();
+            AppSettingsUtil.LoadAppSettings(ref config, configuration);
+
+            TelemetryCollector.Instance.Config.Reconfigure(config);
+
+            return config;
+        }
     }
 }
 

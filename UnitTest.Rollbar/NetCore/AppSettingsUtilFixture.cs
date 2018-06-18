@@ -1,12 +1,15 @@
-﻿#if NETCOREAPP2_0
+﻿#if NETCOREAPP
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace UnitTest.Rollbar.NetCore
 {
     using global::Rollbar;
+    using global::Rollbar.DTOs;
     using global::Rollbar.NetCore;
+    using global::Rollbar.Telemetry;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Newtonsoft.Json;
     using System;
     using System.IO;
     using System.Threading;
@@ -26,7 +29,7 @@ namespace UnitTest.Rollbar.NetCore
         }
 
         [TestMethod]
-        public void LoadAppSettingsTest()
+        public void LoadRollbarAppSettingsTest()
         {
             RollbarConfig config = new RollbarConfig("default=none");
             AppSettingsUtil.LoadAppSettings(ref config, Path.Combine(Environment.CurrentDirectory, "TestData"), "appsettings.json");
@@ -67,6 +70,35 @@ namespace UnitTest.Rollbar.NetCore
                 IpAddressCollectionPolicy.CollectAnonymized
                 , config.IpAddressCollectionPolicy
                 );
+        }
+
+        [TestMethod]
+        public void LoadRollbarTelemetryAppSettingsTest()
+        {
+            TelemetryConfig config = new TelemetryConfig(false, 5, TelemetryType.None, TimeSpan.FromMilliseconds(100));
+            Console.WriteLine(JsonConvert.SerializeObject(config));
+
+            Assert.AreEqual(false, config.TelemetryEnabled);
+            Assert.AreEqual(5, config.TelemetryQueueDepth);
+            Assert.AreEqual(TelemetryType.None, config.TelemetryAutoCollectionTypes);
+            Assert.AreEqual(TimeSpan.FromMilliseconds(100), config.TelemetryAutoCollectionInterval);
+
+            AppSettingsUtil.LoadAppSettings(ref config, Path.Combine(Environment.CurrentDirectory, "TestData"), "appsettings.json");
+            Console.WriteLine(JsonConvert.SerializeObject(config));
+
+            // The test data looks like this:
+            //===============================
+            //"RollbarTelemetry": {
+            //    "TelemetryEnabled": true,
+            //    "TelemetryQueueDepth": 100,
+            //    "TelemetryAutoCollectionTypes": "Network, Log, Error",
+            //    "TelemetryAutoCollectionInterval":  "00:00:00.3000000",
+            //},
+
+            Assert.AreEqual(true, config.TelemetryEnabled);
+            Assert.AreEqual(100, config.TelemetryQueueDepth);
+            Assert.AreEqual(TelemetryType.Network | TelemetryType.Log | TelemetryType.Error, config.TelemetryAutoCollectionTypes);
+            Assert.AreEqual(TimeSpan.FromMilliseconds(300), config.TelemetryAutoCollectionInterval);
         }
     }
 }
