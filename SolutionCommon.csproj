@@ -8,11 +8,12 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.4.1</NotifierVersion>
+    <NotifierVersion>1.5.0</NotifierVersion>
     <PackageReleaseNotes>
 
       New features, enhancements and fixes:
       
+      - resolve #151: Telemetry - add relevant documentation
       - resolve #148: Telemetry - configuration via app.config
       - resolve #149: Telemetry - configuration via appsettings.json
       - resolve #150: Telemetry - demo manual telemetry in one of the sample apps

@@ -250,18 +250,17 @@ namespace Rollbar.Telemetry
                 {
                     this.AutoCollectTelemetry();
                 }
-#pragma warning disable CS0168 // Variable is declared but never used
                 catch (System.Threading.ThreadAbortException tae)
                 {
+                    System.Diagnostics.Trace.WriteLine(tae);
                     return;
                 }
                 catch (System.Exception ex)
                 {
                     string msg = ex.Message;
-                    //TODO: do we want to direct the exception 
-                    //      to some kind of Rollbar notifier maintenance "access token"?
+                    System.Diagnostics.Trace.WriteLine(msg);
+                    System.Diagnostics.Trace.WriteLine(ex);
                 }
-#pragma warning restore CS0168 // Variable is declared but never used
 
                 if (cancellationToken.IsCancellationRequested)
                     break;
