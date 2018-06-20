@@ -105,6 +105,23 @@ namespace Rollbar
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
+            Data data = obj as Data;
+            if (data != null)
+            {
+                return this.Log(data);
+            }
+            System.Exception exception = obj as System.Exception;
+            if (exception != null)
+            {
+                this.Report(exception, level, custom);
+                return this;
+            }
+            ITraceable traceable = obj as ITraceable;
+            if (traceable != null)
+            {
+                return this.Log(level, traceable.TraceAsString(), custom);
+            }
+
             return this.Log(level, obj.ToString(), custom);
         }
 
@@ -207,27 +224,27 @@ namespace Rollbar
 
         public ILogger Critical(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Critical(obj.ToString(), custom);
+            return this.Log(ErrorLevel.Critical, obj, custom);
         }
 
         public ILogger Error(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Error(obj.ToString(), custom);
+            return this.Log(ErrorLevel.Error, obj, custom);
         }
 
         public ILogger Warning(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Warning(obj.ToString(), custom);
+            return this.Log(ErrorLevel.Warning, obj, custom);
         }
 
         public ILogger Info(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Info(obj.ToString(), custom);
+            return this.Log(ErrorLevel.Info, obj, custom);
         }
 
         public ILogger Debug(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Debug(obj.ToString(), custom);
+            return this.Log(ErrorLevel.Debug, obj, custom);
         }
 
         #endregion ILogger
