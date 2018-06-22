@@ -54,7 +54,11 @@ namespace Rollbar
 
             this.IsSingleton = isSingleton;
             this._config = new RollbarConfig(this);
-            this._payloadQueue = new PayloadQueue(this);
+            var rollbarClient = new RollbarClient(
+                this._config
+                , RollbarQueueController.Instance.ProvideHttpClient(this._config.ProxyAddress)
+                );
+            this._payloadQueue = new PayloadQueue(this, rollbarClient);
             RollbarQueueController.Instance.Register(this._payloadQueue);
         }
 

@@ -18,35 +18,57 @@ namespace Rollbar
     using Rollbar.PayloadTruncation;
     using Rollbar.Deploys;
     using Rollbar.Common;
+    using System.Linq;
 
     /// <summary>
     /// Client for accessing the Rollbar API
     /// </summary>
     internal class RollbarClient 
     {
-        public IRollbarConfig Config { get; }
+        private readonly RollbarConfig _config;
+        private readonly HttpClient _httpClient;
+        private readonly Uri _payloadPostUri;
+        private readonly IterativeTruncationStrategy _payloadTruncationStrategy;
 
-        public RollbarClient(IRollbarConfig config)
+        public RollbarClient(RollbarConfig config, HttpClient httpClient)
         {
             Assumption.AssertNotNull(config, nameof(config));
+            Assumption.AssertNotNull(httpClient, nameof(httpClient));
 
-            Config = config;
+            this._config = config;
+
+            this._payloadPostUri = new Uri($"{this._config.EndPoint}item/");
+
+
+            this._httpClient = httpClient;
+
+            var header = new MediaTypeWithQualityHeaderValue("application/json");
+            if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
+            {
+                this._httpClient.DefaultRequestHeaders.Accept.Add(header);
+            }
+
+            var sp = ServicePointManager.FindServicePoint(new Uri(this._config.EndPoint));
+            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
+
+
+            this._payloadTruncationStrategy = new IterativeTruncationStrategy();
         }
 
-        public RollbarResponse PostAsJson(Payload payload, IEnumerable<string> scrubFields)
+        public RollbarConfig Config { get { return this._config; } }
+
+        public RollbarResponse PostAsJson(Payload payload)
         {
             Assumption.AssertNotNull(payload, nameof(payload));
 
-            var task = this.PostAsJsonAsync(payload, scrubFields);
+            var task = this.PostAsJsonAsync(payload);
 
             task.Wait();
 
             return task.Result;
         }
 
-        private readonly IterativeTruncationStrategy _payloadTruncationStrategy = new IterativeTruncationStrategy();
-
-        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload, IEnumerable<string> scrubFields)
+        public async Task<RollbarResponse> PostAsJsonAsync(Payload payload)
         {
             Assumption.AssertNotNull(payload, nameof(payload));
 
@@ -58,42 +80,58 @@ namespace Rollbar
                     );
             }
 
-            using (var httpClient = this.BuildWebClient())
+            var jsonData = JsonConvert.SerializeObject(payload);
+            jsonData = ScrubPayload(jsonData, this._config.GetSafeScrubFields());
+
+            var postPayload =
+                new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
+
+            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._config.AccessToken), nameof(payload.AccessToken));
+
+            const string accessTokenHeader = "X-Rollbar-Access-Token";
+            //if (!this._httpClient.DefaultRequestHeaders.Contains(accessTokenHeader))
+            //{
+            //    this._httpClient.DefaultRequestHeaders
+            //        .Add(accessTokenHeader, this._config.AccessToken);
+            //}
+            //else
+            //{
+            //    var accessTokenHeaderValues = this._httpClient.DefaultRequestHeaders.GetValues(accessTokenHeader).ToArray();
+            //    Assumption.AssertEqual(accessTokenHeaderValues.Length, 1, nameof(accessTokenHeaderValues.Length));
+            //    if (!string.Equals(accessTokenHeaderValues.First(), this._config.AccessToken, StringComparison.OrdinalIgnoreCase))
+            //    {
+            //        this._httpClient.DefaultRequestHeaders.Remove(accessTokenHeader);
+            //        this._httpClient.DefaultRequestHeaders
+            //            .Add(accessTokenHeader, this._config.AccessToken);
+            //    }
+            //}
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
+            request.Headers.Add(accessTokenHeader, this._config.AccessToken);
+            request.Content = postPayload;
+
+            //var postResponse = 
+            //    await this._httpClient.PostAsync(this._payloadPostUri, postPayload);
+            var postResponse = await this._httpClient.SendAsync(request);
+
+            RollbarResponse response = null;
+            if (postResponse.IsSuccessStatusCode)
             {
-                var jsonData = JsonConvert.SerializeObject(payload);
-                jsonData = ScrubPayload(jsonData, scrubFields);
-
-                httpClient.DefaultRequestHeaders
-                    .Add("X-Rollbar-Access-Token", payload.AccessToken);
-
-                httpClient.DefaultRequestHeaders
-                    .Accept
-                    .Add(new MediaTypeWithQualityHeaderValue("application/json")); //ACCEPT header
-
-                var postPayload = 
-                    new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
-                var uri = new Uri($"{Config.EndPoint}item/");
-                var postResponse = await httpClient.PostAsync(uri, postPayload);
-
-                RollbarResponse response = null;
-                if (postResponse.IsSuccessStatusCode)
-                {
-                    string reply = await postResponse.Content.ReadAsStringAsync();
-                    response = JsonConvert.DeserializeObject<RollbarResponse>(reply);
-                    response.HttpDetails = 
-                        $"Response: {postResponse}" 
-                        + Environment.NewLine 
-                        + $"Request: {postResponse.RequestMessage}" 
-                        + Environment.NewLine
-                        ;
-                }
-                else
-                {
-                    postResponse.EnsureSuccessStatusCode();
-                }
-
-                return response;
+                string reply = await postResponse.Content.ReadAsStringAsync();
+                response = JsonConvert.DeserializeObject<RollbarResponse>(reply);
+                response.HttpDetails =
+                    $"Response: {postResponse}"
+                    + Environment.NewLine
+                    + $"Request: {postResponse.RequestMessage}"
+                    + Environment.NewLine
+                    ;
             }
+            else
+            {
+                postResponse.EnsureSuccessStatusCode();
+            }
+
+            return response;
         }
 
         private string ScrubPayload(string payload, IEnumerable<string> scrubFields)
@@ -105,51 +143,20 @@ namespace Rollbar
             return scrubbedPayload;
         }
 
-        private HttpClient BuildWebClient()
-        {
-            HttpClient webClient = null;
-
-            var webProxy = this.BuildWebProxy();
-
-            if (webProxy != null)
-            {
-                var httpHandler = new HttpClientHandler();
-                httpHandler.Proxy = webProxy;
-                httpHandler.PreAuthenticate = true;
-                httpHandler.UseDefaultCredentials = false;
-
-                webClient = new HttpClient(httpHandler);
-            }
-            else
-            {
-                webClient = new HttpClient();
-            }
-
-            return webClient;
-        }
-
-        private IWebProxy BuildWebProxy()
-        {
-            if (!string.IsNullOrWhiteSpace(this.Config.ProxyAddress))
-            {
-                return new WebProxy(this.Config.ProxyAddress);
-            }
-
-            return null;
-        }
+        #region deployment
 
         private const string deployApiPath = @"deploy/";
 
         /// <summary>
-        /// Posts the asynchronous.
+        /// Posts the specified deployment asynchronously.
         /// </summary>
         /// <param name="deployment">The deployment.</param>
         /// <returns></returns>
         public async Task PostAsync(IDeployment deployment)
         {
-            Assumption.AssertNotNull(this.Config, nameof(this.Config));
-            Assumption.AssertNotNullOrWhiteSpace(this.Config.AccessToken, nameof(this.Config.AccessToken));
-            Assumption.AssertFalse(string.IsNullOrWhiteSpace(deployment.Environment) && string.IsNullOrWhiteSpace(this.Config.Environment), nameof(deployment.Environment));
+            Assumption.AssertNotNull(this._config, nameof(this._config));
+            Assumption.AssertNotNullOrWhiteSpace(this._config.AccessToken, nameof(this._config.AccessToken));
+            Assumption.AssertFalse(string.IsNullOrWhiteSpace(deployment.Environment) && string.IsNullOrWhiteSpace(this._config.Environment), nameof(deployment.Environment));
             Assumption.AssertNotNullOrWhiteSpace(deployment.Revision, nameof(deployment.Revision));
 
             Assumption.AssertLessThan(
@@ -165,14 +172,13 @@ namespace Rollbar
                 nameof(deployment.Comment)
                 );
 
-
-            using (var httpClient = this.BuildWebClient())
+            using (var httpClient = HttpClientUtil.CreateHttpClient(this._config.ProxyAddress))
             {
-                var uri = new Uri(this.Config.EndPoint + RollbarClient.deployApiPath);
+                var uri = new Uri(this._config.EndPoint + RollbarClient.deployApiPath);
 
                 var parameters = new Dictionary<string, string> {
-                    { "access_token", this.Config.AccessToken },
-                    { "environment", (!string.IsNullOrWhiteSpace(deployment.Environment)) ? deployment.Environment : this.Config.Environment  },
+                    { "access_token", this._config.AccessToken },
+                    { "environment", (!string.IsNullOrWhiteSpace(deployment.Environment)) ? deployment.Environment : this._config.Environment  },
                     { "revision", deployment.Revision },
                     { "rollbar_username", deployment.RollbarUsername },
                     { "local_username", deployment.LocalUsername },
@@ -205,10 +211,10 @@ namespace Rollbar
             Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
             Assumption.AssertNotNullOrWhiteSpace(deploymentID, nameof(deploymentID));
 
-            using (var httpClient = this.BuildWebClient())
+            using (var httpClient = HttpClientUtil.CreateHttpClient(this._config.ProxyAddress))
             {
                 var uri = new Uri(
-                    this.Config.EndPoint 
+                    this._config.EndPoint 
                     + RollbarClient.deployApiPath + deploymentID + @"/" 
                     + $"?access_token={readAccessToken}"
                     );
@@ -242,10 +248,10 @@ namespace Rollbar
         {
             Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
 
-            using (var httpClient = this.BuildWebClient())
+            using (var httpClient = HttpClientUtil.CreateHttpClient(this._config.ProxyAddress))
             {
                 var uri = new Uri(
-                    this.Config.EndPoint 
+                    this._config.EndPoint 
                     + RollbarClient.deploysQueryApiPath
                     + $"?access_token={readAccessToken}&page={pageNumber}"
                     );
@@ -267,5 +273,6 @@ namespace Rollbar
             }
         }
 
+        #endregion deployment
     }
 }

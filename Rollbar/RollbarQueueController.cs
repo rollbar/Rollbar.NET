@@ -2,6 +2,7 @@
 
 namespace Rollbar
 {
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using Rollbar.Serialization.Json;
@@ -10,6 +11,7 @@ namespace Rollbar
     using System.Diagnostics;
     using System.Linq;
     using System.Net;
+    using System.Net.Http;
     using System.Text;
     using System.Threading;
 
@@ -68,6 +70,27 @@ namespace Rollbar
 
         private readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(250);
 
+        private HttpClient _httpClient = null;
+        private string _proxySettings = null;
+
+        public HttpClient ProvideHttpClient(string proxySettings)
+        {
+            if (this._httpClient != null)
+            {
+                Assumption.AssertTrue(
+                    (string.IsNullOrWhiteSpace(proxySettings) && string.IsNullOrWhiteSpace(this._proxySettings))
+                    || (string.Compare(proxySettings, this._proxySettings, true) == 0)
+                    , nameof(proxySettings)
+                    );
+                // reuse what is already there: 
+                return this._httpClient;
+            }
+
+            // create new instance:
+            this._proxySettings = proxySettings;
+            this._httpClient = HttpClientUtil.CreateHttpClient(proxySettings);
+            return this._httpClient;
+        }
 
         /// <summary>
         /// Occurs after a Rollbar internal event happens.
@@ -198,14 +221,9 @@ namespace Rollbar
             {
                 if (DateTimeOffset.Now >= queue.NextDequeueTime)
                 {
-                    Payload payload = queue.Peek();
-                    if (payload == null)
-                    {
-                        continue;
-                    }
-
-                    var response = Process(payload, queue.Logger);
-                    if (response == null)
+                    RollbarResponse response = null;
+                    Payload payload = Process(queue, out response);
+                    if (payload == null || response == null)
                     {
                         continue;
                     }
@@ -244,25 +262,28 @@ namespace Rollbar
             }
         }
 
-        private RollbarResponse Process(Payload payload, RollbarLogger logger)
+        private Payload Process(PayloadQueue queue, out RollbarResponse response)
         {
-            var client = new RollbarClient(logger.Config);
+            response = null;
 
-            IEnumerable<string> safeScrubFields = logger.Config.GetSafeScrubFields();
+            Payload payload = queue.Peek();
+            if (payload == null)
+            {
+                return null;
+            }
 
-            RollbarResponse response = null;
             int retries = 3;
             while (retries > 0)
             {
                 try
                 {
-                    response = client.PostAsJson(payload, safeScrubFields);
+                    response = queue.Client.PostAsJson(payload);
                 }
                 catch (WebException ex)
                 {
                     retries--;
                     this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(logger, payload, ex, retries)
+                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
                         );
                     continue;
                 }
@@ -270,7 +291,7 @@ namespace Rollbar
                 {
                     retries = 0;
                     this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(logger, payload, ex, retries)
+                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
                         );
                     continue;
                 }
@@ -278,7 +299,7 @@ namespace Rollbar
                 {
                     retries = 0;
                     this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(logger, payload, ex, retries)
+                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
                         );
                     continue;
                 }
@@ -288,11 +309,11 @@ namespace Rollbar
             if (response != null)
             {
                 this.OnRollbarEvent(
-                    new CommunicationEventArgs(logger, payload, response)
+                    new CommunicationEventArgs(queue.Logger, payload, response)
                     );
             }
 
-            return response;
+            return payload;
         }
 
         private void Config_Reconfigured(object sender, EventArgs e)

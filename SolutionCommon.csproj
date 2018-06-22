@@ -12,10 +12,11 @@
     <PackageReleaseNotes>
 
       New features, enhancements and fixes:
-      
-      - resolve #155: Update Xamarin sample's dependencies
-      - resolve #154: Add type discovery and casting with proper overload call to all the RollbarLogger's methods that accept object as their first argument
-      
+
+      - resolve #156: Performance: reuse the same HttpClient instance whenever possible
+      - resolve #155: Samples: Update Xamarin sample's dependencies
+      - resolve #154: UX: Add type discovery and casting with proper overload call to all the RollbarLogger's methods that accept object as their first argument
+
 
     </PackageReleaseNotes>
 

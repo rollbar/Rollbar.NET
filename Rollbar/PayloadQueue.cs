@@ -12,18 +12,22 @@ namespace Rollbar
         private readonly object _syncLock = null;
         private readonly Queue<Payload> _queue = null;
         private readonly RollbarLogger _logger = null;
+        private readonly RollbarClient _client = null;
 
         private PayloadQueue()
         {
         }
 
-        public PayloadQueue(RollbarLogger logger)
+        public PayloadQueue(RollbarLogger logger, RollbarClient client)
         {
             Assumption.AssertNotNull(logger, nameof(logger));
+            Assumption.AssertNotNull(client, nameof(client));
+            Assumption.AssertTrue(object.ReferenceEquals(logger.Config, client.Config), nameof(client.Config));
 
             this._logger = logger;
             this._syncLock = new object();
             this._queue = new Queue<Payload>();
+            this._client = client;
         }
 
         public DateTimeOffset NextDequeueTime { get; internal set; }
@@ -31,6 +35,11 @@ namespace Rollbar
         public RollbarLogger Logger
         {
             get { return this._logger; }
+        }
+
+        public RollbarClient Client
+        {
+            get { return this._client; }
         }
 
         public void Enqueue(Payload payload)

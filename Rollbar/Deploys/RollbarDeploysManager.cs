@@ -1,6 +1,7 @@
 ﻿namespace Rollbar.Deploys
 {
     using Rollbar.Diagnostics;
+    using System.Net.Http;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -45,9 +46,11 @@
             var config =
                new RollbarConfig(this._writeAccessToken) { Environment = deployment.Environment, };
 
-            RollbarClient rollbarClient = new RollbarClient(config);
-
-            await rollbarClient.PostAsync(deployment);
+            using (var httpClient = new HttpClient())
+            {
+                RollbarClient rollbarClient = new RollbarClient(config, httpClient);
+                await rollbarClient.PostAsync(deployment);
+            }
         }
 
         /// <summary>
@@ -61,11 +64,15 @@
             Assumption.AssertNotNullOrWhiteSpace(this._readAccessToken, nameof(this._readAccessToken));
 
             var config = new RollbarConfig(this._readAccessToken);
-            RollbarClient rollbarClient = new RollbarClient(config);
 
-            var result = await rollbarClient.GetDeploymentAsync(this._readAccessToken, deploymentID);
+            using (var httpClient = new HttpClient())
+            {
+                RollbarClient rollbarClient = new RollbarClient(config, httpClient);
 
-            return result.Deploy;
+                var result = await rollbarClient.GetDeploymentAsync(this._readAccessToken, deploymentID);
+
+                return result.Deploy;
+            }
         }
 
         /// <summary>
@@ -79,11 +86,15 @@
             Assumption.AssertNotNullOrWhiteSpace(this._readAccessToken, nameof(this._readAccessToken));
 
             var config = new RollbarConfig(this._readAccessToken);
-            RollbarClient rollbarClient = new RollbarClient(config);
 
-            var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken, pageNumber);
+            using (var httpClient = new HttpClient())
+            {
+                RollbarClient rollbarClient = new RollbarClient(config, httpClient);
 
-            return result.DeploysPage.Deploys;
+                var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken, pageNumber);
+
+                return result.DeploysPage.Deploys;
+            }
         }
     }
 }
