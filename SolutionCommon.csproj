@@ -13,6 +13,7 @@
 
       New features, enhancements and fixes:
 
+      - resolve #157: Refactoring: extract deployment related functionality of RollbarClient into RollbarDeployClient
       - resolve #156: Performance: reuse the same HttpClient instance whenever possible
       - resolve #155: Samples: Update Xamarin sample's dependencies
       - resolve #154: UX: Add type discovery and casting with proper overload call to all the RollbarLogger's methods that accept object as their first argument

@@ -48,7 +48,7 @@
 
             using (var httpClient = new HttpClient())
             {
-                RollbarClient rollbarClient = new RollbarClient(config, httpClient);
+                RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
                 await rollbarClient.PostAsync(deployment);
             }
         }
@@ -67,7 +67,7 @@
 
             using (var httpClient = new HttpClient())
             {
-                RollbarClient rollbarClient = new RollbarClient(config, httpClient);
+                RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
 
                 var result = await rollbarClient.GetDeploymentAsync(this._readAccessToken, deploymentID);
 
@@ -89,7 +89,7 @@
 
             using (var httpClient = new HttpClient())
             {
-                RollbarClient rollbarClient = new RollbarClient(config, httpClient);
+                RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
 
                 var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken, pageNumber);
 
