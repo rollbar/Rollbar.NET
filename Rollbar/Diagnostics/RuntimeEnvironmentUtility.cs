@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.Runtime.Versioning;
     using System.Text;
     using System.Threading.Tasks;
@@ -50,6 +51,19 @@
                 .ToArray();
 
             return targetFrameworks;
+        }
+
+        /// <summary>
+        /// Gets the OS description.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetOSDescription()
+        {
+#if NETFX_46nOlder
+            return Environment.OSVersion.VersionString;
+#else
+            return RuntimeInformation.OSDescription;
+#endif
         }
     }
 }

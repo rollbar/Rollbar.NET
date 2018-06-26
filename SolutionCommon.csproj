@@ -13,6 +13,7 @@
 
       New features, enhancements and fixes:
 
+      - resolve #158: Implement proper hosting OS detection under .Net Core
       - resolve #157: Refactoring: extract deployment related functionality of RollbarClient into RollbarDeployClient
       - resolve #156: Performance: reuse the same HttpClient instance whenever possible
       - resolve #155: Samples: Update Xamarin sample's dependencies
@@ -68,6 +69,13 @@
     <DefineConstants>NETFX</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'
+             Or '$(TargetFramework)' == 'net452'
+             Or '$(TargetFramework)' == 'net451'
+             Or '$(TargetFramework)' == 'net45'
+             ">
+    <DefineConstants>NETFX_46nOlder;NETFX</DefineConstants>
+  </PropertyGroup>
 
 
   <ItemGroup Condition="'$(NetVariant)' == 'NET_CORE' 
