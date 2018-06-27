@@ -9,7 +9,7 @@
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.ExtendableDtoBase" />
     public class Server 
-        : ExtendableDtoBase
+        : HostBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Server"/> class.

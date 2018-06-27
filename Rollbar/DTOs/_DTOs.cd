@@ -3,12 +3,12 @@
   <Class Name="Rollbar.DTOs.Body">
     <Position X="11.5" Y="7" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAABAAAAIIIAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAgABAAAAIIIAAAAAA=</HashCode>
       <FileName>DTOs\Body.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.DTOs.Client">
-    <Position X="7.5" Y="17.25" Width="4" />
+    <Position X="8.5" Y="18.25" Width="4" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -119,12 +119,12 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAIAAAAAAAACAAAgAAgBCAAAgAAECAAAAEAAAAA=</HashCode>
+      <HashCode>AAAAAAIAAAAAAAACAAAgAAgBCAABgAAECAAAAEAAAAA=</HashCode>
       <FileName>DTOs\Request.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.DTOs.Server">
-    <Position X="13.25" Y="13.25" Width="4" />
+    <Position X="13" Y="18.25" Width="4" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -145,6 +145,23 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAE=</HashCode>
       <FileName>DTOs\Trace.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.HostBase">
+    <Position X="12" Y="13.5" Width="5.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.HostBase.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\HostBase.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>DTOs\HostBase.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

@@ -13,6 +13,7 @@
 
       New features, enhancements and fixes:
 
+      - resolve #160: Capture CPU architecture as a new data field within Client/Server elements of the payload
       - resolve #158: Implement proper hosting OS detection under .Net Core
       - resolve #157: Refactoring: extract deployment related functionality of RollbarClient into RollbarDeployClient
       - resolve #156: Performance: reuse the same HttpClient instance whenever possible

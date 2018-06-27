@@ -65,5 +65,18 @@
             return RuntimeInformation.OSDescription;
 #endif
         }
+
+        /// <summary>
+        /// Gets the CPU architecture.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetCpuArchitecture()
+        {
+#if NETFX_46nOlder
+            return null;
+#else
+            return RuntimeInformation.OSArchitecture.ToString();
+#endif
+        }
     }
 }
