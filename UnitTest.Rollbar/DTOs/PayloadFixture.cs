@@ -128,7 +128,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("Test", exception["message"].Value<string>());
             Assert.AreEqual("System.Exception", exception["class"].Value<string>());
 
-            Assert.AreEqual("windows", data["platform"].Value<string>());
+            Assert.AreNotEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             var left = exceptionExample.Data.Notifier.ToArray();
@@ -208,7 +208,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("A message I wish to send to the rollbar overlords", message["body"].Value<string>());
             Assert.AreEqual(1, message.Properties().Count());
 
-            Assert.AreEqual("windows", data["platform"].Value<string>());
+            Assert.AreNotEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             var left = messageException.Data.Notifier.ToArray();
@@ -310,7 +310,7 @@ namespace UnitTest.Rollbar.DTOs
                 traceFunc(t);
             }
 
-            Assert.AreEqual("windows", data["platform"].Value<string>());
+            Assert.AreNotEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             //Assert.AreEqual(_exceptionExample.Data.Notifier.ToArray(), data["notifier"].ToObject<Dictionary<string, string>>());
@@ -391,7 +391,7 @@ namespace UnitTest.Rollbar.DTOs
 
             Assert.AreEqual("A terrible crash!", crashReport["raw"].Value<string>());
 
-            Assert.AreEqual("windows", data["platform"].Value<string>());
+            Assert.AreNotEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             var left = crashException.Data.Notifier.ToArray();

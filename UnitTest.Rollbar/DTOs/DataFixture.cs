@@ -101,10 +101,11 @@ namespace UnitTest.Rollbar.DTOs
         }
 
         [TestMethod]
-        public void PlatformDefaultsToWindows()
+        public void PlatformDoesNotDefaultToWindows()
         {
             var data = new Data(this._config, new Body(new System.Exception("Oops.")));
-            Assert.AreEqual("windows", data.Platform);
+            Assert.IsFalse(string.IsNullOrWhiteSpace(data.Platform));
+            Assert.AreNotEqual("windows", data.Platform);
         }
 
         [TestMethod]

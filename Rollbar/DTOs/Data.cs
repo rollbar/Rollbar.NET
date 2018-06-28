@@ -35,6 +35,7 @@
         {
             Data.NotifierAssemblyVersion = Data.DetectNotifierAssemblyVersion();
             Data.DefaultFrameworkValue = Data.DetectTargetFrameworks();
+            Data.DefaultPlatform = RuntimeEnvironmentUtility.GetOSDescription();
         }
 
         /// <summary>

@@ -8,20 +8,18 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.5.0</NotifierVersion>
+    <NotifierVersion>1.5.1</NotifierVersion>
     <PackageReleaseNotes>
 
       New features, enhancements and fixes:
-      
-      - resolve #151: Telemetry - add relevant documentation
-      - resolve #148: Telemetry - configuration via app.config
-      - resolve #149: Telemetry - configuration via appsettings.json
-      - resolve #150: Telemetry - demo manual telemetry in one of the sample apps
-      - resolve #123: Telemetry support
-      - resolve #146: Add explicit support of .net core 2.1 and .net 4.7.2 targets.
-      - resolve #145: Update sample apps to target latest .net SDKs and latest dependencies.
-      - resolve #143: Document state capture feature.
-      - resolve #131: Not able to run Xamarin sample app with Rollbar Notifier.
+
+      - resolve #160: Capture CPU architecture as a new data field within Client/Server elements of the payload
+      - resolve #158: Implement proper hosting OS detection under .Net Core
+      - resolve #157: Refactoring: extract deployment related functionality of RollbarClient into RollbarDeployClient
+      - resolve #156: Performance: reuse the same HttpClient instance whenever possible
+      - resolve #155: Samples: Update Xamarin sample's dependencies
+      - resolve #154: UX: Add type discovery and casting with proper overload call to all the RollbarLogger's methods that accept object as their first argument
+
 
     </PackageReleaseNotes>
 
@@ -72,6 +70,13 @@
     <DefineConstants>NETFX</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'
+             Or '$(TargetFramework)' == 'net452'
+             Or '$(TargetFramework)' == 'net451'
+             Or '$(TargetFramework)' == 'net45'
+             ">
+    <DefineConstants>NETFX_46nOlder;NETFX</DefineConstants>
+  </PropertyGroup>
 
 
   <ItemGroup Condition="'$(NetVariant)' == 'NET_CORE' 
