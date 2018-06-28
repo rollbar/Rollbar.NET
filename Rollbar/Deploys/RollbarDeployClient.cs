@@ -25,12 +25,6 @@
 
             this._httpClient = httpClient;
 
-            //var header = new MediaTypeWithQualityHeaderValue("application/json");
-            //if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
-            //{
-            //    this._httpClient.DefaultRequestHeaders.Accept.Add(header);
-            //}
-
             var sp = ServicePointManager.FindServicePoint(new Uri(this._config.EndPoint));
             sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
         }
