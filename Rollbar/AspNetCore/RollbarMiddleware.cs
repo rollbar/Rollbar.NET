@@ -7,6 +7,7 @@ namespace Rollbar.AspNetCore
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
+    using Rollbar.DTOs;
     using Rollbar.Telemetry;
     using System;
     using System.Threading.Tasks;
@@ -90,12 +91,38 @@ namespace Rollbar.AspNetCore
                 .TraceIdentifier;
             using (_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
+                string telemetryMethod;
+                string telemetryUrl;
+                DateTime telemetryStart = DateTime.Now;
+                int? telemetryStatusCode = null;
+
                 try
                 {
+                    if (TelemetryCollector.Instance.IsAutocollecting && context != null && context.Request != null)
+                    {
+                        telemetryMethod = context.Request.Method;
+                        telemetryUrl = context.Request.Host.Value + context.Request.Path;
+                        if (context.Response != null)
+                        {
+                            telemetryStatusCode = context.Response.StatusCode;
+                        }
+
+                        NetworkTelemetry networkTelemetry = new NetworkTelemetry(
+                            method:telemetryMethod,
+                            url:telemetryUrl,
+                            eventStart:telemetryStart,
+                            eventEnd:null,
+                            statusCode:telemetryStatusCode
+                            );
+                        TelemetryCollector.Instance.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
+                    }
+
                     RollbarScope.Current.HttpContext.HttpAttributes = new RollbarHttpAttributes(context);
                     await this._nextRequestProcessor(context);
+
+
                 }
-                catch (Exception ex)
+                catch (System.Exception ex)
                 {
                     if (!RollbarLocator.RollbarInstance.Config.CaptureUncaughtExceptions)
                     {
@@ -138,7 +165,7 @@ namespace Rollbar.AspNetCore
                         RollbarLocator.RollbarInstance.Log(data);
                     }
 
-                    throw new Exception("The included internal exception processed by the Rollbar middleware", ex);
+                    throw new System.Exception("The included internal exception processed by the Rollbar middleware", ex);
                 }
                 finally
                 {
@@ -146,6 +173,26 @@ namespace Rollbar.AspNetCore
                     {
                         RollbarScope.Current.HttpContext.HttpAttributes.StatusCode = context.Response.StatusCode;
                     }
+
+                    if (TelemetryCollector.Instance.IsAutocollecting && context != null && context.Request != null)
+                    {
+                        telemetryMethod = context.Request.Method;
+                        telemetryUrl = context.Request.Host.Value + context.Request.Path;
+                        if (context.Response != null)
+                        {
+                            telemetryStatusCode = context.Response.StatusCode;
+                        }
+
+                        NetworkTelemetry networkTelemetry = new NetworkTelemetry(
+                            method: telemetryMethod,
+                            url: telemetryUrl,
+                            eventStart: telemetryStart,
+                            eventEnd: DateTime.Now,
+                            statusCode: telemetryStatusCode
+                            );
+                        TelemetryCollector.Instance.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
+                    }
+
                 }
             }
         }

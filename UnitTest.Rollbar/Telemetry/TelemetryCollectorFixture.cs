@@ -65,7 +65,7 @@ namespace UnitTest.Rollbar.Telemetry
             telemetry = new dto.Telemetry(
                 dto.TelemetrySource.Client
                 , dto.TelemetryLevel.Critical
-                , new dto.NetworkTelemetry("GET", "api/users", 200, DateTime.Now)
+                , new dto.NetworkTelemetry("GET", "api/users", DateTime.Now, null, 200)
                 );
             result.Add(telemetry);
 

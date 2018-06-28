@@ -25,21 +25,21 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NetworkTelemetry"/> class.
+        /// Initializes a new instance of the <see cref="NetworkTelemetry" /> class.
         /// </summary>
         /// <param name="method">The method.</param>
         /// <param name="url">The URL.</param>
-        /// <param name="statusCode">The status code.</param>
         /// <param name="eventStart">The event start.</param>
         /// <param name="eventEnd">The event end.</param>
+        /// <param name="statusCode">The status code.</param>
         /// <param name="subtype">The subtype.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public NetworkTelemetry(
             string method
             , string url
-            , int statusCode
             , DateTime eventStart
             , DateTime? eventEnd = null
+            , int? statusCode = null
             , string subtype = null
             , IDictionary<string, object> arbitraryKeyValuePairs = null
             )
@@ -47,7 +47,7 @@
         {
             this.Method = method;
             this.Url = url;
-            this.StatusCode = $"{statusCode}";
+            this.StatusCode = statusCode.HasValue ? $"{statusCode}" : null;
 
             //if (eventStart.HasValue)
             //{

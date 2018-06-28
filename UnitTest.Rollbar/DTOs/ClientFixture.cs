@@ -28,16 +28,16 @@ namespace UnitTest.Rollbar.DTOs
         }
 
         [TestMethod]
-        public void ClientRenderedAsDictWhenEmpty()
+        public void ClientRenderedWithCpuValue()
         {
-            Assert.AreEqual("{}", JsonConvert.SerializeObject(_client));
+            Assert.AreEqual("{\"cpu\":\"" + this._client.Cpu + "\"}", JsonConvert.SerializeObject(_client));
         }
 
         [TestMethod]
         public void ClientRendersArbitraryKeysCorrectly()
         {
             _client["test-key"] = "test-value";
-            Assert.AreEqual("{\"test-key\":\"test-value\"}", JsonConvert.SerializeObject(_client));
+            Assert.IsTrue(JsonConvert.SerializeObject(_client).Contains("\"test-key\":\"test-value\""));
         }
 
     }
