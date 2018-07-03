@@ -1,6 +1,7 @@
 ﻿namespace Rollbar.Deploys
 {
     using Newtonsoft.Json;
+    using Rollbar.Common;
     using System;
 
     /// <summary>
@@ -102,9 +103,7 @@
         {
             get
             {
-                DateTimeOffset timestamp = new DateTimeOffset(new DateTime(1970, 1, 1), TimeSpan.Zero);
-                timestamp = timestamp.AddSeconds(Convert.ToDouble(this.StartTime));
-                return timestamp;
+                return DateTimeUtil.ConvertFromUnixTimestampInSeconds(this.StartTime);
             }
         }
 
@@ -119,9 +118,7 @@
         {
             get
             {
-                DateTimeOffset timestamp = new DateTimeOffset(new DateTime(1970, 1, 1), TimeSpan.Zero);
-                timestamp = timestamp.AddSeconds(Convert.ToDouble(this.EndTime));
-                return timestamp;
+                return DateTimeUtil.ConvertFromUnixTimestampInSeconds(this.EndTime);
             }
         }
     }

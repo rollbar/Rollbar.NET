@@ -64,7 +64,7 @@ namespace UnitTest.Rollbar.DTOs
             telemetry = new dto.Telemetry(
                 dto.TelemetrySource.Client
                 , dto.TelemetryLevel.Critical
-                , new dto.NetworkTelemetry("GET", "api/users", 200, DateTime.Now)
+                , new dto.NetworkTelemetry("GET", "api/users", DateTime.Now, null, 200)
                 );
             Assert.AreEqual(dto.TelemetryType.Network, telemetry.Type);
             Console.WriteLine(JsonConvert.SerializeObject(telemetry));

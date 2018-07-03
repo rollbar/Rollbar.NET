@@ -1,5 +1,6 @@
 ﻿namespace Rollbar.DTOs
 {
+    using Rollbar.Common;
     using System;
     using System.Collections.Generic;
     using System.Text;
@@ -25,21 +26,21 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NetworkTelemetry"/> class.
+        /// Initializes a new instance of the <see cref="NetworkTelemetry" /> class.
         /// </summary>
         /// <param name="method">The method.</param>
         /// <param name="url">The URL.</param>
-        /// <param name="statusCode">The status code.</param>
         /// <param name="eventStart">The event start.</param>
         /// <param name="eventEnd">The event end.</param>
+        /// <param name="statusCode">The status code.</param>
         /// <param name="subtype">The subtype.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public NetworkTelemetry(
             string method
             , string url
-            , int statusCode
-            , DateTime eventStart
+            , DateTime? eventStart = null
             , DateTime? eventEnd = null
+            , int? statusCode = null
             , string subtype = null
             , IDictionary<string, object> arbitraryKeyValuePairs = null
             )
@@ -47,21 +48,36 @@
         {
             this.Method = method;
             this.Url = url;
-            this.StatusCode = $"{statusCode}";
+            this.StatusCode = statusCode.HasValue ? $"{statusCode}" : null;
 
-            //if (eventStart.HasValue)
-            //{
-            //    this.StartTimestamp = (long)eventStart.Value.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
-            //}
-            this.StartTimestamp = (long)eventStart.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            if (eventStart.HasValue)
+            {
+                this.StartTimestamp = DateTimeUtil.ConvertToUnixTimestampInMilliseconds(eventStart.Value);
+            }
+            else
+            {
+                this.StartTimestamp = DateTimeUtil.ConvertToUnixTimestampInMilliseconds(DateTime.UtcNow);
+            }
 
             if (eventEnd.HasValue)
             {
-                this.EndTimestamp = (long)eventEnd.Value.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+                this.EndTimestamp = DateTimeUtil.ConvertToUnixTimestampInMilliseconds(eventEnd.Value);
             }
+
             if (string.IsNullOrWhiteSpace(subtype))
             {
                 this.Subtype = subtype;
+            }
+        }
+
+        /// <summary>
+        /// Finalizes the event.
+        /// </summary>
+        public void FinalizeEvent()
+        {
+            if (!this.EndTimestamp.HasValue) // should not be able to finalize more than once...
+            {
+                this.EndTimestamp = DateTimeUtil.ConvertToUnixTimestampInMilliseconds(DateTime.UtcNow);
             }
         }
 
@@ -110,7 +126,7 @@
         public string StatusCode
         {
             get { return this[ReservedProperties.StatusCode] as string; }
-            private set { this[ReservedProperties.StatusCode] = value; }
+            set { this[ReservedProperties.StatusCode] = value; }
         }
 
         /// <summary>

@@ -74,7 +74,14 @@
         /// <returns></returns>
         public object this[string key]
         {
-            get => this._keyedValues[key];
+            get
+            {
+                if (this._keyedValues.TryGetValue(key, out object result))
+                {
+                    return result;
+                }
+                return null;
+            }
             set
             {
                 Assumption.AssertTrue(
@@ -85,12 +92,10 @@
                     "conditional " + nameof(value) + " assessment"
                     );
 
-                Assumption.AssertTrue(
-                    !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key)                       // not about reserved property/key
-                    || value == null                                                                           // the value happened to be null
-                    || value.GetType() == this._metadata.ReservedPropertyInfoByReservedKey[key].PropertyType,  // OR new value type matches reserved property type
-                    "conditional " + nameof(value) + " assessment"
-                    );
+                //Assumption.AssertTrue(
+                //    !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key)                       // not about reserved property/key
+                //    , "conditional " + nameof(value) + " assessment"
+                //    );
 
                 this._keyedValues[key] = value;
             }
