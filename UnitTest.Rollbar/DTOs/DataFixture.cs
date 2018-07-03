@@ -3,6 +3,7 @@
 namespace UnitTest.Rollbar.DTOs
 {
     using global::Rollbar;
+    using global::Rollbar.Common;
     using global::Rollbar.DTOs;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
@@ -94,7 +95,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void TimestampSetWhenCreated()
         {
-            var timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(DateTime.UtcNow); 
             var data = new Data(this._config, new Body(new System.Exception("Oops.")));
             Thread.Sleep(50);
             Assert.IsTrue(data.Timestamp - timestamp < 50, "Timestamp was created when it was fetched, not when it was created");

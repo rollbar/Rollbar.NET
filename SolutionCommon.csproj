@@ -13,6 +13,7 @@
 
       New features, enhancements and fixes:
 
+      - resolve #164: Refactoring: consolidate .Net DateTime-to/from-UnixTimestamp conversions within a utility class
       - resolve #161: Rollbar Asp.Net Core middleware: auto-capture a NetworkTelemetry event based on the HTTP request processed by the middleware
       - resolve #160: Capture CPU architecture as a new data field within Client/Server elements of the payload
       - resolve #158: Implement proper hosting OS detection under .Net Core

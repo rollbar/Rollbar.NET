@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Text;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -41,7 +42,7 @@
         {
             Assumption.AssertNotNull(body, nameof(body));
 
-            this.Timestamp = (long) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
+            this.Timestamp = DateTimeUtil.ConvertToUnixTimestampInMilliseconds(DateTime.UtcNow);
             this.Source = source;
             this.Level = level;
             this.Type = body.Type;

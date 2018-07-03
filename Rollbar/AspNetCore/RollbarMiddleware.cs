@@ -91,26 +91,19 @@ namespace Rollbar.AspNetCore
                 .TraceIdentifier;
             using (_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
-                string telemetryMethod;
-                string telemetryUrl;
-                DateTime telemetryStart = DateTime.Now;
-                int? telemetryStatusCode = null;
+                NetworkTelemetry networkTelemetry = null;
 
                 try
                 {
                     if (TelemetryCollector.Instance.IsAutocollecting && context != null && context.Request != null)
                     {
-                        telemetryMethod = context.Request.Method;
-                        telemetryUrl = context.Request.Host.Value + context.Request.Path;
-                        if (context.Response != null)
-                        {
-                            telemetryStatusCode = context.Response.StatusCode;
-                        }
+                        int? telemetryStatusCode = null;
+                        telemetryStatusCode = context?.Response?.StatusCode;
 
-                        NetworkTelemetry networkTelemetry = new NetworkTelemetry(
-                            method:telemetryMethod,
-                            url:telemetryUrl,
-                            eventStart:telemetryStart,
+                        networkTelemetry = new NetworkTelemetry(
+                            method: context.Request.Method,
+                            url: context.Request.Host.Value + context.Request.Path,
+                            eventStart: DateTime.UtcNow,
                             eventEnd:null,
                             statusCode:telemetryStatusCode
                             );
@@ -174,23 +167,16 @@ namespace Rollbar.AspNetCore
                         RollbarScope.Current.HttpContext.HttpAttributes.StatusCode = context.Response.StatusCode;
                     }
 
-                    if (TelemetryCollector.Instance.IsAutocollecting && context != null && context.Request != null)
+                    if (networkTelemetry != null 
+                        && context != null 
+                        && context.Request != null
+                        )
                     {
-                        telemetryMethod = context.Request.Method;
-                        telemetryUrl = context.Request.Host.Value + context.Request.Path;
                         if (context.Response != null)
                         {
-                            telemetryStatusCode = context.Response.StatusCode;
+                            networkTelemetry.StatusCode = context.Response.StatusCode.ToString();
                         }
-
-                        NetworkTelemetry networkTelemetry = new NetworkTelemetry(
-                            method: telemetryMethod,
-                            url: telemetryUrl,
-                            eventStart: telemetryStart,
-                            eventEnd: DateTime.Now,
-                            statusCode: telemetryStatusCode
-                            );
-                        TelemetryCollector.Instance.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
+                        networkTelemetry.FinalizeEvent();
                     }
 
                 }

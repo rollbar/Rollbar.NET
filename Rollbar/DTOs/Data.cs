@@ -87,7 +87,7 @@
                     { "version", Data.NotifierAssemblyVersion },
                 };
             this.GuidUuid = Guid.NewGuid();
-            this.Timestamp = (long)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            this.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(DateTime.UtcNow);
         }
 
         /// <summary>
