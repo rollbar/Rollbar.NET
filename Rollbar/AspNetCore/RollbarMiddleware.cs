@@ -117,6 +117,12 @@ namespace Rollbar.AspNetCore
                 }
                 catch (System.Exception ex)
                 {
+                    if (networkTelemetry != null)
+                    {
+                        networkTelemetry.StatusCode = context?.Response?.StatusCode.ToString();
+                        networkTelemetry.FinalizeEvent();
+                    }
+
                     if (!RollbarLocator.RollbarInstance.Config.CaptureUncaughtExceptions)
                     {
                         // just rethrow since the Rollbar SDK is configured not to auto-capture uncaught exceptions:
@@ -162,19 +168,21 @@ namespace Rollbar.AspNetCore
                 }
                 finally
                 {
-                    if (context != null && context.Response != null)
+                    if (context != null 
+                        && context.Response != null 
+                        && RollbarScope.Current != null 
+                        && RollbarScope.Current.HttpContext != null 
+                        && RollbarScope.Current.HttpContext.HttpAttributes != null
+                        )
                     {
                         RollbarScope.Current.HttpContext.HttpAttributes.StatusCode = context.Response.StatusCode;
                     }
 
-                    if (networkTelemetry != null 
-                        && context != null 
-                        && context.Request != null
-                        )
+                    if (networkTelemetry != null )
                     {
-                        if (context.Response != null)
+                        if (string.IsNullOrWhiteSpace(networkTelemetry.StatusCode))
                         {
-                            networkTelemetry.StatusCode = context.Response.StatusCode.ToString();
+                            networkTelemetry.StatusCode = context?.Response?.StatusCode.ToString();
                         }
                         networkTelemetry.FinalizeEvent();
                     }

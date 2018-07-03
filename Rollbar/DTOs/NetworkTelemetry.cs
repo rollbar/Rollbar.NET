@@ -75,7 +75,10 @@
         /// </summary>
         public void FinalizeEvent()
         {
-            this.EndTimestamp = DateTimeUtil.ConvertToUnixTimestampInMilliseconds(DateTime.UtcNow);
+            if (!this.EndTimestamp.HasValue) // should not be able to finalize more than once...
+            {
+                this.EndTimestamp = DateTimeUtil.ConvertToUnixTimestampInMilliseconds(DateTime.UtcNow);
+            }
         }
 
         /// <summary>
