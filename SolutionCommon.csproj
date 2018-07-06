@@ -8,20 +8,12 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.5.1</NotifierVersion>
+    <NotifierVersion>1.5.2</NotifierVersion>
     <PackageReleaseNotes>
 
       New features, enhancements and fixes:
 
-      - resolve #164: Refactoring: consolidate .Net DateTime-to/from-UnixTimestamp conversions within a utility class
-      - resolve #161: Rollbar Asp.Net Core middleware: auto-capture a NetworkTelemetry event based on the HTTP request processed by the middleware
-      - resolve #160: Capture CPU architecture as a new data field within Client/Server elements of the payload
-      - resolve #158: Implement proper hosting OS detection under .Net Core
-      - resolve #157: Refactoring: extract deployment related functionality of RollbarClient into RollbarDeployClient
-      - resolve #156: Performance: reuse the same HttpClient instance whenever possible
-      - resolve #155: Samples: Update Xamarin sample's dependencies
-      - resolve #154: UX: Add type discovery and casting with proper overload call to all the RollbarLogger's methods that accept object as their first argument
-
+      - resolve #165: AspNetCore2.WebApi _logger.LogError(exception, "bla"); doesn't send the exception to rollbar
 
     </PackageReleaseNotes>
 
