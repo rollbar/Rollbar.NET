@@ -28,10 +28,30 @@
         {
             this._logger.LogCritical(nameof(ValuesController) + ".Get() is called...");
 
+            try
+            {
+                int level = 0;
+                this.FakeExceptionCallStack(ref level);
+            }
+            catch(Exception ex)
+            {
+                this._logger.Log(logLevel: LogLevel.Critical, exception: ex, message: "Got one!");
+            }
+
             //// Let's simulate an unhandled exception:
             throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController");
 
             return new string[] { "value1", "value2" };
+        }
+
+        private void FakeExceptionCallStack(ref int level)
+        {
+            level++;
+            if (level == 5)
+            {
+                throw new Exception("Outer handled exception", new NullReferenceException("Inner handled exception"));
+            }
+            this.FakeExceptionCallStack(ref level);
         }
 
         private void Rollbar_InternalEvent(object sender, Rollbar.RollbarEventArgs e)

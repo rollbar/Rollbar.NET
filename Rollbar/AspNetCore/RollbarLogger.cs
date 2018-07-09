@@ -126,15 +126,19 @@ namespace Rollbar.AspNetCore
             }
 
             Rollbar.DTOs.Body payloadBody = null;
-            if (!string.IsNullOrWhiteSpace(message))
+            if (exception != null)
+            {
+                payloadBody = new DTOs.Body(exception);
+            }
+            else if (!string.IsNullOrWhiteSpace(message))
             {
                 payloadBody = new DTOs.Body(new DTOs.Message(message));
             }
             else
             {
-                payloadBody = new DTOs.Body(exception);
+                return; //nothing to report...
             }
-
+            
             Dictionary<string, object> customProperties = new Dictionary<string, object>();
             customProperties.Add(
                 "LogEventID"
