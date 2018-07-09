@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar", "Rollbar\Rollbar.csproj", "{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar", "UnitTest.Rollbar\UnitTest.Rollbar.csproj", "{0B57F312-5CCF-40A4-B637-F767E3796BC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar", "UnitTest.Rollbar\UnitTest.Rollbar.csproj", "{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B57F312-5CCF-40A4-B637-F767E3796BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B57F312-5CCF-40A4-B637-F767E3796BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B57F312-5CCF-40A4-B637-F767E3796BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B57F312-5CCF-40A4-B637-F767E3796BC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
