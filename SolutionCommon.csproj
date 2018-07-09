@@ -8,7 +8,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.5.2</NotifierVersion>
+    <NotifierVersion>1.5.3</NotifierVersion>
     <PackageReleaseNotes>
 
       New features, enhancements and fixes:
@@ -77,13 +77,13 @@
   <ItemGroup Condition="'$(NetVariant)' == 'NET_CORE' 
              Or '$(NetVariant)' == 'NET_STANDARD'
              ">
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(NetVariant)' == 'NET_FX'">
