@@ -9,6 +9,8 @@ namespace UnitTest.Rollbar
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using global::Rollbar.DTOs;
+    using Exception = System.Exception;
 
     [TestClass]
     [TestCategory(nameof(RollbarLoggerFixture))]
@@ -172,6 +174,61 @@ namespace UnitTest.Rollbar
                     Assert.IsTrue(false);
                 }
             }
+        }
+
+        [DataTestMethod]
+        [DataRow(ErrorLevel.Critical)]
+        [DataRow(ErrorLevel.Error)]
+        [DataRow(ErrorLevel.Warning)]
+        [DataRow(ErrorLevel.Info)]
+        [DataRow(ErrorLevel.Debug)]
+        public void ConvenienceMethodsUsesAppropriateErrorLevels(ErrorLevel expectedLogLevel)
+        {
+            var awaitAsyncSend = new ManualResetEventSlim(false);
+            var acctualLogLevel = ErrorLevel.Info;
+            void Transform(Payload payload)
+            {
+                acctualLogLevel = payload.Data.Level.Value;
+                awaitAsyncSend.Set();
+            }
+
+            var loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
+            {
+                Environment = RollbarUnitTestSettings.Environment,
+                Transform = Transform,
+            };
+            using (var logger = RollbarFactory.CreateNew().Configure(loggerConfig))
+            {
+                try
+                {
+                    var ex = new Exception();
+                    switch (expectedLogLevel)
+                    {
+                        case ErrorLevel.Critical:
+                            logger.Critical(ex);
+                            break;
+                        case ErrorLevel.Error:
+                            logger.Error(ex);
+                            break;
+                        case ErrorLevel.Warning:
+                            logger.Warning(ex);
+                            break;
+                        case ErrorLevel.Info:
+                            logger.Info(ex);
+                            break;
+                        case ErrorLevel.Debug:
+                            logger.Debug(ex);
+                            break;
+                    }
+                }
+                catch
+                {
+                    Assert.IsTrue(false);
+                }
+            }
+
+            awaitAsyncSend.Wait();
+            Assert.AreEqual(expectedLogLevel, acctualLogLevel);
         }
 
 

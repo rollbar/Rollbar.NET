@@ -179,21 +179,21 @@ namespace Rollbar
 
         public ILogger Warning(System.Exception error, IDictionary<string, object> custom = null)
         {
-            this.Report(error, ErrorLevel.Error, custom);
+            this.Report(error, ErrorLevel.Warning, custom);
 
             return this;
         }
 
         public ILogger Info(System.Exception error, IDictionary<string, object> custom = null)
         {
-            this.Report(error, ErrorLevel.Error, custom);
+            this.Report(error, ErrorLevel.Info, custom);
 
             return this;
         }
 
         public ILogger Debug(System.Exception error, IDictionary<string, object> custom = null)
         {
-            this.Report(error, ErrorLevel.Error, custom);
+            this.Report(error, ErrorLevel.Debug, custom);
 
             return this;
         }
