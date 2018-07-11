@@ -87,11 +87,10 @@ namespace UnitTest.Rollbar.Telemetry
         [TestMethod]
         public void TestTelemetryEnabling()
         {
+            TelemetryCollector.Instance.FlushQueue();
             Assert.IsFalse(TelemetryCollector.Instance.IsAutocollecting);
 
-            //TelemetryCollector.Instance.Config.InitFromAppConfig();
-
-            var config = TelemetryCollector.Instance.Config;
+            var config = TelemetryCollector.Instance.Config.Reconfigure(new TelemetryConfig(false, 10));
 
             Assert.IsFalse(config.TelemetryEnabled);
             Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
@@ -120,6 +119,7 @@ namespace UnitTest.Rollbar.Telemetry
         [TestMethod]
         public void TestTelemetryFixedQueueDepth()
         {
+            TelemetryCollector.Instance.FlushQueue();
             Assert.IsFalse(TelemetryCollector.Instance.IsAutocollecting);
 
             var config = TelemetryCollector.Instance.Config;

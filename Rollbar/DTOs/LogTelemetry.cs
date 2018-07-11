@@ -50,7 +50,7 @@
         public string Message
         {
             get { return this[ReservedProperties.Message] as string; }
-            private set { this[ReservedProperties.Message] = value; }
+            set { this[ReservedProperties.Message] = value; }
         }
 
     }

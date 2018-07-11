@@ -97,6 +97,12 @@
                 //    , "conditional " + nameof(value) + " assessment"
                 //    );
 
+
+                Assumption.AssertTrue(!metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey.ContainsKey(key) 
+                    || value == null
+                    || metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType == value.GetType(), nameof(value)
+                    );
+
                 this._keyedValues[key] = value;
             }
         }

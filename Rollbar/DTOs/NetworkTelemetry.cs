@@ -64,7 +64,7 @@
                 this.EndTimestamp = DateTimeUtil.ConvertToUnixTimestampInMilliseconds(eventEnd.Value);
             }
 
-            if (string.IsNullOrWhiteSpace(subtype))
+            if (!string.IsNullOrWhiteSpace(subtype))
             {
                 this.Subtype = subtype;
             }
