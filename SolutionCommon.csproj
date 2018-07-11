@@ -8,13 +8,13 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.5.3</NotifierVersion>
+    <NotifierVersion>1.5.4</NotifierVersion>
     <PackageReleaseNotes>
 
-      New features, enhancements and fixes:
+      Critical fixes:
 
-      - resolve #165: AspNetCore2.WebApi _logger.LogError(exception, "bla"); doesn't send the exception to rollbar
-      - resolve #167: Update to the latest .NET dependencies
+      - resolve #169: Convenience methods for Logging erroneously using Error LogLevel
+      - resolve #171: Fix some unit tests failing during the unit tests batch run
 
     </PackageReleaseNotes>
 

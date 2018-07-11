@@ -44,7 +44,7 @@
         /// <value>
         /// The default platform.
         /// </value>
-        public static string DefaultPlatform { get; set; } = "windows";
+        internal static string DefaultPlatform { get; set; } = "windows";
 
         /// <summary>
         /// Gets or sets the default language.
@@ -52,7 +52,7 @@
         /// <value>
         /// The default language.
         /// </value>
-        public static string DefaultLanguage { get; set; } = "c#";
+        internal static string DefaultLanguage { get; set; } = "c#";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Data" /> class.
