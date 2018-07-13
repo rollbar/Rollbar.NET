@@ -35,6 +35,7 @@ namespace Sample.Xamarin.Forms
                 .Error(new System.Exception("Xamarin.Forms sample: trying out the TraceChain", new NullReferenceException()))
                 ;
 
+
             MainPage = new Sample.Xamarin.Forms.MainPage();
         }
 
