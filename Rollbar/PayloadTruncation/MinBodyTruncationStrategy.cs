@@ -44,12 +44,14 @@
                 if (trace.Exception != null)
                 {
                     trace.Exception.Description = null;
-                    if (trace.Exception.Message != null 
+                    if (trace.Exception.Message != null
                         && trace.Exception.Message.Length > MinBodyTruncationStrategy.maxExceptionMessageChars
                         )
-                    trace.Exception.Message = 
-                            trace.Exception.Message
-                            .Substring(startIndex: 0, length: MinBodyTruncationStrategy.maxExceptionMessageChars);
+                    {
+                        trace.Exception.Message =
+                                trace.Exception.Message
+                                .Substring(startIndex: 0, length: MinBodyTruncationStrategy.maxExceptionMessageChars);
+                    }
                 }
                 if (trace.Frames != null && trace.Frames.LongLength > MinBodyTruncationStrategy.maxTraceFrames)
                 {

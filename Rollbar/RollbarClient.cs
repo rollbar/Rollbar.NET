@@ -16,9 +16,6 @@ namespace Rollbar
     using Rollbar.Diagnostics;
     using Rollbar.Serialization.Json;
     using Rollbar.PayloadTruncation;
-    using Rollbar.Deploys;
-    using Rollbar.Common;
-    using System.Linq;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -49,8 +46,15 @@ namespace Rollbar
             }
 
             var sp = ServicePointManager.FindServicePoint(new Uri(this._config.EndPoint));
-            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
-
+            try
+            {
+                sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
+            }
+            catch (NotImplementedException ex)
+            {
+                // just a crash prevention.
+                // this is a work around the unimplemented property within Mono runtime...
+            }
 
             this._payloadTruncationStrategy = new IterativeTruncationStrategy();
         }

@@ -13,8 +13,9 @@
 
       Improvements and fixes:
 
+      - resolve #173: Unable to use Rollbar with Xamarin.Forms for Android project since version 1.5.1
       - ref #153: Not able to get correct traceback (added example of reporting unhandled exceptions from the Xamarin UWP sample app)
-      
+
 
     </PackageReleaseNotes>
 

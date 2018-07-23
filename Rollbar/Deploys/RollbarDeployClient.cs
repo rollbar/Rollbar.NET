@@ -7,7 +7,6 @@
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -26,7 +25,16 @@
             this._httpClient = httpClient;
 
             var sp = ServicePointManager.FindServicePoint(new Uri(this._config.EndPoint));
-            sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
+            try
+            {
+                sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
+            }
+            catch (NotImplementedException ex)
+            {
+                // just a crash prevention.
+                // this is a work around the unimplemented property within Mono runtime...
+            }
+
         }
 
         public RollbarConfig Config { get { return this._config; } }
