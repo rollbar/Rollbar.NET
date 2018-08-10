@@ -75,6 +75,20 @@ namespace UnitTest.Rollbar
             }
         }
 
+        [TestMethod]
+        public void TestCombinedStateCapture()
+        {
+            var objUnderTest = new InstanceType();
+
+            var combinedState = RollbarAssistant.CaptureState(objUnderTest, nameof(objUnderTest));
+            RollbarAssistant.CaptureState(typeof(StaticType), combinedState);
+
+            Assert.AreEqual(
+                RollbarAssistant.CaptureState(objUnderTest, nameof(objUnderTest)).Count + RollbarAssistant.CaptureState(typeof(StaticType)).Count
+                , combinedState.Count
+                );
+        }
+
         #region data mocks
 
         enum EnumType
