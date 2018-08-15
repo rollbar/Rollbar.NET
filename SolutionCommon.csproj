@@ -8,13 +8,15 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.5.5</NotifierVersion>
+    <NotifierVersion>1.5.6</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
 
-      - resolve #173: Unable to use Rollbar with Xamarin.Forms for Android project since version 1.5.1
-      - ref #153: Not able to get correct traceback (added example of reporting unhandled exceptions from the Xamarin UWP sample app)
+      - resolve #180: Redo meaning of the log level config setting into logging level threshold
+      - resolve #179: Improve RollbarAssistant's CaptureState APIs by allowing state capture into existing state bag
+      - resolve #178: Add example showing local variables
+      - resolve #181: Update existing documentation regarding new meaning of log level config setting
 
 
     </PackageReleaseNotes>

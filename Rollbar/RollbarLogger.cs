@@ -102,6 +102,12 @@ namespace Rollbar
 
         public ILogger Log(Data data)
         {
+            if (this._config.LogLevel.HasValue && data.Level < this._config.LogLevel.Value)
+            {
+                // nice shortcut:
+                return this;
+            }
+
             SendAsync(data);
 
             return this;
@@ -109,9 +115,16 @@ namespace Rollbar
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
+            if (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+            {
+                // nice shortcut:
+                return this;
+            }
+
             Data data = obj as Data;
             if (data != null)
             {
+                data.Level = level;
                 return this.Log(data);
             }
             System.Exception exception = obj as System.Exception;
@@ -131,6 +144,12 @@ namespace Rollbar
 
         public ILogger Log(ErrorLevel level, string msg, IDictionary<string, object> custom = null)
         {
+            if (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+            {
+                // nice shortcut:
+                return this;
+            }
+
             this.Report(msg, level, custom);
 
             return this;
@@ -476,8 +495,11 @@ namespace Rollbar
         {
             //lock (this._syncRoot)
             {
+                // here is the last chance to decide if we need to actually send this payload
+                // based on the current config settings:
                 if (string.IsNullOrWhiteSpace(this._config.AccessToken)
                     || this._config.Enabled == false
+                    || (this._config.LogLevel.HasValue && payload.Data.Level < this._config.LogLevel.Value)
                     )
                 {
                     return;

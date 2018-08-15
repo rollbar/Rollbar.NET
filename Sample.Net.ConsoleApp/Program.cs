@@ -1,5 +1,6 @@
 ﻿namespace Sample.Net.ConsoleApp
 {
+    using GameDomainModel;
     using Rollbar;
     using Rollbar.DTOs;
     using System;
@@ -7,6 +8,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
 
     class Program
     {
@@ -29,9 +31,12 @@
                 .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
                 ;
 
-            RollbarLocator.RollbarInstance
+            DemonstrateExceptionSourceStateCapture();
+
+            RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5))
                 .Info("Via no-blocking mechanism.")
                 ;
+
 
             Console.WriteLine("Press Enter key to exit...");
             Console.ReadLine();
@@ -116,5 +121,32 @@
                 return;
             }
         }
+
+
+        private static void DemonstrateExceptionSourceStateCapture()
+        {
+            Vehicle vehicle = new Sedan(200) {
+                Brand = "Audi",
+                Model = "A4 Quattro",
+                Type = Sedan.SedanType.PassengerCar,
+            };
+
+            try
+            {
+                vehicle.Start();
+            }
+            catch (System.Exception ex)
+            {
+                // capture state of vehicle instance:
+                var state = RollbarAssistant.CaptureState(vehicle, "StartedVehicle");
+                // also, capture state of the Game static type:
+                RollbarAssistant.CaptureState(typeof(Game), state);
+                // report the captured states along with the caught exception:
+                RollbarLocator.RollbarInstance
+                    .AsBlockingLogger(TimeSpan.FromMilliseconds(10000))
+                    .Error(new ApplicationException("Application exception with a state capture.", ex), state);
+            }
+        }
+
     }
 }
