@@ -5,24 +5,15 @@
 
     /// <summary>
     /// Lists all the supported Rollbar error levels.
+    /// The members are ordered from least to most significant.
     /// </summary>
     [JsonConverter(typeof(ErrorLevelConverter))]
     public enum ErrorLevel
     {
         /// <summary>
-        /// The critical error/log level.
+        /// The debug log level.
         /// </summary>
-        Critical,
-
-        /// <summary>
-        /// The error log level.
-        /// </summary>
-        Error,
-
-        /// <summary>
-        /// The warning log level.
-        /// </summary>
-        Warning,
+        Debug,
 
         /// <summary>
         /// The informational log level.
@@ -30,8 +21,19 @@
         Info,
 
         /// <summary>
-        /// The debug log level.
+        /// The warning log level.
         /// </summary>
-        Debug,
+        Warning,
+
+        /// <summary>
+        /// The error log level.
+        /// </summary>
+        Error,
+
+        /// <summary>
+        /// The critical error/log level.
+        /// </summary>
+        Critical,
+
     }
 }
