@@ -11,7 +11,18 @@
     /// </summary>
     /// <seealso cref="System.Diagnostics.TraceListener" />
     /// <remarks>
-    /// 
+    /// This class implements a Rollbar Notifier's plug-in for the standard .NET tracing infrastructure.
+    /// It, internally, uses the RollbarLogger to asynchronously forward the "herd" tracing events to
+    /// the Rollbar API Service.
+    /// So, if your codebase is already using the .NET tracing extensively, you can gain Rollbar remote
+    /// error/log monitoring benefits by simply adding RollbarTraceListener as one more trace listener.
+    /// This listener instance can either be added via code or via app.config file. In the app.config file,
+    /// the listener can be either configured on very basic level by specifying the access token and environment
+    /// attributes or by using more advanced configuration parameters via dedicated Rollbar configuration
+    /// section of app.config file.
+    /// Since the .NET does not seem to support yet addition of trace listeners via appsettings.json file,
+    /// this trace listener can be added only via code, but configured either via code or via appropriate
+    /// Rollbar section of the appsettings.json file.
     /// </remarks>
     /// <example>
     /// 
@@ -40,7 +51,7 @@
     ///               type="Rollbar.NetStandard.RollbarTraceListener,Rollbar" 
     ///               traceOutputOptions="ProcessId, ThreadId, Timestamp, DateTime, Callstack, LogicalOperationStack" 
     ///               rollbarAccessToken="17965fa5041749b6bf7095a190001ded" 
-    ///               rollbarEnvironment="RollbarNetPrototypes"
+    ///               rollbarEnvironment="MyRollbarEnvironmentTag"
     ///               />
     ///          <remove name = "Default"
     ///                  />
