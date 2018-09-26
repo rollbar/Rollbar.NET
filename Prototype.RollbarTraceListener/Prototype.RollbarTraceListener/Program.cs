@@ -12,8 +12,13 @@ namespace Prototype.RollbarTraceListener
     {
         static void Main(string[] args)
         {
+            var traceListeners = Trace.Listeners;
             Trace.WriteLine("Tracing something...");
-            Trace.TraceError(new Exception().ToString());
+            Trace.TraceError(new Exception("Some EXCEPTION").ToString());
+            Trace.TraceWarning("WARNING!");
+            Trace.TraceInformation("INFO...");
+            Trace.Fail("FAIL!!!");
+            Trace.Assert(false, "ASSERT");
 
             Console.ReadLine();
         }

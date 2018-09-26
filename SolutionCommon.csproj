@@ -8,15 +8,11 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.5.6</NotifierVersion>
+    <NotifierVersion>1.5.7</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
-
-      - resolve #180: Redo meaning of the log level config setting into logging level threshold
-      - resolve #179: Improve RollbarAssistant's CaptureState APIs by allowing state capture into existing state bag
-      - resolve #178: Add example showing local variables
-      - resolve #181: Update existing documentation regarding new meaning of log level config setting
+      - resolve #183: Rollbar.NET as a .NET Trace Listener
 
 
     </PackageReleaseNotes>

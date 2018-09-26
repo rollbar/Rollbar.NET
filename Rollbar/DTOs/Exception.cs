@@ -15,8 +15,31 @@
         /// </summary>
         /// <param name="class">The class.</param>
         public Exception(string @class)
+            : this(@class, null)
         {
-            Class = @class;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Exception"/> class.
+        /// </summary>
+        /// <param name="class">The class.</param>
+        /// <param name="message">The message.</param>
+        public Exception(string @class, string message)
+            : this(@class, message, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Exception" /> class.
+        /// </summary>
+        /// <param name="class">The class.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="description">The description.</param>
+        public Exception(string @class, string message, string description)
+        {
+            this.Class = @class;
+            this.Message = message;
+            this.Description = description;
         }
 
         /// <summary>
@@ -27,8 +50,8 @@
         {
             Assumption.AssertNotNull(exception, nameof(exception));
 
-            Class = exception.GetType().FullName;
-            Message = exception.Message;
+            this.Class = exception.GetType().FullName;
+            this.Message = exception.Message;
         }
 
         /// <summary>

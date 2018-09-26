@@ -16,6 +16,19 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Body"/> class.
         /// </summary>
+        /// <param name="trace">The trace.</param>
+        internal Body(Trace trace)
+        {
+            Assumption.AssertNotNull(trace, nameof(trace));
+
+            this.Trace = trace;
+
+            Validate();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Body"/> class.
+        /// </summary>
         /// <param name="exceptions">The exceptions.</param>
         public Body(IEnumerable<System.Exception> exceptions)
         {
