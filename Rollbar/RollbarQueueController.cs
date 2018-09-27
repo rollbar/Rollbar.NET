@@ -5,6 +5,7 @@ namespace Rollbar
     using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.NetStandard;
     using Rollbar.Serialization.Json;
     using System;
     using System.Collections.Generic;
@@ -110,7 +111,9 @@ namespace Rollbar
                 this._allQueues.Add(queue);
                 this.IndexByToken(queue);
                 ((RollbarConfig) queue.Logger.Config).Reconfigured += Config_Reconfigured;
-                Debug.WriteLine(this.GetType().Name + ": Registered a queue. Total queues count: " + this._allQueues.Count + ".");
+
+                // The following debug line causes stack overflow when RollbarTraceListener is activated:                
+                Debug.WriteLineIf(RollbarTraceListener.InstanceCount == 0, this.GetType().Name + ": Registered a queue. Total queues count: " + this._allQueues.Count + ".");
             }
         }
 

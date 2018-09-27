@@ -67,6 +67,9 @@
     public class RollbarTraceListener
         : TraceListener
     {
+        private static object typeSyncRoot = new object();
+        public static int InstanceCount = 0;
+
         private IRollbar _rollbar = null;
 
         /// <summary>
@@ -79,9 +82,18 @@
             {
                 if (this._rollbar == null)
                 {
-                    // the best thing we can do at this point is to start using 
-                    // the Rollbar singleton hoping it was pre-configured by now:
-                    this._rollbar = RollbarLocator.RollbarInstance;
+                    var config = this.GetRollbarTraceListenerConfig();
+                    if (config != null)
+                    {
+                        this._rollbar = RollbarFactory.CreateNew();
+                        this._rollbar.Configure(config);
+                    }
+                    else
+                    {
+                        // the best thing we can do at this point is to start using 
+                        // the Rollbar singleton hoping it was pre-configured by now:
+                        this._rollbar = RollbarLocator.RollbarInstance;
+                    }
                 }
 
                 return this._rollbar;
@@ -98,6 +110,11 @@
             {
                 this._rollbar = RollbarFactory.CreateNew();
                 this._rollbar.Configure(config);
+            }
+
+            lock(typeSyncRoot)
+            {
+                RollbarTraceListener.InstanceCount++;
             }
         }
 
@@ -126,6 +143,10 @@
                 }
                 this._rollbar = RollbarFactory.CreateNew();
                 this._rollbar.Configure(config);
+            }
+            lock (typeSyncRoot)
+            {
+                RollbarTraceListener.InstanceCount++;
             }
         }
 
@@ -173,29 +194,49 @@
             custom["eventType"] = eventType;
             custom["eventMessage"] = message;
 
-            if (!string.IsNullOrWhiteSpace(eventCache.Callstack))
+            if (!string.IsNullOrWhiteSpace(eventCache.Callstack) 
+                && (message.Contains("Exception: ") || (eventType == TraceEventType.Critical) || (eventType == TraceEventType.Error)))
             {
                 DTOs.Body body = new DTOs.Body(new DTOs.Trace(eventCache.Callstack, message));
                 DTOs.Data data = new DTOs.Data(this.Rollbar.Config, body, custom);
+                data.Level = RollbarTraceListener.Translate(eventType);
                 this.Rollbar.Log(data);
+                return;
             }
-
+           
             switch (eventType)
             {
                 case TraceEventType.Critical:
-                    RollbarLocator.RollbarInstance.Critical(message, custom);
+                    this.Rollbar.Critical(message, custom);
                     break;
                 case TraceEventType.Error:
-                    RollbarLocator.RollbarInstance.Error(message, custom);
+                    this.Rollbar.Error(message, custom);
                     break;
                 case TraceEventType.Warning:
-                    RollbarLocator.RollbarInstance.Warning(message, custom);
+                    this.Rollbar.Warning(message, custom);
                     break;
                 case TraceEventType.Information:
-                    RollbarLocator.RollbarInstance.Info(message, custom);
+                    this.Rollbar.Info(message, custom);
                     break;
                 default:
                     break;
+            }
+        }
+
+        private static ErrorLevel Translate(TraceEventType traceEventType)
+        {
+            switch (traceEventType)
+            {
+                case TraceEventType.Critical:
+                    return ErrorLevel.Critical;
+                case TraceEventType.Error:
+                    return ErrorLevel.Error;
+                case TraceEventType.Warning:
+                    return ErrorLevel.Warning;
+                case TraceEventType.Information:
+                    return ErrorLevel.Info;
+                default:
+                    return ErrorLevel.Critical;
             }
         }
 
