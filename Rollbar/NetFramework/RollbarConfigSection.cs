@@ -140,6 +140,26 @@
         }
 
         /// <summary>
+        /// Gets the proxy username.
+        /// </summary>
+        /// <value>The proxy username.</value>
+        [ConfigurationProperty("proxyUsername", IsRequired = false)]
+        public string ProxyUsername
+        {
+            get { return this["proxyUsername"] as string; }
+        }
+
+        /// <summary>
+        /// Gets the proxy password.
+        /// </summary>
+        /// <value>The proxy password.</value>
+        [ConfigurationProperty("proxyPassword", IsRequired = false)]
+        public string ProxyPassword
+        {
+            get { return this["proxyPassword"] as string; }
+        }
+
+        /// <summary>
         /// Gets or sets the maximum reports per minute.
         /// </summary>
         /// <value>

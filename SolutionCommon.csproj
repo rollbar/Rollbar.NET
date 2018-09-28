@@ -12,9 +12,9 @@
     <PackageReleaseNotes>
 
       Improvements and fixes:
+      - resolve #186: Allow proxy credentials in proxy server configuration
       - resolve #183: Rollbar.NET as a .NET Trace Listener
       - resolve #185: Add sample app for RollbarTraceListener
-
 
     </PackageReleaseNotes>
 
