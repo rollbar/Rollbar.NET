@@ -8,7 +8,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.5.7</NotifierVersion>
+    <NotifierVersion>1.6.0</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
