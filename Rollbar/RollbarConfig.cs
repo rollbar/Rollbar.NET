@@ -97,6 +97,8 @@
             };
             this.EndPoint = "https://api.rollbar.com/api/1/";
             this.ProxyAddress = null;
+            this.ProxyUsername = null;
+            this.ProxyPassword = null;
             this.CheckIgnore = null;
             this.Transform = null;
             this.Truncate = null;
@@ -173,6 +175,14 @@
             if (!string.IsNullOrWhiteSpace(config.ProxyAddress))
             {
                 this.ProxyAddress = config.ProxyAddress;
+            }
+            if (!string.IsNullOrWhiteSpace(config.ProxyUsername))
+            {
+                this.ProxyUsername = config.ProxyUsername;
+            }
+            if (!string.IsNullOrWhiteSpace(config.ProxyPassword))
+            {
+                this.ProxyPassword = config.ProxyPassword;
             }
             if (config.PersonDataCollectionPolicies.HasValue)
             {
@@ -291,6 +301,18 @@
         /// The proxy address.
         /// </value>
         public string ProxyAddress { get; set; }
+
+        /// <summary>
+        /// Gets the proxy username.
+        /// </summary>
+        /// <value>The proxy username.</value>
+        public string ProxyUsername { get; set; }
+
+        /// <summary>
+        /// Gets the proxy password.
+        /// </summary>
+        /// <value>The proxy password.</value>
+        public string ProxyPassword { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum reports per minute.

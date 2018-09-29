@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Prototype.RollbarTraceListener")]
+[assembly: AssemblyTitle("Sample.RollbarTraceListener")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Prototype.RollbarTraceListener")]
+[assembly: AssemblyProduct("Sample.RollbarTraceListener")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("97301627-3427-4e6a-b3c1-565f0272252e")]
+[assembly: Guid("87fa4fad-ba23-46b1-975e-701f9b39c35a")]
 
 // Version information for an assembly consists of the following four values:
 //

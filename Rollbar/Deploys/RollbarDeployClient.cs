@@ -46,7 +46,7 @@
                 return this._httpClient;
             }
 
-            return HttpClientUtil.CreateHttpClient(this._config.ProxyAddress);
+            return HttpClientUtil.CreateHttpClient(this._config.ProxyAddress, this._config.ProxyUsername, this._config.ProxyPassword);
         }
 
         private bool Release(HttpClient httpClient)

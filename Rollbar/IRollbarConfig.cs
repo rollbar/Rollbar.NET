@@ -58,6 +58,18 @@
         string ProxyAddress { get; }
 
         /// <summary>
+        /// Gets the proxy username.
+        /// </summary>
+        /// <value>The proxy username.</value>
+        string ProxyUsername { get; }
+
+        /// <summary>
+        /// Gets the proxy password.
+        /// </summary>
+        /// <value>The proxy password.</value>
+        string ProxyPassword { get; }
+
+        /// <summary>
         /// Gets the maximum reports per minute.
         /// </summary>
         /// <value>

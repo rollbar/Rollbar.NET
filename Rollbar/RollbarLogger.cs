@@ -56,7 +56,7 @@ namespace Rollbar
             this._config = new RollbarConfig(this);
             var rollbarClient = new RollbarClient(
                 this._config
-                , RollbarQueueController.Instance.ProvideHttpClient(this._config.ProxyAddress)
+                , RollbarQueueController.Instance.ProvideHttpClient(this._config.ProxyAddress, this._config.ProxyUsername, this._config.ProxyPassword)
                 );
             this._payloadQueue = new PayloadQueue(this, rollbarClient);
             RollbarQueueController.Instance.Register(this._payloadQueue);

@@ -76,8 +76,30 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                new dto.Trace(null);
+                new dto.Trace(null as Exception);
             });
+        }
+
+        [TestMethod]
+        public void TraceFromCallStackString()
+        {
+            string sampleCallStackString = @"
+   at System.Environment.GetStackTrace(Exception e, Boolean needFileInfo)
+   at System.Environment.get_StackTrace()
+   at System.Diagnostics.TraceEventCache.get_Callstack()
+   at System.Diagnostics.TraceListener.WriteFooter(TraceEventCache eventCache)
+   at System.Diagnostics.TraceListener.TraceEvent(TraceEventCache eventCache, String source, TraceEventType eventType, Int32 id, String message)
+   at System.Diagnostics.TraceInternal.TraceEvent(TraceEventType eventType, Int32 id, String format, Object[] args)
+   at System.Diagnostics.Trace.TraceError(String message)
+   at Prototype.RollbarTraceListener.Program.Main(String[] args) in C:\GitHub\WSCLLC\Rollbar.NET\Prototype.RollbarTraceListener\Prototype.RollbarTraceListener\Program.cs:line 17
+";
+            dto.Trace trace = new dto.Trace(sampleCallStackString, "System.Exception: Azohen-way!");
+
+            Assert.AreEqual(8, trace.Frames.Length);
+            Assert.IsNotNull(trace.Exception);
+            Assert.AreEqual("System.Exception", trace.Exception.Class);
+            Assert.AreEqual("Azohen-way!", trace.Exception.Message);
+            Assert.IsNull(trace.Exception.Description);
         }
 
         private static System.Exception GetException()

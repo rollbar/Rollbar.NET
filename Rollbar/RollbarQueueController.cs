@@ -5,6 +5,7 @@ namespace Rollbar
     using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.NetStandard;
     using Rollbar.Serialization.Json;
     using System;
     using System.Collections.Generic;
@@ -71,24 +72,38 @@ namespace Rollbar
         private readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(250);
 
         private HttpClient _httpClient = null;
-        private string _proxySettings = null;
+        private string _proxyAddress = null;
+        private string _proxyUsername = null;
+        private string _proxyPassword = null;
 
-        public HttpClient ProvideHttpClient(string proxySettings)
+        public HttpClient ProvideHttpClient(string proxyAddress = null, string proxyUsername = null, string proxyPassword = null)
         {
             if (this._httpClient != null)
             {
                 Assumption.AssertTrue(
-                    (string.IsNullOrWhiteSpace(proxySettings) && string.IsNullOrWhiteSpace(this._proxySettings))
-                    || (string.Compare(proxySettings, this._proxySettings, true) == 0)
-                    , nameof(proxySettings)
+                    (string.IsNullOrWhiteSpace(proxyAddress) && string.IsNullOrWhiteSpace(this._proxyAddress))
+                    || (string.Compare(proxyAddress, this._proxyAddress, true) == 0)
+                    , nameof(proxyAddress)
+                    );
+                Assumption.AssertTrue(
+                    (string.IsNullOrWhiteSpace(proxyUsername) && string.IsNullOrWhiteSpace(this._proxyUsername))
+                    || (string.Compare(proxyUsername, this._proxyUsername, true) == 0)
+                    , nameof(proxyUsername)
+                    );
+                Assumption.AssertTrue(
+                    (string.IsNullOrWhiteSpace(proxyPassword) && string.IsNullOrWhiteSpace(this._proxyPassword))
+                    || (string.Compare(proxyPassword, this._proxyPassword, true) == 0)
+                    , nameof(proxyPassword)
                     );
                 // reuse what is already there: 
                 return this._httpClient;
             }
 
             // create new instance:
-            this._proxySettings = proxySettings;
-            this._httpClient = HttpClientUtil.CreateHttpClient(proxySettings);
+            this._proxyAddress = proxyAddress;
+            this._proxyUsername = proxyUsername;
+            this._proxyPassword = proxyPassword;
+            this._httpClient = HttpClientUtil.CreateHttpClient(proxyAddress, proxyUsername, proxyPassword);
             return this._httpClient;
         }
 
@@ -110,7 +125,9 @@ namespace Rollbar
                 this._allQueues.Add(queue);
                 this.IndexByToken(queue);
                 ((RollbarConfig) queue.Logger.Config).Reconfigured += Config_Reconfigured;
-                Debug.WriteLine(this.GetType().Name + ": Registered a queue. Total queues count: " + this._allQueues.Count + ".");
+
+                // The following debug line causes stack overflow when RollbarTraceListener is activated:                
+                Debug.WriteLineIf(RollbarTraceListener.InstanceCount == 0, this.GetType().Name + ": Registered a queue. Total queues count: " + this._allQueues.Count + ".");
             }
         }
 

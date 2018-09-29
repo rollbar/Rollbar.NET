@@ -19,10 +19,10 @@ namespace UnitTest.Rollbar.DTOs
     public class FrameFixture
     {
         [TestMethod]
-        public void FrameFromFilenameLeavesEverythingElseNull()
+        public void DefaultFrame()
         {
-            var frame = new Frame("ThisFile.cs");
-            Assert.AreEqual("ThisFile.cs", frame.FileName);
+            var frame = new Frame();
+            Assert.AreEqual(@"(unknown)", frame.FileName);
             Assert.IsNull(frame.LineNo);
             Assert.IsNull(frame.ColNo);
             Assert.IsNull(frame.Method);
@@ -52,7 +52,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void FrameCanHaveCode()
         {
-            var frame = new Frame("ThisFile.cs")
+            var frame = new Frame()
             {
                 Code = "        CallThisMethod(arg1, myObject2);",
             };
@@ -62,7 +62,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void FrameCanHaveContext()
         {
-            var frame = new Frame("ThisFile.cs")
+            var frame = new Frame()
             {
                 Code = "        CallThisMethod(arg1, myObject2);",
                 Context = new CodeContext
@@ -89,7 +89,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void FrameCanHaveArgs()
         {
-            var frame = new Frame("ThisFile.cs")
+            var frame = new Frame()
             {
                 Args = new[]
                 {
@@ -111,7 +111,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void FrameCanHaveKwargs()
         {
-            var frame = new Frame("ThisFile.cs")
+            var frame = new Frame()
             {
                 Kwargs = new Dictionary<string, object>
                 {

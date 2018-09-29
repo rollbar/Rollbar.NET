@@ -1,5 +1,6 @@
 ﻿namespace Rollbar.DTOs
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -16,10 +17,51 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Frame"/> class.
         /// </summary>
-        /// <param name="filename">The filename.</param>
-        public Frame(string filename)
+        public Frame()
         {
-            FileName = filename;
+            this.FileName = @"(unknown)";
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Frame" /> class.
+        /// </summary>
+        /// <param name="frameString">The frame string.</param>
+        public Frame(string frameString)
+        {
+            if (string.IsNullOrWhiteSpace(frameString))
+            {
+                return;
+            }
+
+            string token = @"at ";
+            int tokenIndex = frameString.IndexOf(token);
+            frameString = frameString.Remove(tokenIndex, token.Length);
+            frameString = frameString.Trim();
+            string[] components = frameString.Split(new string[] { " in ", }, StringSplitOptions.None);
+            if (components.Length > 0)
+            {
+                this.Method = components[0];
+            }
+            if (components.Length > 1)
+            {
+                components = components[1].Split(new string[] { ":line ", }, StringSplitOptions.None);
+                if (components.Length > 0)
+                {
+                    this.FileName = components[0];
+                }
+                if (components.Length > 1)
+                {
+                    if (int.TryParse(components[1], out int lineNumber))
+                    {
+                        this.LineNo = lineNumber;
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(this.FileName))
+            {
+                this.FileName = @"(unknown)";
+            }
         }
 
         /// <summary>
@@ -28,6 +70,11 @@
         /// <param name="frame">The frame.</param>
         public Frame(StackFrame frame)
         {
+            if (frame == null)
+            {
+                return;
+            }
+
             var method = frame.GetMethod();
 
             FileName = GetFileName(frame, method);
