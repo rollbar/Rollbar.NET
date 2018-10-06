@@ -8,13 +8,12 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.6.0</NotifierVersion>
+    <NotifierVersion>1.6.1</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
-      - resolve #186: Allow proxy credentials in proxy server configuration
-      - resolve #183: Rollbar.NET as a .NET Trace Listener
-      - resolve #185: Add sample app for RollbarTraceListener
+      - resolve #192: Make sure "defective" StackFrames of Xamarin unhandled exceptions interpreted correctly
+      - resolve #187: SDK not sending the crash log of Xamarin Android/ios app
 
     </PackageReleaseNotes>
 
