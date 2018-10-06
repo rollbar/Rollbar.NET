@@ -75,13 +75,10 @@
                 return;
             }
 
-            var method = frame.GetMethod();
-
-            FileName = GetFileName(frame, method);
+            Method = GetMethod(frame);
+            FileName = GetFileName(frame);
             LineNo = GetLineNumber(frame);
             ColNo = LineNo.HasValue ? GetFileColumnNumber(frame) : null;
-
-            Method = GetMethod(method);
         }
 
         /// <summary>
@@ -164,15 +161,29 @@
 
         #endregion Unautomatable
 
-        private static string GetFileName(StackFrame frame, MethodBase method)
+        private const string defaultFileName = @"(unknown)";
+
+        private static string GetFileName(StackFrame frame)
         {
-            var returnVal = frame.GetFileName();
+            string returnVal = null;
+
+            if (frame != null)
+            {
+                returnVal = frame.GetFileName();
+            }
             if (!string.IsNullOrWhiteSpace(returnVal))
             {
                 return returnVal;
             }
 
-            return method.ReflectedType != null ? method.ReflectedType.FullName : "(unknown)";
+            MethodBase method = frame.GetMethod();
+            if (method != null)
+            {
+                returnVal = (method.ReflectedType != null) 
+                    ? method.ReflectedType.FullName 
+                    : defaultFileName;
+            }
+            return defaultFileName;
         }
 
         private static int? GetLineNumber(StackFrame frame)
@@ -198,8 +209,14 @@
             return frame.GetFileColumnNumber();
         }
 
-        private static string GetMethod(MethodBase method)
+        private static string GetMethod(StackFrame frame)
         {
+            MethodBase method = frame.GetMethod();
+            if (method == null)
+            {
+                return frame.ToString();
+            }
+
             var methodName = method.Name;
             if (method.ReflectedType != null)
             {
