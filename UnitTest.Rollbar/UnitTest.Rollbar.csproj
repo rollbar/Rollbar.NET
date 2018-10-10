@@ -18,6 +18,8 @@
     -->
 
     <IsPackable>false</IsPackable>
+
+    <Configurations>Debug;Release;Instrumented</Configurations>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

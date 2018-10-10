@@ -8,12 +8,10 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.6.1</NotifierVersion>
+    <NotifierVersion>1.6.2</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
-      - resolve #192: Make sure "defective" StackFrames of Xamarin unhandled exceptions interpreted correctly
-      - resolve #187: SDK not sending the crash log of Xamarin Android/ios app
 
     </PackageReleaseNotes>
 

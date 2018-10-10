@@ -8,7 +8,12 @@
   <RootNamespace>Rollbar</RootNamespace>
   <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  <Configurations>Debug;Release;Instrumented</Configurations>
     
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'">
+    <DefineConstants>NETCOREAPP;INSTRUMENT</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
