@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Comment CommentText="A Classification is a specific combination of Classifiers. A Classifier is a single criteria to classify things based on a specific characteristic.&#xD;&#xA;&#xD;&#xA;For example, when we do some performance measurements we classify those based on different orthagonal characteristics. Let's say what message size was used (that would be one Classifier) or what operation on the message was used (that could be another Classifier). Any meaningful and specific combination of one or more Classifiers could constitute a Classification object.&#xD;&#xA;">
+    <Position X="0.5" Y="0.708" Height="3.365" Width="2.846" />
+  </Comment>
+  <Class Name="Rollbar.Classification.Classifier">
+    <Position X="7.75" Y="0.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAEAEgAAAAAAAAAAAAAggAAAAEABAACAAAAA=</HashCode>
+      <FileName>Classification\Classifier.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.Classification.Classification">
+    <Position X="12" Y="0.75" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAgAAAAABgEAAAAAAAAAAACAAAAAAACAA=</HashCode>
+      <FileName>Classification\Classification.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Rollbar.Classification.IClassification">
+    <Position X="5.5" Y="5.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAACAAAAAIAAAA=</HashCode>
+      <FileName>Classification\IClassification.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.Classification.IClassifier">
+    <Position X="2.75" Y="5.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classification\IClassifier.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.Classification.Identifiable">
+    <Position X="4.25" Y="0.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Classification\Identifiable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.Classification.Identifiable&lt;TID&gt;">
+    <Position X="4.25" Y="2.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Classification\Identifiable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

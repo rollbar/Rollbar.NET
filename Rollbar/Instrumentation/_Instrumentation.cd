@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
-  <Class Name="Rollbar.Instrumentation.PerformanceTimer">
-    <Position X="1.5" Y="1" Width="9.25" />
+  <Class Name="Rollbar.Instrumentation.InstrumentationCondition">
+    <Position X="0.5" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAgAAAAAAAAACAAAAAAAAAAAYAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Instrumentation\InstrumentationCondition.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.Instrumentation.PerformanceTimer">
+    <Position X="0.5" Y="3.5" Width="8.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAgAAAAAAAAACAAAAAAAAAAAQAAAAEAAAA=</HashCode>
       <FileName>Instrumentation\PerformanceTimer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Rollbar.Instrumentation.InstrumentationCondition">
-    <Position X="11.5" Y="1" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Instrumentation\InstrumentationConditions.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Interface Name="Rollbar.Instrumentation.IPerformanceMonitor">
-    <Position X="1.5" Y="4.75" Width="6.75" />
+    <Position X="0.5" Y="2" Width="6.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
       <FileName>Instrumentation\IPerformanceMonitor.cs</FileName>

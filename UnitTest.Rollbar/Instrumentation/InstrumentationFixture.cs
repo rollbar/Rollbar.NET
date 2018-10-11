@@ -12,6 +12,7 @@ namespace UnitTest.Rollbar.Instrumentation
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Net.Http;
     using System.Threading;
+    using global::Rollbar.Classification;
 
     [TestClass]
     [TestCategory(nameof(InstrumentationFixture))]
@@ -30,7 +31,7 @@ namespace UnitTest.Rollbar.Instrumentation
         }
 
         [TestMethod]
-        public void ConstructionTest()
+        public void BasicStructuralTest()
         {
             using (var timer = InstrumentationHelper.TimeIt(Operation.QueueProcessingLoop, PayloadSize.Medium))
             {
@@ -42,12 +43,6 @@ namespace UnitTest.Rollbar.Instrumentation
         }
 
         #region Data mock
-
-        //public enum PerformanceClassifier
-        //{
-        //    Operation,
-        //    PayloadSize,
-        //}
 
         public enum Operation
         {
@@ -67,12 +62,8 @@ namespace UnitTest.Rollbar.Instrumentation
         {
             public static PerformanceTimer TimeIt(Operation operation, PayloadSize payloadSize)
             {
-                Dictionary<Type, object> classifiers = new Dictionary<Type, object>() {
-                    { typeof(Operation), operation},
-                    { typeof(PayloadSize), payloadSize},
-                };
-
-                return PerformanceTimer.StartNew(PerformanceMonitor.Instance, classifiers);
+                IClassification classification = Classification.MatchClassification(operation, payloadSize);
+                return PerformanceTimer.StartNew(PerformanceMonitor.Instance, classification);
             }
         }
 
@@ -83,18 +74,18 @@ namespace UnitTest.Rollbar.Instrumentation
 
             public static IPerformanceMonitor Instance { get { return instance; } }
 
-            public void Capture(TimeSpan measuredTime, IDictionary<string, object> measurementClassifiers = null)
+            public void Capture(TimeSpan measuredTime, IClassification classification = null)
             {
                 StringBuilder sb = new StringBuilder("*** T = " + measuredTime.TotalMilliseconds + " [msec]");
 
-                if (measurementClassifiers == null || measurementClassifiers.Count == 0)
+                if (classification == null || classification.ClassifiersCount == 0)
                 {
                     Trace.WriteLine(sb);
                 }
 
-                foreach (var key in measurementClassifiers.Keys)
+                foreach (var classifier in classification.Classifiers)
                 {
-                    sb.Append(", " + key + " : " + measurementClassifiers[key]);
+                    sb.Append(", " + classifier.ClassifierType.Name + " : " + classifier.ClassifierObject);
                 }
                 Trace.WriteLine(sb);
             }

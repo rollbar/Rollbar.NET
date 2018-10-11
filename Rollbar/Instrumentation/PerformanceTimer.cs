@@ -1,9 +1,8 @@
 ﻿namespace Rollbar.Instrumentation
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
-    using Rollbar.Diagnostics;
+    using Rollbar.Classification;
 
     /// <summary>
     /// Class CodePerformanceTimer.
@@ -27,19 +26,19 @@
         /// </summary>
         private readonly IPerformanceMonitor _performanceMonitor = null;
         /// <summary>
-        /// The measurement classifiers
+        /// The measurement classification
         /// </summary>
-        private readonly IDictionary<string, object> _measurementClassifiers = null;
+        private readonly IClassification _measurementClassification = null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PerformanceTimer"/> class.
         /// </summary>
         /// <param name="performanceMonitor">The performance monitor.</param>
-        /// <param name="measurementClassifiers">The measurement classifiers.</param>
-        private PerformanceTimer(IPerformanceMonitor performanceMonitor, IDictionary<string, object> measurementClassifiers = null)
+        /// <param name="measurementClassification">The measurement classification.</param>
+        private PerformanceTimer(IPerformanceMonitor performanceMonitor, IClassification measurementClassification = null)
         {
             this._performanceMonitor = performanceMonitor;
-            this._measurementClassifiers = measurementClassifiers;
+            this._measurementClassification = measurementClassification;
             this._timer = new Stopwatch();
         }
 
@@ -47,70 +46,13 @@
         /// Creates new .
         /// </summary>
         /// <param name="performanceMonitor">The performance monitor.</param>
-        /// <param name="measurementClassifiers">The measurement classifiers.</param>
-        /// <returns>CodePerformanceTimer.</returns>
-        private static PerformanceTimer StartNew(IPerformanceMonitor performanceMonitor, IDictionary<string, object> measurementClassifiers = null)
+        /// <param name="measurementClassification">The measurement classification.</param>
+        /// <returns>PerformanceTimer.</returns>
+        public static PerformanceTimer StartNew(IPerformanceMonitor performanceMonitor, IClassification measurementClassification = null)
         {
-            var timer = new PerformanceTimer(performanceMonitor, measurementClassifiers);
+            var timer = new PerformanceTimer(performanceMonitor, measurementClassification);
             timer._timer.Start();
             return timer;
-        }
-
-        /// <summary>
-        /// Creates new .
-        /// </summary>
-        /// <typeparam name="TClassifier">The type of the t classifier.</typeparam>
-        /// <param name="performanceMonitor">The performance monitor.</param>
-        /// <param name="measurementClassifiers">The measurement classifiers.</param>
-        /// <returns>CodePerformanceTimer.</returns>
-        public static PerformanceTimer StartNew<TClassifier>(
-            IPerformanceMonitor performanceMonitor,
-            IDictionary<TClassifier, object> measurementClassifiers = null)
-        {
-            if (measurementClassifiers == null || measurementClassifiers.Count == 0)
-            {
-                return PerformanceTimer.StartNew(performanceMonitor, null);
-            }
-
-            IDictionary<string, object> stringKeyedClassifiers = new Dictionary<string,object>(measurementClassifiers.Count);
-
-            Type classifierType = typeof(TClassifier);
-            if (classifierType.IsEnum)
-            {
-                foreach(var key in measurementClassifiers.Keys)
-                {
-                    stringKeyedClassifiers[key.ToString()] = measurementClassifiers[key];
-                }
-            }
-            else if (classifierType == typeof(string))
-            {
-                foreach (var key in measurementClassifiers.Keys)
-                {
-                    stringKeyedClassifiers[key as string] = measurementClassifiers[key];
-                }
-            }
-            else if (classifierType.IsPrimitive)
-            {
-                foreach (var key in measurementClassifiers.Keys)
-                {
-                    stringKeyedClassifiers[key.ToString()] = measurementClassifiers[key];
-                }
-            }
-            else if (classifierType == typeof(Type))
-            {
-                foreach (var key in measurementClassifiers.Keys)
-                {
-                    stringKeyedClassifiers[(key as Type).FullName] = measurementClassifiers[key];
-                }
-            }
-            else
-            {
-                Assumption.FailValidation("Unexpected classifier/key type", nameof(TClassifier));
-            }
-
-            Assumption.AssertTrue(stringKeyedClassifiers.Count > 0, nameof(stringKeyedClassifiers.Count));
-
-            return PerformanceTimer.StartNew(performanceMonitor, stringKeyedClassifiers);
         }
 
         #region IDisposable Support
@@ -125,7 +67,7 @@
         {
             this._timer.Stop();
 
-            this._performanceMonitor.Capture(this._timer.Elapsed, this._measurementClassifiers);
+            this._performanceMonitor.Capture(this._timer.Elapsed, this._measurementClassification);
         }
 
         //private bool disposedValue = false; // To detect redundant calls
