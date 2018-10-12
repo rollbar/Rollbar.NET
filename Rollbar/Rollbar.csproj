@@ -9,6 +9,7 @@
   <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   <Configurations>Debug;Release;Instrumented</Configurations>
+  <LangVersion>7.3</LangVersion>
     
   </PropertyGroup>
 
