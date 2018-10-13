@@ -21,11 +21,11 @@
 
         static RollbarPerformanceMonitor()
         {
-            RollbarPerformanceMonitor.performanceLogFileName = @"RollbarPerformance-" + DateTimeOffset.Now + ".csv";
+            RollbarPerformanceMonitor.performanceLogFileName = @"RollbarPerformance-" + DateTimeOffset.Now.ToString().Replace(':','-') + ".csv";
             RollbarPerformanceMonitor.performanceLogFileName = Path.Combine(Environment.CurrentDirectory, performanceLogFileName);
         }
 
-        public IPerformanceMonitor Instance
+        public static IPerformanceMonitor Instance
         {
             get
             {
@@ -54,14 +54,14 @@
 
         private void PerformCapture(TimeSpan measuredTime, IClassification measurementClassification = null)
         {
-            StringBuilder sb = new StringBuilder(measuredTime.TotalMilliseconds + " [mesec],");
+            StringBuilder sb = new StringBuilder(measuredTime.TotalMilliseconds.ToString());// + " [msec],");
             foreach (var classifier in measurementClassification.Classifiers)
             {
                 sb.Append("," + classifier.ClassifierObject);
             }
             //sb.AppendLine();
 
-            using (StreamWriter file = new StreamWriter(RollbarPerformanceMonitor.performanceLogFileName))
+            using (StreamWriter file = new StreamWriter(RollbarPerformanceMonitor.performanceLogFileName, true))
             {
                 file.WriteLine(sb.ToString());
             }

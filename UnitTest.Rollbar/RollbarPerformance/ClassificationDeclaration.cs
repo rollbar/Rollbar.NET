@@ -45,6 +45,7 @@
 
     public enum Method
     {
+        Log,
     }
 
     public enum MethodVariant
