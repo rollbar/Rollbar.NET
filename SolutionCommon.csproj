@@ -12,7 +12,8 @@
     <PackageReleaseNotes>
 
       Improvements and fixes:
-
+      - resolve #196: An Exception logged via Log overload that log an Object is not recognized as an exception-like payload by BlockingLogger
+      
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>

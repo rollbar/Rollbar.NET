@@ -36,11 +36,17 @@ namespace UnitTest.Rollbar.RollbarPerformance
         [TestMethod]
         public void EvaluatePerformance()
         {
+            RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
             ClassificationDeclaration classificationDeclaration = new ClassificationDeclaration();
             foreach(var classifier in EnumUtil.GetAllValues<PayloadSize>())
             {
                 EvaluateUsing(classifier, classificationDeclaration);
             }
+            RollbarQueueController.Instance.InternalEvent -= Instance_InternalEvent;
+        }
+
+        private void Instance_InternalEvent(object sender, RollbarEventArgs e)
+        {
         }
 
         private void EvaluateUsing(PayloadSize theClassifier, ClassificationDeclaration classificationDeclaration)
@@ -117,6 +123,8 @@ namespace UnitTest.Rollbar.RollbarPerformance
                         }
                     }
                 }
+                BlockUntilRollbarQueuesAreEmpty();
+                Thread.Sleep(TimeSpan.FromMilliseconds(50));
             }
         }
 

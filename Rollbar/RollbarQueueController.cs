@@ -69,7 +69,7 @@ namespace Rollbar
         #endregion singleton implementation
 
 
-        private readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(250);
+        private readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(50);
 
         private HttpClient _httpClient = null;
         private string _proxyAddress = null;

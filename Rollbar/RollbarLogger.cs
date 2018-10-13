@@ -115,31 +115,13 @@ namespace Rollbar
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
-            if (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+            if (this.Config.LogLevel.HasValue && level < this.Config.LogLevel.Value)
             {
                 // nice shortcut:
                 return this;
             }
 
-            Data data = obj as Data;
-            if (data != null)
-            {
-                data.Level = level;
-                return this.Log(data);
-            }
-            System.Exception exception = obj as System.Exception;
-            if (exception != null)
-            {
-                this.Report(exception, level, custom);
-                return this;
-            }
-            ITraceable traceable = obj as ITraceable;
-            if (traceable != null)
-            {
-                return this.Log(level, traceable.TraceAsString(), custom);
-            }
-
-            return this.Log(level, obj.ToString(), custom);
+            return RollbarUtil.LogUsingProperObjectDiscovery(this, level, obj, custom);
         }
 
         public ILogger Log(ErrorLevel level, string msg, IDictionary<string, object> custom = null)
