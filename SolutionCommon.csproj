@@ -13,7 +13,9 @@
 
       Improvements and fixes:
       - resolve #196: An Exception logged via Log overload that log an Object is not recognized as an exception-like payload by BlockingLogger
-      
+      - resolve #195: Instrument first most critical performance measurements
+      - resolve #194: Design, implement, and unit-test code performance infrastructure
+
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
