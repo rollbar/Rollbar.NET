@@ -96,6 +96,8 @@ namespace UnitTest.Rollbar.RollbarPerformance
         {
             RollbarConfig loggerConfig = ProvideRollbarConfig();
 
+            // Let's give things change to stabilize: 
+            Thread.Sleep(TimeSpan.FromSeconds(2));
 
             using (var rollbar = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
@@ -116,15 +118,30 @@ namespace UnitTest.Rollbar.RollbarPerformance
                 {
                     for(int i = 0; i < Constants.TotalMeasurementSamples; i++)
                     {
-                        BlockUntilRollbarQueuesAreEmpty();
+                        //BlockUntilRollbarQueuesAreEmpty();
+                        //if (classificationDeclaration.MethodVariant == MethodVariant.Blocking)
+                        {
+                            // NOTE: for blocking call we want to eliminate effect of 
+                            // the max reporting rate restriction, so that the wait time 
+                            // that is a result of the rate limit is not counted against
+                            // the blocking call:
+                            Thread.Sleep(TimeSpan.FromSeconds(2));
+                        }
                         using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
                         {
                             logger.Log(ErrorLevel.Debug, ProvideObjectToLog(classificationDeclaration));
                         }
                     }
                 }
-                BlockUntilRollbarQueuesAreEmpty();
-                Thread.Sleep(TimeSpan.FromMilliseconds(50));
+                //BlockUntilRollbarQueuesAreEmpty();
+                //Thread.Sleep(TimeSpan.FromMilliseconds(250));
+                if (classificationDeclaration.MethodVariant == MethodVariant.Async)
+                {
+                    // NOTE: for async call we want to make sure the logger's instance is not
+                    // disposed until all the buffered payloads delivered to the Rollbar API.
+                    // This delay ios needed until issue #197 is resolved...
+                    BlockUntilRollbarQueuesAreEmpty();
+                }
             }
         }
 
