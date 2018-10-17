@@ -127,9 +127,37 @@ namespace UnitTest.Rollbar.RollbarPerformance
                             // the blocking call:
                             Thread.Sleep(TimeSpan.FromSeconds(2));
                         }
-                        using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
+
+                        // NOTE: if we just use code below:
+                        //using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
+                        //{
+                        //    logger.Log(ErrorLevel.Debug, ProvideObjectToLog(classificationDeclaration));
+                        //}
+                        // there will be payload type discovery/casting involved during the Log(...) call
+                        // when payload is passed in as an object. For now we want to avoid the casting
+                        // and we will be using payload type specific overloads of Log(...):
+                        switch (classificationDeclaration.PayloadType)
                         {
-                            logger.Log(ErrorLevel.Debug, ProvideObjectToLog(classificationDeclaration));
+                            case PayloadType.Message:
+                                {
+                                    string payload = (string)ProvideObjectToLog(classificationDeclaration);
+                                    using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
+                                    {
+                                        logger.Log(ErrorLevel.Debug, payload);
+                                    }
+                                }
+                                break;
+                            case PayloadType.Exception:
+                                {
+                                    System.Exception payload = (System.Exception)ProvideObjectToLog(classificationDeclaration);
+                                    using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
+                                    {
+                                        logger.Log(ErrorLevel.Debug, payload);
+                                    }
+                                }
+                                break;
+                            default:
+                                break;
                         }
                     }
                 }
