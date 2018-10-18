@@ -69,7 +69,8 @@ namespace Rollbar
         #endregion singleton implementation
 
 
-        private readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(250);
+        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(250);
+        internal readonly int _totalRetries = 3;
 
         private HttpClient _httpClient = null;
         private string _proxyAddress = null;
@@ -135,7 +136,7 @@ namespace Rollbar
         /// Unregisters the specified queue.
         /// </summary>
         /// <param name="queue">The queue.</param>
-        internal void Unregister(PayloadQueue queue)
+        private void Unregister(PayloadQueue queue)
         {
             lock (this._syncLock)
             {
@@ -269,6 +270,17 @@ namespace Rollbar
 
                 }
             }
+
+            // let's see if we can unregister any recently released queues:
+            var releasedQueuesToRemove = tokenMetadata.Queues.Where(q => q.IsReleased && (q.GetPayloadCount() == 0)).ToArray();
+            if (releasedQueuesToRemove != null && releasedQueuesToRemove.LongLength > 0)
+            {
+                foreach (var queue in releasedQueuesToRemove)
+                {
+                    this.Unregister(queue);
+                }
+            }
+
         }
 
         private void ObeyPayloadTimeout(Payload payload, PayloadQueue queue)
@@ -289,7 +301,7 @@ namespace Rollbar
                 return null;
             }
 
-            int retries = 3;
+            int retries = this._totalRetries;
             while (retries > 0)
             {
                 try

@@ -21,6 +21,19 @@ namespace UnitTest.Rollbar.RollbarPerformance
     [TestCategory(nameof(RollbarPerformanceFixture))]
     public class RollbarPerformanceFixture
     {
+        private int _apiErrorsCount = 0;
+        private int _commErrorsCount = 0;
+        private int _internalErrorsCount = 0;
+        private int _commSuccessCount = 0;
+
+        private void ResetAllCounts()
+        {
+            _apiErrorsCount = 0;
+            _commErrorsCount = 0;
+            _internalErrorsCount = 0;
+            _commSuccessCount = 0;
+        }
+
         [TestInitialize]
         public void SetupFixture()
         {
@@ -36,17 +49,62 @@ namespace UnitTest.Rollbar.RollbarPerformance
         [TestMethod]
         public void EvaluatePerformance()
         {
+            ResetAllCounts();
+
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
             ClassificationDeclaration classificationDeclaration = new ClassificationDeclaration();
             foreach(var classifier in EnumUtil.GetAllValues<PayloadSize>())
             {
                 EvaluateUsing(classifier, classificationDeclaration);
             }
+            BlockUntilRollbarQueuesAreEmpty();
             RollbarQueueController.Instance.InternalEvent -= Instance_InternalEvent;
+
+            // Any SDK error would invalidate the test:
+            Assert.AreEqual(0, this._apiErrorsCount);
+            Assert.AreEqual(0, this._commErrorsCount);
+            Assert.AreEqual(0, this._internalErrorsCount);
+
+            // Let's make sure expected amount of payloads was 
+            // delivered to the Rollbar API:
+            Assert.AreEqual(
+                Constants.TotalMeasurementSamples
+                * EnumUtil.GetAllValues<PayloadSize>().Length 
+                * EnumUtil.GetAllValues<PayloadType>().Length 
+                * (EnumUtil.GetAllValues<MethodVariant>().Length - 1) 
+                * EnumUtil.GetAllValues<Method>().Length 
+                , this._commSuccessCount
+                );
         }
 
         private void Instance_InternalEvent(object sender, RollbarEventArgs e)
         {
+            //Console.WriteLine(e.TraceAsString());
+
+            RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
+            if (apiErrorEvent != null)
+            {
+                _apiErrorsCount++;
+                return;
+            }
+            CommunicationEventArgs commEvent = e as CommunicationEventArgs;
+            if (commEvent != null)
+            {
+                _commSuccessCount++;
+                return;
+            }
+            CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
+            if (commErrorEvent != null)
+            {
+                _commErrorsCount++;
+                return;
+            }
+            InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
+            if (internalErrorEvent != null)
+            {
+                _internalErrorsCount++;
+                return;
+            }
         }
 
         private void EvaluateUsing(PayloadSize theClassifier, ClassificationDeclaration classificationDeclaration)
@@ -97,7 +155,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
             RollbarConfig loggerConfig = ProvideRollbarConfig();
 
             // Let's give things change to stabilize: 
-            Thread.Sleep(TimeSpan.FromSeconds(2));
+            //Thread.Sleep(TimeSpan.FromSeconds(2));
 
             using (var rollbar = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
@@ -119,13 +177,14 @@ namespace UnitTest.Rollbar.RollbarPerformance
                     for(int i = 0; i < Constants.TotalMeasurementSamples; i++)
                     {
                         //BlockUntilRollbarQueuesAreEmpty();
-                        //if (classificationDeclaration.MethodVariant == MethodVariant.Blocking)
+                        if (classificationDeclaration.MethodVariant == MethodVariant.Blocking)
                         {
                             // NOTE: for blocking call we want to eliminate effect of 
                             // the max reporting rate restriction, so that the wait time 
                             // that is a result of the rate limit is not counted against
                             // the blocking call:
-                            Thread.Sleep(TimeSpan.FromSeconds(2));
+                            BlockUntilRollbarQueuesAreEmpty();
+                            //Thread.Sleep(TimeSpan.FromSeconds(2));
                         }
 
                         // NOTE: if we just use code below:
@@ -163,13 +222,13 @@ namespace UnitTest.Rollbar.RollbarPerformance
                 }
                 //BlockUntilRollbarQueuesAreEmpty();
                 //Thread.Sleep(TimeSpan.FromMilliseconds(250));
-                if (classificationDeclaration.MethodVariant == MethodVariant.Async)
-                {
-                    // NOTE: for async call we want to make sure the logger's instance is not
-                    // disposed until all the buffered payloads delivered to the Rollbar API.
-                    // This delay ios needed until issue #197 is resolved...
-                    BlockUntilRollbarQueuesAreEmpty();
-                }
+                //if (classificationDeclaration.MethodVariant == MethodVariant.Async)
+                //{
+                //    // NOTE: for async call we want to make sure the logger's instance is not
+                //    // disposed until all the buffered payloads delivered to the Rollbar API.
+                //    // This delay ios needed until issue #197 is resolved...
+                //    BlockUntilRollbarQueuesAreEmpty();
+                //}
             }
         }
 

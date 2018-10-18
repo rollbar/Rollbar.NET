@@ -13,6 +13,7 @@ namespace Rollbar
         private readonly Queue<Payload> _queue = null;
         private readonly RollbarLogger _logger = null;
         private readonly RollbarClient _client = null;
+        private bool _isReleased;
 
         private PayloadQueue()
         {
@@ -29,6 +30,14 @@ namespace Rollbar
             this._queue = new Queue<Payload>();
             this._client = client;
         }
+
+        public void Release()
+        {
+            Assumption.AssertFalse(this._isReleased, nameof(this._isReleased));
+            this._isReleased = true;
+        }
+
+        public bool IsReleased { get { return this._isReleased; } }
 
         public DateTimeOffset NextDequeueTime { get; internal set; }
 
