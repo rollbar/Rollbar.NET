@@ -69,7 +69,7 @@ namespace Rollbar
         #endregion singleton implementation
 
 
-        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(250);
+        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(50);
         internal readonly int _totalRetries = 3;
 
         private HttpClient _httpClient = null;
@@ -77,7 +77,7 @@ namespace Rollbar
         private string _proxyUsername = null;
         private string _proxyPassword = null;
 
-        public HttpClient ProvideHttpClient(string proxyAddress = null, string proxyUsername = null, string proxyPassword = null)
+        internal HttpClient ProvideHttpClient(string proxyAddress = null, string proxyUsername = null, string proxyPassword = null)
         {
             if (this._httpClient != null)
             {
@@ -425,7 +425,95 @@ namespace Rollbar
         }
 
         /// <summary>
-        /// Flushes the queues. All current payloads in every queue get removed.
+        /// Gets the payload count.
+        /// </summary>
+        /// <param name="accessToken">Converts to ken.</param>
+        /// <returns>System.Int32.</returns>
+        public int GetPayloadCount(string accessToken)
+        {
+            int counter = 0;
+            AccessTokenQueuesMetadata tokenMetadata = null;
+            lock (this._syncLock)
+            {
+                if (this._queuesByAccessToken.TryGetValue(accessToken, out tokenMetadata))
+                {
+                    foreach(var queue in tokenMetadata.Queues)
+                    {
+                        counter += queue.GetPayloadCount();
+                    }
+                }
+            }
+            return counter;
+        }
+
+        /// <summary>Gets the payload count.</summary>
+        /// <param name="rollbar">The rollbar.</param>
+        /// <returns>System.Int32.</returns>
+        public int GetPayloadCount(IRollbar rollbar)
+        {
+            return this.GetPayloadCount(rollbar.Config.AccessToken);
+        }
+
+        /// <summary>Gets the recommended timeout.</summary>
+        /// <param name="accessToken">The Rollbar access token.</param>
+        /// <returns>TimeSpan.</returns>
+        public TimeSpan GetRecommendedTimeout(string accessToken)
+        {
+            TimeSpan payloadTimeout = TimeSpan.Zero;
+            int totalPayloads = 0;
+            AccessTokenQueuesMetadata tokenMetadata = null;
+            lock (this._syncLock)
+            {
+                if (this._queuesByAccessToken.TryGetValue(accessToken, out tokenMetadata))
+                {
+                    foreach (var queue in tokenMetadata.Queues)
+                    {
+                        totalPayloads += queue.GetPayloadCount();
+                        TimeSpan queueTimeout = TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / queue.Logger.Config.MaxReportsPerMinute);
+                        if (payloadTimeout < queueTimeout)
+                        {
+                            payloadTimeout = queueTimeout;
+                        }
+                    }
+                }
+            }
+            return TimeSpan.FromTicks((totalPayloads + 1) * payloadTimeout.Ticks);
+        }
+
+        /// <summary>Gets the recommended timeout.</summary>
+        /// <param name="rollbar">The rollbar.</param>
+        /// <returns>TimeSpan.</returns>
+        public TimeSpan GetRecommendedTimeout(IRollbar rollbar)
+        {
+            return this.GetRecommendedTimeout(rollbar.Config.AccessToken);
+        }
+
+        /// <summary>
+        /// Gets the recommended timeout.
+        /// </summary>
+        /// <returns>TimeSpan.</returns>
+        public TimeSpan GetRecommendedTimeout()
+        {
+            TimeSpan timeout = TimeSpan.Zero;
+            string[] accessTokens = new string[0];
+            lock (this._syncLock)
+            {
+                accessTokens = this._queuesByAccessToken.Keys.ToArray();
+            }
+            foreach(var token in accessTokens)
+            {
+                TimeSpan tokenTimeout = this.GetRecommendedTimeout(token);
+                if (timeout < tokenTimeout)
+                {
+                    timeout = tokenTimeout;
+                }
+            }
+            return timeout;
+        }
+
+        /// <summary>
+        /// Flushes the queues. 
+        /// All current payloads in every queue get removed (without transmitting them to the Rollbar API).
         /// </summary>
         public void FlushQueues()
         {

@@ -184,7 +184,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
                             // that is a result of the rate limit is not counted against
                             // the blocking call:
                             BlockUntilRollbarQueuesAreEmpty();
-                            //Thread.Sleep(TimeSpan.FromSeconds(2));
+                            Thread.Sleep(TimeSpan.FromSeconds(60 / rollbar.Config.MaxReportsPerMinute));
                         }
 
                         // NOTE: if we just use code below:
