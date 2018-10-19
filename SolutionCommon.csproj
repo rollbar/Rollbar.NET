@@ -12,6 +12,7 @@
     <PackageReleaseNotes>
 
       Improvements and fixes:
+      - resolve #198: Add GetRecommendedTimeout(...) helper function
       - resolve #197: Risk of loosing large payloads by a short lived scoped async RollbarLogger instances
       - resolve #196: An Exception logged via Log overload that log an Object is not recognized as an exception-like payload by BlockingLogger
       - resolve #195: Instrument first most critical performance measurements
