@@ -31,6 +31,7 @@ namespace UnitTest.Rollbar
             var rollbarLogger = rollbar1 as RollbarLogger;
             Assert.IsNotNull(rollbarLogger);
             Assert.IsFalse(rollbarLogger.IsSingleton);
+            rollbar1.Dispose();
 
         }
 
@@ -44,6 +45,9 @@ namespace UnitTest.Rollbar
             Assert.IsNotNull(rollbar2);
 
             Assert.AreNotSame(rollbar2, rollbar1);
+
+            rollbar1.Dispose();
+            rollbar2.Dispose();
         }
     }
 }
