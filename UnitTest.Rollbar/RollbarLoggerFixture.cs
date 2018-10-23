@@ -100,10 +100,17 @@ namespace UnitTest.Rollbar
             }
         }
 
-
+        private const int maxScopedInstanceTestDurationInMillisec = 50 * 1000;
         [TestMethod]
+        [Timeout(maxScopedInstanceTestDurationInMillisec)]
         public void ScopedInstanceTest()
         {
+            // we need to make sure we are starting clean:
+            while (RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken) > 0)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(250));
+            }
+
             RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
             {
                 Environment = RollbarUnitTestSettings.Environment,
@@ -115,6 +122,13 @@ namespace UnitTest.Rollbar
                 Assert.AreEqual(totalInitialQueues + 1, RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken));
                 logger.Log(ErrorLevel.Error, "test message");
             }
+            // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles: 
+            while (totalInitialQueues != RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken))
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(250)); 
+            }
+
+            // if everything is good, we should get here way before this test method times out:
             Assert.AreEqual(totalInitialQueues, RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken));
 
         }
@@ -154,7 +168,7 @@ namespace UnitTest.Rollbar
                     }
                     catch
                     {
-                        Assert.IsTrue(false);
+                        Assert.Fail();
                     }
                 }
             }
@@ -232,7 +246,7 @@ namespace UnitTest.Rollbar
         }
 
 
-        private const int maxCallLengthInMillisec = 500;
+        private const int maxCallLengthInMillisec = 750;
 
         [TestMethod]
         [Timeout(maxCallLengthInMillisec)]
@@ -249,7 +263,7 @@ namespace UnitTest.Rollbar
                 }
                 catch
                 {
-                    Assert.IsTrue(false);
+                    Assert.Fail();
                 }
             }
         }
@@ -319,6 +333,7 @@ namespace UnitTest.Rollbar
                 var rollbar = RollbarFactory.CreateNew().Configure(loggerConfig);
                 rollbar.InternalEvent += RollbarStress_InternalEvent;
                 loggers.Add(rollbar.AsBlockingLogger(rollbarBlockingTimeout));
+                rollbars.Add(rollbar);
             }
 
             PerformTheMultithreadedStressTest(loggers.ToArray());

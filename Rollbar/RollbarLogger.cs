@@ -6,6 +6,7 @@ namespace Rollbar
     using Rollbar.DTOs;
     using Rollbar.Telemetry;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -115,31 +116,13 @@ namespace Rollbar
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
-            if (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+            if (this.Config.LogLevel.HasValue && level < this.Config.LogLevel.Value)
             {
                 // nice shortcut:
                 return this;
             }
 
-            Data data = obj as Data;
-            if (data != null)
-            {
-                data.Level = level;
-                return this.Log(data);
-            }
-            System.Exception exception = obj as System.Exception;
-            if (exception != null)
-            {
-                this.Report(exception, level, custom);
-                return this;
-            }
-            ITraceable traceable = obj as ITraceable;
-            if (traceable != null)
-            {
-                return this.Log(level, traceable.TraceAsString(), custom);
-            }
-
-            return this.Log(level, obj.ToString(), custom);
+            return RollbarUtil.LogUsingProperObjectDiscovery(this, level, obj, custom);
         }
 
         public ILogger Log(ErrorLevel level, string msg, IDictionary<string, object> custom = null)
@@ -217,7 +200,6 @@ namespace Rollbar
             return this;
         }
 
-
         public ILogger Critical(ITraceable traceableObj, IDictionary<string, object> custom = null)
         {
             return this.Critical(traceableObj.TraceAsString(), custom);
@@ -242,8 +224,6 @@ namespace Rollbar
         {
             return this.Debug(traceableObj.TraceAsString(), custom);
         }
-
-
 
         public ILogger Critical(object obj, IDictionary<string, object> custom = null)
         {
@@ -488,7 +468,23 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
             // we are taking here a fire-and-forget approach:
-            Task.Factory.StartNew(() => Send(body, level, custom, timeoutAt, signal));
+            Task task = Task.Factory.StartNew(() => Send(body, level, custom, timeoutAt, signal));
+            bool success = false;
+            while(!success)
+            {
+                success = this._pendingTasks.TryAdd(task, task);
+            }
+            task.ContinueWith(RemovePendingTask);
+        }
+
+        private readonly ConcurrentDictionary<Task, Task> _pendingTasks = new ConcurrentDictionary<Task, Task>();
+        private void RemovePendingTask(Task task)
+        {
+            bool success = false;
+            while(!success)
+            {
+                success = this._pendingTasks.TryRemove(task, out Task taskOut);
+            }            
         }
 
         private void DoSend(Payload payload)
@@ -653,7 +649,8 @@ namespace Rollbar
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    RollbarQueueController.Instance.Unregister(this._payloadQueue);
+                    Task.WaitAll(this._pendingTasks.Values.ToArray(), TimeSpan.FromMilliseconds(500));
+                    this._payloadQueue.Release();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

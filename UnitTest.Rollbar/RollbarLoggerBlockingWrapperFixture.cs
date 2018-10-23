@@ -31,6 +31,9 @@ namespace UnitTest.Rollbar
         public void TearDownFixture()
         {
             _logger.Dispose();
+
+            // let's make sure we clean up all at the end:
+            RollbarQueueController.Instance.FlushQueues();
         }
 
         [TestMethod]
@@ -133,7 +136,7 @@ namespace UnitTest.Rollbar
                 }
                 catch
                 {
-                    Assert.IsTrue(false);
+                    Assert.Fail();
                 }
             }
 

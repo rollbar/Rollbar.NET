@@ -98,7 +98,13 @@ namespace Rollbar
 
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
-            return this.Log(level, obj.ToString(), custom);
+            if (this.Config.LogLevel.HasValue && level < this.Config.LogLevel.Value)
+            {
+                // nice shortcut:
+                return this;
+            }
+
+            return RollbarUtil.LogUsingProperObjectDiscovery(this, level, obj, custom);
         }
 
         public ILogger Log(ErrorLevel level, string msg, IDictionary<string, object> custom = null)
