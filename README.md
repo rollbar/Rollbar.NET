@@ -59,6 +59,12 @@ Additionally, anywhere in your code that you were sending error reports via `Rol
 More detailed information about Rollbar.NET usage and API reference are available at [https://docs.rollbar.com/docs/dotnet](https://docs.rollbar.com/docs/dotnet)
 
 
+## Where can you find the SDK performance benchmarking results?
+
+The benchmarking results are stored within the [Rollbar.Benchmarks folder](https://github.com/rollbar/Rollbar.NET/tree/master/Rollbar.Benchmarks) in a subfolder per an SDK release.
+You,probably, want to start by reviewing the result/Rollbar.Benchmarker.RollbarLoggerBenchmark-report.html file within each of the subfolders and, then, to drill down for more details within the rest of the
+BenchmarkDotNet generated artifacts.
+
 ## Help / Support
 
 If you run into any issues, please email us at [support@rollbar.com](mailto:support@rollbar.com)
