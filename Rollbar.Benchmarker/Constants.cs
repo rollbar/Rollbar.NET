@@ -1,4 +1,4 @@
-﻿namespace UnitTest.Rollbar.RollbarPerformance
+﻿namespace Rollbar.Benchmarker
 {
     using System;
     using System.Collections.Generic;
@@ -11,11 +11,10 @@
 
         public static readonly TimeSpan RollbarBlockingTimeout = TimeSpan.FromSeconds(5);
 
-        public const int TotalMeasurementSamples = 20; // how many time to perform each measurement...
+        public const int TotalMeasurementSamples = 10; // how many time to perform each measurement...
         public const int SmallToMediumMessageMultiplier = 10;
         public const int MediumToLargeMessageMultiplier = 20;
         public const int SmallToMediumExceptionCallStackDepthMultiplier = 5;
         public const int MediumToLargeExceptionCallStackDepthMultiplier = 15;
-
     }
 }

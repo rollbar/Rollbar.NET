@@ -12,6 +12,8 @@
     <PackageReleaseNotes>
 
       Improvements and fixes:
+      - resolve #201: Create the SDK performance report
+      - resolve #203: Integrate BenchmarkDotNet
       - resolve #202: Update applicable dependencies of the SDK samples
 
     </PackageReleaseNotes>
