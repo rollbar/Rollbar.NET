@@ -1,13 +1,13 @@
-﻿namespace Rollbar.Benchmarker
+﻿namespace Benchmarker.Common
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using BenchmarkDotNet.Configs;
 
-    public class RollbarLoggerBenchmarkConfig : ManualConfig
+    public class BenchmarksConfig : ManualConfig
     {
-        public RollbarLoggerBenchmarkConfig()
+        public BenchmarksConfig()
         {
             //Add(new Job1(), new Job2());
             //Add(new Column1(), new Column2());

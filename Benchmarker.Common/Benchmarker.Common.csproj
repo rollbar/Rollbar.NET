@@ -1,11 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <!--TargetFramework>netcoreapp2.1</TargetFramework-->
+    <!--TargetFramework>netstandard2.0</TargetFramework-->
     <TargetFrameworks>netcoreapp2.1;net472</TargetFrameworks>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <RootNamespace>RollbarBenchmarker</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Benchmarker.Common\Benchmarker.Common.csproj" />
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 

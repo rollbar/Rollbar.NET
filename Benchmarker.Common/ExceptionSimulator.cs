@@ -1,10 +1,10 @@
-﻿namespace Rollbar.Benchmarker
+﻿namespace Benchmarker.Common
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
 
-    public static class ExceptionSimulator
+    internal static class ExceptionSimulator
     {
         public static Exception GetExceptionChainOf(int totalExceptions)
         {

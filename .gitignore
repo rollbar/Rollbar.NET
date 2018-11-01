@@ -275,3 +275,5 @@ __pycache__/
 /Prototype.RollbarTraceListener/Prototype.RollbarTraceListener.sln.GhostDoc.user.dic
 /Rollbar.sln.GhostDoc.user.dic
 /Rollbar.Benchmarks.sln.bak
+/Sentry.Benchmarker
+/SentryBenchmarks.sln
