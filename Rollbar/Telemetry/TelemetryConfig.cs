@@ -6,12 +6,16 @@
     using System.Collections.Generic;
     using System.Text;
 
+#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
+#pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
-    /// 
+    /// ReconfigurableBase
     /// </summary>
     /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.Telemetry.TelemetryConfig, Rollbar.Telemetry.ITelemetryConfig}" />
     /// <seealso cref="Rollbar.Telemetry.ITelemetryConfig" />
     /// <seealso cref="Rollbar.ITraceable" />
+#pragma warning restore CS1658 // Warning is overriding an error
+#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
     public class TelemetryConfig
         : ReconfigurableBase<TelemetryConfig, ITelemetryConfig>
         , ITelemetryConfig

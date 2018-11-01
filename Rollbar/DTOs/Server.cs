@@ -32,7 +32,7 @@
         /// <summary>
         /// The DTO reserved properties.
         /// </summary>
-        public static class ReservedProperties
+        public new static class ReservedProperties
         {
             /// <summary>
             /// The host

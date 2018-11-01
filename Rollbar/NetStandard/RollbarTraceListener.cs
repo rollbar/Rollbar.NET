@@ -6,6 +6,8 @@
     using System.Diagnostics;
 
 
+
+#pragma warning disable CS1570 // XML comment has badly formed XML
     /// <summary>
     /// Class RollbarTraceListener.
     /// </summary>
@@ -55,19 +57,24 @@
     ///               />
     ///          <remove name = "Default"
     ///                  />
-    ///        </ listeners >
-    ///      </ trace >
-    ///    </ system.diagnostics >
-    ///      < startup >
-    ///          < supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.1"/>
+    ///        </listeners>
+    ///      </trace >
+    ///    </system.diagnostics>
+    ///      <startup>
+    ///          <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.1"/>
     ///      </startup>
     ///  </configuration>
     ///
     /// </example>
+#pragma warning restore CS1570 // XML comment has badly formed XML
     public class RollbarTraceListener
         : TraceListener
     {
         private static object typeSyncRoot = new object();
+
+        /// <summary>
+        /// The instance count
+        /// </summary>
         public static int InstanceCount = 0;
 
         private IRollbar _rollbar = null;

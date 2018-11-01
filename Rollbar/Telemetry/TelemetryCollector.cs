@@ -242,6 +242,7 @@ namespace Rollbar.Telemetry
             //for now, until AutoCollectTelemetry() is implemented:
             return;
 
+#pragma warning disable CS0162 // Unreachable code detected
             CancellationToken cancellationToken = (CancellationToken)data;
 
             while (!cancellationToken.IsCancellationRequested)
@@ -269,6 +270,7 @@ namespace Rollbar.Telemetry
             }
 
             CompleteProcessing();
+#pragma warning restore CS0162 // Unreachable code detected
         }
     }
 }

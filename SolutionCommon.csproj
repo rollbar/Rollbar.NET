@@ -11,7 +11,8 @@
     <NotifierVersion>1.6.3</NotifierVersion>
     <PackageReleaseNotes>
 
-      Improvements and fixes
+      Improvements and fixes:
+      - resolve #206: Fix all the build warnings
       - resolve #205: Refactor Rollbar.Benchmarker
       - resolve #201: Create the SDK performance report
       - resolve #203: Integrate BenchmarkDotNet
