@@ -26,7 +26,7 @@ namespace Rollbar
         private readonly TimeSpan _timeout;
 
 
-        private void Report(System.Exception e, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
+        private void Report(System.Exception e, ErrorLevel level, IDictionary<string, object> custom = null)
         {
             using (var signal = this.CreateSignalObject())
             {
@@ -36,7 +36,7 @@ namespace Rollbar
             }
         }
 
-        private void Report(string message, ErrorLevel? level = ErrorLevel.Error, IDictionary<string, object> custom = null)
+        private void Report(string message, ErrorLevel level, IDictionary<string, object> custom = null)
         {
             using (var signal = this.CreateSignalObject())
             {
@@ -50,7 +50,7 @@ namespace Rollbar
         {
             using (var signal = this.CreateSignalObject())
             {
-                this._asyncLogger.SendAsync(data, this._timeout, signal);
+                this._asyncLogger.Report(data, data.Level.HasValue ? data.Level.Value : ErrorLevel.Info, null, this._timeout, signal);
 
                 WaitAndCompleteReport(signal);
             }

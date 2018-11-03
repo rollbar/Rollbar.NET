@@ -202,7 +202,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
                                     string payload = (string)ProvideObjectToLog(classificationDeclaration);
                                     using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
                                     {
-                                        logger.Log(ErrorLevel.Debug, payload);
+                                        logger.Log(ErrorLevel.Warning, payload);
                                     }
                                 }
                                 break;
@@ -211,7 +211,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
                                     System.Exception payload = (System.Exception)ProvideObjectToLog(classificationDeclaration);
                                     using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
                                     {
-                                        logger.Log(ErrorLevel.Debug, payload);
+                                        logger.Log(ErrorLevel.Critical, payload);
                                     }
                                 }
                                 break;

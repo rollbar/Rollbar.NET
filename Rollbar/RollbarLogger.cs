@@ -109,7 +109,7 @@ namespace Rollbar
                 return this;
             }
 
-            SendAsync(data);
+            this.Report(data, data.Level.HasValue ? data.Level.Value : ErrorLevel.Info);
 
             return this;
         }
@@ -122,7 +122,9 @@ namespace Rollbar
                 return this;
             }
 
-            return RollbarUtil.LogUsingProperObjectDiscovery(this, level, obj, custom);
+            this.Report(obj, level, custom);
+
+            return this;
         }
 
         public ILogger Log(ErrorLevel level, string msg, IDictionary<string, object> custom = null)
@@ -141,27 +143,37 @@ namespace Rollbar
 
         public ILogger Critical(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Critical, msg, custom);
+            this.Report(msg, ErrorLevel.Critical, custom);
+
+            return this;
         }
 
         public ILogger Error(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Error, msg, custom);
+            this.Report(msg, ErrorLevel.Error, custom);
+
+            return this;
         }
 
         public ILogger Warning(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Warning, msg, custom);
+            this.Report(msg, ErrorLevel.Warning, custom);
+
+            return this;
         }
 
         public ILogger Info(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Info, msg, custom);
+            this.Report(msg, ErrorLevel.Info, custom);
+
+            return this;
         }
 
         public ILogger Debug(string msg, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Debug, msg, custom);
+            this.Report(msg, ErrorLevel.Debug, custom);
+
+            return this;
         }
 
 
@@ -202,52 +214,72 @@ namespace Rollbar
 
         public ILogger Critical(ITraceable traceableObj, IDictionary<string, object> custom = null)
         {
-            return this.Critical(traceableObj.TraceAsString(), custom);
+            this.Report(traceableObj, ErrorLevel.Critical, custom);
+
+            return this;
         }
 
         public ILogger Error(ITraceable traceableObj, IDictionary<string, object> custom = null)
         {
-            return this.Error(traceableObj.TraceAsString(), custom);
+            this.Report(traceableObj, ErrorLevel.Error, custom);
+
+            return this;
         }
 
         public ILogger Warning(ITraceable traceableObj, IDictionary<string, object> custom = null)
         {
-            return this.Warning(traceableObj.TraceAsString(), custom);
+            this.Report(traceableObj, ErrorLevel.Warning, custom);
+
+            return this;
         }
 
         public ILogger Info(ITraceable traceableObj, IDictionary<string, object> custom = null)
         {
-            return this.Info(traceableObj.TraceAsString(), custom);
+            this.Report(traceableObj, ErrorLevel.Info, custom);
+
+            return this;
         }
 
         public ILogger Debug(ITraceable traceableObj, IDictionary<string, object> custom = null)
         {
-            return this.Debug(traceableObj.TraceAsString(), custom);
+            this.Report(traceableObj, ErrorLevel.Debug, custom);
+
+            return this;
         }
 
         public ILogger Critical(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Critical, obj, custom);
+            this.Report(obj, ErrorLevel.Critical, custom);
+
+            return this;
         }
 
         public ILogger Error(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Error, obj, custom);
+            this.Report(obj, ErrorLevel.Error, custom);
+
+            return this;
         }
 
         public ILogger Warning(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Warning, obj, custom);
+            this.Report(obj, ErrorLevel.Warning, custom);
+
+            return this;
         }
 
         public ILogger Info(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Info, obj, custom);
+            this.Report(obj, ErrorLevel.Info, custom);
+
+            return this;
         }
 
         public ILogger Debug(object obj, IDictionary<string, object> custom = null)
         {
-            return this.Log(ErrorLevel.Debug, obj, custom);
+            this.Report(obj, ErrorLevel.Debug, custom);
+
+            return this;
         }
 
         #endregion ILogger
@@ -417,46 +449,82 @@ namespace Rollbar
         #endregion IDisposable explicitly
 
         internal void Report(
-            System.Exception e, 
-            ErrorLevel? level = ErrorLevel.Error, 
-            IDictionary<string, object> custom = null, 
-            TimeSpan? timeout = null,
-            SemaphoreSlim signal = null
-            )
-        {
-            SnapExceptionDataAsCustomData(e, ref custom);
-            SendAsync(new Body(e), level, custom, timeout, signal);
-        }
-
-        internal void Report(
-            string message, 
-            ErrorLevel? level = ErrorLevel.Error, 
+            object data,
+            ErrorLevel level,
             IDictionary<string, object> custom = null,
             TimeSpan? timeout = null,
             SemaphoreSlim signal = null
             )
         {
-            SendAsync(new Body(new Message(message)), level, custom, timeout, signal);
+            EnqueueAsync(data, level, custom, timeout, signal);
         }
 
-        internal void SendAsync(
-            Data data,
-            TimeSpan? timeout = null,
-            SemaphoreSlim signal = null
-            )
-        {
-            DateTime? timeoutAt = null;
-            if (timeout.HasValue)
-            {
-                timeoutAt = DateTime.Now.Add(timeout.Value);
-            }
-            // we are taking here a fire-and-forget approach:
-            Task.Factory.StartNew(() => Send(data, timeoutAt, signal));
-        }
 
-        private void SendAsync(
-            Body body, 
-            ErrorLevel? level, 
+        //internal void Report(
+        //    System.Exception e, 
+        //    ErrorLevel? level = ErrorLevel.Error, 
+        //    IDictionary<string, object> custom = null, 
+        //    TimeSpan? timeout = null,
+        //    SemaphoreSlim signal = null
+        //    )
+        //{
+        //    SnapExceptionDataAsCustomData(e, ref custom);
+        //    SendAsync(new Body(e), level, custom, timeout, signal);
+        //}
+
+        //internal void Report(
+        //    string message, 
+        //    ErrorLevel? level = ErrorLevel.Error, 
+        //    IDictionary<string, object> custom = null,
+        //    TimeSpan? timeout = null,
+        //    SemaphoreSlim signal = null
+        //    )
+        //{
+        //    SendAsync(new Body(new Message(message)), level, custom, timeout, signal);
+        //}
+
+        //internal void SendAsync(
+        //    Data data,
+        //    TimeSpan? timeout = null,
+        //    SemaphoreSlim signal = null
+        //    )
+        //{
+        //    DateTime? timeoutAt = null;
+        //    if (timeout.HasValue)
+        //    {
+        //        timeoutAt = DateTime.Now.Add(timeout.Value);
+        //    }
+        //    // we are taking here a fire-and-forget approach:
+        //    Task.Factory.StartNew(() => Send(data, timeoutAt, signal));
+        //}
+
+        //private void SendAsync(
+        //    Body body, 
+        //    ErrorLevel? level, 
+        //    IDictionary<string, object> custom,
+        //    TimeSpan? timeout = null,
+        //    SemaphoreSlim signal = null
+        //    )
+        //{
+        //    DateTime? timeoutAt = null;
+        //    if (timeout.HasValue)
+        //    {
+        //        timeoutAt = DateTime.Now.Add(timeout.Value);
+        //    }
+        //    // we are taking here a fire-and-forget approach:
+        //    Task task = Task.Factory.StartNew(() => Send(body, level, custom, timeoutAt, signal));
+        //    bool success = false;
+        //    while(!success)
+        //    {
+        //        success = this._pendingTasks.TryAdd(task, task);
+        //    }
+        //    task.ContinueWith(RemovePendingTask);
+        //}
+
+
+        internal void EnqueueAsync(
+            object dataObject,
+            ErrorLevel level,
             IDictionary<string, object> custom,
             TimeSpan? timeout = null,
             SemaphoreSlim signal = null
@@ -468,23 +536,38 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
             // we are taking here a fire-and-forget approach:
-            Task task = Task.Factory.StartNew(() => Send(body, level, custom, timeoutAt, signal));
+            Task task = new Task(state => Enqueue(dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");// Task.Factory.StartNew(state => Enqueue(dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");
             bool success = false;
-            while(!success)
+            do
             {
                 success = this._pendingTasks.TryAdd(task, task);
-            }
-            task.ContinueWith(RemovePendingTask);
+            } while (!success);
+
+            task.ContinueWith(RemovePendingTask)
+                .ContinueWith(p => {
+                    OnRollbarEvent(new InternalErrorEventArgs(this, null, p.Exception, "While performing EnqueueAsync(...)..."));
+                    System.Diagnostics.Trace.TraceError(p.Exception.ToString());
+                    }, 
+                    TaskContinuationOptions.OnlyOnFaulted
+                    );
+            task.Start();
         }
+
+
+
+
+
+
+
 
         private readonly ConcurrentDictionary<Task, Task> _pendingTasks = new ConcurrentDictionary<Task, Task>();
         private void RemovePendingTask(Task task)
         {
             bool success = false;
-            while(!success)
+            do
             {
                 success = this._pendingTasks.TryRemove(task, out Task taskOut);
-            }            
+            } while (!success);
         }
 
         private void DoSend(Payload payload)
@@ -550,22 +633,42 @@ namespace Rollbar
             }
         }
 
-        private void Send(
-            Data data,
-            DateTime? timeoutAt = null,
-            SemaphoreSlim signal = null
-            )
-        {
-            lock (this._syncRoot)
-            {
-                var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
-                DoSend(payload);
-            }
-        }
+        //private void Send(
+        //    Data data,
+        //    DateTime? timeoutAt = null,
+        //    SemaphoreSlim signal = null
+        //    )
+        //{
+        //    lock (this._syncRoot)
+        //    {
+        //        var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
+        //        DoSend(payload);
+        //    }
+        //}
 
-        private void Send(
-            Body body,
-            ErrorLevel? level,
+        //private void Send(
+        //    Body body,
+        //    ErrorLevel? level,
+        //    IDictionary<string, object> custom,
+        //    DateTime? timeoutAt = null,
+        //    SemaphoreSlim signal = null
+        //    )
+        //{
+        //    lock (this._syncRoot)
+        //    {
+        //        var data = new Data(this._config, body, custom);
+        //        if (level.HasValue)
+        //        {
+        //            data.Level = level;
+        //        }
+        //        Send(data, timeoutAt, signal);
+        //    }
+        //}
+
+
+        private void Enqueue(
+            object dataObject,
+            ErrorLevel level,
             IDictionary<string, object> custom,
             DateTime? timeoutAt = null,
             SemaphoreSlim signal = null
@@ -573,14 +676,16 @@ namespace Rollbar
         {
             lock (this._syncRoot)
             {
-                var data = new Data(this._config, body, custom);
-                if (level.HasValue)
-                {
-                    data.Level = level;
-                }
-                Send(data, timeoutAt, signal);
+                var data = RollbarUtil.PackageAsPayloadData(this.Config, level, dataObject, custom); //new Data(this._config, body, custom);
+                var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
+                DoSend(payload);
             }
         }
+
+
+
+
+
 
         internal virtual void OnRollbarEvent(RollbarEventArgs e)
         {
@@ -591,52 +696,52 @@ namespace Rollbar
             }
         }
 
-        internal static void SnapExceptionDataAsCustomData(
-            System.Exception e,
-            ref IDictionary<string, object> custom
-            )
-        {
-            if (custom == null)
-            {
-                custom = 
-                    new Dictionary<string, object>(capacity: e.Data != null ? e.Data.Count : 0);
-            }
+        //internal static void SnapExceptionDataAsCustomData(
+        //    System.Exception e,
+        //    ref IDictionary<string, object> custom
+        //    )
+        //{
+        //    if (custom == null)
+        //    {
+        //        custom = 
+        //            new Dictionary<string, object>(capacity: e.Data != null ? e.Data.Count : 0);
+        //    }
 
-            const string nullObjPresentation = "<null>";
-            if (e.Data != null)
-            {
-                string customKeyPrefix = $"{e.GetType().Name}.Data.";
-                foreach(var key in e.Data.Keys)
-                {
-                    // Some of the null-checks here may look unnecessary for the way an IDictionary
-                    // is implemented today. 
-                    // But the things could change tomorrow and we want to stay safe always:
-                    object valueObj = e.Data[key];
-                    if (valueObj == null && key == null)
-                    {
-                        continue;
-                    }
-                    string keyName = (key != null) ? key.ToString() : nullObjPresentation;
-                    string customKey = $"{customKeyPrefix}{keyName}";
-                    custom[customKey] = valueObj ?? nullObjPresentation;
-                }
-            }
+        //    const string nullObjPresentation = "<null>";
+        //    if (e.Data != null)
+        //    {
+        //        string customKeyPrefix = $"{e.GetType().Name}.Data.";
+        //        foreach(var key in e.Data.Keys)
+        //        {
+        //            // Some of the null-checks here may look unnecessary for the way an IDictionary
+        //            // is implemented today. 
+        //            // But the things could change tomorrow and we want to stay safe always:
+        //            object valueObj = e.Data[key];
+        //            if (valueObj == null && key == null)
+        //            {
+        //                continue;
+        //            }
+        //            string keyName = (key != null) ? key.ToString() : nullObjPresentation;
+        //            string customKey = $"{customKeyPrefix}{keyName}";
+        //            custom[customKey] = valueObj ?? nullObjPresentation;
+        //        }
+        //    }
 
-            if (e.InnerException != null)
-            {
-                SnapExceptionDataAsCustomData(e.InnerException, ref custom);
-            }
+        //    if (e.InnerException != null)
+        //    {
+        //        SnapExceptionDataAsCustomData(e.InnerException, ref custom);
+        //    }
 
-            // there could be more Data to capture in case of an AggregateException:
-            AggregateException aggregateException = e as AggregateException;
-            if (aggregateException != null && aggregateException.InnerExceptions != null)
-            {
-                foreach(var aggregatedException in aggregateException.InnerExceptions)
-                {
-                    SnapExceptionDataAsCustomData(aggregatedException, ref custom);
-                }
-            }
-        }
+        //    // there could be more Data to capture in case of an AggregateException:
+        //    AggregateException aggregateException = e as AggregateException;
+        //    if (aggregateException != null && aggregateException.InnerExceptions != null)
+        //    {
+        //        foreach(var aggregatedException in aggregateException.InnerExceptions)
+        //        {
+        //            SnapExceptionDataAsCustomData(aggregatedException, ref custom);
+        //        }
+        //    }
+        //}
 
         #region IDisposable Support
 
