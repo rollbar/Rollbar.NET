@@ -62,8 +62,7 @@
             {
                 TraceChain = aggregateException.InnerExceptions.Select(e => new Trace(e)).ToArray();
             }
-
-            if (exception.InnerException != null)
+            else if (exception.InnerException != null)
             {
                 var exceptionList = new List<System.Exception>();
                 var outerException = exception;

@@ -52,6 +52,7 @@
     {
         NotApplicable,
         Async,
+        AsyncWaited,
         Blocking,
     }
 

@@ -317,7 +317,7 @@ namespace UnitTest.Rollbar
             });
         }
 
-        private void PerformTheMultithreadedStressTest(ILogger[] loggers)
+        private void PerformTheMultithreadedStressTest(IAsyncLogger[] loggers)
         {
             //first let's make sure the controller queues are not populated by previous tests:
             RollbarQueueController.Instance.FlushQueues();
@@ -332,6 +332,65 @@ namespace UnitTest.Rollbar
                 {
                     int taskIndex = (int)state;
                     TimeSpan sleepIntervalDelta = 
+                        TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
+                    var logger = loggers[taskIndex];
+                    int i = 0;
+                    while (i < MultithreadedStressTestParams.LogsPerThread)
+                    {
+                        var customFields = new Dictionary<string, object>(Fields.FieldsCount);
+                        customFields[Fields.ThreadID] = taskIndex + 1;
+                        customFields[Fields.ThreadLogID] = i + 1;
+                        customFields[Fields.Timestamp] = DateTimeOffset.UtcNow;
+
+                        logger.Info(
+                            //$"{customFields[Fields.Timestamp]} Stress test: thread #{customFields[Fields.ThreadID]}, log #{customFields[Fields.ThreadLogID]}"
+                            "Stress test"
+                            , customFields
+                            );
+
+                        Thread.Sleep(MultithreadedStressTestParams.LogIntervalBase.Add(sleepIntervalDelta));
+                        i++;
+                    }
+                }
+                , t
+                );
+
+                tasks.Add(task);
+            }
+
+            tasks.ForEach(t => t.Start());
+
+            Task.WaitAll(tasks.ToArray());
+
+            int expectedCount = 2 * //we are subscribing to the internal events twice: on individual rollbar level and on the queue controller level
+                MultithreadedStressTestParams.TotalThreads * MultithreadedStressTestParams.LogsPerThread;
+
+            //we need this delay loop for async logs:
+            while (RollbarQueueController.Instance.GetTotalPayloadCount() > 0)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(50));
+            }
+
+            RollbarQueueController.Instance.InternalEvent -= RollbarStress_InternalEvent;
+
+            Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
+        }
+
+        private void PerformTheMultithreadedStressTest(ILogger[] loggers)
+        {
+            //first let's make sure the controller queues are not populated by previous tests:
+            RollbarQueueController.Instance.FlushQueues();
+
+            RollbarQueueController.Instance.InternalEvent += RollbarStress_InternalEvent;
+
+            List<Task> tasks =
+                new List<Task>(MultithreadedStressTestParams.TotalThreads);
+            for (int t = 0; t < MultithreadedStressTestParams.TotalThreads; t++)
+            {
+                var task = new Task((state) =>
+                {
+                    int taskIndex = (int)state;
+                    TimeSpan sleepIntervalDelta =
                         TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
                     var logger = loggers[taskIndex];
                     int i = 0;
