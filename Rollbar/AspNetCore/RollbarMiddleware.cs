@@ -137,7 +137,9 @@ namespace Rollbar.AspNetCore
                         if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.MaxItems)
                         {
                             // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                             RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                             throw ex;
                         }
                         else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.MaxItems)
@@ -161,7 +163,9 @@ namespace Rollbar.AspNetCore
                         };
 
                         // log the Data object (the exception + the HTTP request data):
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                         RollbarLocator.RollbarInstance.Log(data);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     }
 
                     throw new System.Exception("The included internal exception processed by the Rollbar middleware", ex);
