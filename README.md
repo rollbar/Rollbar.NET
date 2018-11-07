@@ -12,28 +12,28 @@ Nuget Package Manager:
 
 The SDK is designed to have as little impact on the hosting system or application as possible. It takes an async "fire and forget" approach to logging. Normally, you want to use fully asynchronous logging, since it has virtually no instrumentational overhead on your application execution performance at runtime (especially when running on a multi-core/multi-processor system).
 
-In v1.x.x versions of the SDK our asynchronous logging calls were still performing some of its data processing functions (like packaging the data objects to log into a proper Rollbar Payload DTO instance) on the calling thread before asynchronously placing the payloads into a transmission queue. Hence, the duration of the logging method calls was proportional to the size and complexity of the data object to package and log.  
+In v1.x.x versions of the SDK, the asynchronous logging calls were still performing some of its data processing functions (like packaging the data objects to log into a proper Rollbar Payload DTO instance) on the calling thread before asynchronously placing the payloads into a transmission queue. Hence, the duration of the logging method calls was proportional to the size and complexity of the data object to package and log.  
 
 In v2.x.x versions of the SDK, we moved the packaging of the data-to-log one level deeper and now it is handled in a context of a worker thread that is responsible for packaging of a proper payload DTO and queuing it for transmission to the Rollbar API Server.
 As the result, the logging method calls are extremely quick now (under 20 microseconds) regardless of complexity and size of the data-to-log. All the methods now return a `Task` instance (instead of an `ILogger` instance as in v1.x.x) that could be either ignored in true "fire-and-forget" logging scenarios or could be waited (or awaited) to complete packaging and queuing of the payloads in some scenarios.
 
 However, in some specific situations (such as while logging right before exiting an application), you may want to use a logger fully synchronously so that the application does not quit before the logging completes (including subsequent delivery of the corresponding payload to the Rollbar API).
 
-That is why every instance of the Rollbar asynchronous logger (implementing `IAsyncLogger` interface) defines the `AsBlockingLogger(TimeSpan timeout)` method that returns a fully synchronous implementation of the `ILogger` interface that has very signatures of its logging methods that are very similar to the `IAsyncLogger`'s logging methods but returning the same `ILogger` instance instead os a `Task`. This approach allows for easier code refactoring when switching between asynchronous and synchronous uses of the logger.
+That is why every instance of the Rollbar asynchronous logger (implementing `IAsyncLogger` interface) defines the `AsBlockingLogger(TimeSpan timeout)` method that returns a fully synchronous implementation of the `ILogger` interface that defines signatures of its logging methods that are very similar to the `IAsyncLogger`'s logging methods but returning the same `ILogger` instance instead os a `Task`. This approach allows for easier code refactoring when switching between asynchronous and synchronous uses of the logger.
 
-Therefore, the following call will perform the quickest possible async logging:
+Therefore, this call will perform the quickest possible asynchronous logging (true "fire-and-forget" logging):
 
 ```csharp
 RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, "test message");
 ```
 
-while the following call will perform somewhat quick possible async logging (with payload packaging and queuing complete by the end of the call):
+while the following call will perform somewhat quick asynchronous logging (only having its payload packaging and queuing complete by the end of the call):
 
 ```csharp
 RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, "test message").Wait();
 ```
 
-while next call will perform fully blocking/synchronous logging with a timeout of 1 second (with the payload delivery to the Rollbar API either complete or failed due to the timeout by the end of the call):
+while next call will perform fully blocking/synchronous logging with a timeout of 1 second (including the payload delivery to the Rollbar API either complete or failed due to the timeout by the end of the call):
 
 ```csharp
 RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Log(ErrorLevel.Error, "test message");
@@ -69,9 +69,9 @@ while the instance of the blocking Rollbar logger are still capable of supportin
 
 We think that convenience of the fluent APIs is less important than an ability to support completely "fire-and-forget" logging calls that could be waited upon if needed.
 
-One more important change in v2.x.x SDK API that should be fully backward compatible with the v1.x.x SDK API (hence, should not require any client code changes) but is important enough to be mentioned here:
+One more significant change in v2.x.x SDK API that should be fully backward compatible with the v1.x.x SDK API (hence, should not require any client code changes) but is important enough to be mentioned here:
 
-You will notice that the `ILogger` interface was significantly simplified by getting rid of large amount of logging method overloads based on types of the data-to-log (an `Exception` vs `String` vs `Object` vs `Data` DTO, etc). Now we only have the overloads that take in an `Object` (a good enough reason for backward compatibility the latest API). The newly introduced `IAsyncLogger` defines the same set of methods as `ILogger` with the only difference between the equivalent method signatures - method return type: `IAsyncLogger`'s methods return `Task` while `ILogger`'s methods return `ILogger`.
+You will notice that the `ILogger` interface was significantly simplified by getting rid of a large amount of logging methods' overloads based on types of the data-to-log (an `Exception` vs a `String` vs an `Object` vs a `Data` DTO, etc). Now, we only have the overloads that take in an `Object` (a good enough reason for backward compatibility of the latest API). The newly introduced `IAsyncLogger` interface defines the same set of methods as `ILogger` with the only difference between the equivalent method signatures - method return type: `IAsyncLogger`'s methods return `Task` while `ILogger`'s methods return `ILogger`.
 
 ## Upgrading to v1.x.x from earlier versions
 
