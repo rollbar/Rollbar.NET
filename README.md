@@ -33,7 +33,7 @@ while the following call will perform somewhat quick asynchronous logging (only 
 RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, "test message").Wait();
 ```
 
-while next call will perform fully blocking/synchronous logging with a timeout of 1 second (including the payload delivery to the Rollbar API either complete or failed due to the timeout by the end of the call):
+while next call will perform fully blocking/synchronous logging with a timeout of 5 seconds (including the payload delivery to the Rollbar API either complete or failed due to the timeout by the end of the call):
 
 ```csharp
 RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Log(ErrorLevel.Error, "test message");
