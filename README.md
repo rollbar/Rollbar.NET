@@ -10,7 +10,7 @@ Nuget Package Manager:
 
 ## Blocking vs Non-Blocking Use
 
-The SDK is designed to have as little impact on the hosting system or application as possible. Normally, you want to use asynchronous logging, since it has virtually no instrumentational overhead on your application execution performance at runtime. It has a "fire and forget" approach to logging. 
+The SDK is designed to have as little impact on the hosting system or application as possible. It takes an async "fire and forget" approach to logging. Normally, you want to use fully asynchronous logging, since it has virtually no instrumentational overhead on your application execution performance at runtime (especially when running on a multi-core/multi-processor system).
 
 In v1.x.x versions of the SDK our asynchronous logging calls were still performing some of its data processing functions (like packaging the data objects to log into a proper Rollbar Payload DTO instance) on the calling thread before asynchronously placing the payloads into a transmission queue. Hence, the duration of the logging method calls was proportional to the size and complexity of the data object to package and log.  
 
