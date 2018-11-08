@@ -49,7 +49,7 @@
         #region Convenience methods
 
         /// <summary>
-        /// Criticals the specified object.
+        /// Logs the specified object as using critical level.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
@@ -57,7 +57,7 @@
         Task Critical(object obj, IDictionary<string, object> custom = null);
 
         /// <summary>
-        /// Errors the specified object.
+        /// Logs the specified object as using error level.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
@@ -65,7 +65,7 @@
         Task Error(object obj, IDictionary<string, object> custom = null);
 
         /// <summary>
-        /// Warnings the specified object.
+        /// Logs the specified object as using warning level.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
@@ -73,7 +73,7 @@
         Task Warning(object obj, IDictionary<string, object> custom = null);
 
         /// <summary>
-        /// Informations the specified object.
+        /// Logs the specified object as using informational level.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
@@ -81,7 +81,7 @@
         Task Info(object obj, IDictionary<string, object> custom = null);
 
         /// <summary>
-        /// Debugs the specified object.
+        /// Logs the specified object as using debug level.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
