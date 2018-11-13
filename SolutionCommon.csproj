@@ -8,10 +8,13 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>1.6.3</NotifierVersion>
+    <NotifierVersion>2.0.0</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
+      - resolve #209: Improve logging methods' performance (short constant duration regardless of payload type/size)
+      - resolve #210: Simplify logging API
+      - resolve #211: Update performance/API-simplification related documentation
       - resolve #206: Fix all the build warnings
       - resolve #205: Refactor Rollbar.Benchmarker
       - resolve #201: Create the SDK performance report
