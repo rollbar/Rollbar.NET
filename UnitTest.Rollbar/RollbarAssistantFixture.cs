@@ -109,8 +109,12 @@ namespace UnitTest.Rollbar
             // 1
             private const int BaseConstant = 10;
 
+
+
             // 2
+#pragma warning disable CS0414 // The field is assigned but its value is never used
             private static int _baseIntField = 3;
+#pragma warning restore CS0414 // The field is assigned but its value is never used
 
             // 3
             public static object BaseNullProperty
@@ -139,7 +143,9 @@ namespace UnitTest.Rollbar
             private const int BaseConstant = 10;
 
             // 2
+#pragma warning disable CS0414 // The field is assigned but its value is never used
             private int _baseIntField = 3;
+#pragma warning restore CS0414 // The field is assigned but its value is never used
 
             // 3
             public object BaseNullProperty

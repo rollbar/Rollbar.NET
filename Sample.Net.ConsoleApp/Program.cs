@@ -21,21 +21,21 @@
             // ConfigureRollbarSingleton() is called above,
             // the next code line could be commented out:
             RollbarLocator.RollbarInstance
-                .InternalEvent += OnRollbarInternalEvent
-                ;
+                .InternalEvent += OnRollbarInternalEvent;
 
             RollbarLocator.RollbarInstance
-                .Info("ConsoleApp sample: Basic info log example.")
-                .Debug("ConsoleApp sample: First debug log.")
-                .Error(new NullReferenceException("ConsoleApp sample: null reference exception."))
-                .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()))
-                ;
+                .Info("ConsoleApp sample: Basic info log example.");
+            RollbarLocator.RollbarInstance
+                .Debug("ConsoleApp sample: First debug log.");
+            RollbarLocator.RollbarInstance
+                .Error(new NullReferenceException("ConsoleApp sample: null reference exception."));
+            RollbarLocator.RollbarInstance
+                .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()));
 
             DemonstrateExceptionSourceStateCapture();
 
             RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5))
-                .Info("Via no-blocking mechanism.")
-                ;
+                .Info("Via no-blocking mechanism.");
 
 
             Console.WriteLine("Press Enter key to exit...");

@@ -14,6 +14,9 @@
     [Flags]
     public enum TelemetryType
     {
+        /// <summary>
+        /// None
+        /// </summary>
         None = 0x000,
 
         /// <summary>

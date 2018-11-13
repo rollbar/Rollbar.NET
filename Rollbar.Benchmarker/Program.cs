@@ -1,4 +1,4 @@
-﻿namespace Rollbar.Benchmarker
+﻿namespace RollbarBenchmarker
 {
     using System;
     using BenchmarkDotNet.Running;
@@ -7,7 +7,7 @@
     {
         static void Main(string[] args)
         {
-            var summary = BenchmarkRunner.Run<RollbarLoggerBenchmark>();
+            var summary = BenchmarkRunner.Run<RollbarLoggerBenchmarks>();
         }
     }
 }

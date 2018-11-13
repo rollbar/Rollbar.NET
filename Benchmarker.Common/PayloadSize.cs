@@ -1,10 +1,10 @@
-﻿namespace Rollbar.Benchmarker
+﻿namespace Benchmarker.Common
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
 
-    public enum PayloadSize
+    internal enum PayloadSize
     {
         Small,
         Medium,

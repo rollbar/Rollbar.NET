@@ -35,62 +35,6 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        public void TestSnapExceptionDataAsCustomData()
-        {
-            IDictionary<string, object> customData = null;
-
-            var exceptionData = new[] {
-                new { Key = 1, Value = "one"  },
-                new { Key = 2, Value = "two"  },
-                new { Key = 3, Value = "three"  },
-            };
-
-            var mostInnerException = new ArgumentException("Most Inner exception.");
-            for(int dataIndx = 0; dataIndx <= 1; dataIndx++)
-            {
-                mostInnerException.Data[exceptionData[dataIndx].Key] = exceptionData[dataIndx].Value;
-            }
-            Assert.IsNull(customData);
-            //expected to allocate customData and add some entries:
-            RollbarLogger.SnapExceptionDataAsCustomData(mostInnerException, ref customData);
-            Assert.IsNotNull(customData);
-            Assert.AreEqual(2, customData.Count);
-
-            var innerException = new NullReferenceException("Inner exception.", mostInnerException);
-            for (int dataIndx = 1; dataIndx <= 2; dataIndx++)
-            {
-                innerException.Data[exceptionData[dataIndx].Key] = exceptionData[dataIndx].Value;
-            }
-            //expected to append more entries:
-            RollbarLogger.SnapExceptionDataAsCustomData(innerException, ref customData);
-            Assert.IsNotNull(customData);
-            Assert.AreEqual(4, customData.Count);
-            //expected to not double-enter same entries:
-            RollbarLogger.SnapExceptionDataAsCustomData(innerException, ref customData);
-            Assert.IsNotNull(customData);
-            Assert.AreEqual(4, customData.Count);
-
-            var ex = new Exception("Exception", innerException);
-            for (int dataIndx = 0; dataIndx <= 2; dataIndx++)
-            {
-                ex.Data[exceptionData[dataIndx].Key] = exceptionData[dataIndx].Value;
-            }
-            ex.Data["nullValueKey"] = null;
-            //expected to append more entries:
-            RollbarLogger.SnapExceptionDataAsCustomData(ex, ref customData);
-            Assert.IsNotNull(customData);
-            Assert.AreEqual(8, customData.Count);
-
-            customData = null;
-            var aggregateException = new AggregateException("Aggregate Exception", innerException, mostInnerException, ex);
-            aggregateException.Data["aggregateKey"] = "Aggregate Value";
-            //expected to allocate cuastomData and add entries:
-            RollbarLogger.SnapExceptionDataAsCustomData(aggregateException, ref customData);
-            Assert.IsNotNull(customData);
-            Assert.AreEqual(9, customData.Count);
-        }
-
-        [TestMethod]
         public void ImplementsIDisposable()
         {
             using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
@@ -373,7 +317,7 @@ namespace UnitTest.Rollbar
             });
         }
 
-        private void PerformTheMultithreadedStressTest(ILogger[] loggers)
+        private void PerformTheMultithreadedStressTest(IAsyncLogger[] loggers)
         {
             //first let's make sure the controller queues are not populated by previous tests:
             RollbarQueueController.Instance.FlushQueues();
@@ -388,6 +332,65 @@ namespace UnitTest.Rollbar
                 {
                     int taskIndex = (int)state;
                     TimeSpan sleepIntervalDelta = 
+                        TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
+                    var logger = loggers[taskIndex];
+                    int i = 0;
+                    while (i < MultithreadedStressTestParams.LogsPerThread)
+                    {
+                        var customFields = new Dictionary<string, object>(Fields.FieldsCount);
+                        customFields[Fields.ThreadID] = taskIndex + 1;
+                        customFields[Fields.ThreadLogID] = i + 1;
+                        customFields[Fields.Timestamp] = DateTimeOffset.UtcNow;
+
+                        logger.Info(
+                            //$"{customFields[Fields.Timestamp]} Stress test: thread #{customFields[Fields.ThreadID]}, log #{customFields[Fields.ThreadLogID]}"
+                            "Stress test"
+                            , customFields
+                            );
+
+                        Thread.Sleep(MultithreadedStressTestParams.LogIntervalBase.Add(sleepIntervalDelta));
+                        i++;
+                    }
+                }
+                , t
+                );
+
+                tasks.Add(task);
+            }
+
+            tasks.ForEach(t => t.Start());
+
+            Task.WaitAll(tasks.ToArray());
+
+            int expectedCount = 2 * //we are subscribing to the internal events twice: on individual rollbar level and on the queue controller level
+                MultithreadedStressTestParams.TotalThreads * MultithreadedStressTestParams.LogsPerThread;
+
+            //we need this delay loop for async logs:
+            while (RollbarQueueController.Instance.GetTotalPayloadCount() > 0)
+            {
+                Thread.Sleep(TimeSpan.FromMilliseconds(50));
+            }
+
+            RollbarQueueController.Instance.InternalEvent -= RollbarStress_InternalEvent;
+
+            Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
+        }
+
+        private void PerformTheMultithreadedStressTest(ILogger[] loggers)
+        {
+            //first let's make sure the controller queues are not populated by previous tests:
+            RollbarQueueController.Instance.FlushQueues();
+
+            RollbarQueueController.Instance.InternalEvent += RollbarStress_InternalEvent;
+
+            List<Task> tasks =
+                new List<Task>(MultithreadedStressTestParams.TotalThreads);
+            for (int t = 0; t < MultithreadedStressTestParams.TotalThreads; t++)
+            {
+                var task = new Task((state) =>
+                {
+                    int taskIndex = (int)state;
+                    TimeSpan sleepIntervalDelta =
                         TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
                     var logger = loggers[taskIndex];
                     int i = 0;

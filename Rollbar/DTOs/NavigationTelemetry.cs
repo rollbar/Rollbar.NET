@@ -16,7 +16,13 @@
         /// </summary>
         public static class ReservedProperties
         {
+            /// <summary>
+            /// Navigation source.
+            /// </summary>
             public const string From = "from";
+            /// <summary>
+            /// Navigation destination.
+            /// </summary>
             public const string To = "to";
         }
 

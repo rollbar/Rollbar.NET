@@ -1,13 +1,20 @@
 ﻿namespace Rollbar.Common
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Reflection;
     using System.Text;
 
+    /// <summary>
+    /// Class ReflectionUtility.
+    /// </summary>
     public static class ReflectionUtility
     {
+        /// <summary>
+        /// Snaps the local variables.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <returns>System.String.</returns>
         public static string SnapLocalVariables(System.Exception exception)
         {
             var exceptionStackTrace = new StackTrace(exception.InnerException, true);
@@ -15,6 +22,11 @@
             return SnapLocalVariables(stackTrace);
         }
 
+        /// <summary>
+        /// Snaps the local variables.
+        /// </summary>
+        /// <param name="stackTrace">The stack trace.</param>
+        /// <returns>System.String.</returns>
         public static string SnapLocalVariables(StackTrace stackTrace)
         {
             StackFrame[] stackFrames = stackTrace.GetFrames();

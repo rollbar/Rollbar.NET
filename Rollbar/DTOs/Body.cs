@@ -40,14 +40,14 @@
             Validate();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Body"/> class.
-        /// </summary>
-        /// <param name="exception">The exception.</param>
-        public Body(AggregateException exception) 
-            : this(exception.InnerExceptions)
-        {
-        }
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="Body"/> class.
+        ///// </summary>
+        ///// <param name="exception">The exception.</param>
+        //public Body(AggregateException exception) 
+        //    : this(exception.InnerExceptions)
+        //{
+        //}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Body"/> class.
@@ -57,7 +57,12 @@
         {
             Assumption.AssertNotNull(exception, nameof(exception));
 
-            if (exception.InnerException != null)
+            AggregateException aggregateException = exception as AggregateException;
+            if (aggregateException != null)
+            {
+                TraceChain = aggregateException.InnerExceptions.Select(e => new Trace(e)).ToArray();
+            }
+            else if (exception.InnerException != null)
             {
                 var exceptionList = new List<System.Exception>();
                 var outerException = exception;

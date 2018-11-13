@@ -50,7 +50,9 @@ namespace Rollbar
             {
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
             }
+#pragma warning disable CS0168 // Variable is declared but never used
             catch (NotImplementedException ex)
+#pragma warning restore CS0168 // Variable is declared but never used
             {
                 // just a crash prevention.
                 // this is a work around the unimplemented property within Mono runtime...

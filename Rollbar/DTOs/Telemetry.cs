@@ -18,10 +18,25 @@
         /// </summary>
         public static class ReservedProperties
         {
+            /// <summary>
+            /// The level
+            /// </summary>
             public const string Level = "level";
+            /// <summary>
+            /// The type
+            /// </summary>
             public const string Type = "type";
+            /// <summary>
+            /// The source
+            /// </summary>
             public const string Source = "source";
+            /// <summary>
+            /// The timestamp
+            /// </summary>
             public const string Timestamp = "timestamp_ms";
+            /// <summary>
+            /// The body
+            /// </summary>
             public const string Body = "body";
         }
 

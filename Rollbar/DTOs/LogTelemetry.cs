@@ -16,6 +16,9 @@
         /// </summary>
         public static class ReservedProperties
         {
+            /// <summary>
+            /// The message
+            /// </summary>
             public const string Message = "message";
         }
 

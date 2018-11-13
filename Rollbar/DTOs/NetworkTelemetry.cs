@@ -17,11 +17,29 @@
         /// </summary>
         public static class ReservedProperties
         {
+            /// <summary>
+            /// The subtype
+            /// </summary>
             public const string Subtype = "subtype";
+            /// <summary>
+            /// The method
+            /// </summary>
             public const string Method = "method";
+            /// <summary>
+            /// The URL
+            /// </summary>
             public const string Url = "url";
+            /// <summary>
+            /// The status code
+            /// </summary>
             public const string StatusCode = "status_code";
+            /// <summary>
+            /// The start timestamp
+            /// </summary>
             public const string StartTimestamp = "start_timestamp_ms";
+            /// <summary>
+            /// The end timestamp
+            /// </summary>
             public const string EndTimestamp = "end_timestamp_ms";
         }
 

@@ -16,6 +16,9 @@
         /// </summary>
         public static class ReservedProperties
         {
+            /// <summary>
+            /// The element
+            /// </summary>
             public const string Element = "element";
         }
 

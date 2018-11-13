@@ -154,72 +154,73 @@ namespace UnitTest.Rollbar.RollbarPerformance
         {
             RollbarConfig loggerConfig = ProvideRollbarConfig();
 
+            object payload = null;
+            switch (classificationDeclaration.PayloadType)
+            {
+                case PayloadType.Message:
+                    {
+                        payload = ProvideObjectToLog(classificationDeclaration);
+                    }
+                    break;
+                case PayloadType.Exception:
+                    {
+                        payload = ProvideObjectToLog(classificationDeclaration);
+                    }
+                    break;
+                default:
+                    break;
+            }
+            Assert.IsNotNull(payload);
+
             // Let's give things change to stabilize: 
             //Thread.Sleep(TimeSpan.FromSeconds(2));
 
             using (var rollbar = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
-                ILogger logger = null;
-                switch (classificationDeclaration.MethodVariant)
+                for (int i = 0; i < Constants.TotalMeasurementSamples; i++)
                 {
-                    case MethodVariant.Async:
-                        logger = rollbar;
-                        break;
-                    case MethodVariant.Blocking:
-                        logger = rollbar.AsBlockingLogger(Constants.RollbarBlockingTimeout);
-                        break;
-                    default:
-                        // nothing to do...
-                        break;
-                }
-                if (logger != null)
-                {
-                    for(int i = 0; i < Constants.TotalMeasurementSamples; i++)
+                    switch (classificationDeclaration.MethodVariant)
                     {
-                        //BlockUntilRollbarQueuesAreEmpty();
-                        if (classificationDeclaration.MethodVariant == MethodVariant.Blocking)
-                        {
-                            // NOTE: for blocking call we want to eliminate effect of 
-                            // the max reporting rate restriction, so that the wait time 
-                            // that is a result of the rate limit is not counted against
-                            // the blocking call:
-                            BlockUntilRollbarQueuesAreEmpty();
-                            Thread.Sleep(TimeSpan.FromSeconds(60 / rollbar.Config.MaxReportsPerMinute));
-                        }
+                        case MethodVariant.Async:
+                            {
+                                IAsyncLogger logger = rollbar;
+                                using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
+                                {
+                                    logger.Log(ErrorLevel.Warning, payload);
+                                }
+                                break;
+                            }
+                        case MethodVariant.AsyncWaited:
+                            {
+                                IAsyncLogger logger = rollbar;
+                                using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
+                                {
+                                    logger.Log(ErrorLevel.Warning, payload).Wait();
+                                }
+                                break;
+                            }
+                        case MethodVariant.Blocking:
+                            {
+                                // NOTE: for blocking call we want to eliminate effect of 
+                                // the max reporting rate restriction, so that the wait time 
+                                // that is a result of the rate limit is not counted against
+                                // the blocking call:
+                                BlockUntilRollbarQueuesAreEmpty();
+                                Thread.Sleep(TimeSpan.FromSeconds(60 / rollbar.Config.MaxReportsPerMinute));
 
-                        // NOTE: if we just use code below:
-                        //using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
-                        //{
-                        //    logger.Log(ErrorLevel.Debug, ProvideObjectToLog(classificationDeclaration));
-                        //}
-                        // there will be payload type discovery/casting involved during the Log(...) call
-                        // when payload is passed in as an object. For now we want to avoid the casting
-                        // and we will be using payload type specific overloads of Log(...):
-                        switch (classificationDeclaration.PayloadType)
-                        {
-                            case PayloadType.Message:
+                                ILogger logger = rollbar.AsBlockingLogger(Constants.RollbarBlockingTimeout);
+                                using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
                                 {
-                                    string payload = (string)ProvideObjectToLog(classificationDeclaration);
-                                    using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
-                                    {
-                                        logger.Log(ErrorLevel.Debug, payload);
-                                    }
+                                    logger.Log(ErrorLevel.Critical, payload);
                                 }
                                 break;
-                            case PayloadType.Exception:
-                                {
-                                    System.Exception payload = (System.Exception)ProvideObjectToLog(classificationDeclaration);
-                                    using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
-                                    {
-                                        logger.Log(ErrorLevel.Debug, payload);
-                                    }
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+                            }
+                        default:
+                            // nothing to do...
+                            break;
                     }
                 }
+
                 //BlockUntilRollbarQueuesAreEmpty();
                 //Thread.Sleep(TimeSpan.FromMilliseconds(250));
                 //if (classificationDeclaration.MethodVariant == MethodVariant.Async)
