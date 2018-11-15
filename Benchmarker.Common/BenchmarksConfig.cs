@@ -23,26 +23,41 @@
 
             Job[] jobs = new Job[]
             {
-                Job.Clr,
-                Job.Core,
+                //Job.Clr,
+                //Job.Core,
                 //Job.CoreRT,
-                //Job.Mono,
+                Job.Mono,
             };
 
             Runtime[] runtimes = new Runtime[]
             {
-                Runtime.Clr,
-                Runtime.Core,
+                //Runtime.Clr,
+                //Runtime.Core,
                 //Runtime.CoreRT,
                 //Runtime.Mono,
                 new MonoRuntime("Mono x64", @"C:\Program Files\Mono\bin\mono.exe"),
             };
 
-            foreach(var platform in Enum.GetValues(typeof(Platform)).Cast<Platform>().ToArray())
+            Platform[] platforms = new Platform[]
+            {
+                //Platform.AnyCpu,
+                Platform.X64,
+                //Platform.X86,
+            };
+
+            Jit[] jits = new Jit[]
+            {
+                Jit.Default,
+                //Jit.LegacyJit,
+                //Jit.Llvm,
+                //Jit.RyuJit,
+            };
+
+            foreach (var platform in platforms)
             {
                 foreach (var runtime in runtimes)
                 {
-                    foreach (var jit in Enum.GetValues(typeof(Jit)).Cast<Jit>().ToArray())
+                    foreach (var jit in jits)
                     {
                         foreach(var job in jobs)
                         {
