@@ -2,16 +2,17 @@
 {
     using BenchmarkDotNet.Attributes;
 
-    [CoreJob(baseline: true)]
-    [ClrJob]
+    //[CoreJob]
+    //[CoreJob(baseline: true)]
+    //[ClrJob]
     //[CoreRtJob]
-    [MonoJob("Mono x64", @"C:\Program Files\Mono\bin\mono.exe")]
+    //[MonoJob("Mono x64", @"C:\Program Files\Mono\bin\mono.exe")]
     //[MonoJob("Mono x86", @"C:\Program Files (x86)\Mono\bin\mono.exe")]
     //[LegacyJitX86Job, LegacyJitX64Job, RyuJitX64Job]
     //[AllStatisticsColumn]
     [MedianColumn, MinColumn, MaxColumn, RankColumn]
     [RPlotExporter]
-    //[Config(typeof(BenchmarksConfig))]
+    [Config(typeof(BenchmarksConfig))]
     public abstract class BenchmarksBase
     {
         protected readonly System.Exception _smallException = BenchmarkingData.Exception_Small;

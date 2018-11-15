@@ -8,19 +8,13 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>2.0.0</NotifierVersion>
+    <NotifierVersion>2.0.1</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
-      - resolve #209: Improve logging methods' performance (short constant duration regardless of payload type/size)
-      - resolve #210: Simplify logging API
-      - resolve #211: Update performance/API-simplification related documentation
-      - resolve #206: Fix all the build warnings
-      - resolve #205: Refactor Rollbar.Benchmarker
-      - resolve #201: Create the SDK performance report
-      - resolve #203: Integrate BenchmarkDotNet
-      - resolve #202: Update applicable dependencies of the SDK samples
-
+      - resolve #213: Improve Rollbar.Benchmarker configurability and coverage
+      - resolve #214: Update BenchmarkDotNet dependency to the latest
+      
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
