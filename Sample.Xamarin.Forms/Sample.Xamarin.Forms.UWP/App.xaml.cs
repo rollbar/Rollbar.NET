@@ -79,7 +79,7 @@ namespace Sample.Xamarin.Forms.UWP
                 Window.Current.Content = rootFrame;
             }
 
-            throw new Exception("Xamarin: simulated unhandled exception!");
+            //throw new Exception("Xamarin: simulated unhandled exception!");
 
             if (rootFrame.Content == null)
             {

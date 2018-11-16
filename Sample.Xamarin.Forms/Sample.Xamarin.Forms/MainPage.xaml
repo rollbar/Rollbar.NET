@@ -4,8 +4,20 @@
              xmlns:local="clr-namespace:Sample.Xamarin.Forms"
              x:Class="Sample.Xamarin.Forms.MainPage">
 
+    <StackLayout Orientation="Vertical">
+        
 	<Label Text="Welcome to Xamarin.Forms!" 
            VerticalOptions="Center" 
            HorizontalOptions="Center" />
+        <Button  Text="Trigger Handled Exception!" 
+            HorizontalOptions="Center" 
+            Clicked="HandledExceptionButton_Clicked" 
+             />
+        <Button  Text="Trigger Unhandled Exception!" 
+            HorizontalOptions="Center" 
+            Clicked="UnhandledExceptionButton_Clicked" 
+             />
+
+    </StackLayout>
 
 </ContentPage>
