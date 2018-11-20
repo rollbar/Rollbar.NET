@@ -13,6 +13,7 @@
 
       Improvements and fixes:
       - ref #190: Make Rollbar.NET available as a Serilog sink
+      - resolve #216: Improve Rollbar.NET integration within the Xamarin sample
       - resolve #213: Improve Rollbar.Benchmarker configurability and coverage
       - resolve #214: Update BenchmarkDotNet dependency to the latest
       - resolve #215: Update Xamarin sample's dependencies to Rollbar.NET v2

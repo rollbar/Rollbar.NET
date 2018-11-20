@@ -23,10 +23,42 @@ namespace Sample.Xamarin.Forms.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            RollbarHelper.ConfigureRollbarSingleton();
+            //START: Let's subscribe to all known unhandled exception events application-wide...
+            RollbarHelper.RegisterForGlobalExceptionHandling();
+            //END.
+
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
 
             return base.FinishedLaunching(app, options);
         }
+
+        /// <summary>
+        /// Informs the app that the activity of the <paramref name="userActivityType" /> type could not be continued, and specifies a <paramref name="error" /> as the reason for the failure.
+        /// </summary>
+        /// <param name="application">To be added.</param>
+        /// <param name="userActivityType">To be added.</param>
+        /// <param name="error">To be added.</param>
+        /// <remarks>To be added.</remarks>
+        public override void DidFailToContinueUserActivitiy(UIApplication application, string userActivityType, NSError error)
+        {
+            IDictionary<string, object> custom = new Dictionary<string, object>();
+            custom["NSError.Description"] = error.Description;
+            custom["NSError.DebugDescription"] = error.DebugDescription;
+            custom["NSError.Code"] = error.Code;
+            custom["NSError.Domain"] = error.Domain;
+            custom["NSError.LocalizedDescription"] = error.LocalizedDescription;
+            custom["NSError.LocalizedFailureReason"] = error.LocalizedFailureReason;
+            custom["NSError.LocalizedRecoveryOptions"] = error.LocalizedRecoveryOptions;
+            custom["NSError.LocalizedRecoverySuggestion"] = error.LocalizedRecoverySuggestion;
+
+            string message = "NSError during user activity type: " + userActivityType;
+
+            RollbarLocator.RollbarInstance.AsBlockingLogger(RollbarHelper.RollbarTimeout).Error(message, custom);
+
+            base.DidFailToContinueUserActivitiy(application, userActivityType, error);
+        }
+
     }
 }
