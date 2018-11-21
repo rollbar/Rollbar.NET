@@ -26,6 +26,16 @@
             var elapsedMs = 34;
 
             log.Information("Processed {@Position} in {Elapsed:000} ms.", position, elapsedMs);
+
+            //let's simulate some exception logging:
+            try
+            {
+                throw new ApplicationException("Oy vey!");
+            }
+            catch(Exception ex)
+            {
+                log.Error(ex, "What happened?");
+            }
         }
     }
 }

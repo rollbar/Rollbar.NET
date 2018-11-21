@@ -80,6 +80,8 @@
                     break;
             }
 
+            string message = logEvent.RenderMessage(this._formatProvider);
+
             DTOs.Body rollbarBody = null;
             if (logEvent.Exception != null)
             {
@@ -87,7 +89,6 @@
             }
             else
             {
-                string message = logEvent.RenderMessage(this._formatProvider);
                 rollbarBody = new DTOs.Body(new DTOs.Message(message));
             }
 
@@ -96,7 +97,15 @@
             {
                 customCapacity += logEvent.Properties.Count;
             }
+            if (logEvent.Exception != null)
+            {
+                customCapacity++;
+            }
             IDictionary<string, object> custom = new Dictionary<string, object>(customCapacity);
+            if (logEvent.Exception != null)
+            {
+                custom["Serilog.LogEvent.RenderedMessage"] = message;
+            }
             if (logEvent.Properties != null)
             {
                 foreach (var property in logEvent.Properties)
