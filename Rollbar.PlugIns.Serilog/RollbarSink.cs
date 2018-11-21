@@ -88,7 +88,7 @@
             else
             {
                 string message = logEvent.RenderMessage(this._formatProvider);
-                rollbarBody = new DTOs.Body(message);
+                rollbarBody = new DTOs.Body(new DTOs.Message(message));
             }
 
             int customCapacity = 1;
