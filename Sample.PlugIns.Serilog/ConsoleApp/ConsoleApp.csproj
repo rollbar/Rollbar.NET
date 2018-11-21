@@ -10,4 +10,9 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Rollbar.PlugIns.Serilog\Rollbar.PlugIns.Serilog.csproj" />
+    <ProjectReference Include="..\..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
 </Project>
