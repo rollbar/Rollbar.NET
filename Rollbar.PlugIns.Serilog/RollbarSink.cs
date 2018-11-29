@@ -38,17 +38,14 @@
 
             IRollbar rollbar = RollbarFactory.CreateNew().Configure(this._rollbarConfig);
 
-            if (rollbarBlockingLoggingTimeout.HasValue)
-            {
-                this._rollbarLogger = rollbar.AsBlockingLogger(rollbarBlockingLoggingTimeout.Value);
-            }
-            else
-            {
-                this._rollbarAsyncLogger = rollbar;
-            }
+            RollbarFactory.CreateProper(
+                this._rollbarConfig, 
+                rollbarBlockingLoggingTimeout, 
+                out this._rollbarAsyncLogger, 
+                out this._rollbarLogger
+                );
 
             _formatProvider = formatProvider;
-
         }
 
         public void Emit(LogEvent logEvent)

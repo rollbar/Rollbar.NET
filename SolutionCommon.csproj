@@ -12,6 +12,8 @@
     <PackageReleaseNotes>
 
       Improvements and fixes:
+      - resolve #219: Rollbar plug-in for Log4Net
+      - resolve #220: Sample of Rollbar plug-in for Log4Net
       - resolve #190: Make Rollbar.NET available as a Serilog sink
 	    - resolve #217: Create a sample app of using RollbarSerilogSink
       - resolve #216: Improve Rollbar.NET integration within the Xamarin sample
@@ -80,6 +82,7 @@
   <ItemGroup Condition="'$(NetVariant)' == 'NET_CORE' 
              Or '$(NetVariant)' == 'NET_STANDARD'
              ">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
