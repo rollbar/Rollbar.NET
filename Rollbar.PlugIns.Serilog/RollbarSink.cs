@@ -4,16 +4,39 @@
     using System.Collections.Generic;
     using global::Serilog.Core;
     using global::Serilog.Events;
-    using Serilog;
 
+    /// <summary>
+    /// Class RollbarSink for Serilog.
+    /// Implements the <see cref="Serilog.Core.ILogEventSink" />
+    /// </summary>
+    /// <seealso cref="Serilog.Core.ILogEventSink" />
     public class RollbarSink
         : ILogEventSink
     {
+        /// <summary>
+        /// The format provider
+        /// </summary>
         private readonly IFormatProvider _formatProvider;
+        /// <summary>
+        /// The Rollbar configuration
+        /// </summary>
         private readonly IRollbarConfig _rollbarConfig;
+        /// <summary>
+        /// The Rollbar asynchronous logger
+        /// </summary>
         private readonly IAsyncLogger _rollbarAsyncLogger;
+        /// <summary>
+        /// The Rollbar logger
+        /// </summary>
         private readonly ILogger _rollbarLogger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarSink"/> class.
+        /// </summary>
+        /// <param name="rollbarAccessToken">The Rollbar access token.</param>
+        /// <param name="rollbarEnvironment">The Rollbar environment.</param>
+        /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
+        /// <param name="formatProvider">The format provider.</param>
         public RollbarSink(
             string rollbarAccessToken, 
             string rollbarEnvironment,
@@ -28,6 +51,12 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarSink"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The Rollbar configuration.</param>
+        /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
+        /// <param name="formatProvider">The format provider.</param>
         public RollbarSink(
             IRollbarConfig rollbarConfig,
             TimeSpan? rollbarBlockingLoggingTimeout,
@@ -48,6 +77,10 @@
             _formatProvider = formatProvider;
         }
 
+        /// <summary>
+        /// Emit the provided log event to the sink.
+        /// </summary>
+        /// <param name="logEvent">The log event to write.</param>
         public void Emit(LogEvent logEvent)
         {
             if (logEvent == null)
@@ -120,6 +153,10 @@
             this.ReportToRollbar(rollbarData);
         }
 
+        /// <summary>
+        /// Reports to Rollbar.
+        /// </summary>
+        /// <param name="rollbarData">The Rollbar data.</param>
         private void ReportToRollbar(DTOs.Data rollbarData)
         {
             if (this._rollbarAsyncLogger != null)
@@ -132,11 +169,21 @@
             }
         }
 
+        /// <summary>
+        /// Reports to Rollbar.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="rollbarData">The Rollbar data.</param>
         private static void ReportToRollbar(ILogger logger, DTOs.Data rollbarData)
         {
             logger.Log(rollbarData);
         }
 
+        /// <summary>
+        /// Reports to Rollbar.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="rollbarData">The Rollbar data.</param>
         private static void ReportToRollbar(IAsyncLogger logger, DTOs.Data rollbarData)
         {
             logger.Log(rollbarData);

@@ -14,6 +14,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.Serilog", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "Sample.PlugIns.Serilog\ConsoleApp\ConsoleApp.csproj", "{24B3DE40-0EE1-491B-8B4D-15A0C743AEBF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{DE41BA47-C41E-4779-92C8-CB42BB0A518A}"
+	ProjectSection(SolutionItems) = preProject
+		Sample.PlugIns.Serilog\ReadMe.md = Sample.PlugIns.Serilog\ReadMe.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -9,16 +9,32 @@
     /// <summary>
     /// Class RollbarAppender.
     /// Implements the <see cref="log4net.Appender.IAppender" />
+    /// Implements the <see cref="log4net.Appender.AppenderSkeleton" />
     /// </summary>
+    /// <seealso cref="log4net.Appender.AppenderSkeleton" />
     /// <seealso cref="log4net.Appender.IAppender" />
     public class RollbarAppender
         : AppenderSkeleton
         , IAppender
     {
+        /// <summary>
+        /// The rollbar timeout in seconds
+        /// </summary>
         private const int rollbarTimeoutSeconds = 3;
 
+        /// <summary>
+        /// The custom prefix
+        /// </summary>
+        private const string prefix = "log4net";
+
+        /// <summary>
+        /// The Rollbar error level by log4net level value
+        /// </summary>
         private static readonly IDictionary<int, Rollbar.ErrorLevel> rollbarErrorLevelByLog4netLevelValue;
 
+        /// <summary>
+        /// Initializes static members of the <see cref="RollbarAppender"/> class.
+        /// </summary>
         static RollbarAppender()
         {
             rollbarErrorLevelByLog4netLevelValue = new Dictionary<int, Rollbar.ErrorLevel>();
@@ -52,6 +68,11 @@
             //rollbarErrorLevelByLog4netLevelValue.Add(Level.Log4Net_Debug.Value, ErrorLevel.Debug);
         }
 
+        /// <summary>
+        /// Translates the specified log4net level.
+        /// </summary>
+        /// <param name="log4netLevel">The log4net level.</param>
+        /// <returns>ErrorLevel.</returns>
         private static ErrorLevel Translate(Level log4netLevel)
         {
             if (rollbarErrorLevelByLog4netLevelValue.TryGetValue(log4netLevel.Value, out ErrorLevel rollbarErrorLevel))
@@ -62,10 +83,25 @@
             return ErrorLevel.Debug;
         }
 
+        /// <summary>
+        /// The Rollbar configuration
+        /// </summary>
         private readonly Rollbar.IRollbarConfig _rollbarConfig;
+        /// <summary>
+        /// The Rollbar asynchronous logger
+        /// </summary>
         private readonly Rollbar.IAsyncLogger _rollbarAsyncLogger;
+        /// <summary>
+        /// The Rollbar logger
+        /// </summary>
         private readonly Rollbar.ILogger _rollbarLogger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarAppender"/> class.
+        /// </summary>
+        /// <param name="rollbarAccessToken">The Rollbar access token.</param>
+        /// <param name="rollbarEnvironment">The Rollbar environment.</param>
+        /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
         public RollbarAppender(
             string rollbarAccessToken,
             string rollbarEnvironment,
@@ -78,6 +114,11 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarAppender"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The Rollbar configuration.</param>
+        /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
         public RollbarAppender(
             IRollbarConfig rollbarConfig,
             TimeSpan? rollbarBlockingLoggingTimeout
@@ -93,6 +134,9 @@
                 );
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarAppender"/> class.
+        /// </summary>
         public RollbarAppender()
         {
             RollbarConfig rollbarConfig = new RollbarConfig("just_a_seed_value");
@@ -107,6 +151,9 @@
                 );
         }
 
+        /// <summary>
+        /// Raises the Close event.
+        /// </summary>
         protected override void OnClose()
         {
             (this._rollbarAsyncLogger as IDisposable)?.Dispose();
@@ -115,6 +162,10 @@
             base.OnClose();
         }
 
+        /// <summary>
+        /// Appends the specified logging event.
+        /// </summary>
+        /// <param name="loggingEvent">The logging event.</param>
         protected override void Append(LoggingEvent loggingEvent)
         {
             if (loggingEvent == null)
@@ -136,61 +187,9 @@
                 rollbarBody = new DTOs.Body(new DTOs.Message(message));
             }
 
-
-            //TODO:
             int customCapacity = 50;
-            //if (logEvent.Properties != null)
-            //{
-            //    customCapacity += logEvent.Properties.Count;
-            //}
-            //if (logEvent.Exception != null)
-            //{
-            //    customCapacity++;
-            //}
             IDictionary<string, object> custom = new Dictionary<string, object>(customCapacity);
-            //custom = RollbarAssistant.CaptureState(loggingEvent);
-            //var properties = loggingEvent.GetProperties();
-            //foreach (var key in properties.GetKeys())
-            //{
-            //    //custom[prefix + "." + key] = properties[key];
-            //    custom[key] = properties[key];
-            //}
-
-            const string prefix = "log4net";
-
-            //custom[prefix + "RenderedMessage"] = message;
-
-            //custom[prefix + "Domain"] = loggingEvent.Domain;
-            //custom[prefix + "ExceptionObject"] = loggingEvent.ExceptionObject;
-            //custom[prefix + "Fix"] = loggingEvent.Fix;
-            //custom[prefix + "Identity"] = loggingEvent.Identity;
-            //custom[prefix + "Level"] = loggingEvent.Level;
-            //custom[prefix + "LocationInformation"] = loggingEvent.LocationInformation;
-            //custom[prefix + "LoggerName"] = loggingEvent.LoggerName;
-            //custom[prefix + "MessageObject"] = loggingEvent.MessageObject;
-            //custom[prefix + "RenderedMessage"] = loggingEvent.RenderedMessage;
-            //custom[prefix + "ThreadName"] = loggingEvent.ThreadName;
-            //custom[prefix + "TimeStamp"] = loggingEvent.TimeStamp;
-            //custom[prefix + "TimeStampUtc"] = loggingEvent.TimeStampUtc;
-            //custom[prefix + "UserName"] = loggingEvent.UserName;
-            //custom[prefix + "GetExceptionStrRep"] = loggingEvent.GetExceptionStrRep();
-            //custom[prefix + "GetLoggingEventData"] = loggingEvent.GetLoggingEventData();
-
             custom[prefix] = loggingEvent.GetLoggingEventData();
-
-
-            //if (logEvent.Exception != null)
-            //{
-            //    custom["Serilog.LogEvent.RenderedMessage"] = message;
-            //}
-            //if (logEvent.Properties != null)
-            //{
-            //    foreach (var property in logEvent.Properties)
-            //    {
-            //        custom[property.Key] = property.Value.ToString();
-            //    }
-            //}
-            //custom["Serilog.LogEvent.Timestamp"] = logEvent.Timestamp;
 
             DTOs.Data rollbarData = new DTOs.Data(this._rollbarConfig, rollbarBody, custom)
             {
@@ -198,12 +197,12 @@
             };
 
             this.ReportToRollbar(rollbarData);
-
-
-            //loggingEvent.GetLoggingEventData().;
-            //loggingEvent.
         }
 
+        /// <summary>
+        /// Reports to rollbar.
+        /// </summary>
+        /// <param name="rollbarData">The rollbar data.</param>
         private void ReportToRollbar(DTOs.Data rollbarData)
         {
             if (this._rollbarAsyncLogger != null)
@@ -216,11 +215,21 @@
             }
         }
 
+        /// <summary>
+        /// Reports to rollbar.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="rollbarData">The rollbar data.</param>
         private static void ReportToRollbar(Rollbar.ILogger logger, DTOs.Data rollbarData)
         {
             logger.Log(rollbarData);
         }
 
+        /// <summary>
+        /// Reports to rollbar.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="rollbarData">The rollbar data.</param>
         private static void ReportToRollbar(IAsyncLogger logger, DTOs.Data rollbarData)
         {
             logger.Log(rollbarData);
