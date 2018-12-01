@@ -104,5 +104,6 @@
 
             return stateCapture;
         }
+
     }
 }

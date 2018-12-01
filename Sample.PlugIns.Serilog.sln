@@ -3,20 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{3635FA93-6994-4CE4-9923-BF330DF1A439}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RollbarSerilogSink", "RollbarSerilogSink", "{3635FA93-6994-4CE4-9923-BF330DF1A439}"
 	ProjectSection(SolutionItems) = preProject
-		ReadMe.txt = ReadMe.txt
-		Sequential.runsettings = Sequential.runsettings
 		SolutionCommon.csproj = SolutionCommon.csproj
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar", "Rollbar\Rollbar.csproj", "{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar", "UnitTest.Rollbar\UnitTest.Rollbar.csproj", "{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.Serilog", "Rollbar.PlugIns.Serilog\Rollbar.PlugIns.Serilog.csproj", "{269A0ECE-643A-49F2-BDB0-A5762729A819}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.PlugIns.Log4net", "Rollbar.PlugIns.Log4net\Rollbar.PlugIns.Log4net.csproj", "{06252A00-27C7-41C7-8922-56DAF70F50DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "Sample.PlugIns.Serilog\ConsoleApp\ConsoleApp.csproj", "{24B3DE40-0EE1-491B-8B4D-15A0C743AEBF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{DE41BA47-C41E-4779-92C8-CB42BB0A518A}"
+	ProjectSection(SolutionItems) = preProject
+		Sample.PlugIns.Serilog\ReadMe.md = Sample.PlugIns.Serilog\ReadMe.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,27 +32,25 @@ Global
 		{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}.Instrumented|Any CPU.Build.0 = Instrumented|Any CPU
 		{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Instrumented|Any CPU.ActiveCfg = Instrumented|Any CPU
-		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Instrumented|Any CPU.Build.0 = Instrumented|Any CPU
-		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC086DCB-134C-4C0C-BFA4-A86F66FC2242}.Release|Any CPU.Build.0 = Release|Any CPU
 		{269A0ECE-643A-49F2-BDB0-A5762729A819}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{269A0ECE-643A-49F2-BDB0-A5762729A819}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{269A0ECE-643A-49F2-BDB0-A5762729A819}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
 		{269A0ECE-643A-49F2-BDB0-A5762729A819}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
 		{269A0ECE-643A-49F2-BDB0-A5762729A819}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{269A0ECE-643A-49F2-BDB0-A5762729A819}.Release|Any CPU.Build.0 = Release|Any CPU
-		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
-		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
-		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24B3DE40-0EE1-491B-8B4D-15A0C743AEBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24B3DE40-0EE1-491B-8B4D-15A0C743AEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24B3DE40-0EE1-491B-8B4D-15A0C743AEBF}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{24B3DE40-0EE1-491B-8B4D-15A0C743AEBF}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{24B3DE40-0EE1-491B-8B4D-15A0C743AEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24B3DE40-0EE1-491B-8B4D-15A0C743AEBF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FA70AC31-5CD9-4947-8D5F-624D9A1FB510} = {3635FA93-6994-4CE4-9923-BF330DF1A439}
+		{269A0ECE-643A-49F2-BDB0-A5762729A819} = {3635FA93-6994-4CE4-9923-BF330DF1A439}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB9E5CFE-0437-4312-99E5-1EBF60FB8157}

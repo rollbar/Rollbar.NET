@@ -1,6 +1,6 @@
 ﻿namespace Rollbar.NetFramework
 {
-#if NETFX
+#if NETFX || NETSTANDARD
     using System;
     using System.Configuration;
 
