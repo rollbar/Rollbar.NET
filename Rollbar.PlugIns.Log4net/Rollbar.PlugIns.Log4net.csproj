@@ -1,7 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+
+    <Version>$(NotifierVersion)</Version>
+    <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
+    <FileVersion>$(NotifierVersion)</FileVersion>
+
+    <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
+    <Copyright>Copyright (c) $(CurrentYear) Rollbar Inc</Copyright>
+    <Company>Rollbar Inc</Company>
+    <PackageTags>log4net;rollbar;logging</PackageTags>
+    <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
+    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

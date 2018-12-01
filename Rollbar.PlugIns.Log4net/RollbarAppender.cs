@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using log4net.Appender;
     using log4net.Core;
-    using Rollbar.NetCore;
 
     /// <summary>
     /// Class RollbarAppender.
@@ -140,9 +139,10 @@
         public RollbarAppender()
         {
             RollbarConfig rollbarConfig = new RollbarConfig("just_a_seed_value");
-            AppSettingsUtil.LoadAppSettings(ref rollbarConfig);
+#if NETSTANDARD
+            Rollbar.NetCore.AppSettingsUtil.LoadAppSettings(ref rollbarConfig);
+#endif
             this._rollbarConfig = rollbarConfig;
-
             RollbarFactory.CreateProper(
                 this._rollbarConfig,
                 TimeSpan.FromSeconds(rollbarTimeoutSeconds),
