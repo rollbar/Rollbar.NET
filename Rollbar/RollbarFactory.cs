@@ -22,10 +22,11 @@ namespace Rollbar
         /// Creates the new instance of IRollbar.
         /// </summary>
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
-        /// <returns></returns>
-        internal static IRollbar CreateNew(bool isSingleton)
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <returns>IRollbar.</returns>
+        internal static IRollbar CreateNew(bool isSingleton, IRollbarConfig rollbarConfig = null)
         {
-            return new RollbarLogger(isSingleton);
+            return new RollbarLogger(isSingleton, rollbarConfig);
         }
 
         /// <summary>

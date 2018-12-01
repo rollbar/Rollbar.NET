@@ -22,12 +22,12 @@ namespace Rollbar
     /// </summary>
     internal class RollbarClient 
     {
-        private readonly RollbarConfig _config;
+        private readonly IRollbarConfig _config;
         private readonly HttpClient _httpClient;
         private readonly Uri _payloadPostUri;
         private readonly IterativeTruncationStrategy _payloadTruncationStrategy;
 
-        public RollbarClient(RollbarConfig config, HttpClient httpClient)
+        public RollbarClient(IRollbarConfig config, HttpClient httpClient)
         {
             Assumption.AssertNotNull(config, nameof(config));
             Assumption.AssertNotNull(httpClient, nameof(httpClient));
@@ -61,7 +61,7 @@ namespace Rollbar
             this._payloadTruncationStrategy = new IterativeTruncationStrategy();
         }
 
-        public RollbarConfig Config { get { return this._config; } }
+        public IRollbarConfig Config { get { return this._config; } }
 
         public RollbarResponse PostAsJson(Payload payload)
         {
@@ -87,7 +87,7 @@ namespace Rollbar
             }
 
             var jsonData = JsonConvert.SerializeObject(payload);
-            jsonData = ScrubPayload(jsonData, this._config.GetSafeScrubFields());
+            jsonData = ScrubPayload(jsonData, this._config.GetFieldsToScrub());
 
             var postPayload =
                 new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
