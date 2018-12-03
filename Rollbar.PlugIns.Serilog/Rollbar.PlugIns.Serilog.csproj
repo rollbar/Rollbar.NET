@@ -10,7 +10,7 @@
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright (c) $(CurrentYear) Rollbar Inc</Copyright>
     <Company>Rollbar Inc</Company>
-    <PackageTags>log4net;rollbar;logging</PackageTags>
+    <PackageTags>serilog;rollbar;logging</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
