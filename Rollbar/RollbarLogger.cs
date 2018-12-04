@@ -32,14 +32,14 @@ namespace Rollbar
         private readonly object _syncRoot = new object();
         private readonly TaskScheduler _nativeTaskScheduler = null;
 
-        private readonly RollbarConfig _config = null;
+        private readonly IRollbarConfig _config = null;
         private readonly PayloadQueue _payloadQueue = null;
         private readonly ConcurrentDictionary<Task, Task> _pendingTasks = new ConcurrentDictionary<Task, Task>();
 
         public event EventHandler<RollbarEventArgs> InternalEvent;
 
 
-        internal RollbarLogger(bool isSingleton)
+        internal RollbarLogger(bool isSingleton, IRollbarConfig rollbarConfig = null)
         {
             try
             {
@@ -59,7 +59,14 @@ namespace Rollbar
             }
 
             this.IsSingleton = isSingleton;
-            this._config = new RollbarConfig(this);
+            if (rollbarConfig != null)
+            {
+                this._config = rollbarConfig;
+            }
+            else
+            {
+                this._config = new RollbarConfig(this);
+            }
             var rollbarClient = new RollbarClient(
                 this._config
                 , RollbarQueueController.Instance.ProvideHttpClient(this._config.ProxyAddress, this._config.ProxyUsername, this._config.ProxyPassword)
@@ -79,7 +86,7 @@ namespace Rollbar
 
         public IAsyncLogger Logger => this;
 
-        public RollbarConfig Config
+        public IRollbarConfig Config
         {
             get { return this._config; }
         }

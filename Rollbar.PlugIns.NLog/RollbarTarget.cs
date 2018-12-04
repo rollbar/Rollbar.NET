@@ -12,11 +12,21 @@
     [Target("Rollbar.PlugIns.NLog")]
     public class RollbarTarget : TargetWithContext
     {
+        /// <summary>
+        /// The rollbar timeout in seconds
+        /// </summary>
+        private const int defaultRollbarTimeoutSeconds = 3;
+
+        /// <summary>
+        /// The custom prefix
+        /// </summary>
+        private const string prefix = "nlog.";
+
         [NLogConfigurationIgnoreProperty]
         public RollbarConfig RollbarConfig { get; }
 
         /// <summary>
-        /// Configure to avoid out-of-order enqueuing of LogEvents, because of Task-race-conditions
+        /// Configure to allow Rollbar payload delivery within the timeout.
         /// </summary>
         public TimeSpan? BlockingLoggingTimeout { get; set; }
 
@@ -43,6 +53,7 @@
         /// </summary>
         public RollbarTarget(RollbarConfig rollbarConfig)
         {
+            this.BlockingLoggingTimeout = TimeSpan.FromSeconds(defaultRollbarTimeoutSeconds);
             RollbarConfig = rollbarConfig;
             OptimizeBufferReuse = true;
             Layout = "${message}";
@@ -57,7 +68,9 @@
         protected override void Write(LogEventInfo logEvent)
         {
             if (!LevelMapper.TryGetValue(logEvent.Level, out ErrorLevel rollbarLogLevel))
+            {
                 rollbarLogLevel = ErrorLevel.Debug;
+            }
 
             DTOs.Body rollbarBody = null;
             if (logEvent.Exception != null)
@@ -70,7 +83,13 @@
                 rollbarBody = new DTOs.Body(new DTOs.Message(formattedMessage));
             }
 
-            IDictionary<string, object> custom = GetAllProperties(logEvent);
+            var nlogProperties = GetAllProperties(logEvent);
+            IDictionary<string, object> custom = new Dictionary<string, object>(nlogProperties.Count);
+            foreach(var property in nlogProperties)
+            {
+                custom[prefix + property.Key] = property.Value;
+            }
+            //IDictionary<string, object> custom = GetAllProperties(logEvent);
             DTOs.Data rollbarData = new DTOs.Data(RollbarConfig, rollbarBody, custom)
             {
                 Level = rollbarLogLevel

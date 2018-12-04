@@ -5,7 +5,7 @@ and have all (or some of) its logs/traces forwarded/reported to the Rollbar API 
 
 This example updates an existing .NET Core console application to support Rollbar capabilities (with no code changes or product re-build required). 
 However, very similar approach can be taken with any .NET Full Framework based application. You will just have to configure Rollbar.NET notifier within 
-the app.config file instead of the appsettings.config file.
+the app.config file instead of the appsettings.json file.
 
 ## Starting Point
 
@@ -30,5 +30,6 @@ Have fun taking advantages for Rollbar Dashboard while monitoring behavior of yo
 adding the Rollbar support to your products)!
 
 Here is an example of an error log from this sample rendered within the Rollbar Dashboard:
-https://rollbar.com/Rollbar/Rollbar.Net/items/612/occurrences/59671813374/
+https://rollbar.com/Rollbar/Rollbar.Net/items/625/occurrences/59982613008/
+
 

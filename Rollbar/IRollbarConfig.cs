@@ -1,13 +1,16 @@
 ﻿namespace Rollbar
 {
     using System;
+    using System.Collections.Generic;
+    using Rollbar.Common;
     using Rollbar.DTOs;
 
     /// <summary>
     /// Models Rollbar configuration interface.
     /// </summary>
     public interface IRollbarConfig
-        : ITraceable
+        : IReconfigurable<IRollbarConfig, IRollbarConfig>
+        , ITraceable
     {
         /// <summary>
         /// Gets the access token.
@@ -126,6 +129,14 @@
         /// from the ScrubFields list in cases when the lists overlap.
         /// </remarks>
         string[] ScrubWhitelistFields { get; }
+
+        /// <summary>
+        /// Gets the fields to scrub.
+        /// </summary>
+        /// <returns>
+        /// Actual fields to be scrubbed based on combining the ScrubFields with the ScrubWhitelistFields.
+        /// </returns>
+        IReadOnlyCollection<string> GetFieldsToScrub();
 
         /// <summary>
         /// Gets the transform.

@@ -19,7 +19,7 @@
         /// <summary>
         /// The rollbar timeout in seconds
         /// </summary>
-        private const int rollbarTimeoutSeconds = 3;
+        private const int defaultRollbarTimeoutSeconds = 3;
 
         /// <summary>
         /// The custom prefix
@@ -145,7 +145,7 @@
             this._rollbarConfig = rollbarConfig;
             RollbarFactory.CreateProper(
                 this._rollbarConfig,
-                TimeSpan.FromSeconds(rollbarTimeoutSeconds),
+                TimeSpan.FromSeconds(defaultRollbarTimeoutSeconds),
                 out this._rollbarAsyncLogger,
                 out this._rollbarLogger
                 );

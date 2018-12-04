@@ -401,11 +401,13 @@
         }
 
         /// <summary>
-        /// Gets the safe scrub fields. 
-        /// Basically this.ScrubFields "minus" this.ScrubWhitelistFields.
+        /// Gets the fields to scrub.
         /// </summary>
-        /// <returns></returns>
-        internal IReadOnlyCollection<string> GetSafeScrubFields()
+        /// <returns>
+        /// Actual fields to be scrubbed based on combining the ScrubFields with the ScrubWhitelistFields.
+        /// Basically this.ScrubFields "minus" this.ScrubWhitelistFields.
+        /// </returns>
+        public virtual IReadOnlyCollection<string> GetFieldsToScrub()
         {
             if (this.ScrubFields == null || this.ScrubFields.Length == 0)
             {
@@ -421,5 +423,9 @@
             return this.ScrubFields.Where(i => !whitelist.Contains(i)).ToArray();
         }
 
+        IRollbarConfig IReconfigurable<IRollbarConfig, IRollbarConfig>.Reconfigure(IRollbarConfig likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
     }
 }

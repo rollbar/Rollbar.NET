@@ -39,7 +39,7 @@ namespace UnitTest.Rollbar
                     ScrubWhitelistFields = scrubWhitelistFields,
                 };
 
-            var result = loggerConfig.GetSafeScrubFields();
+            var result = loggerConfig.GetFieldsToScrub();
 
             Assert.AreEqual(expectedSafeScrubFields.Length, result.Count);
             foreach(var expected in expectedSafeScrubFields)
