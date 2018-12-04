@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar", "UnitTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.Serilog", "Rollbar.PlugIns.Serilog\Rollbar.PlugIns.Serilog.csproj", "{269A0ECE-643A-49F2-BDB0-A5762729A819}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.PlugIns.Log4net", "Rollbar.PlugIns.Log4net\Rollbar.PlugIns.Log4net.csproj", "{06252A00-27C7-41C7-8922-56DAF70F50DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.Log4net", "Rollbar.PlugIns.Log4net\Rollbar.PlugIns.Log4net.csproj", "{06252A00-27C7-41C7-8922-56DAF70F50DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.Plugins.NLog", "Rollbar.Plugins.NLog\Rollbar.Plugins.NLog.csproj", "{86E63E3F-828C-4F80-804B-16CF1CF407D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,12 @@ Global
 		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
 		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06252A00-27C7-41C7-8922-56DAF70F50DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86E63E3F-828C-4F80-804B-16CF1CF407D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86E63E3F-828C-4F80-804B-16CF1CF407D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86E63E3F-828C-4F80-804B-16CF1CF407D2}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{86E63E3F-828C-4F80-804B-16CF1CF407D2}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{86E63E3F-828C-4F80-804B-16CF1CF407D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86E63E3F-828C-4F80-804B-16CF1CF407D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
