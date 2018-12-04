@@ -10,10 +10,9 @@
 
     <NotifierVersion>2.0.2</NotifierVersion>
     <PackageReleaseNotes>
-
       Improvements and fixes:
+      - ref #227: Factor out common code pattern of PlugIns
       - resolve #225: Make Rollbar.NET available as NLog target
-      
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
