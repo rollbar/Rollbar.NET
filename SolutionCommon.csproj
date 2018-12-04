@@ -8,21 +8,12 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>2.0.1</NotifierVersion>
+    <NotifierVersion>2.0.2</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
-      - resolve #221: Document Sample.PlugIns.Log4net
-      - resolve #222: Document Sample.PlugIns.Serilog
-      - resolve #219: Rollbar plug-in for Log4Net
-      - resolve #220: Sample of Rollbar plug-in for Log4Net
-      - resolve #190: Make Rollbar.NET available as a Serilog sink
-      - resolve #217: Create a sample app of using RollbarSerilogSink
-      - resolve #216: Improve Rollbar.NET integration within the Xamarin sample
-      - resolve #213: Improve Rollbar.Benchmarker configurability and coverage
-      - resolve #214: Update BenchmarkDotNet dependency to the latest
-      - resolve #215: Update Xamarin sample's dependencies to Rollbar.NET v2
-
+      - resolve #225: Make Rollbar.NET available as NLog target
+      
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
