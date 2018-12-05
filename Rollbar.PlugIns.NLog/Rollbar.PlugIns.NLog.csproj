@@ -16,6 +16,8 @@
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
+    <AssemblyName>Rollbar.PlugIns.NLog</AssemblyName>
+    <RootNamespace>Rollbar.PlugIns.NLog</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
