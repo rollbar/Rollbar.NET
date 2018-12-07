@@ -113,41 +113,9 @@
             this.TelemetryAutoCollectionTypes = TelemetryType.None;
             this.TelemetryAutoCollectionInterval = TimeSpan.Zero;
 
-#if NETFX
-            // initialize based on app.config settings of Rollbar section (if any):
-            this.InitFromAppConfig();
-#endif
+            // initialize based on application configuration file (if any):
+            NetStandard.RollbarConfigUtil.Load(this);
         }
-
-#if NETFX
-        private void InitFromAppConfig()
-        {
-            Rollbar.NetFramework.RollbarTelemetryConfigSection config =
-                Rollbar.NetFramework.RollbarTelemetryConfigSection.GetConfiguration();
-            if (config == null)
-            {
-                return;
-            }
-
-            if (config.TelemetryEnabled.HasValue)
-            {
-                this.TelemetryEnabled = config.TelemetryEnabled.Value;
-            }
-            if (config.TelemetryQueueDepth.HasValue)
-            {
-                this.TelemetryQueueDepth = config.TelemetryQueueDepth.Value;
-            }
-            if (config.TelemetryAutoCollectionTypes.HasValue)
-            {
-                this.TelemetryAutoCollectionTypes = config.TelemetryAutoCollectionTypes.Value;
-            }
-            if (config.TelemetryAutoCollectionInterval.HasValue)
-            {
-                this.TelemetryAutoCollectionInterval = config.TelemetryAutoCollectionInterval.Value;
-            }
-
-        }
-#endif
 
     }
 }

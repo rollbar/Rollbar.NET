@@ -70,10 +70,11 @@
 
             if (this._rollbarConfig == null)
             {
-                RollbarConfig config = new RollbarConfig("just_a_seed_value");
-#if NETSTANDARD
-                Rollbar.NetCore.AppSettingsUtil.LoadAppSettings(ref config);
-#endif
+                IRollbarConfig config = NetStandard.RollbarConfigUtil.LoadRollbarConfig(); //new RollbarConfig("just_a_seed_value");
+                                                                                         
+//#if NETSTANDARD
+//                Rollbar.NetCore.AppSettingsUtil.LoadAppSettings(ref config);
+//#endif
                 this._rollbarConfig = config;
             }
 

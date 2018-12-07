@@ -30,7 +30,7 @@ Have fun taking advantages for Rollbar Dashboard while monitoring behavior of yo
 adding the Rollbar support to your products)!
 
 Here is an example of an error log from this sample rendered within the Rollbar Dashboard:
-https://rollbar.com/Rollbar/Rollbar.Net/items/625/occurrences/61008279723/
+https://rollbar.com/Rollbar/Rollbar.Net/items/625/occurrences/61156681839/
 
 
 

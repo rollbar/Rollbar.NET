@@ -1,7 +1,5 @@
 ﻿namespace Rollbar.NetFramework
 {
-
-#if NETFX || NETSTANDARD
     using System;
     using System.Configuration;
     using Rollbar.DTOs;
@@ -25,12 +23,9 @@
         public static RollbarTelemetryConfigSection GetConfiguration()
         {
             RollbarTelemetryConfigSection configuration =
-                ConfigurationManager.GetSection("rollbarTelemetry") as RollbarTelemetryConfigSection;
-
-            if (configuration != null)
-                return configuration;
-
-            return new RollbarTelemetryConfigSection();
+                ConfigurationManager.GetSection("rollbarTelemetry") 
+                as RollbarTelemetryConfigSection;
+            return configuration;
         }
 
         /// <summary>
@@ -91,6 +86,5 @@
         }
 
     }
-#endif
 
 }

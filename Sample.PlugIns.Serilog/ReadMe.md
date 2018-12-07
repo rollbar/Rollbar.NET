@@ -18,6 +18,6 @@ In this example, we have a very simple .NET Core console application that alread
 Have fun taking advantages for Rollbar Dashboard while monitoring behavior of your products!
 
 Here is an example of an error log from this sample rendered within the Rollbar Dashboard:
-https://rollbar.com/Rollbar/Rollbar.Net/items/610/occurrences/60084806017/
+https://rollbar.com/Rollbar/Rollbar.Net/items/610/occurrences/61157626397/
 
 
