@@ -239,6 +239,8 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
+            DateTime utcTimestamp = DateTime.UtcNow;
+
             if (this.Config.LogLevel.HasValue && level < this.Config.LogLevel.Value)
             {
                 // nice shortcut:
@@ -251,7 +253,7 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
             // we are taking here a fire-and-forget approach:
-            Task task = new Task(state => Enqueue(dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");// Task.Factory.StartNew(state => Enqueue(dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");
+            Task task = new Task(state => Enqueue(utcTimestamp, dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");
             bool success = false;
             do
             {
@@ -280,6 +282,7 @@ namespace Rollbar
         }
 
         private void Enqueue(
+            DateTime utcTimestamp,
             object dataObject,
             ErrorLevel level,
             IDictionary<string, object> custom,
@@ -289,7 +292,7 @@ namespace Rollbar
         {
             lock (this._syncRoot)
             {
-                var data = RollbarUtil.PackageAsPayloadData(this.Config, level, dataObject, custom); //new Data(this._config, body, custom);
+                var data = RollbarUtil.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom); //new Data(this._config, body, custom);
                 var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
                 DoSend(payload);
             }

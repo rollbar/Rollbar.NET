@@ -1,13 +1,27 @@
 ﻿namespace Rollbar
 {
+    using Rollbar.Common;
     using Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Class RollbarUtil.
+    /// Aids in packaging logged objects as Rollbar DTO data structures (i.e. payloads).
+    /// </summary>
     internal static class RollbarUtil
     {
-
+        /// <summary>
+        /// Packages as payload data.
+        /// </summary>
+        /// <param name="utcTimestamp">The UTC timestamp of when the object-to-log was captured.</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Data.</returns>
         public static Data PackageAsPayloadData(
+            DateTime utcTimestamp,
             IRollbarConfig rollbarConfig, 
             ErrorLevel level, 
             object obj, 
@@ -23,6 +37,9 @@
             Data data = obj as Data;
             if (data != null)
             {
+                //we do not have to update the timestamp of the data here
+                //because we already have the incoming object to log of DTOs.Data type
+                //so the timestamp value assigned during its construction should work better:
                 data.Level = level;
                 return data;
             }
@@ -35,9 +52,18 @@
             
             data = new Data(rollbarConfig, body, custom);
             data.Level = level;
+            //update the data timestamp from the data creation timestamp to the passed
+            //object-to-log capture timestamp:
+            data.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(utcTimestamp);
             return data;
         }
 
+        /// <summary>
+        /// Packages as payload body.
+        /// </summary>
+        /// <param name="bodyObject">The body object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Body.</returns>
         public static Body PackageAsPayloadBody(object bodyObject, ref IDictionary<string, object> custom)
         {
             System.Exception exception = bodyObject as System.Exception;
@@ -62,6 +88,11 @@
             return new Body(new Message(bodyObject.ToString()));
         }
 
+        /// <summary>
+        /// Snaps the exception data as custom data.
+        /// </summary>
+        /// <param name="e">The e.</param>
+        /// <param name="custom">The custom.</param>
         public static void SnapExceptionDataAsCustomData(
             System.Exception e,
             ref IDictionary<string, object> custom
