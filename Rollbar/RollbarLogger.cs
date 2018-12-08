@@ -36,9 +36,16 @@ namespace Rollbar
         private readonly PayloadQueue _payloadQueue = null;
         private readonly ConcurrentDictionary<Task, Task> _pendingTasks = new ConcurrentDictionary<Task, Task>();
 
+        /// <summary>
+        /// Occurs when a Rollbar internal event happens.
+        /// </summary>
         public event EventHandler<RollbarEventArgs> InternalEvent;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarLogger"/> class.
+        /// </summary>
+        /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
         internal RollbarLogger(bool isSingleton, IRollbarConfig rollbarConfig = null)
         {
             try
@@ -75,8 +82,16 @@ namespace Rollbar
             RollbarQueueController.Instance.Register(this._payloadQueue);
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is singleton.
+        /// </summary>
+        /// <value><c>true</c> if this instance is singleton; otherwise, <c>false</c>.</value>
         internal bool IsSingleton { get; private set; }
 
+        /// <summary>
+        /// Gets the queue.
+        /// </summary>
+        /// <value>The queue.</value>
         internal PayloadQueue Queue
         {
             get { return this._payloadQueue; }
@@ -84,13 +99,26 @@ namespace Rollbar
 
         #region IRollbar
 
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
         public IAsyncLogger Logger => this;
 
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
         public IRollbarConfig Config
         {
             get { return this._config; }
         }
 
+        /// <summary>
+        /// Configures the using specified settings.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <returns>IRollbar.</returns>
         public IRollbar Configure(IRollbarConfig settings)
         {
             this._config.Reconfigure(settings);
@@ -98,6 +126,11 @@ namespace Rollbar
             return this;
         }
 
+        /// <summary>
+        /// Configures using the specified access token.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <returns>IRollbar.</returns>
         public IRollbar Configure(string accessToken)
         {
             return this.Configure(new RollbarConfig(accessToken));
@@ -107,42 +140,89 @@ namespace Rollbar
 
         #region IAsyncLogger
 
+        /// <summary>
+        /// Returns blocking/synchronous implementation of this ILogger.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>ILogger.</returns>
         public ILogger AsBlockingLogger(TimeSpan timeout)
         {
             return new RollbarLoggerBlockingWrapper(this, timeout);
         }
 
+        /// <summary>
+        /// Logs the specified Rollbar Data DTO.
+        /// </summary>
+        /// <param name="rollbarData">The Rollbar Data DTO.</param>
+        /// <returns>Task.</returns>
         public Task Log(DTOs.Data rollbarData)
         {
             return this.EnqueueAsync(rollbarData, rollbarData.Level.HasValue ? rollbarData.Level.Value : ErrorLevel.Debug, null);
         }
 
+        /// <summary>
+        /// Logs using the specified level.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         public Task Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
             return this.EnqueueAsync(obj, level, custom);
         }
 
 
+        /// <summary>
+        /// Logs the specified object as using critical level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         public Task Critical(object obj, IDictionary<string, object> custom = null)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Critical, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as using error level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         public Task Error(object obj, IDictionary<string, object> custom = null)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Error, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as using warning level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         public Task Warning(object obj, IDictionary<string, object> custom = null)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Warning, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as using informational level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         public Task Info(object obj, IDictionary<string, object> custom = null)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Info, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as using debug level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         public Task Debug(object obj, IDictionary<string, object> custom = null)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Debug, custom);
@@ -152,20 +232,41 @@ namespace Rollbar
 
         #region IRollbar explicitly
 
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
         IRollbarConfig IRollbar.Config { get { return this.Config; } }
 
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
         IAsyncLogger IRollbar.Logger { get { return this; } }
 
+        /// <summary>
+        /// Configures the using specified settings.
+        /// </summary>
+        /// <param name="settings">The settings.</param>
+        /// <returns>IRollbar.</returns>
         IRollbar IRollbar.Configure(IRollbarConfig settings)
         {
             return this.Configure(settings);
         }
 
+        /// <summary>
+        /// Configures using the specified access token.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <returns>IRollbar.</returns>
         IRollbar IRollbar.Configure(string accessToken)
         {
             return this.Configure(accessToken);
         }
 
+        /// <summary>
+        /// Occurs when a Rollbar internal event happens.
+        /// </summary>
         event EventHandler<RollbarEventArgs> IRollbar.InternalEvent
         {
             add
@@ -183,37 +284,79 @@ namespace Rollbar
 
         #region IAsyncLogger explicitly
 
+        /// <summary>
+        /// Returns as the blocking logger.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>ILogger.</returns>
         ILogger IAsyncLogger.AsBlockingLogger(TimeSpan timeout)
         {
             return this.AsBlockingLogger(timeout);
         }
 
+        /// <summary>
+        /// Logs using the specified level.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         Task IAsyncLogger.Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
         {
             return this.Log(level, obj, custom);
         }
 
 
+        /// <summary>
+        /// Logs the specified object as using critical level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         Task IAsyncLogger.Critical(object obj, IDictionary<string, object> custom)
         {
             return this.Critical(obj, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as using error level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         Task IAsyncLogger.Error(object obj, IDictionary<string, object> custom)
         {
             return this.Error(obj, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as using warning level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         Task IAsyncLogger.Warning(object obj, IDictionary<string, object> custom)
         {
             return this.Warning(obj, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as using informational level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         Task IAsyncLogger.Info(object obj, IDictionary<string, object> custom)
         {
             return this.Info(obj, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as using debug level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom.</param>
+        /// <returns>Task.</returns>
         Task IAsyncLogger.Debug(object obj, IDictionary<string, object> custom)
         {
             return this.Debug(obj, custom);
@@ -292,7 +435,7 @@ namespace Rollbar
         {
             lock (this._syncRoot)
             {
-                var data = RollbarUtil.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom); //new Data(this._config, body, custom);
+                var data = RollbarUtil.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
                 var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
                 DoSend(payload);
             }

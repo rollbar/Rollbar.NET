@@ -2,8 +2,6 @@
 {
     using Rollbar.Telemetry;
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Class AppConfigUtil.

@@ -1,8 +1,6 @@
 ﻿namespace Rollbar.NetStandard
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     using Rollbar.Telemetry;
 
     /// <summary>

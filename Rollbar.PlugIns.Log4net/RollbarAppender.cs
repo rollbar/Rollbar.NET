@@ -1,7 +1,6 @@
 ﻿namespace Rollbar.PlugIns.Log4net
 {
     using System;
-    using System.Collections.Generic;
     using log4net.Appender;
     using log4net.Core;
 

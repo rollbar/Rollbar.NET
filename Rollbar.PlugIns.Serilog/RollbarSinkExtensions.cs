@@ -10,7 +10,7 @@
     public static class RollbarSinkExtensions
     {
         /// <summary>
-        /// Rollbars the sink.
+        /// Provides configuration for RollbarSink.
         /// </summary>
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="rollbarAccessToken">The Rollbar access token.</param>
@@ -34,7 +34,7 @@
         }
 
         /// <summary>
-        /// Rollbars the sink.
+        /// Provides configuration for RollbarSink.
         /// </summary>
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="rollbarConfig">The Rollbar configuration.</param>

@@ -7,7 +7,6 @@ namespace Rollbar
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// 
@@ -63,6 +62,11 @@ namespace Rollbar
 
         #region ILogger
 
+        /// <summary>
+        /// Returns blocking/synchronous implementation of this ILogger.
+        /// </summary>
+        /// <param name="timeout">The timeout.</param>
+        /// <returns>ILogger.</returns>
         public ILogger AsBlockingLogger(TimeSpan timeout)
         {
             return new RollbarLoggerBlockingWrapper(this._asyncLogger, timeout);
@@ -74,6 +78,13 @@ namespace Rollbar
             return this;
         }
 
+        /// <summary>
+        /// Logs using the specified level.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom data.</param>
+        /// <returns>ILogger.</returns>
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
         {
             if (this._asyncLogger.Config.LogLevel.HasValue && level < this._asyncLogger.Config.LogLevel.Value)
@@ -86,62 +97,62 @@ namespace Rollbar
             return this;
         }
 
+        /// <summary>
+        /// Logs the specified object as critical.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom data.</param>
+        /// <returns>ILogger.</returns>
         public ILogger Critical(object obj, IDictionary<string, object> custom = null)
         {
             return this.Log(ErrorLevel.Critical, obj, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as error.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom data.</param>
+        /// <returns>ILogger.</returns>
         public ILogger Error(object obj, IDictionary<string, object> custom = null)
         {
             return this.Log(ErrorLevel.Error, obj, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as warning.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom data.</param>
+        /// <returns>ILogger.</returns>
         public ILogger Warning(object obj, IDictionary<string, object> custom = null)
         {
             return this.Log(ErrorLevel.Warning, obj, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as info.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom data.</param>
+        /// <returns>ILogger.</returns>
         public ILogger Info(object obj, IDictionary<string, object> custom = null)
         {
             return this.Log(ErrorLevel.Info, obj, custom);
         }
 
+        /// <summary>
+        /// Logs the specified object as debug.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <param name="custom">The custom data.</param>
+        /// <returns>ILogger.</returns>
         public ILogger Debug(object obj, IDictionary<string, object> custom = null)
         {
             return this.Log(ErrorLevel.Debug, obj, custom);
         }
 
         #endregion ILogger
-
-        //#region IRollbar
-
-        //public ILogger Logger => this;
-
-        //public IRollbarConfig Config
-        //{
-        //    get { return this._asyncLogger.Config; }
-        //}
-
-        //public IRollbar Configure(IRollbarConfig settings)
-        //{
-        //    Assumption.AssertNotNull(settings, nameof(settings));
-        //    this._asyncLogger.Config.Reconfigure(settings);
-
-        //    return this;
-        //}
-
-        //public IRollbar Configure(string accessToken)
-        //{
-        //    return this.Configure(new RollbarConfig(accessToken));
-        //}
-
-        //public event EventHandler<RollbarEventArgs> InternalEvent
-        //{
-        //    add { this._asyncLogger.InternalEvent += value; }
-        //    remove { this._asyncLogger.InternalEvent -= value; }
-        //}
-
-        //#endregion IRollbar
 
         #region IDisposable Support
 

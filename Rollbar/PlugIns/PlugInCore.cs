@@ -1,10 +1,15 @@
 ﻿namespace Rollbar.PlugIns
 {
-    using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
-    using System.Text;
 
+    /// <summary>
+    /// Class PlugInCore.
+    /// Implements the <see cref="System.IDisposable" />
+    /// </summary>
+    /// <typeparam name="TPlugInErrorLevel">The type of the t plug in error level.</typeparam>
+    /// <typeparam name="TPlugInEventData">The type of the t plug in event data.</typeparam>
+    /// <seealso cref="System.IDisposable" />
     public abstract class PlugInCore<TPlugInErrorLevel, TPlugInEventData>
         : IDisposable
     {
@@ -37,6 +42,9 @@
         /// </summary>
         private readonly ILogger _rollbarLogger;
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="PlugInCore{TPlugInErrorLevel, TPlugInEventData}"/> class from being created.
+        /// </summary>
         private PlugInCore()
         {
         }
@@ -70,11 +78,8 @@
 
             if (this._rollbarConfig == null)
             {
-                IRollbarConfig config = NetStandard.RollbarConfigUtil.LoadRollbarConfig(); //new RollbarConfig("just_a_seed_value");
+                IRollbarConfig config = NetStandard.RollbarConfigUtil.LoadRollbarConfig();
                                                                                          
-//#if NETSTANDARD
-//                Rollbar.NetCore.AppSettingsUtil.LoadAppSettings(ref config);
-//#endif
                 this._rollbarConfig = config;
             }
 
