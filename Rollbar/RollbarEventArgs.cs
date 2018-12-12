@@ -32,15 +32,15 @@
 
         internal RollbarEventArgs(
             RollbarLogger logger, 
-            Payload payload
+            object dataObject
             )
         {
-            Assumption.AssertNotNull(logger, nameof(logger));
+            //Assumption.AssertNotNull(logger, nameof(logger));
 
             this._logger = logger;
-            if (payload != null)
+            if (dataObject != null)
             {
-                this.Payload = JsonConvert.SerializeObject(payload);
+                this.Payload = JsonConvert.SerializeObject(dataObject);
             }
         }
 
@@ -50,7 +50,7 @@
         /// <value>
         /// The configuration.
         /// </value>
-        public IRollbarConfig Config { get { return this._logger.Config; } }
+        public IRollbarConfig Config { get { return this._logger?.Config; } }
 
         /// <summary>
         /// Gets the payload.
@@ -71,7 +71,7 @@
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(indent + this.GetType().Name + ":");
-            sb.Append(indent + this.Config.TraceAsString("  "));
+            sb.Append(indent + this.Config?.TraceAsString("  "));
             sb.AppendLine(indent + "  Payload: " + this.Payload);
             return sb.ToString();
         }

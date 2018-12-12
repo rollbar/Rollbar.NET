@@ -106,7 +106,18 @@
         {
             base.Reconfigure(likeMe);
 
-            this.Logger.Queue.NextDequeueTime = DateTimeOffset.Now;
+            var rollbarClient = new RollbarClient(
+                this
+                , RollbarQueueController.Instance.ProvideHttpClient(this.ProxyAddress, this.ProxyUsername, this.ProxyPassword)
+                );
+
+            if (this.Logger != null && this.Logger.Queue != null)
+            {
+                // reset the queue to use the new RollbarClient:
+                this.Logger.Queue.Flush();
+                this.Logger.Queue.UpdateClient(rollbarClient);
+                this.Logger.Queue.NextDequeueTime = DateTimeOffset.Now;
+            }
 
             return this;
         }

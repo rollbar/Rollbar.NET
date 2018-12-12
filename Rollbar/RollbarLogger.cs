@@ -397,11 +397,11 @@ namespace Rollbar
             }
             // we are taking here a fire-and-forget approach:
             Task task = new Task(state => Enqueue(utcTimestamp, dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");
-            bool success = false;
-            do
+            if (!this._pendingTasks.TryAdd(task, task))
             {
-                success = this._pendingTasks.TryAdd(task, task);
-            } while (!success);
+                this.OnRollbarEvent(new InternalErrorEventArgs(this, dataObject, null, "Couldn't add a pending task while performing EnqueueAsync(...)..."));
+                return Task.Factory.StartNew(() => { });
+            }
 
             task.ContinueWith(RemovePendingTask)
                 .ContinueWith(p => {

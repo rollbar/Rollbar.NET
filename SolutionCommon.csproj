@@ -11,6 +11,8 @@
     <NotifierVersion>2.1.0</NotifierVersion>
     <PackageReleaseNotes>
       Improvements and fixes:
+      - resolve #224: Rollbar does not honor proxy settings when initialized from code
+      - resolve #228: Make RollbarLogger fully reconfigurable (including its critical attributes)
       - resolve #230: Make sure payload's Data timestamp corresponds object capture moment instead of Data packaging moment on another thread
       - resolve #229: Improve loading of RollbarConfig from JSON and XML
       - resolve #168: Consider simplifying SDK multi-targeting by moving to .NET Standard shared base
