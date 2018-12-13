@@ -11,13 +11,16 @@
     <NotifierVersion>2.1.0</NotifierVersion>
     <PackageReleaseNotes>
       Improvements and fixes:
-      - resolve #224: Rollbar does not honor proxy settings when initialized from code
-      - resolve #228: Make RollbarLogger fully reconfigurable (including its critical attributes)
       - resolve #230: Make sure payload's Data timestamp corresponds object capture moment instead of Data packaging moment on another thread
       - resolve #229: Improve loading of RollbarConfig from JSON and XML
+      - resolve #228: Make RollbarLogger fully reconfigurable (including its critical attributes)
+      - resolve #224: Rollbar does not honor proxy settings when initialized from code
       - resolve #168: Consider simplifying SDK multi-targeting by moving to .NET Standard shared base
       - resolve #227: Factor out common code pattern of PlugIns
       - resolve #225: Make Rollbar.NET available as NLog target
+      - resolve #233: NuGet packaging of Rollbar plug-in for log4net
+      - resolve #234: NuGet packaging of Rollbar plug-in for NLog
+      - resolve #235: NuGet packaging of Rollbar plug-in for Serilog
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
@@ -25,8 +28,8 @@
     <FileVersion>$(NotifierVersion)</FileVersion>
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
     <Company>Rollbar Inc</Company>
-    <Title>Rollbar.NET Notifier SDK</Title>
-    <Product>Rollbar.Net Notifier</Product>
+    <Title>Rollbar.NET Notifier</Title>
+    <Product>Rollbar.Net Notifier SDK</Product>
     <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright (c) 2015-$(CurrentYear) Rollbar Inc</Copyright>
