@@ -18,7 +18,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.Serilog", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.Log4net", "Rollbar.PlugIns.Log4net\Rollbar.PlugIns.Log4net.csproj", "{06252A00-27C7-41C7-8922-56DAF70F50DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.Plugins.NLog", "Rollbar.Plugins.NLog\Rollbar.Plugins.NLog.csproj", "{86E63E3F-828C-4F80-804B-16CF1CF407D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.NLog", "Rollbar.Plugins.NLog\Rollbar.PlugIns.NLog.csproj", "{86E63E3F-828C-4F80-804B-16CF1CF407D2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RollbarPlugIns", "RollbarPlugIns", "{A6676C56-D085-4273-9757-B55207C63EFA}"
 EndProject
