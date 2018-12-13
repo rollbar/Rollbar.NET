@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.Serilog", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.Log4net", "Rollbar.PlugIns.Log4net\Rollbar.PlugIns.Log4net.csproj", "{06252A00-27C7-41C7-8922-56DAF70F50DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.Plugins.NLog", "Rollbar.Plugins.NLog\Rollbar.Plugins.NLog.csproj", "{86E63E3F-828C-4F80-804B-16CF1CF407D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.PlugIns.NLog", "Rollbar.Plugins.NLog\Rollbar.PlugIns.NLog.csproj", "{86E63E3F-828C-4F80-804B-16CF1CF407D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RollbarPlugIns", "RollbarPlugIns", "{A6676C56-D085-4273-9757-B55207C63EFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +62,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{269A0ECE-643A-49F2-BDB0-A5762729A819} = {A6676C56-D085-4273-9757-B55207C63EFA}
+		{06252A00-27C7-41C7-8922-56DAF70F50DC} = {A6676C56-D085-4273-9757-B55207C63EFA}
+		{86E63E3F-828C-4F80-804B-16CF1CF407D2} = {A6676C56-D085-4273-9757-B55207C63EFA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB9E5CFE-0437-4312-99E5-1EBF60FB8157}

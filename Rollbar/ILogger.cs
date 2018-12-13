@@ -40,7 +40,7 @@
         ILogger Log(dto.Data data);
  
         /// <summary>
-        /// Logs the specified level.
+        /// Logs using the specified level.
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>

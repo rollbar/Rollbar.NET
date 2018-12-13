@@ -1,21 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
 
-    <Version>$(NotifierVersion)</Version>
-    <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
-    <FileVersion>$(NotifierVersion)</FileVersion>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
+
+    <PluginVersion>1.0.1</PluginVersion>
+    <PackageReleaseNotes>
+      Initial release.
+    </PackageReleaseNotes>
+
+    <Title>Rollbar.NET Notifier plug-in for NLog.</Title>
+    <Description>Rollbar.NET Notifier as a nlog Target.</Description>
+    <PackageTags>nlog;nlog-target;rollbar;logging</PackageTags>
+    <AssemblyName>Rollbar.PlugIns.NLog</AssemblyName>
+    <RootNamespace>Rollbar.PlugIns.NLog</RootNamespace>
+
+    <Authors>Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
+    <Owners>Andrey Kornich (Wide Spectrum Computing LLC), Rollbar Inc.</Owners>
+    <Company>Rollbar Inc</Company>
+    <Product>Rollbar.Net Notifier SDK</Product>
+
+    <Version>$(PluginVersion)</Version>
+    <AssemblyVersion>$(PluginVersion)</AssemblyVersion>
+    <FileVersion>$(PluginVersion)</FileVersion>
 
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
-    <Copyright>Copyright (c) $(CurrentYear) Rollbar Inc</Copyright>
-    <Company>Rollbar Inc</Company>
-    <PackageTags>nlog;nlog-target;rollbar;logging</PackageTags>
+    <Copyright>Copyright (c) 2018-$(CurrentYear) Rollbar Inc</Copyright>
+
     <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
     <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>

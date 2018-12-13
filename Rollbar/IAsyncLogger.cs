@@ -24,7 +24,7 @@
     public interface IAsyncLogger
     {
         /// <summary>
-        /// Ases the blocking logger.
+        /// Returns blocking/synchronous implementation of this ILogger.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
         /// <returns>ILogger.</returns>
@@ -38,7 +38,7 @@
         Task Log(DTOs.Data rollbarData);
 
         /// <summary>
-        /// Logs the specified level.
+        /// Logs using the specified level.
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>

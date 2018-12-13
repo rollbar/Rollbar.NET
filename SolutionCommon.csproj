@@ -8,12 +8,19 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>2.0.2</NotifierVersion>
+    <NotifierVersion>2.1.0</NotifierVersion>
     <PackageReleaseNotes>
-
       Improvements and fixes:
+      - resolve #230: Make sure payload's Data timestamp corresponds object capture moment instead of Data packaging moment on another thread
+      - resolve #229: Improve loading of RollbarConfig from JSON and XML
+      - resolve #228: Make RollbarLogger fully reconfigurable (including its critical attributes)
+      - resolve #224: Rollbar does not honor proxy settings when initialized from code
+      - resolve #168: Consider simplifying SDK multi-targeting by moving to .NET Standard shared base
+      - resolve #227: Factor out common code pattern of PlugIns
       - resolve #225: Make Rollbar.NET available as NLog target
-      
+      - resolve #233: NuGet packaging of Rollbar plug-in for log4net
+      - resolve #234: NuGet packaging of Rollbar plug-in for NLog
+      - resolve #235: NuGet packaging of Rollbar plug-in for Serilog
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
@@ -21,8 +28,8 @@
     <FileVersion>$(NotifierVersion)</FileVersion>
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
     <Company>Rollbar Inc</Company>
-    <Title>Rollbar.NET Notifier SDK</Title>
-    <Product>Rollbar.Net Notifier</Product>
+    <Title>Rollbar.NET Notifier</Title>
+    <Product>Rollbar.Net Notifier SDK</Product>
     <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright (c) 2015-$(CurrentYear) Rollbar Inc</Copyright>
@@ -39,41 +46,48 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Rollbar.xml</DocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+  <PropertyGroup Condition="
+                 '$(TargetFramework)' == 'netstandard2.0'
+                 ">
     <NetVariant>NET_STANDARD</NetVariant>
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1'
-                 Or '$(TargetFramework)' == 'netcoreapp2.0'">
+  <PropertyGroup Condition="
+                 '$(TargetFramework)' == 'netcoreapp2.1'
+                 Or '$(TargetFramework)' == 'netcoreapp2.0'
+                 ">
     <NetVariant>NET_CORE</NetVariant>
     <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net472'
-             Or '$(TargetFramework)' == 'net471'
-             Or '$(TargetFramework)' == 'net47' 
-             Or '$(TargetFramework)' == 'net462' 
-             Or '$(TargetFramework)' == 'net461' 
-             Or '$(TargetFramework)' == 'net46'
-             Or '$(TargetFramework)' == 'net452'
-             Or '$(TargetFramework)' == 'net451'
-             Or '$(TargetFramework)' == 'net45'
-             ">
+  <PropertyGroup Condition="
+                 '$(TargetFramework)' == 'net472'
+                 Or '$(TargetFramework)' == 'net471'
+                 Or '$(TargetFramework)' == 'net47' 
+                 Or '$(TargetFramework)' == 'net462' 
+                 Or '$(TargetFramework)' == 'net461' 
+                 Or '$(TargetFramework)' == 'net46'
+                 Or '$(TargetFramework)' == 'net452'
+                 Or '$(TargetFramework)' == 'net451'
+                 Or '$(TargetFramework)' == 'net45'
+                 ">
     <NetVariant>NET_FX</NetVariant>
     <DefineConstants>NETFX</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net46'
-             Or '$(TargetFramework)' == 'net452'
-             Or '$(TargetFramework)' == 'net451'
-             Or '$(TargetFramework)' == 'net45'
-             ">
+  <PropertyGroup Condition="
+                 '$(TargetFramework)' == 'net46'
+                 Or '$(TargetFramework)' == 'net452'
+                 Or '$(TargetFramework)' == 'net451'
+                 Or '$(TargetFramework)' == 'net45'
+                 ">
     <DefineConstants>NETFX_46nOlder;NETFX</DefineConstants>
   </PropertyGroup>
 
 
-  <ItemGroup Condition="'$(NetVariant)' == 'NET_CORE' 
+  <ItemGroup Condition="
+             '$(NetVariant)' == 'NET_CORE' 
              Or '$(NetVariant)' == 'NET_STANDARD'
              ">
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
@@ -86,7 +100,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(NetVariant)' == 'NET_FX'">
+  <ItemGroup Condition="
+             '$(NetVariant)' == 'NET_FX'
+             ">
     <Reference Include="System.Configuration" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />

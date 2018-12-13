@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.NetFramework
 {
-#if NETFX || NETSTANDARD
     using System;
     using System.Configuration;
 
@@ -23,12 +22,9 @@
         public static RollbarConfigSection GetConfiguration()
         {
             RollbarConfigSection configuration =
-                ConfigurationManager.GetSection("rollbar") as RollbarConfigSection;
-
-            if (configuration != null)
-                return configuration;
-
-            return new RollbarConfigSection();
+                ConfigurationManager.GetSection("rollbar") 
+                as RollbarConfigSection;
+            return null;
         }
 
         /// <summary>
@@ -255,6 +251,5 @@
             }
         }
     }
-#endif
 
 }

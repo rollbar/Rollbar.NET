@@ -8,6 +8,7 @@ namespace Rollbar
     using Rollbar.NetStandard;
     using Rollbar.Serialization.Json;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -72,40 +73,43 @@ namespace Rollbar
         internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(50);
         internal readonly int _totalRetries = 3;
 
-        private HttpClient _httpClient = null;
-        private string _proxyAddress = null;
-        private string _proxyUsername = null;
-        private string _proxyPassword = null;
+        private readonly ConcurrentDictionary<string, HttpClient> _httpClientsByProxySettings = 
+            new ConcurrentDictionary<string, HttpClient>();
 
         internal HttpClient ProvideHttpClient(string proxyAddress = null, string proxyUsername = null, string proxyPassword = null)
         {
-            if (this._httpClient != null)
+            string proxySettings = string.Empty;
+            if (!string.IsNullOrWhiteSpace(proxyAddress) 
+                || !string.IsNullOrWhiteSpace(proxyUsername) 
+                || !string.IsNullOrWhiteSpace(proxyPassword)
+                )
             {
-                Assumption.AssertTrue(
-                    (string.IsNullOrWhiteSpace(proxyAddress) && string.IsNullOrWhiteSpace(this._proxyAddress))
-                    || (string.Compare(proxyAddress, this._proxyAddress, true) == 0)
-                    , nameof(proxyAddress)
-                    );
-                Assumption.AssertTrue(
-                    (string.IsNullOrWhiteSpace(proxyUsername) && string.IsNullOrWhiteSpace(this._proxyUsername))
-                    || (string.Compare(proxyUsername, this._proxyUsername, true) == 0)
-                    , nameof(proxyUsername)
-                    );
-                Assumption.AssertTrue(
-                    (string.IsNullOrWhiteSpace(proxyPassword) && string.IsNullOrWhiteSpace(this._proxyPassword))
-                    || (string.Compare(proxyPassword, this._proxyPassword, true) == 0)
-                    , nameof(proxyPassword)
-                    );
-                // reuse what is already there: 
-                return this._httpClient;
+                proxySettings = $"{proxyAddress?.ToLower()}+{proxyUsername?.ToLower()}+{proxyPassword?.ToLower()}";
             }
 
-            // create new instance:
-            this._proxyAddress = proxyAddress;
-            this._proxyUsername = proxyUsername;
-            this._proxyPassword = proxyPassword;
-            this._httpClient = HttpClientUtil.CreateHttpClient(proxyAddress, proxyUsername, proxyPassword);
-            return this._httpClient;
+            HttpClient httpClient = null;
+            if (this._httpClientsByProxySettings.TryGetValue(proxySettings, out httpClient))
+            {
+                return httpClient;
+            }
+
+            httpClient = HttpClientUtil.CreateHttpClient(proxyAddress, proxyUsername, proxyPassword);
+            if (this._httpClientsByProxySettings.TryAdd(proxySettings, httpClient))
+            {
+                return httpClient;
+            }
+            else if (this._httpClientsByProxySettings.TryGetValue(proxySettings, out httpClient))
+            {
+                return httpClient;
+            }
+            else
+            {
+                this.OnRollbarEvent(
+                    new InternalErrorEventArgs(null, null, null, $"ProvideHttpClient(...) is completely messed up for {proxySettings}!")
+                    );
+            }
+
+            return null;
         }
 
         /// <summary>

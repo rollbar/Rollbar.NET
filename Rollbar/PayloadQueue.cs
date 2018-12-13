@@ -12,7 +12,7 @@ namespace Rollbar
         private readonly object _syncLock = null;
         private readonly Queue<Payload> _queue = null;
         private readonly RollbarLogger _logger = null;
-        private readonly RollbarClient _client = null;
+        private RollbarClient _client = null;
         private bool _isReleased;
 
         private PayloadQueue()
@@ -44,6 +44,19 @@ namespace Rollbar
         public RollbarLogger Logger
         {
             get { return this._logger; }
+        }
+
+        public void UpdateClient(RollbarClient client)
+        {
+            if (this._client == client)
+            {
+                return;
+            }
+
+            lock(this._syncLock)
+            {
+                this._client = client;
+            }
         }
 
         public RollbarClient Client

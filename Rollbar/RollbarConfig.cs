@@ -5,6 +5,7 @@
     using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.NetFramework;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -26,8 +27,6 @@
         , ITraceable
         , IRollbarConfig
     {
-        private static readonly string[] listValueSplitters = new string[] { ", ", "; ", " " };
-
         private readonly RollbarLogger _logger = null;
 
         private RollbarConfig()
@@ -39,27 +38,6 @@
             this._logger = logger;
 
             this.SetDefaults();
-        }
-
-        internal RollbarLogger Logger
-        {
-            get { return this._logger; }
-        }
-
-        /// <summary>
-        /// Reconfigures this object similar to the specified one.
-        /// </summary>
-        /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>
-        /// <returns>
-        /// Reconfigured instance.
-        /// </returns>
-        public override RollbarConfig Reconfigure(IRollbarConfig likeMe)
-        {
-            base.Reconfigure(likeMe);
-
-            this.Logger.Queue.NextDequeueTime = DateTimeOffset.Now;
-
-            return this;
         }
 
         /// <summary>
@@ -108,92 +86,42 @@
             this.PersonDataCollectionPolicies = PersonDataCollectionPolicies.None;
             this.IpAddressCollectionPolicy = IpAddressCollectionPolicy.Collect;
 
-#if NETFX
-            // initialize based on app.config settings of Rollbar section (if any):
-            this.InitFromAppConfig();
-#endif
+            // initialize based on application configuration file (if any):
+            NetStandard.RollbarConfigUtil.Load(this);
         }
 
-#if NETFX
-        private void InitFromAppConfig()
+        internal RollbarLogger Logger
         {
-            Rollbar.NetFramework.RollbarConfigSection config = 
-                Rollbar.NetFramework.RollbarConfigSection.GetConfiguration();
-            if (config == null)
+            get { return this._logger; }
+        }
+
+        /// <summary>
+        /// Reconfigures this object similar to the specified one.
+        /// </summary>
+        /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>
+        /// <returns>
+        /// Reconfigured instance.
+        /// </returns>
+        public override RollbarConfig Reconfigure(IRollbarConfig likeMe)
+        {
+            base.Reconfigure(likeMe);
+
+            var rollbarClient = new RollbarClient(
+                this
+                , RollbarQueueController.Instance.ProvideHttpClient(this.ProxyAddress, this.ProxyUsername, this.ProxyPassword)
+                );
+
+            if (this.Logger != null && this.Logger.Queue != null)
             {
-                return;
+                // reset the queue to use the new RollbarClient:
+                this.Logger.Queue.Flush();
+                this.Logger.Queue.UpdateClient(rollbarClient);
+                this.Logger.Queue.NextDequeueTime = DateTimeOffset.Now;
             }
 
-            if (!string.IsNullOrWhiteSpace(config.AccessToken))
-            {
-                this.AccessToken = config.AccessToken;
-            }
-            if (!string.IsNullOrWhiteSpace(config.Environment))
-            {
-                this.Environment = config.Environment;
-            }
-            if (config.Enabled.HasValue)
-            {
-                this.Enabled = config.Enabled.Value;
-            }
-            if (config.MaxReportsPerMinute.HasValue)
-            {
-                this.MaxReportsPerMinute = config.MaxReportsPerMinute.Value;
-            }
-            if (config.ReportingQueueDepth.HasValue)
-            {
-                this.ReportingQueueDepth = config.ReportingQueueDepth.Value;
-            }
-            if (config.MaxItems.HasValue)
-            {
-                this.MaxItems = config.MaxItems.Value;
-            }
-            if (config.CaptureUncaughtExceptions.HasValue)
-            {
-                this.CaptureUncaughtExceptions = config.CaptureUncaughtExceptions.Value;
-            }
-            if (config.LogLevel.HasValue)
-            {
-                this.LogLevel = config.LogLevel.Value;
-            }
-            if (config.ScrubFields != null && config.ScrubFields.Length > 0)
-            {
-                this.ScrubFields = 
-                    string.IsNullOrEmpty(config.ScrubFields) ? new string[0] 
-                    : config.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            }
-            if (config.ScrubWhitelistFields != null && config.ScrubWhitelistFields.Length > 0)
-            {
-                this.ScrubWhitelistFields =
-                    string.IsNullOrEmpty(config.ScrubWhitelistFields) ? new string[0]
-                    : config.ScrubWhitelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            }
-            if (!string.IsNullOrWhiteSpace(config.EndPoint))
-            {
-                this.EndPoint = config.EndPoint;
-            }
-            if (!string.IsNullOrWhiteSpace(config.ProxyAddress))
-            {
-                this.ProxyAddress = config.ProxyAddress;
-            }
-            if (!string.IsNullOrWhiteSpace(config.ProxyUsername))
-            {
-                this.ProxyUsername = config.ProxyUsername;
-            }
-            if (!string.IsNullOrWhiteSpace(config.ProxyPassword))
-            {
-                this.ProxyPassword = config.ProxyPassword;
-            }
-            if (config.PersonDataCollectionPolicies.HasValue)
-            {
-                this.PersonDataCollectionPolicies = config.PersonDataCollectionPolicies.Value;
-            }
-            if (config.IpAddressCollectionPolicy.HasValue)
-            {
-                this.IpAddressCollectionPolicy = config.IpAddressCollectionPolicy.Value;
-            }
+            return this;
         }
-#endif
+
         /// <summary>
         /// Gets the access token.
         /// </summary>

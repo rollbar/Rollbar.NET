@@ -12,11 +12,11 @@
     {
         internal InternalErrorEventArgs(
             RollbarLogger logger,
-            Payload payload,
+            object dataObject,
             System.Exception error,
             string details
             ) 
-            : base(logger, payload)
+            : base(logger, dataObject)
         {
             this.Error = error;
             this.Details = details;

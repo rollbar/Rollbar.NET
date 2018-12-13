@@ -13,22 +13,7 @@
     public class RollbarSink
         : ILogEventSink
     {
-        /// <summary>
-        /// The format provider
-        /// </summary>
-        private readonly IFormatProvider _formatProvider;
-        /// <summary>
-        /// The Rollbar configuration
-        /// </summary>
-        private readonly IRollbarConfig _rollbarConfig;
-        /// <summary>
-        /// The Rollbar asynchronous logger
-        /// </summary>
-        private readonly IAsyncLogger _rollbarAsyncLogger;
-        /// <summary>
-        /// The Rollbar logger
-        /// </summary>
-        private readonly ILogger _rollbarLogger;
+        private readonly RollbarPlugInCore _rollbarPlugIn;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarSink"/> class.
@@ -44,7 +29,7 @@
             IFormatProvider formatProvider
             )
             : this(
-                  new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment}, 
+                  RollbarPlugInCore.CreateConfig(rollbarAccessToken: rollbarAccessToken, rollbarEnvironment: rollbarEnvironment),
                   rollbarBlockingLoggingTimeout,
                   formatProvider
                   )
@@ -63,18 +48,8 @@
             IFormatProvider formatProvider
             )
         {
-            this._rollbarConfig = rollbarConfig;
-
-            IRollbar rollbar = RollbarFactory.CreateNew().Configure(this._rollbarConfig);
-
-            RollbarFactory.CreateProper(
-                this._rollbarConfig, 
-                rollbarBlockingLoggingTimeout, 
-                out this._rollbarAsyncLogger, 
-                out this._rollbarLogger
-                );
-
-            _formatProvider = formatProvider;
+            this._rollbarPlugIn = 
+                new RollbarPlugInCore(rollbarConfig, rollbarBlockingLoggingTimeout, formatProvider);
         }
 
         /// <summary>
@@ -83,110 +58,10 @@
         /// <param name="logEvent">The log event to write.</param>
         public void Emit(LogEvent logEvent)
         {
-            if (logEvent == null)
+            if (logEvent != null)
             {
-                return;
+                this._rollbarPlugIn.ReportToRollbar(logEvent, logEvent.Level);
             }
-
-            ErrorLevel rollbarLogLevel;
-            switch (logEvent.Level)
-            {
-                case LogEventLevel.Fatal:
-                    rollbarLogLevel = ErrorLevel.Critical;
-                    break;
-                case LogEventLevel.Error:
-                    rollbarLogLevel = ErrorLevel.Error;
-                    break;
-                case LogEventLevel.Warning:
-                    rollbarLogLevel = ErrorLevel.Warning;
-                    break;
-                case LogEventLevel.Information:
-                    rollbarLogLevel = ErrorLevel.Info;
-                    break;
-                case LogEventLevel.Verbose:
-                case LogEventLevel.Debug:
-                default:
-                    rollbarLogLevel = ErrorLevel.Debug;
-                    break;
-            }
-
-            string message = logEvent.RenderMessage(this._formatProvider);
-
-            DTOs.Body rollbarBody = null;
-            if (logEvent.Exception != null)
-            {
-                rollbarBody = new DTOs.Body(logEvent.Exception);
-            }
-            else
-            {
-                rollbarBody = new DTOs.Body(new DTOs.Message(message));
-            }
-
-            int customCapacity = 1;
-            if (logEvent.Properties != null)
-            {
-                customCapacity += logEvent.Properties.Count;
-            }
-            if (logEvent.Exception != null)
-            {
-                customCapacity++;
-            }
-            IDictionary<string, object> custom = new Dictionary<string, object>(customCapacity);
-            if (logEvent.Exception != null)
-            {
-                custom["Serilog.LogEvent.RenderedMessage"] = message;
-            }
-            if (logEvent.Properties != null)
-            {
-                foreach (var property in logEvent.Properties)
-                {
-                    custom[property.Key] = property.Value.ToString();
-                }
-            }
-            custom["Serilog.LogEvent.Timestamp"] = logEvent.Timestamp;
-
-            DTOs.Data rollbarData = new DTOs.Data(this._rollbarConfig, rollbarBody, custom)
-            {
-                Level = rollbarLogLevel
-            };
-
-            this.ReportToRollbar(rollbarData);
-        }
-
-        /// <summary>
-        /// Reports to Rollbar.
-        /// </summary>
-        /// <param name="rollbarData">The Rollbar data.</param>
-        private void ReportToRollbar(DTOs.Data rollbarData)
-        {
-            if (this._rollbarAsyncLogger != null)
-            {
-                RollbarSink.ReportToRollbar(this._rollbarAsyncLogger, rollbarData);
-            }
-            else if (this._rollbarLogger != null)
-            {
-                RollbarSink.ReportToRollbar(this._rollbarLogger, rollbarData);
-            }
-        }
-
-        /// <summary>
-        /// Reports to Rollbar.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="rollbarData">The Rollbar data.</param>
-        private static void ReportToRollbar(ILogger logger, DTOs.Data rollbarData)
-        {
-            logger.Log(rollbarData);
-        }
-
-        /// <summary>
-        /// Reports to Rollbar.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="rollbarData">The Rollbar data.</param>
-        private static void ReportToRollbar(IAsyncLogger logger, DTOs.Data rollbarData)
-        {
-            logger.Log(rollbarData);
         }
     }
 }

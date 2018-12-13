@@ -16,8 +16,7 @@ namespace UnitTest.Rollbar
     [TestCategory(nameof(RollbarLoggerFixture))]
     public class RollbarLoggerFixture
     {
-        RollbarConfig _loggerConfig =
-            new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
+        RollbarConfig _loggerConfig;
 
         [TestInitialize]
         public void SetupFixture()
@@ -32,6 +31,69 @@ namespace UnitTest.Rollbar
         public void TearDownFixture()
         {
 
+        }
+
+        [TestMethod]
+        public void AllowsProxySettingsReconfiguration()
+        {
+            using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
+            {
+                Assert.AreNotSame(this._loggerConfig, logger.Config);
+                logger.Configure(this._loggerConfig);
+                Assert.AreNotSame(this._loggerConfig, logger.Config);
+
+                int errorCount = 0;
+                logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("test");
+                Assert.AreEqual(0, errorCount);
+
+                RollbarConfig newConfig = new RollbarConfig("seed");
+                newConfig.Reconfigure(this._loggerConfig);
+                Assert.AreNotSame(this._loggerConfig, newConfig);
+                logger.Configure(newConfig);
+                logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("test");
+                Assert.AreEqual(0, errorCount);
+
+                newConfig.ProxyAddress = "www.fakeproxy.com";
+                newConfig.ProxyUsername = "fakeusername";
+                newConfig.ProxyPassword = "fakepassword";
+                logger.Configure(newConfig);
+                Assert.IsFalse(string.IsNullOrEmpty(logger.Config.ProxyAddress));
+                Assert.IsFalse(string.IsNullOrEmpty(logger.Config.ProxyUsername));
+                Assert.IsFalse(string.IsNullOrEmpty(logger.Config.ProxyPassword));
+                try
+                {
+                    // the fake proxy settings will cause a timeout exception here:
+                    logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("test");
+                }
+                catch
+                {
+                    errorCount++;
+                }
+                Assert.AreEqual(1, errorCount);
+
+                newConfig.ProxyAddress = null;
+                newConfig.ProxyUsername = null;
+                newConfig.ProxyPassword = null;
+                logger.Configure(newConfig);
+                Assert.IsTrue(string.IsNullOrEmpty(logger.Config.ProxyAddress));
+                Assert.IsTrue(string.IsNullOrEmpty(logger.Config.ProxyUsername));
+                Assert.IsTrue(string.IsNullOrEmpty(logger.Config.ProxyPassword));
+                try
+                {
+                    // the fake proxy settings are gone, so, next call is expected to succeed:
+                    logger.AsBlockingLogger(TimeSpan.FromSeconds(15)).Info("test");
+                }
+                catch (Exception ex)
+                {
+                    errorCount++;
+                }
+                Assert.AreEqual(1, errorCount);
+            }
+        }
+
+        private void Logger_InternalEvent1(object sender, RollbarEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         [TestMethod]
