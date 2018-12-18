@@ -24,7 +24,7 @@
             RollbarConfigSection configuration =
                 ConfigurationManager.GetSection("rollbar") 
                 as RollbarConfigSection;
-            return null;
+            return configuration;
         }
 
         /// <summary>
