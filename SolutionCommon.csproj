@@ -13,6 +13,7 @@
       Improvements and fixes:
       - resolve #240: Move all the sample apps into Samples folder
       - resolve #241: Update the samples dependencies to the latest available
+      - resolve #242: Fix Sample.RollbarWithinStronglyNamedAssembly's signing key build issue
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>

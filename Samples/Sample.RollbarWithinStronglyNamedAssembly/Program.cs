@@ -30,7 +30,7 @@ namespace Sample.RollbarWithinStronglyNamedAssembly
                 .Info("Sample.RollbarWithinStronglyNamedAssembly sample: Basic info log example.")
                 .Debug("Sample.RollbarWithinStronglyNamedAssembly sample: First debug log.")
                 .Error(new NullReferenceException("Sample.RollbarWithinStronglyNamedAssembly sample: null reference exception."))
-                .Error(new System.Exception("Sample.RollbarWithinStronglyNamedAssembly sample: trying out the TraceChain", new NullReferenceException()))
+                .Error(new Exception("Sample.RollbarWithinStronglyNamedAssembly sample: trying out the TraceChain", new NullReferenceException()))
                 ;
 
             Console.WriteLine("Hello Rollbar!");
