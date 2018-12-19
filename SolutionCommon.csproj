@@ -11,10 +11,11 @@
     <NotifierVersion>2.1.1</NotifierVersion>
     <PackageReleaseNotes>
       Improvements and fixes:
-      - resolve #240: Move all the sample apps into Samples folder
-      - resolve #241: Update the samples dependencies to the latest available
-      - resolve #242: Fix Sample.RollbarWithinStronglyNamedAssembly's signing key build issue
-      - resolve #243: Reconfigure Sample.Xamarin.Forms to reference Rollbar project instead of Rollbar NuGet package      
+      - resolve #244: Fix crash when no hosting application configuration file is present.
+      - resolve #240: Move all the sample apps into Samples folder.
+      - resolve #241: Update the samples dependencies to the latest available.
+      - resolve #242: Fix Sample.RollbarWithinStronglyNamedAssembly's signing key build issue.
+      - resolve #243: Reconfigure Sample.Xamarin.Forms to reference Rollbar project instead of Rollbar NuGet package.      
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
