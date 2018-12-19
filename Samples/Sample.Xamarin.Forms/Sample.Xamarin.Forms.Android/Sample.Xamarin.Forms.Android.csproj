@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Sample.Xamarin.Forms.Droid</RootNamespace>
     <AssemblyName>Sample.Xamarin.Forms.Android</AssemblyName>
-    <TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v8.1</TargetFrameworkVersion>
     <AndroidApplication>True</AndroidApplication>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
@@ -88,8 +88,12 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Rollbar\Rollbar.csproj">
+      <Project>{fa70ac31-5cd9-4947-8d5f-624d9a1fb510}</Project>
+      <Name>Rollbar</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sample.Xamarin.Forms\Sample.Xamarin.Forms.csproj">
-      <Project>{AAC2A660-B77B-4F6E-9E7A-8E19AF75ABCA}</Project>
+      <Project>{d3ae7a67-de49-4b11-bfb6-14a7ac441f3b}</Project>
       <Name>Sample.Xamarin.Forms</Name>
     </ProjectReference>
   </ItemGroup>

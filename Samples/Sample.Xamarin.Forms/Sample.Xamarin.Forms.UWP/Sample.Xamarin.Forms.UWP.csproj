@@ -152,8 +152,12 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Rollbar\Rollbar.csproj">
+      <Project>{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}</Project>
+      <Name>Rollbar</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sample.Xamarin.Forms\Sample.Xamarin.Forms.csproj">
-      <Project>{AAC2A660-B77B-4F6E-9E7A-8E19AF75ABCA}</Project>
+      <Project>{d3ae7a67-de49-4b11-bfb6-14a7ac441f3b}</Project>
       <Name>Sample.Xamarin.Forms</Name>
     </ProjectReference>
   </ItemGroup>
