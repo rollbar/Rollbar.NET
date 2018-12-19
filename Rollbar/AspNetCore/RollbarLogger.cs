@@ -4,12 +4,7 @@ namespace Rollbar.AspNetCore
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Reflection;
     using mslogging = Microsoft.Extensions.Logging;
-    using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Microsoft.AspNetCore.Http;
 

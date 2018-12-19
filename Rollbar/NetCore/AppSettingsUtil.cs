@@ -5,7 +5,6 @@ namespace Rollbar.NetCore
     using System.Diagnostics;
     using System.IO;
     using Microsoft.Extensions.Configuration;
-    using Rollbar.Diagnostics;
     using Rollbar.Telemetry;
 
     /// <summary>

@@ -53,7 +53,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
 
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
             ClassificationDeclaration classificationDeclaration = new ClassificationDeclaration();
-            foreach(var classifier in EnumUtil.GetAllValues<PayloadSize>())
+            foreach(var classifier in EnumUtility.GetAllValues<PayloadSize>())
             {
                 EvaluateUsing(classifier, classificationDeclaration);
             }
@@ -69,10 +69,10 @@ namespace UnitTest.Rollbar.RollbarPerformance
             // delivered to the Rollbar API:
             Assert.AreEqual(
                 Constants.TotalMeasurementSamples
-                * EnumUtil.GetAllValues<PayloadSize>().Length 
-                * EnumUtil.GetAllValues<PayloadType>().Length 
-                * (EnumUtil.GetAllValues<MethodVariant>().Length - 1) 
-                * EnumUtil.GetAllValues<Method>().Length 
+                * EnumUtility.GetAllValues<PayloadSize>().Length 
+                * EnumUtility.GetAllValues<PayloadType>().Length 
+                * (EnumUtility.GetAllValues<MethodVariant>().Length - 1) 
+                * EnumUtility.GetAllValues<Method>().Length 
                 , this._commSuccessCount
                 );
         }
@@ -110,7 +110,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
         private void EvaluateUsing(PayloadSize theClassifier, ClassificationDeclaration classificationDeclaration)
         {
             classificationDeclaration.PayloadSize = theClassifier;
-            foreach (var classifier in EnumUtil.GetAllValues<PayloadType>())
+            foreach (var classifier in EnumUtility.GetAllValues<PayloadType>())
             {
                 EvaluateUsing(classifier, classificationDeclaration);
             }
@@ -119,7 +119,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
         private void EvaluateUsing(PayloadType theClassifier, ClassificationDeclaration classificationDeclaration)
         {
             classificationDeclaration.PayloadType = theClassifier;
-            foreach (var classifier in EnumUtil.GetAllValues<MethodVariant>())
+            foreach (var classifier in EnumUtility.GetAllValues<MethodVariant>())
             {
                 EvaluateUsing(classifier, classificationDeclaration);
             }
@@ -128,7 +128,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
         private void EvaluateUsing(MethodVariant theClassifier, ClassificationDeclaration classificationDeclaration)
         {
             classificationDeclaration.MethodVariant = theClassifier;
-            foreach (var classifier in EnumUtil.GetAllValues<Method>())
+            foreach (var classifier in EnumUtility.GetAllValues<Method>())
             {
                 EvaluateUsing(classifier, classificationDeclaration);
             }

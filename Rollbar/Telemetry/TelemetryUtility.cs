@@ -1,14 +1,9 @@
 ﻿namespace Rollbar.Telemetry
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
-
     /// <summary>
     /// TODO: complete the implementation...
     /// </summary>
-    internal static class TelemetryUtil
+    internal static class TelemetryUtility
     {
         public static int GetProcessCpuUtilization()
         {

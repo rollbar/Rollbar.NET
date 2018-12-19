@@ -15,7 +15,9 @@
       - resolve #240: Move all the sample apps into Samples folder.
       - resolve #241: Update the samples dependencies to the latest available.
       - resolve #242: Fix Sample.RollbarWithinStronglyNamedAssembly's signing key build issue.
-      - resolve #243: Reconfigure Sample.Xamarin.Forms to reference Rollbar project instead of Rollbar NuGet package.      
+      - resolve #243: Reconfigure Sample.Xamarin.Forms to reference Rollbar project instead of Rollbar NuGet package.
+      - resolve #245: Refactor Common and Utils namespaces types.
+      - resolve #246: Remove unused namespaces across the codebase.
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>

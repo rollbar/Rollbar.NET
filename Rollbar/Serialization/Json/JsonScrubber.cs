@@ -7,9 +7,6 @@ namespace Rollbar.Serialization.Json
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
 
     /// <summary>
     /// A utility class aiding in scrubbing Json data fields.

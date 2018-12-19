@@ -1,13 +1,10 @@
-﻿namespace Rollbar.Diagnostics
+﻿namespace Rollbar.Common
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Runtime.Versioning;
-    using System.Text;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A utility class aiding discovery of the current runtime environment.

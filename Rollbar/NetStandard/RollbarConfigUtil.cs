@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.NetStandard
 {
-    using System;
     using Rollbar.Telemetry;
 
     /// <summary>

@@ -1,7 +1,6 @@
 ﻿namespace Rollbar.Common
 {
     using System;
-    using Rollbar.Utils;
     using Xamarin.iOS.Foundation;
 
     /// <summary>
@@ -24,7 +23,7 @@
         public virtual T Reconfigure(T likeMe)
         {
             var properties = 
-                ReflectionUtil.GetAllPublicInstanceProperties(this.GetType());
+                ReflectionUtility.GetAllPublicInstanceProperties(this.GetType());
 
             foreach(var property in properties)
             {
@@ -79,7 +78,7 @@
         public virtual T Reconfigure(TBase likeMe)
         {
             var properties =
-                ReflectionUtil.GetAllPublicInstanceProperties(likeMe.GetType());
+                ReflectionUtility.GetAllPublicInstanceProperties(likeMe.GetType());
 
             foreach (var property in properties)
             {

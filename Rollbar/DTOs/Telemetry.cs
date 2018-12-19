@@ -2,12 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
     using Rollbar.Common;
     using Rollbar.Diagnostics;
 
     /// <summary>
-    /// IMplements Telemetry DTO
+    /// Implements Telemetry DTO
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.ExtendableDtoBase" />
     public class Telemetry

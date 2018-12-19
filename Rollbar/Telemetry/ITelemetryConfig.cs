@@ -2,8 +2,6 @@
 {
     using Rollbar.DTOs;
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Defines telemetry configuration interface.

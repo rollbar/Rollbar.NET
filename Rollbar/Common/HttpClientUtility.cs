@@ -7,15 +7,15 @@
     using System.Text;
 
     /// <summary>
-    /// HttpClient utility class.
+    /// Class HttpClientUtility.
     /// </summary>
-    public static class HttpClientUtil
+    public static class HttpClientUtility
     {
         /// <summary>
         /// Creates the HTTP client.
         /// </summary>
         /// <param name="proxyAddress">The proxy settings.</param>
-        /// <param name="proxyUsername">The proxy username.</param>
+        /// <param name="proxyUsername">The proxy user name.</param>
         /// <param name="proxyPassword">The proxy password.</param>
         /// <returns>HttpClient.</returns>
         public static  HttpClient CreateHttpClient(string proxyAddress = null, string proxyUsername = null, string proxyPassword = null)

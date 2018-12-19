@@ -4,9 +4,9 @@
     using System.Linq;
 
     /// <summary>
-    /// Class EnumUtil.
+    /// Class EnumUtility.
     /// </summary>
-    public static class EnumUtil
+    public static class EnumUtility
     {
         /// <summary>
         /// Gets all values.

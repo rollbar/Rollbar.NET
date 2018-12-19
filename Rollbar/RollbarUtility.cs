@@ -6,10 +6,10 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Class RollbarUtil.
+    /// Class RollbarUtility.
     /// Aids in packaging logged objects as Rollbar DTO data structures (i.e. payloads).
     /// </summary>
-    internal static class RollbarUtil
+    internal static class RollbarUtility
     {
         /// <summary>
         /// Packages as payload data.
@@ -47,7 +47,7 @@
             Body body = obj as Body;
             if (body == null)
             {
-                body = RollbarUtil.PackageAsPayloadBody(obj, ref custom);
+                body = RollbarUtility.PackageAsPayloadBody(obj, ref custom);
             }
             
             data = new Data(rollbarConfig, body, custom);
@@ -69,7 +69,7 @@
             System.Exception exception = bodyObject as System.Exception;
             if (exception != null)
             {
-                RollbarUtil.SnapExceptionDataAsCustomData(exception, ref custom);
+                RollbarUtility.SnapExceptionDataAsCustomData(exception, ref custom);
                 return new Body(exception);
             }
 
