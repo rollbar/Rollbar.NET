@@ -12,6 +12,7 @@
     <PackageReleaseNotes>
       Improvements and fixes:
       - resolve #244: Fix crash when no hosting application configuration file is present.
+      - resolve #212: Optimize performance of the payload queues processing thread in case of retries.
       - resolve #240: Move all the sample apps into Samples folder.
       - resolve #241: Update the samples dependencies to the latest available.
       - resolve #242: Fix Sample.RollbarWithinStronglyNamedAssembly's signing key build issue.

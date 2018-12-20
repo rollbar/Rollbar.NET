@@ -3,6 +3,7 @@
     using Newtonsoft.Json;
     using Rollbar.Diagnostics;
     using System;
+    using System.Net.Http;
     using System.Threading;
 
     /// <summary>
@@ -14,6 +15,7 @@
     {
         private readonly DateTime? _timeoutAt = null;
         private readonly SemaphoreSlim _signal = null;
+        private StringContent _asHttpContentToSend = null;
 
         [JsonIgnore]
         internal DateTime? TimeoutAt
@@ -25,6 +27,24 @@
         internal SemaphoreSlim Signal
         {
             get { return this._signal; }
+        }
+
+        /// <summary>
+        /// Gets or sets this payload rendered as HTTP content to send.
+        /// We may need it as optimization cache for re-tries.
+        /// </summary>
+        /// <value>An HTTP content to send.</value>
+        [JsonIgnore]
+        internal StringContent AsHttpContentToSend
+        {
+            get
+            {
+                return this._asHttpContentToSend;
+            }
+            set
+            {
+                this._asHttpContentToSend = value;
+            }
         }
 
         /// <summary>
