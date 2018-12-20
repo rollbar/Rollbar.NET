@@ -83,7 +83,7 @@ namespace UnitTest.Rollbar
                     // the fake proxy settings are gone, so, next call is expected to succeed:
                     logger.AsBlockingLogger(TimeSpan.FromSeconds(15)).Info("test");
                 }
-                catch (Exception ex)
+                catch
                 {
                     errorCount++;
                 }

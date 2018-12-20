@@ -56,7 +56,7 @@
         /// <returns></returns>
         public static string GetOSDescription()
         {
-#if NETFX_46nOlder
+#if NETFX_47nOlder
             return Environment.OSVersion.VersionString;
 #else
             return RuntimeInformation.OSDescription;
@@ -69,7 +69,7 @@
         /// <returns></returns>
         public static string GetCpuArchitecture()
         {
-#if NETFX_46nOlder
+#if NETFX_47nOlder
             return null;
 #else
             return RuntimeInformation.OSArchitecture.ToString();
