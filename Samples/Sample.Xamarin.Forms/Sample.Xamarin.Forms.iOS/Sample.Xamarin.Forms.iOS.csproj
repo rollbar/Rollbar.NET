@@ -26,6 +26,11 @@
     <MtouchArch>x86_64</MtouchArch>
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignProvision />
+    <CodesignExtraArgs />
+    <CodesignResourceRules />
+    <CodesignEntitlements />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -130,6 +135,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Rollbar\Rollbar.csproj">
+      <Project>{fa70ac31-5cd9-4947-8d5f-624d9a1fb510}</Project>
+      <Name>Rollbar</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sample.Xamarin.Forms\Sample.Xamarin.Forms.csproj">
       <Project>{AAC2A660-B77B-4F6E-9E7A-8E19AF75ABCA}</Project>
       <Name>Sample.Xamarin.Forms</Name>
