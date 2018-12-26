@@ -11,6 +11,7 @@
     <NotifierVersion>2.1.1</NotifierVersion>
     <PackageReleaseNotes>
       Improvements and fixes:
+      - resolve #249: Error using the log4net plugin in WPF application
       - resolve #244: Fix crash when no hosting application configuration file is present.
       - resolve #212: Optimize performance of the payload queues processing thread in case of retries.
       - resolve #247: Redundant dependency for .NET Framework targets.
