@@ -26,6 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Rollbar Client - Rollbar.NET Hosting Environment (please complete the following information):**
  - Rollbar.NET Host type: [web service, Windows service/daemon, desktop app, mobile app, etc.]
  - OS and its version: [Linux, MacOS, Windows, iOS, Android, etc.]
+ - .NET flavor and its version: [.NET Standard, .NET Framework, .NET Core, Mono, etc.]
  - Application framework and its version: [Asp.NET, WebApi, WindowsForms, WPF, UWP, Xamarin, etc.]
  - Rollbar.NET Version: [e.g. 2.1.1]
  - Applicable Rollbar Plug-in (if any): [Rollbar.PlugIns.NLog, Rollbar.PlugIns.Serilog, Rollbar.PlugIns.Log4net, etc.]
