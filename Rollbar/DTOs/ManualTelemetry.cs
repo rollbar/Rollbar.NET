@@ -1,8 +1,6 @@
 ﻿namespace Rollbar.DTOs
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Implements manual/custom telemetry body

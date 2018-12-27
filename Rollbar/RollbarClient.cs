@@ -78,26 +78,30 @@ namespace Rollbar
         {
             Assumption.AssertNotNull(payload, nameof(payload));
 
-            if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
+            if (payload.AsHttpContentToSend == null)
             {
-                throw new ArgumentOutOfRangeException(
-                    paramName: nameof(payload),
-                    message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
-                    );
+                if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        paramName: nameof(payload),
+                        message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
+                        );
+                }
+
+                var jsonData = JsonConvert.SerializeObject(payload);
+                jsonData = ScrubPayload(jsonData, this._config.GetFieldsToScrub());
+
+                payload.AsHttpContentToSend =
+                    new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
             }
 
-            var jsonData = JsonConvert.SerializeObject(payload);
-            jsonData = ScrubPayload(jsonData, this._config.GetFieldsToScrub());
-
-            var postPayload =
-                new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
-
+            Assumption.AssertNotNull(payload.AsHttpContentToSend, nameof(payload.AsHttpContentToSend));
             Assumption.AssertTrue(string.Equals(payload.AccessToken, this._config.AccessToken), nameof(payload.AccessToken));
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
             const string accessTokenHeader = "X-Rollbar-Access-Token";
             request.Headers.Add(accessTokenHeader, this._config.AccessToken);
-            request.Content = postPayload;
+            request.Content = payload.AsHttpContentToSend;
 
             var postResponse = await this._httpClient.SendAsync(request);
 

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Configuration;
+    using Rollbar.Common;
     using Rollbar.DTOs;
 
     /// <summary>
@@ -22,6 +23,11 @@
         /// <returns></returns>
         public static RollbarTelemetryConfigSection GetConfiguration()
         {
+            if (!FileUtility.AppConfigFilePresent())
+            {
+                return null;
+            }
+
             RollbarTelemetryConfigSection configuration =
                 ConfigurationManager.GetSection("rollbarTelemetry") 
                 as RollbarTelemetryConfigSection;

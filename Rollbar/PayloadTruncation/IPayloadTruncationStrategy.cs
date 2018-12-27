@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.PayloadTruncation
 {
-
     using Rollbar.DTOs;
 
     /// <summary>

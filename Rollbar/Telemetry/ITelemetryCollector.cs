@@ -1,8 +1,5 @@
 ﻿namespace Rollbar.Telemetry
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
     using Rollbar.DTOs;
 
     /// <summary>

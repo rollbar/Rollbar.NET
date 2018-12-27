@@ -3,10 +3,9 @@
     using Rollbar.Common;
     using System;
     using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
-    /// Implements network tlemetry body.
+    /// Implements network telemetry body.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.TelemetryBody" />
     public class NetworkTelemetry

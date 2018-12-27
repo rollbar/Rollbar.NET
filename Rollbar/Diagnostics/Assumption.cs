@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections;
-    using System.Diagnostics;
-    using System.Linq;
 
     /// <summary>
     /// Utility class aiding in validating assumptions about arguments and their values.

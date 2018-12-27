@@ -2,10 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Diagnostics;
-
-
 
 #pragma warning disable CS1570 // XML comment has badly formed XML
     /// <summary>

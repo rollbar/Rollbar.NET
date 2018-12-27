@@ -1,10 +1,10 @@
 ﻿namespace Rollbar.DTOs
 {
-    using Rollbar.Diagnostics;
-    using Rollbar.Utils;
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using Rollbar.Common;
+    using Rollbar.Diagnostics;
 
     internal class ExtendableDtoMetadata
     {
@@ -15,7 +15,7 @@
         public static IReadOnlyDictionary<Type, ExtendableDtoMetadata> BuildAll()
         {
             Type[] derivedTypes = 
-                ReflectionUtil.GetSubClassesOf(typeof(ExtendableDtoBase));
+                ReflectionUtility.GetSubClassesOf(typeof(ExtendableDtoBase));
 
             Dictionary<Type, ExtendableDtoMetadata> result = 
                 new Dictionary<Type, ExtendableDtoMetadata>(derivedTypes.Length);
@@ -37,7 +37,7 @@
             Type extendableDtoHierarchyType = extendableDtoType;
             while (extendableDtoHierarchyType != null)
             {
-                Type reservedPropertiesNestedType = ReflectionUtil.GetNestedTypeByName(
+                Type reservedPropertiesNestedType = ReflectionUtility.GetNestedTypeByName(
                     extendableDtoHierarchyType,
                     ExtendableDtoBase.reservedPropertiesNestedTypeName,
                     BindingFlags.Public | BindingFlags.Static
@@ -60,7 +60,7 @@
             List<FieldInfo> reservedAttributes = new List<FieldInfo>();
             foreach (Type reservedPropertiesNestedType in reservedPropertiesNestedTypes)
             {
-                reservedAttributes.AddRange(ReflectionUtil.GetAllPublicStaticFields(reservedPropertiesNestedType));
+                reservedAttributes.AddRange(ReflectionUtility.GetAllPublicStaticFields(reservedPropertiesNestedType));
             }
             //Assumption.AssertTrue(reservedAttributes.Count > 0, nameof(reservedAttributes.Count));
 
@@ -84,7 +84,7 @@
                     extendableDtoType.GetProperty(reservedAttribue.Name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
                 Assumption.AssertNotNull(property, nameof(property));
 
-                string reservedKey = ReflectionUtil.GetStaticFieldValue<string>(reservedAttribue);
+                string reservedKey = ReflectionUtility.GetStaticFieldValue<string>(reservedAttribue);
                 Assumption.AssertNotNullOrWhiteSpace(reservedKey, nameof(reservedKey));
 
                 reservedPropertyInfoByName.Add(reservedKey, property);

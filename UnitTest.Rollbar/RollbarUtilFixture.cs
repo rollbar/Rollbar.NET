@@ -44,7 +44,7 @@ namespace UnitTest.Rollbar
             }
             Assert.IsNull(customData);
             //expected to allocate customData and add some entries:
-            RollbarUtil.SnapExceptionDataAsCustomData(mostInnerException, ref customData);
+            RollbarUtility.SnapExceptionDataAsCustomData(mostInnerException, ref customData);
             Assert.IsNotNull(customData);
             Assert.AreEqual(2, customData.Count);
 
@@ -54,11 +54,11 @@ namespace UnitTest.Rollbar
                 innerException.Data[exceptionData[dataIndx].Key] = exceptionData[dataIndx].Value;
             }
             //expected to append more entries:
-            RollbarUtil.SnapExceptionDataAsCustomData(innerException, ref customData);
+            RollbarUtility.SnapExceptionDataAsCustomData(innerException, ref customData);
             Assert.IsNotNull(customData);
             Assert.AreEqual(4, customData.Count);
             //expected to not double-enter same entries:
-            RollbarUtil.SnapExceptionDataAsCustomData(innerException, ref customData);
+            RollbarUtility.SnapExceptionDataAsCustomData(innerException, ref customData);
             Assert.IsNotNull(customData);
             Assert.AreEqual(4, customData.Count);
 
@@ -69,7 +69,7 @@ namespace UnitTest.Rollbar
             }
             ex.Data["nullValueKey"] = null;
             //expected to append more entries:
-            RollbarUtil.SnapExceptionDataAsCustomData(ex, ref customData);
+            RollbarUtility.SnapExceptionDataAsCustomData(ex, ref customData);
             Assert.IsNotNull(customData);
             Assert.AreEqual(8, customData.Count);
 
@@ -77,7 +77,7 @@ namespace UnitTest.Rollbar
             var aggregateException = new AggregateException("Aggregate Exception", innerException, mostInnerException, ex);
             aggregateException.Data["aggregateKey"] = "Aggregate Value";
             //expected to allocate cuastomData and add entries:
-            RollbarUtil.SnapExceptionDataAsCustomData(aggregateException, ref customData);
+            RollbarUtility.SnapExceptionDataAsCustomData(aggregateException, ref customData);
             Assert.IsNotNull(customData);
             Assert.AreEqual(9, customData.Count);
         }

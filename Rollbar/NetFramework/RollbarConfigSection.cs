@@ -2,6 +2,8 @@
 {
     using System;
     using System.Configuration;
+    using System.IO;
+    using Rollbar.Common;
 
     /// <summary>
     /// Implements Rollbar custom configuration section for .NET Framework only!
@@ -21,10 +23,15 @@
         /// <returns></returns>
         public static RollbarConfigSection GetConfiguration()
         {
+            if (!FileUtility.AppConfigFilePresent())
+            {
+                return null;
+            }
+
             RollbarConfigSection configuration =
-                ConfigurationManager.GetSection("rollbar") 
+                ConfigurationManager.GetSection("rollbar")
                 as RollbarConfigSection;
-            return null;
+            return configuration;
         }
 
         /// <summary>

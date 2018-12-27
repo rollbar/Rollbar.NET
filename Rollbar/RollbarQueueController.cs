@@ -93,7 +93,7 @@ namespace Rollbar
                 return httpClient;
             }
 
-            httpClient = HttpClientUtil.CreateHttpClient(proxyAddress, proxyUsername, proxyPassword);
+            httpClient = HttpClientUtility.CreateHttpClient(proxyAddress, proxyUsername, proxyPassword);
             if (this._httpClientsByProxySettings.TryAdd(proxySettings, httpClient))
             {
                 return httpClient;

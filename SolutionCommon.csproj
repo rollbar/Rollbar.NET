@@ -8,19 +8,20 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>2.1.0</NotifierVersion>
+    <NotifierVersion>2.1.1</NotifierVersion>
     <PackageReleaseNotes>
       Improvements and fixes:
-      - resolve #230: Make sure payload's Data timestamp corresponds object capture moment instead of Data packaging moment on another thread
-      - resolve #229: Improve loading of RollbarConfig from JSON and XML
-      - resolve #228: Make RollbarLogger fully reconfigurable (including its critical attributes)
-      - resolve #224: Rollbar does not honor proxy settings when initialized from code
-      - resolve #168: Consider simplifying SDK multi-targeting by moving to .NET Standard shared base
-      - resolve #227: Factor out common code pattern of PlugIns
-      - resolve #225: Make Rollbar.NET available as NLog target
-      - resolve #233: NuGet packaging of Rollbar plug-in for log4net
-      - resolve #234: NuGet packaging of Rollbar plug-in for NLog
-      - resolve #235: NuGet packaging of Rollbar plug-in for Serilog
+      - resolve #249: Error using the log4net plugin in WPF application
+      - resolve #244: Fix crash when no hosting application configuration file is present.
+      - resolve #212: Optimize performance of the payload queues processing thread in case of retries.
+      - resolve #247: Redundant dependency for .NET Framework targets.
+      - resolve #248: Create WindowsForms sample.
+      - resolve #240: Move all the sample apps into Samples folder.
+      - resolve #241: Update the samples dependencies to the latest available.
+      - resolve #242: Fix Sample.RollbarWithinStronglyNamedAssembly's signing key build issue.
+      - resolve #243: Reconfigure Sample.Xamarin.Forms to reference Rollbar project instead of Rollbar NuGet package.
+      - resolve #245: Refactor Common and Utils namespaces types.
+      - resolve #246: Remove unused namespaces across the codebase.
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
@@ -77,12 +78,15 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="
-                 '$(TargetFramework)' == 'net46'
+                 '$(TargetFramework)' == 'net47'
+                 Or '$(TargetFramework)' == 'net462'
+                 Or '$(TargetFramework)' == 'net461'
+                 Or '$(TargetFramework)' == 'net46'
                  Or '$(TargetFramework)' == 'net452'
                  Or '$(TargetFramework)' == 'net451'
                  Or '$(TargetFramework)' == 'net45'
                  ">
-    <DefineConstants>NETFX_46nOlder;NETFX</DefineConstants>
+    <DefineConstants>NETFX_47nOlder;NETFX</DefineConstants>
   </PropertyGroup>
 
 
@@ -98,7 +102,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
-  </ItemGroup>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.0" />
+ </ItemGroup>
 
   <ItemGroup Condition="
              '$(NetVariant)' == 'NET_FX'

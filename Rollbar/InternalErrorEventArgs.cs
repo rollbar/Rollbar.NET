@@ -1,7 +1,7 @@
 ﻿namespace Rollbar
 {
+    using System;
     using System.Text;
-    using Rollbar.DTOs;
 
     /// <summary>
     /// Models an internal event.
@@ -13,7 +13,7 @@
         internal InternalErrorEventArgs(
             RollbarLogger logger,
             object dataObject,
-            System.Exception error,
+            Exception error,
             string details
             ) 
             : base(logger, dataObject)
@@ -28,7 +28,7 @@
         /// <value>
         /// The error.
         /// </value>
-        public System.Exception Error { get; private set; }
+        public Exception Error { get; private set; }
         /// <summary>
         /// Gets the details.
         /// </summary>

@@ -2,7 +2,6 @@
 
 namespace Rollbar.Telemetry
 {
-    using System;
     using System.Collections.Generic;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;

@@ -3,8 +3,6 @@
     using Rollbar.Common;
     using Rollbar.DTOs;
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
 #pragma warning disable CS1658 // Warning is overriding an error

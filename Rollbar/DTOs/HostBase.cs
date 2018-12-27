@@ -1,9 +1,7 @@
 ﻿namespace Rollbar.DTOs
 {
-    using Rollbar.Diagnostics;
-    using System;
+    using Rollbar.Common;
     using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Abstract base for creating host data elements (like Server or Client)

@@ -435,7 +435,7 @@ namespace Rollbar
         {
             lock (this._syncRoot)
             {
-                var data = RollbarUtil.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
+                var data = RollbarUtility.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
                 var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
                 DoSend(payload);
             }

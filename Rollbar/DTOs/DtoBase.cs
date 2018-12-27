@@ -1,15 +1,13 @@
 ﻿namespace Rollbar.DTOs
 {
-    using Rollbar.Common;
-    using Rollbar.Diagnostics;
-    using Rollbar.Utils;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Text;
     using Xamarin.iOS.Foundation;
+    using Rollbar.Common;
+    using Rollbar.Diagnostics;
 
     /// <summary>
     /// Implements an abstract DTO type base.
@@ -212,7 +210,7 @@
         private static IReadOnlyDictionary<Type, PropertyInfo[]> ReflectStringProperies()
         {
             Type[] derivedTypes =
-                ReflectionUtil.GetSubClassesOf(typeof(DtoBase));
+                ReflectionUtility.GetSubClassesOf(typeof(DtoBase));
 
             var reflectedMetadata = new Dictionary<Type, PropertyInfo[]>(derivedTypes.Length - 1);
             Type stringType = typeof(string);
@@ -235,7 +233,7 @@
         private static IReadOnlyDictionary<Type, PropertyInfo[]> ReflectDictionaryProperies()
         {
             Type[] derivedTypes =
-                ReflectionUtil.GetSubClassesOf(typeof(DtoBase));
+                ReflectionUtility.GetSubClassesOf(typeof(DtoBase));
 
             var reflectedMetadata = new Dictionary<Type, PropertyInfo[]>(derivedTypes.Length - 1);
             Type dictionaryType = typeof(Dictionary<,>);
@@ -268,7 +266,7 @@
         private static IReadOnlyDictionary<Type, PropertyInfo[]> ReflectDtoProperies()
         {
             Type[] derivedTypes =
-                ReflectionUtil.GetSubClassesOf(typeof(DtoBase));
+                ReflectionUtility.GetSubClassesOf(typeof(DtoBase));
 
             var reflectedMetadata = new Dictionary<Type, PropertyInfo[]>(derivedTypes.Length - 1);
 
@@ -285,7 +283,7 @@
         private static IReadOnlyDictionary<Type, PropertyInfo[]> ReflectEnumerableProperies()
         {
             Type[] dtoTypes =
-                ReflectionUtil.GetSubClassesOf(typeof(DtoBase));
+                ReflectionUtility.GetSubClassesOf(typeof(DtoBase));
 
             var reflectedMetadata = new Dictionary<Type, PropertyInfo[]>(dtoTypes.Length - 1);
 

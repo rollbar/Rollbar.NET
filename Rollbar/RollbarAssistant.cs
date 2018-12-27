@@ -1,11 +1,8 @@
 ﻿namespace Rollbar
 {
-    using Rollbar.Diagnostics;
-    using Rollbar.Utils;
+    using Rollbar.Common;
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
-    using System.Text;
 
     /// <summary>
     /// This is a utility class assisting in collecting extra information for logging.
@@ -48,7 +45,7 @@
             }
 
             string dataMemberNamePrefix = $"{instanceName ?? string.Empty}[{instanceType.FullName}].";
-            var memberInfos = ReflectionUtil.GetAllDataFields(instanceType);
+            var memberInfos = ReflectionUtility.GetAllDataFields(instanceType);
 
             if (stateCapture == null)
             {
@@ -91,7 +88,7 @@
             }
 
             string dataMemberNamePrefix = $"[{staticType.FullName}].";
-            var memberInfos = ReflectionUtil.GetAllDataFields(staticType);
+            var memberInfos = ReflectionUtility.GetAllDataFields(staticType);
 
             if (stateCapture == null)
             {
