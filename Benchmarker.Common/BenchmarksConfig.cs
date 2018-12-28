@@ -23,26 +23,26 @@
 
             Job[] jobs = new Job[]
             {
-                //Job.Clr,
-                //Job.Core,
+                Job.Clr,
+                Job.Core,
                 //Job.CoreRT,
-                Job.Mono,
+                //Job.Mono,
             };
 
             Runtime[] runtimes = new Runtime[]
             {
-                //Runtime.Clr,
-                //Runtime.Core,
+                Runtime.Clr,
+                Runtime.Core,
                 //Runtime.CoreRT,
                 //Runtime.Mono,
-                new MonoRuntime("Mono x64", @"C:\Program Files\Mono\bin\mono.exe"),
+                //new MonoRuntime("Mono x64", @"C:\Program Files\Mono\bin\mono.exe"),
             };
 
             Platform[] platforms = new Platform[]
             {
-                //Platform.AnyCpu,
+                Platform.AnyCpu,
                 Platform.X64,
-                //Platform.X86,
+                Platform.X86,
             };
 
             Jit[] jits = new Jit[]
