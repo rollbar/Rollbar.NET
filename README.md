@@ -91,6 +91,12 @@ RollbarLocator.RollbarInstance
 
 Additionally, anywhere in your code that you were sending error reports via `Rollbar.Report(Exception)` or `Rollbar.Report(string)` will need to be replaced with either something like `RollbarLocator.RollbarInstance.Error(new Exception("trying out the TraceChain", new NullReferenceException()))` or `RollbarLocator.RollbarInstance.Info("Basic info log example.")`.
 
+## Rollbar Plug-ins
+
+We are adding extra projects to the Rollbar.sln solution that simplify integration of Rollbar services with existing popular .NET logging and tracing libraries like Serilog, log4net, NLog, etc.
+These plug-in projects are named using following pattern `Rollbar.PlugIns.<LoggingLibraryToIntegrateWith>` and implement similarly named namespaces for the plug-ins.
+Each plug-in maintains its own versioning schema and is distributed as its own NuGet package using the naming pattern mentioned above.
+
 ## More Information about the SDK
 
 More detailed information about Rollbar.NET usage and API reference are available at [https://docs.rollbar.com/docs/dotnet](https://docs.rollbar.com/docs/dotnet)
