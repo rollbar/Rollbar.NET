@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Reflection;
 
@@ -22,19 +23,35 @@
         {
             string absoluteFilePath = null;
 
-            string currentDir = Environment.CurrentDirectory;
-            absoluteFilePath = Path.Combine(currentDir, applicationRootRelativeFilePath);
-            if (File.Exists(absoluteFilePath))
+            try
             {
-                return true;
+                // search based on the environment current directory:
+                string currentDir = Environment.CurrentDirectory;
+                absoluteFilePath = Path.Combine(currentDir, applicationRootRelativeFilePath);
+                if (File.Exists(absoluteFilePath))
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
             }
 
-            string exePath = Assembly.GetExecutingAssembly().Location;
-            string exeDir = Path.GetDirectoryName(exePath);
-            absoluteFilePath = Path.Combine(exeDir, applicationRootRelativeFilePath);
-            if (File.Exists(absoluteFilePath))
+            try
             {
-                return true;
+                // search based on the executing assembly location:
+                string exePath = Assembly.GetExecutingAssembly().Location;
+                string exeDir = Path.GetDirectoryName(exePath);
+                absoluteFilePath = Path.Combine(exeDir, applicationRootRelativeFilePath);
+                if (File.Exists(absoluteFilePath))
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex);
             }
 
             return false;
