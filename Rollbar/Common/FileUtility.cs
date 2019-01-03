@@ -29,7 +29,7 @@
                 return true;
             }
 
-            string exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string exePath = Assembly.GetExecutingAssembly().Location;
             string exeDir = Path.GetDirectoryName(exePath);
             absoluteFilePath = Path.Combine(exeDir, applicationRootRelativeFilePath);
             if (File.Exists(absoluteFilePath))
@@ -63,6 +63,7 @@
         public static bool AppConfigFilePresent()
         {
             bool isAppConfigFilePresent = false;
+
             foreach (var fileName in FileUtility.GetAppConfigFileAlternatives())
             {
                 isAppConfigFilePresent = FileUtility.ApplicationFileExists(fileName);

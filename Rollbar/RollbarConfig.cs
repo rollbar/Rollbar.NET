@@ -38,6 +38,9 @@
             this._logger = logger;
 
             this.SetDefaults();
+
+            // initialize based on application configuration file (if any):
+            NetStandard.RollbarConfigUtility.Load(this);
         }
 
         /// <summary>
@@ -49,7 +52,11 @@
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
 
             this.SetDefaults();
+
             this.AccessToken = accessToken;
+
+            // initialize based on application configuration file (if any):
+            NetStandard.RollbarConfigUtility.Load(this);
         }
 
         private void SetDefaults()
@@ -85,9 +92,6 @@
 
             this.PersonDataCollectionPolicies = PersonDataCollectionPolicies.None;
             this.IpAddressCollectionPolicy = IpAddressCollectionPolicy.Collect;
-
-            // initialize based on application configuration file (if any):
-            NetStandard.RollbarConfigUtil.Load(this);
         }
 
         internal RollbarLogger Logger

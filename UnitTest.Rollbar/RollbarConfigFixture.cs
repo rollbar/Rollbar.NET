@@ -25,6 +25,20 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
+        public void TestInstanceCreation()
+        {
+            try
+            {
+                RollbarConfig rConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken);
+            }
+            catch
+            {
+                Assert.Fail("The instance creation is expected to succeed, but did not!");
+            }
+
+        }
+
+        [TestMethod]
         public void TestGetSafeScrubFields()
         {
             var scrubFields = new string[] { "one", "two", "three", };

@@ -3,9 +3,9 @@
     using Rollbar.Telemetry;
 
     /// <summary>
-    /// Class RollbarConfigUtil.
+    /// Class RollbarConfigUtility.
     /// </summary>
-    public static class RollbarConfigUtil
+    public static class RollbarConfigUtility
     {
         /// <summary>
         /// Loads the specified configuration.
@@ -15,14 +15,14 @@
         public static bool Load(RollbarConfig config)
         {
             // try app.config file:
-            if (NetFramework.AppConfigUtil.LoadAppSettings(ref config))
+            if (NetFramework.AppConfigUtility.LoadAppSettings(ref config))
             {
                 return true;
             }
 
 #if NETCOREAPP || NETSTANDARD
             // try appsettings.json file:
-            if (NetCore.AppSettingsUtil.LoadAppSettings(ref config))
+            if (NetCore.AppSettingsUtility.LoadAppSettings(config))
             {
                 return true;
             }
@@ -39,14 +39,14 @@
         public static bool Load(TelemetryConfig config)
         {
             // try app.config file:
-            if (NetFramework.AppConfigUtil.LoadAppSettings(ref config))
+            if (NetFramework.AppConfigUtility.LoadAppSettings(ref config))
             {
                 return true;
             }
 
 #if NETCOREAPP || NETSTANDARD
             // try appsettings.json file:
-            if (NetCore.AppSettingsUtil.LoadAppSettings(ref config))
+            if (NetCore.AppSettingsUtility.LoadAppSettings(config))
             {
                 return true;
             }
@@ -62,7 +62,7 @@
         public static IRollbarConfig LoadRollbarConfig()
         {
             RollbarConfig config = new RollbarConfig("seedToken");
-            if(RollbarConfigUtil.Load(config))
+            if(RollbarConfigUtility.Load(config))
             {
                 return config;
             }
@@ -77,7 +77,7 @@
         public static ITelemetryConfig LoadTelemetryConfig()
         {
             TelemetryConfig config = new TelemetryConfig();
-            if (RollbarConfigUtil.Load(config))
+            if (RollbarConfigUtility.Load(config))
             {
                 return config;
             }
@@ -99,12 +99,12 @@
 
             if (string.IsNullOrWhiteSpace(configFilePath))
             {
-                if (!NetCore.AppSettingsUtil.LoadAppSettings(ref config, configFileName))
+                if (!NetCore.AppSettingsUtility.LoadAppSettings(config, configFileName))
                 {
                     return null;
                 }
             }
-            else if (!NetCore.AppSettingsUtil.LoadAppSettings(ref config, configFilePath, configFileName))
+            else if (!NetCore.AppSettingsUtility.LoadAppSettings(config, configFilePath, configFileName))
             {
                 return null;
             }
@@ -124,12 +124,12 @@
 
             if (string.IsNullOrWhiteSpace(configFilePath))
             {
-                if (!NetCore.AppSettingsUtil.LoadAppSettings(ref config, configFileName))
+                if (!NetCore.AppSettingsUtility.LoadAppSettings(config, configFileName))
                 {
                     return null;
                 }
             }
-            else if (!NetCore.AppSettingsUtil.LoadAppSettings(ref config, configFilePath, configFileName))
+            else if (!NetCore.AppSettingsUtility.LoadAppSettings(config, configFilePath, configFileName))
             {
                 return null;
             }

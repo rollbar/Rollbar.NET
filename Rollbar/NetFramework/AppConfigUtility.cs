@@ -4,10 +4,10 @@
     using System;
 
     /// <summary>
-    /// Class AppConfigUtil.
+    /// Class AppConfigUtility.
     /// It aids in configuration of Rollbar configuration objects based on content of an app.config file (if any). 
     /// </summary>
-    public static class AppConfigUtil
+    public static class AppConfigUtility
     {
         private static readonly string[] listValueSplitters = new string[] { ", ", "; ", " " };
 
@@ -20,7 +20,7 @@
         /// <returns>false when the configuration was not found, otherwise true.</returns>
         public static bool LoadAppSettings(ref RollbarConfig rollbarConfig)
         {
-            return AppConfigUtil.LoadAppSettings(ref rollbarConfig, RollbarConfigSection.GetConfiguration());
+            return AppConfigUtility.LoadAppSettings(ref rollbarConfig, RollbarConfigSection.GetConfiguration());
         }
 
         /// <summary>
@@ -119,7 +119,7 @@
         /// <returns>false when the configuration was not found, otherwise true.</returns>
         public static bool LoadAppSettings(ref TelemetryConfig telemetryConfig)
         {
-            return AppConfigUtil.LoadAppSettings(ref telemetryConfig, RollbarTelemetryConfigSection.GetConfiguration());
+            return AppConfigUtility.LoadAppSettings(ref telemetryConfig, RollbarTelemetryConfigSection.GetConfiguration());
         }
 
         /// <summary>

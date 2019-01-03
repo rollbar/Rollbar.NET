@@ -78,7 +78,7 @@
 
             if (this._rollbarConfig == null)
             {
-                IRollbarConfig config = NetStandard.RollbarConfigUtil.LoadRollbarConfig();
+                IRollbarConfig config = NetStandard.RollbarConfigUtility.LoadRollbarConfig();
                                                                                          
                 this._rollbarConfig = config;
             }

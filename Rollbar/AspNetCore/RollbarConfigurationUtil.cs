@@ -33,7 +33,7 @@ namespace Rollbar.AspNetCore
 
             const string defaultAccessToken = "none";
             RollbarConfig rollbarConfig = new RollbarConfig(defaultAccessToken);
-            AppSettingsUtil.LoadAppSettings(ref rollbarConfig, configuration);
+            AppSettingsUtility.LoadAppSettings(rollbarConfig, configuration);
 
             if (rollbarConfig.AccessToken == defaultAccessToken)
             {
@@ -55,7 +55,7 @@ namespace Rollbar.AspNetCore
         public static ITelemetryConfig DeduceRollbarTelemetryConfig(IConfiguration configuration)
         {
             TelemetryConfig config = new TelemetryConfig();
-            AppSettingsUtil.LoadAppSettings(ref config, configuration);
+            AppSettingsUtility.LoadAppSettings(config, configuration);
 
             TelemetryCollector.Instance.Config.Reconfigure(config);
 

@@ -112,7 +112,7 @@
             this.TelemetryAutoCollectionInterval = TimeSpan.Zero;
 
             // initialize based on application configuration file (if any):
-            NetStandard.RollbarConfigUtil.Load(this);
+            NetStandard.RollbarConfigUtility.Load(this);
         }
 
     }

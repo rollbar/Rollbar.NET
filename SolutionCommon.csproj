@@ -8,11 +8,15 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>2.1.2</NotifierVersion>
+    <NotifierVersion>2.2.0</NotifierVersion>
     <PackageReleaseNotes>
       Improvements and fixes:
-      - resolve #251: Mention Rollbar plug-ins in Readme.md on GitHub
-      
+      - resolve #256: Rename AppSettingsUtil into AppSettingsUtility and remove `ref` from RollbarConfig arguments.
+      - resolve #257: Rename AppConfigUtil into AppConfigUtility and remove `ref` from RollbarConfig arguments.
+      - resolve #258: Rename RollbarConfigUtil into RollbarConfigUtility and remove `ref` from RollbarConfig arguments.
+      - ref #254: Missing web.config crashes RollbarConfig constructor method.
+      - resolve #255: Create WPF sample app.
+      - resolve #251: Mention Rollbar plug-ins in Readme.md on GitHub.
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>

@@ -74,7 +74,7 @@
         /// </summary>
         private static IRollbarConfig CreateDefaultRollbarConfig()
         {
-            return RollbarConfigUtil.LoadRollbarConfig();
+            return RollbarConfigUtility.LoadRollbarConfig();
         }
     }
 }

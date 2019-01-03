@@ -32,7 +32,7 @@ namespace UnitTest.Rollbar.NetCore
         public void LoadRollbarAppSettingsTest()
         {
             RollbarConfig config = new RollbarConfig("default=none");
-            AppSettingsUtil.LoadAppSettings(ref config, Path.Combine(Environment.CurrentDirectory, "TestData"), "appsettings.json");
+            AppSettingsUtility.LoadAppSettings(config, Path.Combine(Environment.CurrentDirectory, "TestData"), "appsettings.json");
 
             // The test data looks like this:
             //===============================
@@ -83,7 +83,7 @@ namespace UnitTest.Rollbar.NetCore
             Assert.AreEqual(TelemetryType.None, config.TelemetryAutoCollectionTypes);
             Assert.AreEqual(TimeSpan.FromMilliseconds(100), config.TelemetryAutoCollectionInterval);
 
-            AppSettingsUtil.LoadAppSettings(ref config, Path.Combine(Environment.CurrentDirectory, "TestData"), "appsettings.json");
+            AppSettingsUtility.LoadAppSettings(config, Path.Combine(Environment.CurrentDirectory, "TestData"), "appsettings.json");
             Console.WriteLine(JsonConvert.SerializeObject(config));
 
             // The test data looks like this:
