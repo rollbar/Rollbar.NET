@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Text;
 
-    internal static class ExceptionSimulator
+    public static class ExceptionSimulator
     {
         public static Exception GetExceptionChainOf(int totalExceptions)
         {
@@ -16,11 +16,11 @@
             return GetExceptionWith(totalMostInnerExceptionFrames);
         }
 
-        public static Exception GetExceptionWith(int totalFrames)
+        public static Exception GetExceptionWith(int totalFrames, string exceptionMessage = "Default exception message.")
         {
             try
             {
-                Method(totalFrames);
+                Method(totalFrames, exceptionMessage);
             }
             catch (Exception ex)
             {
@@ -30,18 +30,23 @@
             return null;
         }
 
-        private static void Method(int callDepth)
+        private static void Method(int callDepth, string exceptionMessage)
         {
             while (--callDepth > 0)
             {
-                Method(callDepth);
+                Method(callDepth, exceptionMessage);
             }
-            ExceptionalMethod();
+            ExceptionalMethod(exceptionMessage);
         }
 
         private static void ExceptionalMethod()
         {
-            throw new ApplicationException("Some nasty application exception!");
+            ExceptionalMethod("Some nasty application exception!");
+        }
+
+        private static void ExceptionalMethod(string exceptionMessage)
+        {
+            throw new ApplicationException(exceptionMessage);
         }
     }
 }

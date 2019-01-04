@@ -1,5 +1,6 @@
 namespace UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary
 {
+    using Benchmarker.Common;
     using global::Rollbar;
     using global::Rollbar.PlugIns.MSEnterpriseLibrary;
     using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
@@ -38,14 +39,21 @@ namespace UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary
             _rollbarCommunicationEventsCount = 0;
             
             IExceptionHandler exceptionHandler = null;
+            const int totalExceptionStackFrames = 10;
             int expectedCount = 0;
 
             exceptionHandler = new RollbarExceptionHandler(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment, null);
-            exceptionHandler.HandleException(new Exception("RollbarExceptionHandlerFixture: TestBasics non-blocking..."), Guid.NewGuid());
+            exceptionHandler.HandleException(
+                ExceptionSimulator.GetExceptionWith(totalExceptionStackFrames, "RollbarExceptionHandlerFixture: TestBasics non-blocking..."), 
+                Guid.NewGuid()
+                );
             expectedCount++;
 
             exceptionHandler = new RollbarExceptionHandler(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment, TimeSpan.FromSeconds(5));
-            exceptionHandler.HandleException(new Exception("RollbarExceptionHandlerFixture: TestBasics blocking..."), Guid.NewGuid());
+            exceptionHandler.HandleException(
+                ExceptionSimulator.GetExceptionWith(totalExceptionStackFrames,"RollbarExceptionHandlerFixture: TestBasics blocking..."), 
+                Guid.NewGuid()
+                );
             expectedCount++;
 
             Assert.AreEqual(expectedCount, _rollbarCommunicationEventsCount);

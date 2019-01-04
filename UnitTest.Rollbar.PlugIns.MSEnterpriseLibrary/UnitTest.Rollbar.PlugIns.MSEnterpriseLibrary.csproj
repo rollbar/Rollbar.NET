@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Benchmarker.Common\Benchmarker.Common.csproj" />
     <ProjectReference Include="..\Rollbar.PlugIns.MSEnterpriseLibrary\Rollbar.PlugIns.MSEnterpriseLibrary.csproj" />
   </ItemGroup>
 
