@@ -14,6 +14,7 @@
       - resolve #256: Rename AppSettingsUtil into AppSettingsUtility and remove `ref` from RollbarConfig arguments.
       - resolve #257: Rename AppConfigUtil into AppConfigUtility and remove `ref` from RollbarConfig arguments.
       - resolve #258: Rename RollbarConfigUtil into RollbarConfigUtility and remove `ref` from RollbarConfig arguments.
+      - ref #237: Rollbar plug-in for Microsoft Enterprise Library.
       - ref #254: Missing web.config crashes RollbarConfig constructor method.
       - resolve #255: Create WPF sample app.
       - resolve #251: Mention Rollbar plug-ins in Readme.md on GitHub.
