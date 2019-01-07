@@ -2,6 +2,8 @@
 
 A .NET Rollbar Client that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, and .NET Full Framework 4.5+.
 
+[![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
+
 ## Install
 
 Nuget Package Manager:
