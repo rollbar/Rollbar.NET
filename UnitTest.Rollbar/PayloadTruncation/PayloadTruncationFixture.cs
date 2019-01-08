@@ -97,10 +97,10 @@ namespace UnitTest.Rollbar.PayloadTruncation
 
             iterations.Add(new FramesTruncationStrategy(totalHeadFramesToPreserve: 1, totalTailFramesToPreserve: 1));
             trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
-            AssertPayloadSizeReduction(false, testPayloads.Take(3).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(false, testPayloads.Take(3).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(true, testPayloads.Reverse().Take(1).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(false, testPayloads.Reverse().Take(1).ToArray(), trancationStrategy);
+            AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
+            AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
+            AssertPayloadSizeReduction(true, testPayloads.Reverse().Take(2).ToArray(), trancationStrategy);
+            AssertPayloadSizeReduction(false, testPayloads.Reverse().Take(2).ToArray(), trancationStrategy);
             using (var logger = RollbarFactory.CreateNew().Configure(this._config))
             {
                 foreach (var payload in testPayloads)
@@ -192,7 +192,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
         {
             try
             {
-                Parallel.ForEach(new[] { 1, 2, 3, 4, 5 }, i => ThrowAnException());
+                SimulateAggregateException();
             }
             catch (AggregateException e)
             {
@@ -202,7 +202,17 @@ namespace UnitTest.Rollbar.PayloadTruncation
             throw new System.Exception("Unreachable");
         }
 
+        private static void SimulateAggregateException()
+        {
+            Parallel.ForEach(new[] { 1, 2, 3, 4, 5 }, i => ThrowAnException());
+        }
+
         private static void ThrowAnException()
+        {
+            SimulatException();
+        }
+
+        private static void SimulatException()
         {
             throw new System.Exception("Test");
         }
