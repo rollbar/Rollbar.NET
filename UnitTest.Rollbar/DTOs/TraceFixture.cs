@@ -43,9 +43,16 @@ namespace UnitTest.Rollbar.DTOs
                 "UnitTest.Rollbar.DTOs.TraceFixture.ThrowException()",
                 "UnitTest.Rollbar.DTOs.TraceFixture.GetException()",
             };
-            Assert.IsTrue(platformDependentTopFrameMethods.Contains(trace.Frames[0].Method), "first frame method");
+            Assert.IsTrue(
+                platformDependentTopFrameMethods.Contains(trace.Frames[0].Method), 
+                trace.Frames[0].Method
+                );
 
-            Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture")), "file names");
+            //Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture")), "file names");
+            Assert.IsTrue(
+                trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture")),
+                trace.Frames.Select(frame => frame.FileName).Aggregate((workingSentence, next) => next + ", " + workingSentence)
+                );
         }
 
         [TestMethod]
