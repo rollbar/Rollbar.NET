@@ -301,12 +301,13 @@ namespace UnitTest.Rollbar.DTOs
 
                 string[] platformDependentTopFrameMethods = new string[]
                 {
-                    "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()",
-                    "UnitTest.Rollbar.DTOs.PayloadFixture.GetAggregateException()",
+                    "ThrowAnException",
+                    "GetAggregateException",
                 };
+                string firstFrameMethod = frames[0]["method"].Value<string>();
                 Assert.IsTrue(
-                    platformDependentTopFrameMethods.Contains(frames[0]["method"].Value<string>()), 
-                    frames[0]["method"].Value<string>()
+                    firstFrameMethod.Contains(platformDependentTopFrameMethods[0]) || firstFrameMethod.Contains(platformDependentTopFrameMethods[1]),
+                    firstFrameMethod
                     );
 
                 Assert.IsInstanceOfType(trace["exception"], typeof(JObject));
