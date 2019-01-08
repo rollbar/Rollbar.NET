@@ -120,7 +120,12 @@ namespace UnitTest.Rollbar.DTOs
             Assert.IsNotNull(frames);
 
             Assert.IsTrue(frames.All( token => token["filename"] != null));
-            Assert.AreEqual("UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()", frames[0]["method"].Value<string>());
+            string[] platformDependentTopFrameMethods = new string[]
+            {
+                "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()",
+                "UnitTest.Rollbar.DTOs.PayloadFixture.GetException()",
+            };
+            Assert.IsTrue(platformDependentTopFrameMethods.Contains(frames[0]["method"].Value<string>()));
 
             var exception = trace["exception"] as JObject;
             Assert.IsNotNull(exception);
