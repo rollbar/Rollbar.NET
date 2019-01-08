@@ -173,7 +173,10 @@ namespace UnitTest.Rollbar.PayloadTruncation
                 truncated = JsonConvert.SerializeObject(testPayload);
                 System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
 
-                string metadata = $"Original: {original} AND truncated: {truncated}";
+                string metadata = $"TruncationStrategy: {trancationStrategy}, "
+                    + Environment.NewLine + $"expectedReduction: {expectReduction}, "
+                    + Environment.NewLine + $"original: {original} "
+                    + Environment.NewLine + $"AND truncated: {truncated}";
                 if (expectReduction)
                 {
                     Assert.IsTrue(truncated.Length < original.Length, metadata);
