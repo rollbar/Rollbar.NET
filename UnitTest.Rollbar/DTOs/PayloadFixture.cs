@@ -120,6 +120,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.IsNotNull(frames);
 
             Assert.IsTrue(frames.All( token => token["filename"] != null));
+
             string[] platformDependentTopFrameMethods = new string[]
             {
                 "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()",
@@ -297,10 +298,13 @@ namespace UnitTest.Rollbar.DTOs
                 Assert.IsNotNull(frames);
 
                 Assert.IsTrue(frames.All(frame => frame["filename"] != null));
-                Assert.AreEqual(
-                    "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()", 
-                    frames[0]["method"].Value<string>()
-                    );
+
+                string[] platformDependentTopFrameMethods = new string[]
+                {
+                    "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()",
+                    "UnitTest.Rollbar.DTOs.PayloadFixture.GetAggregateException()",
+                };
+                Assert.IsTrue(platformDependentTopFrameMethods.Contains(frames[0]["method"].Value<string>()));
 
                 Assert.IsInstanceOfType(trace["exception"], typeof(JObject));
                 var exception = trace["exception"] as JObject;
