@@ -304,7 +304,10 @@ namespace UnitTest.Rollbar.DTOs
                     "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()",
                     "UnitTest.Rollbar.DTOs.PayloadFixture.GetAggregateException()",
                 };
-                Assert.IsTrue(platformDependentTopFrameMethods.Contains(frames[0]["method"].Value<string>()));
+                Assert.IsTrue(
+                    platformDependentTopFrameMethods.Contains(frames[0]["method"].Value<string>()), 
+                    frames[0]["method"].Value<string>()
+                    );
 
                 Assert.IsInstanceOfType(trace["exception"], typeof(JObject));
                 var exception = trace["exception"] as JObject;
