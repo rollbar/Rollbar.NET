@@ -23,7 +23,7 @@
         {
             RollbarPerformanceMonitor.performanceLogFileName = 
                 @"RollbarPerformance-" 
-                + DateTimeOffset.Now.ToString().Replace('\\','-').Replace(':','-').Replace(' ', '_') 
+                + DateTimeOffset.Now.ToString().Replace('/', '-').Replace('\\','-').Replace(':','-').Replace(' ', '_') 
                 + ".csv"
                 ;
             RollbarPerformanceMonitor.performanceLogFileName = 
