@@ -30,12 +30,18 @@ namespace UnitTest.Rollbar.DTOs
             var trace = new dto.Trace(GetException());
             Assert.IsNotNull(trace.Frames);
             Assert.IsTrue(trace.Frames.Length > 0);
-            Assert.AreEqual(2, trace.Frames.Length);
+
+            int[] platformDependentFrameCount = new int[]
+            {
+                2,
+                1,
+            };
+            Assert.IsTrue(platformDependentFrameCount.Contains(trace.Frames.Length));
 
             string[] platformDependentTopFrameMethods = new string[]
             {
-                "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()",
-                "UnitTest.Rollbar.DTOs.PayloadFixture.GetException()",
+                "UnitTest.Rollbar.DTOs.TraceFixture.ThrowException()",
+                "UnitTest.Rollbar.DTOs.TraceFixture.GetException()",
             };
             Assert.IsTrue(platformDependentTopFrameMethods.Contains(trace.Frames[0].Method));
 
