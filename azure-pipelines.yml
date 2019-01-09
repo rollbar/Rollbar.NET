@@ -15,17 +15,19 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: '2.1.503' # replace this value with the version that you need for your project
+    
+- script: dotnet --version
+
+- script: dotnet --info
+
 - task: NuGetToolInstaller@0
 
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
-
-- script: dotnet --info
-
-- script: dotnet --version
-
-- script: dotnet restore
 
 - task: VSBuild@1
   inputs:
