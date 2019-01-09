@@ -102,7 +102,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
             Payload[] payloadsWithFrames = testPayloads.Reverse().Take(2).ToArray();
             foreach(var payload in payloadsWithFrames)
             {
-                AssertPayloadSizeReduction(payload.Data.Body.Trace?.Frames.Length > 1 || payload.Data.Body.TraceChain.Any(trace => trace.Frames.Length > 1), payload, trancationStrategy);
+                AssertPayloadSizeReduction(payload.Data.Body.Trace?.Frames.Length > 1 || payload.Data.Body.TraceChain.Any(trace => trace?.Frames?.Length > 1), payload, trancationStrategy);
                 AssertPayloadSizeReduction(false, payload, trancationStrategy);
             }
             using (var logger = RollbarFactory.CreateNew().Configure(this._config))
