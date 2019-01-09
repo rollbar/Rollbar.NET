@@ -20,6 +20,7 @@
       - resolve #251: Mention Rollbar plug-ins in Readme.md on GitHub.
       - resolve #259: Prototype Azure build pipeline for Rollbar.NET.
       - resolve #260: Fix unit test failure within Azure Pipeline.
+      - resolve #108: Try fixing following IntelliSense failures.
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
