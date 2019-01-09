@@ -156,8 +156,17 @@ namespace UnitTest.Rollbar.PayloadTruncation
             trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(true, testPayloads.Reverse().Take(2).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(false, testPayloads.Reverse().Take(2).ToArray(), trancationStrategy);
+
+            payloadsWithFrames = testPayloads.Reverse().Take(2).ToArray();
+            foreach (var payload in payloadsWithFrames)
+            {
+                bool hasFramesToTrim = false;
+                hasFramesToTrim |= (payload?.Data?.Body?.Trace?.Frames?.Length > 1);
+                hasFramesToTrim |= ((payload?.Data?.Body?.TraceChain != null) && payload.Data.Body.TraceChain.Any(trace => trace?.Frames?.Length > 1));
+                AssertPayloadSizeReduction(hasFramesToTrim, payload, trancationStrategy);
+                AssertPayloadSizeReduction(false, payload, trancationStrategy);
+            }
+
             using (var logger = RollbarFactory.CreateNew().Configure(this._config))
             {
                 foreach (var payload in testPayloads)
