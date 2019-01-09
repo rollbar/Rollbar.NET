@@ -51,7 +51,7 @@ namespace UnitTest.Rollbar.DTOs
             //Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture")), "file names");
             Assert.IsTrue(
                 trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture") || (string.Compare(frame.FileName, "(unknown)") == 0)),
-                trace.Frames.Select(frame => frame.FileName).Aggregate((workingSentence, next) => next + ", " + workingSentence)
+                trace.Frames.Select(frame => frame.FileName).Aggregate((fileName, next) => next + ", " + fileName)
                 );
         }
 

@@ -127,7 +127,6 @@ namespace UnitTest.Rollbar.DTOs
             Assert.IsTrue(!json.Contains("\"trace\":{"));
             Assert.IsTrue(!json.Contains("\"message\":{"));
 
-            Assert.IsTrue(json.Contains("ThrowException"), "ThrowException");
             Assert.IsTrue(json.Contains("GetAggregateException"), "GetAggregateException");
         }
 

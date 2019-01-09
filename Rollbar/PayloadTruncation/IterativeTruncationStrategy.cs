@@ -61,7 +61,6 @@
             get { return this._maxPayloadSizeInBytes; }
         }
 
-
         /// <summary>
         /// Truncates the specified payload.
         /// </summary>
@@ -84,6 +83,15 @@
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets the ordered truncation strategies.
+        /// </summary>
+        /// <value>The ordered truncation strategies.</value>
+        public IEnumerable<IPayloadTruncationStrategy> OrderedTruncationStrategies
+        {
+            get { return this._orderedTruncationStrategies; }
         }
     }
 }
