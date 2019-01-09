@@ -16,6 +16,7 @@
       - resolve #258: Rename RollbarConfigUtil into RollbarConfigUtility and remove `ref` from RollbarConfig arguments.
       - ref #237: Rollbar plug-in for Microsoft Enterprise Library.
       - ref #254: Missing web.config crashes RollbarConfig constructor method.
+      - resolve #261: Resolve 4 Rollbar.sln build warnings
       - resolve #255: Create WPF sample app.
       - resolve #251: Mention Rollbar plug-ins in Readme.md on GitHub.
       - resolve #259: Prototype Azure build pipeline for Rollbar.NET.
@@ -37,8 +38,8 @@
     <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
-    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
 
   </PropertyGroup>
 

@@ -2,6 +2,38 @@
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
+
+    <PluginVersion>1.0.0</PluginVersion>
+    <PackageReleaseNotes>
+      Initial release.
+</PackageReleaseNotes>
+
+    <Title>Rollbar.NET Notifier plug-in for Microsoft Enterprise Library v6.</Title>
+    <Description>Rollbar.NET Notifier as an IExceptionHandler.</Description>
+    <PackageTags>EnterpriseLibrary;IExceptionHandler;rollbar;logging</PackageTags>
+    <AssemblyName>Rollbar.PlugIns.MSEnterpriseLibrary</AssemblyName>
+    <RootNamespace>Rollbar.PlugIns.MSEnterpriseLibrary</RootNamespace>
+
+    <Authors>Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
+    <Owners>Andrey Kornich (Wide Spectrum Computing LLC), Rollbar Inc.</Owners>
+    <Company>Rollbar Inc</Company>
+    <Product>Rollbar.Net Notifier SDK</Product>
+
+    <Version>$(PluginVersion)</Version>
+    <AssemblyVersion>$(PluginVersion)</AssemblyVersion>
+    <FileVersion>$(PluginVersion)</FileVersion>
+
+    <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
+    <Copyright>Copyright (c) 2018-$(CurrentYear) Rollbar Inc</Copyright>
+
+    <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+
   </PropertyGroup>
 
   <ItemGroup>
