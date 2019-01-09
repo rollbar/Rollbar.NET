@@ -18,6 +18,8 @@
       - ref #254: Missing web.config crashes RollbarConfig constructor method.
       - resolve #255: Create WPF sample app.
       - resolve #251: Mention Rollbar plug-ins in Readme.md on GitHub.
+      - resolve #259: Prototype Azure build pipeline for Rollbar.NET.
+      - resolve #260: Fix unit test failure within Azure Pipeline.
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
