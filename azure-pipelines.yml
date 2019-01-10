@@ -1,5 +1,5 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# .NET Core (.NET Framework)
+# Build and test .NET Core projects targeting the full .NET Framework.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
@@ -15,6 +15,14 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: '2.1.503' # replace this value with the version that you need for your project
+    
+- script: dotnet --version
+
+- script: dotnet --info
+
 - task: NuGetToolInstaller@0
 
 - task: NuGetCommand@2
@@ -24,7 +32,7 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    msbuildArgs: '/p:PackageAsSingleFile=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\RollbarNetSdkBin.zip"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
