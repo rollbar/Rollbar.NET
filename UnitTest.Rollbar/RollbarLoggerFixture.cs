@@ -399,10 +399,12 @@ namespace UnitTest.Rollbar
                     int i = 0;
                     while (i < MultithreadedStressTestParams.LogsPerThread)
                     {
-                        var customFields = new Dictionary<string, object>(Fields.FieldsCount);
-                        customFields[Fields.ThreadID] = taskIndex + 1;
-                        customFields[Fields.ThreadLogID] = i + 1;
-                        customFields[Fields.Timestamp] = DateTimeOffset.UtcNow;
+                        var customFields = new Dictionary<string, object>(Fields.FieldsCount)
+                        {
+                            [Fields.ThreadID] = taskIndex + 1,
+                            [Fields.ThreadLogID] = i + 1,
+                            [Fields.Timestamp] = DateTimeOffset.UtcNow
+                        };
 
                         logger.Info(
                             //$"{customFields[Fields.Timestamp]} Stress test: thread #{customFields[Fields.ThreadID]}, log #{customFields[Fields.ThreadLogID]}"
@@ -458,10 +460,12 @@ namespace UnitTest.Rollbar
                     int i = 0;
                     while (i < MultithreadedStressTestParams.LogsPerThread)
                     {
-                        var customFields = new Dictionary<string, object>(Fields.FieldsCount);
-                        customFields[Fields.ThreadID] = taskIndex + 1;
-                        customFields[Fields.ThreadLogID] = i + 1;
-                        customFields[Fields.Timestamp] = DateTimeOffset.UtcNow;
+                        var customFields = new Dictionary<string, object>(Fields.FieldsCount)
+                        {
+                            [Fields.ThreadID] = taskIndex + 1,
+                            [Fields.ThreadLogID] = i + 1,
+                            [Fields.Timestamp] = DateTimeOffset.UtcNow
+                        };
 
                         logger.Info(
                             //$"{customFields[Fields.Timestamp]} Stress test: thread #{customFields[Fields.ThreadID]}, log #{customFields[Fields.ThreadLogID]}"

@@ -291,7 +291,7 @@ namespace UnitTest.Rollbar.DTOs
             Assert.IsNull(body["message"]);
             Assert.IsNull(body["crash_report"]);
 
-            Action<JToken> traceFunc = trace =>
+            void traceFunc(JToken trace)
             {
                 Assert.IsInstanceOfType(trace["frames"], typeof(JArray));
                 var frames = trace["frames"] as JArray;
@@ -316,9 +316,9 @@ namespace UnitTest.Rollbar.DTOs
 
                 Assert.AreEqual("Test", exception["message"].Value<string>());
                 Assert.AreEqual("System.Exception", exception["class"].Value<string>());
-            };
+            }
 
-            foreach(var t in traceChain)
+            foreach (var t in traceChain)
             {
                 traceFunc(t);
             }
