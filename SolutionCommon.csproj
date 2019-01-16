@@ -15,6 +15,7 @@
       - resolve #257: Rename AppConfigUtil into AppConfigUtility and remove `ref` from RollbarConfig arguments.
       - resolve #258: Rename RollbarConfigUtil into RollbarConfigUtility and remove `ref` from RollbarConfig arguments.
       - ref #237: Rollbar plug-in for Microsoft Enterprise Library.
+      - resolve #264: RollbarExceptionHandler plug-in for the Exception Handling Block of the Microsoft Enterprise Library
       - ref #254: Missing web.config crashes RollbarConfig constructor method.
       - resolve #261: Resolve 4 Rollbar.sln build warnings
       - resolve #262: Clear IDE0039 and IDE0028 build messages
