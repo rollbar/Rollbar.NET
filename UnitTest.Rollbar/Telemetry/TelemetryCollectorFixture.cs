@@ -25,7 +25,8 @@ namespace UnitTest.Rollbar.Telemetry
         [TestCleanup]
         public void TearDownFixture()
         {
-
+            TelemetryCollector.Instance.StopAutocollection(true);
+            TelemetryCollector.Instance.FlushQueue();
         }
 
         public IReadOnlyCollection<dto.Telemetry> GenerateTelemetryItems()

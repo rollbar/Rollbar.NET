@@ -1,19 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
 
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
-
-    <PluginVersion>1.0.2</PluginVersion>
+    <PluginVersion>1.0.0</PluginVersion>
     <PackageReleaseNotes>
       Initial release.
-    </PackageReleaseNotes>
+</PackageReleaseNotes>
 
-    <Title>Rollbar.NET Notifier plug-in for Serilog.</Title>
-    <Description>Rollbar.NET Notifier as a Serilog Sink.</Description>
-    <PackageTags>serilog;serilog-sink;rollbar;logging</PackageTags>
-    <AssemblyName>Rollbar.PlugIns.Serilog</AssemblyName>
-    <RootNamespace>Rollbar.PlugIns.Serilog</RootNamespace>
+    <Title>Rollbar.NET Notifier plug-in for Microsoft Enterprise Library v6.</Title>
+    <Description>Rollbar.NET Notifier as an IExceptionHandler.</Description>
+    <PackageTags>EnterpriseLibrary;IExceptionHandler;rollbar;logging</PackageTags>
+    <AssemblyName>Rollbar.PlugIns.MSEnterpriseLibrary</AssemblyName>
+    <RootNamespace>Rollbar.PlugIns.MSEnterpriseLibrary</RootNamespace>
 
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
     <Owners>Andrey Kornich (Wide Spectrum Computing LLC), Rollbar Inc.</Owners>
@@ -38,7 +37,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.7.1" />
+    <PackageReference Include="EnterpriseLibrary.Common" Version="6.0.1304" />
+    <PackageReference Include="EnterpriseLibrary.ExceptionHandling" Version="6.0.1304" />
   </ItemGroup>
 
   <ItemGroup>

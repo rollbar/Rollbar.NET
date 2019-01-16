@@ -30,10 +30,29 @@ namespace UnitTest.Rollbar.DTOs
             var trace = new dto.Trace(GetException());
             Assert.IsNotNull(trace.Frames);
             Assert.IsTrue(trace.Frames.Length > 0);
-            Assert.AreEqual(2, trace.Frames.Length);
-            Assert.AreEqual("UnitTest.Rollbar.DTOs.TraceFixture.ThrowException()", trace.Frames[0].Method);
-            Assert.AreEqual("UnitTest.Rollbar.DTOs.TraceFixture.GetException()", trace.Frames[1].Method);
-            Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture")));
+
+            int[] platformDependentFrameCount = new int[]
+            {
+                2,
+                1,
+            };
+            Assert.IsTrue(platformDependentFrameCount.Contains(trace.Frames.Length));
+
+            string[] platformDependentTopFrameMethods = new string[]
+            {
+                "UnitTest.Rollbar.DTOs.TraceFixture.ThrowException()",
+                "UnitTest.Rollbar.DTOs.TraceFixture.GetException()",
+            };
+            Assert.IsTrue(
+                platformDependentTopFrameMethods.Contains(trace.Frames[0].Method), 
+                trace.Frames[0].Method
+                );
+
+            //Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture")), "file names");
+            Assert.IsTrue(
+                trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture") || (string.Compare(frame.FileName, "(unknown)") == 0)),
+                trace.Frames.Select(frame => frame.FileName).Aggregate((fileName, next) => next + ", " + fileName)
+                );
         }
 
         [TestMethod]

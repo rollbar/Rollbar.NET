@@ -2,6 +2,8 @@
 
 A .NET Rollbar Client that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, and .NET Full Framework 4.5+.
 
+[![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
+
 ## Install
 
 Nuget Package Manager:
@@ -90,6 +92,12 @@ RollbarLocator.RollbarInstance
 ```
 
 Additionally, anywhere in your code that you were sending error reports via `Rollbar.Report(Exception)` or `Rollbar.Report(string)` will need to be replaced with either something like `RollbarLocator.RollbarInstance.Error(new Exception("trying out the TraceChain", new NullReferenceException()))` or `RollbarLocator.RollbarInstance.Info("Basic info log example.")`.
+
+## Rollbar Plug-ins
+
+We are adding extra projects to the Rollbar.sln solution that simplify integration of Rollbar services with existing popular .NET logging and tracing libraries like Serilog, log4net, NLog, etc.
+These plug-in projects are named using following pattern `Rollbar.PlugIns.<LoggingLibraryToIntegrateWith>` and implement similarly named namespaces for the plug-ins.
+Each plug-in maintains its own versioning schema and is distributed as its own NuGet package using the naming pattern mentioned above.
 
 ## More Information about the SDK
 

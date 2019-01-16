@@ -123,10 +123,11 @@ namespace UnitTest.Rollbar.DTOs
             var rollbarBody = new Body(GetAggregateException());
             var json = JsonConvert.SerializeObject(rollbarBody);
             Assert.IsTrue(json.Contains("\"trace_chain\":["));
-            Assert.IsTrue(json.Contains("\"UnitTest.Rollbar.DTOs.BodyFixture.ThrowException()\""));
             Assert.IsTrue(!json.Contains("\"crash_report\":{"));
             Assert.IsTrue(!json.Contains("\"trace\":{"));
             Assert.IsTrue(!json.Contains("\"message\":{"));
+
+            Assert.IsTrue(json.Contains("GetAggregateException"), "GetAggregateException");
         }
 
         [TestMethod]

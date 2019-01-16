@@ -21,8 +21,14 @@
 
         static RollbarPerformanceMonitor()
         {
-            RollbarPerformanceMonitor.performanceLogFileName = @"RollbarPerformance-" + DateTimeOffset.Now.ToString().Replace(':','-') + ".csv";
-            RollbarPerformanceMonitor.performanceLogFileName = Path.Combine(Environment.CurrentDirectory, performanceLogFileName);
+            RollbarPerformanceMonitor.performanceLogFileName = 
+                @"RollbarPerformance-" 
+                + DateTimeOffset.Now.ToString().Replace('/', '-').Replace('\\','-').Replace(':','-').Replace(' ', '_') 
+                + ".csv"
+                ;
+            RollbarPerformanceMonitor.performanceLogFileName = 
+                Path.Combine(Environment.CurrentDirectory, performanceLogFileName)
+                ;
         }
 
         public static IPerformanceMonitor Instance

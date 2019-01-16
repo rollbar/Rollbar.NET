@@ -97,10 +97,17 @@ namespace UnitTest.Rollbar.PayloadTruncation
 
             iterations.Add(new FramesTruncationStrategy(totalHeadFramesToPreserve: 1, totalTailFramesToPreserve: 1));
             trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
-            AssertPayloadSizeReduction(false, testPayloads.Take(3).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(false, testPayloads.Take(3).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(true, testPayloads.Reverse().Take(1).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(false, testPayloads.Reverse().Take(1).ToArray(), trancationStrategy);
+            AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
+            AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
+            Payload[] payloadsWithFrames = testPayloads.Reverse().Take(2).ToArray();
+            foreach(var payload in payloadsWithFrames)
+            {
+                bool hasFramesToTrim = false;
+                hasFramesToTrim |= (payload?.Data?.Body?.Trace?.Frames?.Length > 1);
+                hasFramesToTrim |= ((payload?.Data?.Body?.TraceChain != null) && payload.Data.Body.TraceChain.Any(trace => trace?.Frames?.Length > 1));
+                AssertPayloadSizeReduction(hasFramesToTrim, payload, trancationStrategy);
+                AssertPayloadSizeReduction(false, payload, trancationStrategy);
+            }
             using (var logger = RollbarFactory.CreateNew().Configure(this._config))
             {
                 foreach (var payload in testPayloads)
@@ -149,8 +156,17 @@ namespace UnitTest.Rollbar.PayloadTruncation
             trancationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
             AssertPayloadSizeReduction(false, testPayloads.Take(2).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(true, testPayloads.Reverse().Take(2).ToArray(), trancationStrategy);
-            AssertPayloadSizeReduction(false, testPayloads.Reverse().Take(2).ToArray(), trancationStrategy);
+
+            payloadsWithFrames = testPayloads.Reverse().Take(2).ToArray();
+            foreach (var payload in payloadsWithFrames)
+            {
+                bool hasFramesToTrim = false;
+                hasFramesToTrim |= (payload?.Data?.Body?.Trace?.Frames?.Length > 1);
+                hasFramesToTrim |= ((payload?.Data?.Body?.TraceChain != null) && payload.Data.Body.TraceChain.Any(trace => trace?.Frames?.Length > 1));
+                AssertPayloadSizeReduction(hasFramesToTrim, payload, trancationStrategy);
+                AssertPayloadSizeReduction(false, payload, trancationStrategy);
+            }
+
             using (var logger = RollbarFactory.CreateNew().Configure(this._config))
             {
                 foreach (var payload in testPayloads)
@@ -158,6 +174,11 @@ namespace UnitTest.Rollbar.PayloadTruncation
                     logger.AsBlockingLogger(blockingTimeout).Log(payload.Data);
                 }
             }
+        }
+
+        private void AssertPayloadSizeReduction(bool expectReduction, Payload testPayload, IterativeTruncationStrategy trancationStrategy)
+        {
+            AssertPayloadSizeReduction(expectReduction, new Payload[] { testPayload }, trancationStrategy);
         }
 
         private void AssertPayloadSizeReduction(bool expectReduction, Payload[] testPayloads, IterativeTruncationStrategy trancationStrategy)
@@ -173,13 +194,17 @@ namespace UnitTest.Rollbar.PayloadTruncation
                 truncated = JsonConvert.SerializeObject(testPayload);
                 System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
 
+                string metadata = $"TruncationStrategy: {trancationStrategy} [ {trancationStrategy.OrderedTruncationStrategies.Select(strategy => strategy.ToString()).Aggregate((strategy, next) => next + ", " + strategy)} ], "
+                    + Environment.NewLine + $"expectedReduction: {expectReduction}, "
+                    + Environment.NewLine + $"original: {original} "
+                    + Environment.NewLine + $"AND truncated: {truncated}";
                 if (expectReduction)
                 {
-                    Assert.IsTrue(truncated.Length < original.Length);
+                    Assert.IsTrue(truncated.Length < original.Length, metadata);
                 }
                 else
                 {
-                    Assert.IsTrue(truncated.Length == original.Length);
+                    Assert.IsFalse(truncated.Length < original.Length, metadata);
                 }
             }
         }
@@ -188,7 +213,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
         {
             try
             {
-                Parallel.ForEach(new[] { 1, 2, 3, 4, 5 }, i => ThrowAnException());
+                SimulateAggregateException();
             }
             catch (AggregateException e)
             {
@@ -198,7 +223,17 @@ namespace UnitTest.Rollbar.PayloadTruncation
             throw new System.Exception("Unreachable");
         }
 
+        private static void SimulateAggregateException()
+        {
+            Parallel.ForEach(new[] { 1, 2, 3, 4, 5 }, i => ThrowAnException());
+        }
+
         private static void ThrowAnException()
+        {
+            SimulatException();
+        }
+
+        private static void SimulatException()
         {
             throw new System.Exception("Test");
         }
