@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\RollbarUnitTestSettings.cs" Link="RollbarUnitTestSettings.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EnterpriseLibrary.Common" Version="6.0.1304" />
     <PackageReference Include="EnterpriseLibrary.ExceptionHandling" Version="6.0.1304" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />

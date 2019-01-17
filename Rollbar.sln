@@ -27,6 +27,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary", "UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary\UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary.csproj", "{80DBF678-9338-425B-9F68-E3AF5FB862C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{0B7283A9-1926-4DD7-8B00-755D792118A8}"
+	ProjectSection(SolutionItems) = preProject
+		RollbarUnitTestSettings.cs = RollbarUnitTestSettings.cs
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarker.Common", "Benchmarker.Common\Benchmarker.Common.csproj", "{273E3E6A-C5AE-4B87-8698-F6D821BCAFAE}"
 EndProject

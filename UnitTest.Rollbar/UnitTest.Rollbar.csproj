@@ -40,6 +40,10 @@
   <ItemGroup>
     <None Remove="TestData\appsettings.json" Condition="'$(NetVariant)' == 'NET_FX'" />
     <None Remove="TestData\app.config" Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\RollbarUnitTestSettings.cs" Link="RollbarUnitTestSettings.cs" />
   </ItemGroup>  
 
   <ItemGroup>
