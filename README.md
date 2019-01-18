@@ -2,12 +2,12 @@
 
 A .NET Rollbar Client that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, and .NET Full Framework 4.5+.
 
-## Rollbar.NET CI builds status:
+## CI builds status:
 
-### This repo:
+### Rollbar.NET repo:
 [![Build Status](https://dev.azure.com/rollbar/Rollbar.NET/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar/Rollbar.NET/_build/latest?definitionId=1&branchName=master)
 
-### Our primary development fork this repo at [Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET):
+### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) (primary development fork):
 [![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
 
 ## Install
