@@ -4,10 +4,10 @@ A .NET Rollbar Client that can be used in any application built on the following
 
 ## CI builds status:
 
-### Rollbar.NET repo:
+### [Rollbar.NET](https://github.com/rollbar/Rollbar.NET) repo:
 [![Build Status](https://dev.azure.com/rollbar/Rollbar.NET/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar/Rollbar.NET/_build/latest?definitionId=1&branchName=master)
 
-### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) (primary development fork):
+### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) repo (primary development fork):
 [![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
 
 ## Install
