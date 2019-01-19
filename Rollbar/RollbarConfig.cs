@@ -26,6 +26,7 @@
         : ReconfigurableBase<RollbarConfig, IRollbarConfig>
         , ITraceable
         , IRollbarConfig
+        , IEquatable<IRollbarConfig>
     {
         private readonly RollbarLogger _logger = null;
 

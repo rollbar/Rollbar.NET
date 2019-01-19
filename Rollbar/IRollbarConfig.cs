@@ -10,6 +10,7 @@
     /// </summary>
     public interface IRollbarConfig
         : IReconfigurable<IRollbarConfig, IRollbarConfig>
+        , IEquatable<IRollbarConfig>
         , ITraceable
     {
         /// <summary>

@@ -202,7 +202,7 @@ namespace UnitTest.Rollbar
         [DataRow(ErrorLevel.Warning)]
         [DataRow(ErrorLevel.Info)]
         [DataRow(ErrorLevel.Debug)]
-        public void ConvenienceMethodsUsesAppropriateErrorLevels(ErrorLevel expectedLogLevel)
+        public void ConvenienceMethodsUseAppropriateErrorLevels(ErrorLevel expectedLogLevel)
         {
             var awaitAsyncSend = new ManualResetEventSlim(false);
             var acctualLogLevel = ErrorLevel.Info;
