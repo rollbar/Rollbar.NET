@@ -285,10 +285,27 @@
                         bool hasMatchingItem = false;
                         foreach (var rightItem in rightEnumeration)
                         {
-                            if (leftItem.GetType() != rightItem.GetType())
+                            Type leftItemType = leftItem.GetType();
+                            Type rightItemType = rightItem.GetType();
+
+                            if (leftItemType != rightItemType)
                             {
                                 continue;
                             }
+
+                            if (leftItemType.IsPrimitive || leftItemType == typeof(string) || leftItemType == typeof(Guid))
+                            {
+                                if (leftItem.Equals(rightItem))
+                                {
+                                    hasMatchingItem = true;
+                                    break;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+
                             var itemProperties = ListInstancePublicProperties(rightItem.GetType());
                             if (HaveEqualPropertyValues(leftItem, rightItem, itemProperties))
                             {

@@ -63,7 +63,7 @@ namespace UnitTest.Rollbar
             }
         }
 
-        //[TestMethod] //until fully implemented...
+        [TestMethod]
         public void TestRollbarConfigEqualityMethod()
         {
             RollbarConfig rConfig = new RollbarConfig("12345") { Environment = "env1" };
@@ -76,7 +76,6 @@ namespace UnitTest.Rollbar
             RollbarConfig rConfigAnotherDiff = new RollbarConfig("02345") { Environment = "env1" };
             RollbarConfig rConfigTwoDiffs = new RollbarConfig("02345") { Environment = "env2" };
             RollbarConfig rConfigOneNullifed = new RollbarConfig("12345") { Environment = null };
-
 
             // test different config instances simple properties:
             Assert.IsTrue(rConfig.Equals(rConfigSimilar), "Simple properties: Similar instances are always equal.");
@@ -94,9 +93,9 @@ namespace UnitTest.Rollbar
             rConfig.Person = person;
             Assert.IsTrue(rConfig.Equals(rConfig), "Structured properties: Same instances are always equal.");
             rConfigSimilar.Person = person;
-            Assert.IsTrue(rConfig.Equals(rConfigSimilar), "Structured properties: Similar instances are always equal.");
+            Assert.IsTrue(rConfig.Equals(rConfigSimilar), "Structured properties: Similar #1 instances are always equal.");
             rConfigSimilar.Person = personSimilar;
-            Assert.IsTrue(rConfig.Equals(rConfigSimilar), "Structured properties: Similar instances are always equal.");
+            Assert.IsTrue(rConfig.Equals(rConfigSimilar), "Structured properties: Similar #2 instances are always equal.");
             rConfigSimilar.Person = personOneDiff;
             Assert.IsFalse(rConfig.Equals(rConfigSimilar), "Structured properties: One different property value makes unequal.");
             rConfigSimilar.Person = personOneNull;
