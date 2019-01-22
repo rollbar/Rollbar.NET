@@ -5,6 +5,7 @@
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using Xamarin.iOS.Foundation;
 
@@ -159,12 +160,31 @@
             Assumption.AssertNotNull(likeMe, nameof(likeMe));
             Assumption.AssertTrue(likeMeTypeOfInterest.IsAssignableFrom(this._thisInstanceType), nameof(likeMeTypeOfInterest));
 
+            // In general we could be reconfiguring the destination object 
+            // based on a source object that is a subtype of the destination type.
+            // Hence, it could contains a subset of the properties available in the destination type.
+            // Let's base the reconfiguration process based on that subset:
             PropertyInfo[] properties
                 = ReconfigurableBase.ListInstancePublicProperties(likeMeTypeOfInterest);
 
             foreach (var property in properties)
             {
-                property.SetValue(this, property.GetValue(likeMe));
+                if (property.CanWrite)
+                {
+                    property.SetValue(this, property.GetValue(likeMe));
+                }
+                else
+                {
+                    // This case handles situations when the reconfiguration source object has read-only
+                    // property but the destination object could have an equivalent read-write property:
+                    var destinationProperty
+                        = ReconfigurableBase.ListInstancePublicProperties(this._thisInstanceType)
+                            .SingleOrDefault(p => p.Name == property.Name);
+                    if (destinationProperty.CanWrite)
+                    {
+                        destinationProperty.SetValue(this, property.GetValue(likeMe));
+                    }
+                }
             }
 
             OnReconfigured(new EventArgs());
