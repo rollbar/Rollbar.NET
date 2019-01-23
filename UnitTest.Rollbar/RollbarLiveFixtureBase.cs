@@ -15,12 +15,103 @@ namespace UnitTest.Rollbar
     {
         private RollbarConfig _loggerConfig;
 
+        private readonly List<IRollbar> _disposableRollbarInstances = new List<IRollbar>();
+
         protected RollbarLiveFixtureBase()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
+            RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
 
             this._loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
+        }
+
+        //[TestInitialize]
+        public virtual void SetupFixture()
+        {
+            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
+            this.ResetAllExpectedTotals();
+            this.ClearAllRollbarInternalEvents();
+        }
+
+        //[TestCleanup]
+        public virtual void TearDownFixture()
+        {
+            TimeSpan timeout = RollbarQueueController.Instance.GetRecommendedTimeout();
+            Thread.Sleep(timeout);
+            this.VerifyActualEventsAgainstExpectedTotals();
+        }
+
+        private void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
+        {
+            Console.WriteLine(e.TraceAsString());
+
+            RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
+            if (apiErrorEvent != null)
+            {
+                this.ApiErrorEvents.Add(apiErrorEvent);
+                return;
+            }
+            CommunicationEventArgs commEvent = e as CommunicationEventArgs;
+            if (commEvent != null)
+            {
+                this.CommunicationEvents.Add(commEvent);
+                return;
+            }
+            CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
+            if (commErrorEvent != null)
+            {
+                this.CommunicationErrorEvents.Add(commErrorEvent);
+                return;
+            }
+            InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
+            if (internalErrorEvent != null)
+            {
+                this.InternalSdkErrorEvents.Add(internalErrorEvent);
+                return;
+            }
+        }
+
+        protected int ExpectedCommunicationEventsTotal { get; set; }
+        protected int ExpectedCommunicationErrorsTotal { get; set; }
+        protected int ExpectedApiErrorsTotal { get; set; }
+        protected int ExpectedInternalSdkErrorsTotal { get; set; }
+
+        protected void ResetAllExpectedTotals()
+        {
+            this.ExpectedApiErrorsTotal = 0;
+            this.ExpectedCommunicationErrorsTotal = 0;
+            this.ExpectedCommunicationEventsTotal = 0;
+            this.ExpectedInternalSdkErrorsTotal = 0;
+        }
+
+        private readonly List<CommunicationEventArgs> CommunicationEvents = new List<CommunicationEventArgs>();
+        private readonly List<CommunicationErrorEventArgs> CommunicationErrorEvents = new List<CommunicationErrorEventArgs>();
+        private readonly List<RollbarApiErrorEventArgs> ApiErrorEvents = new List<RollbarApiErrorEventArgs>();
+        private readonly List<InternalErrorEventArgs> InternalSdkErrorEvents = new List<InternalErrorEventArgs>();
+
+        protected void ClearAllRollbarInternalEvents()
+        {
+            this.CommunicationEvents.Clear();
+            this.CommunicationErrorEvents.Clear();
+            this.ApiErrorEvents.Clear();
+            this.InternalSdkErrorEvents.Clear();
+        }
+
+        private void VerifyActualEventsAgainstExpectedTotals()
+        {
+            Assert.AreEqual(this.ExpectedCommunicationEventsTotal, this.CommunicationEvents.Count, "Actual CommunicationEvents count does not match expectation.");
+            Assert.IsTrue(
+                // EITHER no errors expected:
+                (this.ExpectedCommunicationErrorsTotal == 0 && this.CommunicationErrorEvents.Count == 0)
+                // OR at least as many errors as expected (but most likely multiples of that):
+                || (this.ExpectedCommunicationErrorsTotal > 0 && this.CommunicationErrorEvents.Count >= this.ExpectedCommunicationErrorsTotal) 
+                , "Actual CommunicationErrors count does not match expectation."
+                );
+            Assert.AreEqual(this.ExpectedApiErrorsTotal, this.ApiErrorEvents.Count, "Actual ApiErrors count does not match expectation.");
+            Assert.AreEqual(this.ExpectedInternalSdkErrorsTotal, this.InternalSdkErrorEvents.Count, "Actual InternalSdkErrors count does not match expectation.");
         }
 
         protected IRollbarConfig ProvideLiveRollbarConfig()
@@ -40,7 +131,9 @@ namespace UnitTest.Rollbar
 
         protected IRollbar ProvideDisposableRollbar()
         {
-            return RollbarFactory.CreateNew(isSingleton: false, rollbarConfig: this.ProvideLiveRollbarConfig());
+            IRollbar rollbar = RollbarFactory.CreateNew(isSingleton: false, rollbarConfig: this.ProvideLiveRollbarConfig());
+            this._disposableRollbarInstances.Add(rollbar);
+            return rollbar;
         }
 
         protected IRollbar ProvideSharedRollbar()
@@ -52,22 +145,8 @@ namespace UnitTest.Rollbar
             return RollbarLocator.RollbarInstance;
         }
 
-        //[TestInitialize]
-        //public void SetupFixture()
-        //{
-        //}
-
-        //[TestCleanup]
-        //public void TearDownFixture()
-        //{
-        //}
-
-        //[TestMethod]
-        //public void SomeTestMethod()
-        //{
-        //}
-
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -77,6 +156,13 @@ namespace UnitTest.Rollbar
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
+                    TimeSpan timeout = RollbarQueueController.Instance.GetRecommendedTimeout();
+                    Thread.Sleep(timeout);
+                    RollbarQueueController.Instance.InternalEvent -= OnRollbarInternalEvent;
+                    foreach (var rollbar in this._disposableRollbarInstances)
+                    {
+                        rollbar.Dispose();
+                    }
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -100,6 +186,7 @@ namespace UnitTest.Rollbar
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion
+
+        #endregion IDisposable Support
     }
 }

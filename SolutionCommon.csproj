@@ -18,7 +18,7 @@
       - resolve #269: Setup unit tests for Rollbar.PlugIns.NLog.
       - resolve #268: Setup unit tests for Rollbar.PlugIns.Log4net.
       - ref #237: Rollbar plug-in for Microsoft Enterprise Library.
-      - ref #254: Missing web.config crashes RollbarConfig constructor method.
+      - resolve #254: Missing web.config crashes RollbarConfig constructor method.
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
