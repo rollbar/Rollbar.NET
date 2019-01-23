@@ -11,6 +11,7 @@
     <NotifierVersion>2.2.1</NotifierVersion>
     <PackageReleaseNotes>
       Improvements and fixes:
+      - resolve #266: Create sample for Rollbar.PlugIns.MSEnterpriseLibrary.
       - resolve #272: Factor out unit test base that initializes/disposes Rollbar instance and verifies successful transmissions.
       - resolve #273: Provide API to check equality of two RollbarConfig objects (property-by-property).
       - resolve #271: Factor out shared RollbarUnitTestSettings.

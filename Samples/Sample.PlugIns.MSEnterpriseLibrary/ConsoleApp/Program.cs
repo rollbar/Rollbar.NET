@@ -3,6 +3,7 @@ using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Logging.Formatters;
 using Microsoft.Practices.EnterpriseLibrary.Logging.TraceListeners;
+using Rollbar.PlugIns.MSEnterpriseLibrary;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,6 +53,9 @@ namespace ConsoleApp
 
             var policies = new List<ExceptionPolicyDefinition>();
 
+            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
+            const string rollbarEnvironment = "RollbarNetSamples";
+
             var exceptionShielding = new List<ExceptionPolicyEntry>
             {
                 {
@@ -71,7 +75,12 @@ namespace ConsoleApp
                                 ),
                             new WrapHandler(
                             "Rolbar Plug-in for MSEntLib ExceptionHandler Sample Application Error. Please contact your administrator.",
-                            typeof(Exception))
+                            typeof(Exception)),
+                            new RollbarExceptionHandler(
+                                rollbarAccessToken,
+                                rollbarEnvironment, 
+                                TimeSpan.FromSeconds(3)
+                                ),
                         }
                     )
                 },

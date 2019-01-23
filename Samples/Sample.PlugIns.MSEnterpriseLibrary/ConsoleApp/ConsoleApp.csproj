@@ -59,11 +59,20 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SalaryCalculator .cs" />
-    <Compile Include="SalaryException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Rollbar.PlugIns.MSEnterpriseLibrary\Rollbar.PlugIns.MSEnterpriseLibrary.csproj">
+      <Project>{1f66ea7d-10ca-48fd-aa2b-16b173311788}</Project>
+      <Name>Rollbar.PlugIns.MSEnterpriseLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Rollbar\Rollbar.csproj">
+      <Project>{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}</Project>
+      <Name>Rollbar</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
