@@ -8,6 +8,18 @@ namespace UnitTest.Rollbar
     using System.Collections.Generic;
     using System.Threading;
 
+    /// <summary>
+    /// Defines test class RollbarLiveFixtureBase.
+    /// Implements the <see cref="System.IDisposable" />
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
+    /// <remarks>
+    /// This is a base abstraction for creating live Rollbar unit tests 
+    /// (ones that actually expected to communicate with the Rollbar API).
+    /// It allows to set expectations for internal Rollbar events 
+    /// (as payload delivery to Rollbar API or any communication or internal errors).
+    /// It has built-in verification of actual event counts against the expected ones per type of the events.
+    /// </remarks>
     [TestClass]
     [TestCategory(nameof(RollbarLiveFixtureBase))]
     public abstract class RollbarLiveFixtureBase
@@ -19,14 +31,15 @@ namespace UnitTest.Rollbar
 
         protected RollbarLiveFixtureBase()
         {
-            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
 
             this._loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
         }
 
+        /// <summary>
+        /// Sets the fixture up.
+        /// </summary>
         //[TestInitialize]
         public virtual void SetupFixture()
         {
@@ -36,6 +49,9 @@ namespace UnitTest.Rollbar
             this.ClearAllRollbarInternalEvents();
         }
 
+        /// <summary>
+        /// Tears down this fixture.
+        /// </summary>
         //[TestCleanup]
         public virtual void TearDownFixture()
         {
@@ -74,11 +90,33 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// Gets or sets the expected communication events total.
+        /// </summary>
+        /// <value>The expected communication events total.</value>
         protected int ExpectedCommunicationEventsTotal { get; set; }
+
+        /// <summary>
+        /// Gets or sets the expected communication errors total.
+        /// </summary>
+        /// <value>The expected communication errors total.</value>
         protected int ExpectedCommunicationErrorsTotal { get; set; }
+
+        /// <summary>
+        /// Gets or sets the expected API errors total.
+        /// </summary>
+        /// <value>The expected API errors total.</value>
         protected int ExpectedApiErrorsTotal { get; set; }
+
+        /// <summary>
+        /// Gets or sets the expected internal SDK errors total.
+        /// </summary>
+        /// <value>The expected internal SDK errors total.</value>
         protected int ExpectedInternalSdkErrorsTotal { get; set; }
 
+        /// <summary>
+        /// Resets all expected totals.
+        /// </summary>
         protected void ResetAllExpectedTotals()
         {
             this.ExpectedApiErrorsTotal = 0;
@@ -92,6 +130,9 @@ namespace UnitTest.Rollbar
         private readonly List<RollbarApiErrorEventArgs> ApiErrorEvents = new List<RollbarApiErrorEventArgs>();
         private readonly List<InternalErrorEventArgs> InternalSdkErrorEvents = new List<InternalErrorEventArgs>();
 
+        /// <summary>
+        /// Clears all rollbar internal events.
+        /// </summary>
         protected void ClearAllRollbarInternalEvents()
         {
             this.CommunicationEvents.Clear();
@@ -114,11 +155,21 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(this.ExpectedInternalSdkErrorsTotal, this.InternalSdkErrorEvents.Count, "Actual InternalSdkErrors count does not match expectation.");
         }
 
+        /// <summary>
+        /// Provides the live rollbar configuration.
+        /// </summary>
+        /// <returns>IRollbarConfig.</returns>
         protected IRollbarConfig ProvideLiveRollbarConfig()
         {
             return this.ProvideLiveRollbarConfig(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
         }
 
+        /// <summary>
+        /// Provides the live rollbar configuration.
+        /// </summary>
+        /// <param name="rollbarAccessToken">The rollbar access token.</param>
+        /// <param name="rollbarEnvironment">The rollbar environment.</param>
+        /// <returns>IRollbarConfig.</returns>
         protected IRollbarConfig ProvideLiveRollbarConfig(string rollbarAccessToken, string rollbarEnvironment)
         {
             if (this._loggerConfig == null)
@@ -129,6 +180,10 @@ namespace UnitTest.Rollbar
             return this._loggerConfig;
         }
 
+        /// <summary>
+        /// Provides the disposable rollbar.
+        /// </summary>
+        /// <returns>IRollbar.</returns>
         protected IRollbar ProvideDisposableRollbar()
         {
             IRollbar rollbar = RollbarFactory.CreateNew(isSingleton: false, rollbarConfig: this.ProvideLiveRollbarConfig());
@@ -136,6 +191,10 @@ namespace UnitTest.Rollbar
             return rollbar;
         }
 
+        /// <summary>
+        /// Provides the shared rollbar.
+        /// </summary>
+        /// <returns>IRollbar.</returns>
         protected IRollbar ProvideSharedRollbar()
         {
             if (!RollbarLocator.RollbarInstance.Equals(ProvideLiveRollbarConfig()))

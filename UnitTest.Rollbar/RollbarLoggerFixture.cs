@@ -25,8 +25,6 @@ namespace UnitTest.Rollbar
         {
             base.SetupFixture();
 
-            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
             this._loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
         }
@@ -260,10 +258,7 @@ namespace UnitTest.Rollbar
         }
 
 
-        //private const int maxCallLengthInMillisec = 1000;
-
         [TestMethod]
-        //[Timeout(maxCallLengthInMillisec)]
         public void LongReportIsAsync()
         {
             const int maxCallLengthInMillisec = 50;
