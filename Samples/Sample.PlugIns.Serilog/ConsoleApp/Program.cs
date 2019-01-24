@@ -33,7 +33,7 @@
             // let's simulate some exception logging via Serilog:
             try
             {
-                throw new ApplicationException("Oy vey!");
+                throw new ApplicationException("Oy vey via Serilog!");
             }
             catch(Exception ex)
             {

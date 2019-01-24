@@ -8,6 +8,7 @@ namespace UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary
     using System;
 
     [TestClass]
+    [TestCategory(nameof(RollbarExceptionHandlerFixture))]
     public class RollbarExceptionHandlerFixture
     {
         private int _rollbarCommunicationEventsCount = 0;

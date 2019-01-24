@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Benchmarker.Common\Benchmarker.Common.csproj" />
-    <ProjectReference Include="..\Rollbar.PlugIns.MSEnterpriseLibrary\Rollbar.PlugIns.MSEnterpriseLibrary.csproj" />
+    <ProjectReference Include="..\Rollbar.PlugIns.Log4net\Rollbar.PlugIns.Log4net.csproj" />
   </ItemGroup>
 
 </Project>
