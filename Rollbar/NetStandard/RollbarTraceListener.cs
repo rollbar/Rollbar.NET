@@ -72,7 +72,7 @@
         /// <summary>
         /// The instance count
         /// </summary>
-        public static int InstanceCount = 0;
+        public static int InstanceCount { get; set; } = 0;
 
         private IRollbar _rollbar = null;
 

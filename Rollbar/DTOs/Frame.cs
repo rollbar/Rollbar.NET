@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Reflection;
     using Newtonsoft.Json;
+    using Rollbar.Diagnostics;
 
     /// <summary>
     /// Models Rollbar Frame DTO.
@@ -37,14 +38,14 @@
             int tokenIndex = frameString.IndexOf(token);
             frameString = frameString.Remove(tokenIndex, token.Length);
             frameString = frameString.Trim();
-            string[] components = frameString.Split(new string[] { " in ", }, StringSplitOptions.None);
+            string[] components = frameString.Split(new [] { " in ", }, StringSplitOptions.None);
             if (components.Length > 0)
             {
                 this.Method = components[0];
             }
             if (components.Length > 1)
             {
-                components = components[1].Split(new string[] { ":line ", }, StringSplitOptions.None);
+                components = components[1].Split(new [] { ":line ", }, StringSplitOptions.None);
                 if (components.Length > 0)
                 {
                     this.FileName = components[0];
@@ -165,6 +166,8 @@
 
         private static string GetFileName(StackFrame frame)
         {
+            Assumption.AssertNotNull(frame, nameof(frame));
+
             string returnVal = null;
 
             if (frame != null)
@@ -188,6 +191,8 @@
 
         private static int? GetLineNumber(StackFrame frame)
         {
+            Assumption.AssertNotNull(frame, nameof(frame));
+
             var lineNo = frame.GetFileLineNumber();
             if (lineNo != 0)
             {
@@ -206,11 +211,15 @@
 
         private static int? GetFileColumnNumber(StackFrame frame)
         {
+            Assumption.AssertNotNull(frame, nameof(frame));
+
             return frame.GetFileColumnNumber();
         }
 
         private static string GetMethod(StackFrame frame)
         {
+            Assumption.AssertNotNull(frame, nameof(frame));
+
             MethodBase method = frame.GetMethod();
             if (method == null)
             {

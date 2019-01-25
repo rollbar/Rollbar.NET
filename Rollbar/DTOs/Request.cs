@@ -8,15 +8,13 @@
 
 #if (NETSTANDARD || NETCOREAPP)
     using Microsoft.AspNetCore.Http;
-    using System.IO;
-    //using Rollbar.AspNetCore;
 #endif
 
 #if (NETCOREAPP)
     using Rollbar.AspNetCore;
 #endif
 
-#if NETFX
+#if (NETFX)
     using System.ServiceModel.Channels;
     using System.Web;
 #endif
@@ -157,6 +155,9 @@
                     break;
                 case "GET":
                     this.GetParams = null;
+                    break;
+                default:
+                    // nothing to do...
                     break;
             }
 

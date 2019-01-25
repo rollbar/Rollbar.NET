@@ -176,6 +176,7 @@
             {
                 string msg = "Argument should not be NULL.";
                 FailValidation(msg, parameterName);
+                return null;
             }
 
             bool any = false;
@@ -490,6 +491,7 @@
             {
                 string msg = string.Format("Expected argument '{0}' can not be NULL.", parameterName);
                 FailValidation(msg, parameterName);
+                return null;
             }
 
             var result = value as T;

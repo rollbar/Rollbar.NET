@@ -250,15 +250,10 @@
                 {
                     continue; // both are null...
                 }
-                if (leftPropertyValue.Equals(rightPropertyValue))
+                if ((leftPropertyValue != null) && leftPropertyValue.Equals(rightPropertyValue))
                 {
                     continue; // are equal according to values .Equals(other) method...
                 }
-                //ReconfigurableBase reconfigurableProperty = leftPropertyValue as ReconfigurableBase;
-                //if ((reconfigurableProperty != null) && reconfigurableProperty.Equals(rightPropertyValue, property.PropertyType))
-                //{
-                //    continue; // equal according to ReconfigurableBase.Equals(object other, Type otherType)...
-                //}
                 if (!((leftPropertyValue != null) && (rightPropertyValue != null)))
                 {
                     return false; // one side null another not...

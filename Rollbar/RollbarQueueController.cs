@@ -499,11 +499,17 @@ namespace Rollbar
         public TimeSpan GetRecommendedTimeout()
         {
             TimeSpan timeout = TimeSpan.Zero;
-            string[] accessTokens = new string[0];
+            string[] accessTokens;
             lock (this._syncLock)
             {
                 accessTokens = this._queuesByAccessToken.Keys.ToArray();
             }
+
+            if (accessTokens == null)
+            {
+                return timeout;
+            }
+
             foreach(var token in accessTokens)
             {
                 TimeSpan tokenTimeout = this.GetRecommendedTimeout(token);

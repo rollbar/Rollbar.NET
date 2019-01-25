@@ -35,7 +35,7 @@
                 this.Frames = frames.ToArray();
             }
 
-            entries = exceptionInfo.Split(new string[] { ": ", }, StringSplitOptions.None);
+            entries = exceptionInfo.Split(new [] { ": ", }, StringSplitOptions.None);
             DTOs.Exception ex = null;
             switch (entries.Length)
             {
@@ -47,6 +47,9 @@
                     break;
                 case 1:
                     ex = new DTOs.Exception(entries[0]);
+                    break;
+                default:
+                    // nothing to do
                     break;
             }
             if (ex != null)
@@ -65,8 +68,8 @@
             Assumption.AssertNotNull(frames, nameof(frames));
             Assumption.AssertNotNull(exception, nameof(exception));
 
-            Frames = frames;
-            Exception = exception;
+            this.Frames = frames;
+            this.Exception = exception;
         }
 
         /// <summary>
@@ -79,8 +82,8 @@
 
             var frames = new StackTrace(exception, true).GetFrames() ?? new StackFrame[0];
 
-            Frames = frames.Select(frame => new Frame(frame)).ToArray();
-            Exception = new Exception(exception);
+            this.Frames = frames.Select(frame => new Frame(frame)).ToArray();
+            this.Exception = new DTOs.Exception(exception);
         }
 
         /// <summary>
