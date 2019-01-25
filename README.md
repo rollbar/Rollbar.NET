@@ -64,8 +64,8 @@ In case of a timeout, all the blocking log methods throw `System.TimeoutExceptio
 ## Basic Usage
 
 * Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
-* Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
-* Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
+*   Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
+*    Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
 
 ## Upgrading to v2.x.x from v1.x.x versions
 
