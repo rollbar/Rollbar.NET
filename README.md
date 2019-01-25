@@ -4,15 +4,14 @@ A .NET Rollbar Client/Notifier that can be used in any application built on the 
 It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the Rollbar API for remote monitoring and analysis of the hosting application's behavior.'
 
 It also includes a collection of Rollbar.NET plug-ins into most popular .NET logging and exception handling libraries/frameworks, like:
-*  Serilog
-*  log4net
-*  NLog
-*  Microsoft Enterprise Library's Exception Handling block
-*  etc.
-*  as well as RollbarTraceListener and ASP.NET Core Rollbar middleware. 
+*   Serilog
+*   log4net
+*   NLog
+*   Microsoft Enterprise Library's Exception Handling block
+*   etc.
+*   as well as RollbarTraceListener and ASP.NET Core Rollbar middleware. 
 
 These plug-ins simplify integration of the Rollbar.NET Notifier into codebases that are already using any of these libraries/frameworks using the libraries' native extensions mechanisms.
-
 
 ## CI builds status
 
@@ -63,9 +62,9 @@ In case of a timeout, all the blocking log methods throw `System.TimeoutExceptio
 
 ## Basic Usage
 
-* Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
+*   Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
 *   Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
-*    Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
+*   Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
 
 ## Upgrading to v2.x.x from v1.x.x versions
 
