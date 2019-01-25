@@ -1,6 +1,18 @@
-# Rollbar.NET
+# Rollbar.NET Notifier SDK
 
-A .NET Rollbar Client that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, and .NET Full Framework 4.5+.
+A .NET Rollbar Client/Notifier that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, .NET Full Framework 4.5+, Mono, Xamarin, and, in general, any implementation of the .NET Standard 2.0+.
+It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the Rollbar API for remote monitoring and analysis of the hosting application's behavior.'
+
+It also includes a collection of Rollbar.NET plug-ins into most popular .NET logging and exception handling libraries/frameworks, like:
+*  Serilog
+*  log4net
+*  NLog
+*  Microsoft Enterprise Library's Exception Handling block
+*  etc.
+*  as well as RollbarTraceListener and ASP.NET Core Rollbar middleware. 
+
+These plug-ins simplify integration of the Rollbar.NET Notifier into codebases that are already using any of these libraries/frameworks using the libraries' native extensions mechanisms.
+
 
 ## CI builds status
 
@@ -12,9 +24,9 @@ A .NET Rollbar Client that can be used in any application built on the following
 
 ## Install
 
-Nuget Package Manager:
+Using Nuget Package Manager:
 
-    Install-Package Rollbar
+    ```Install-Package Rollbar```
 
 ## Blocking vs Non-Blocking Use
 
@@ -51,9 +63,9 @@ In case of a timeout, all the blocking log methods throw `System.TimeoutExceptio
 
 ## Basic Usage
 
-*  Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
-*  Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
-*  Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
+* Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
+* Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
+* Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
 
 ## Upgrading to v2.x.x from v1.x.x versions
 
@@ -92,10 +104,10 @@ Rollbar.Init(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"));
 to
 
 ```csharp
-const string postServerItemAccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN";
-RollbarLocator.RollbarInstance.Configure(
-    new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" }
-    ) ;
+    const string postServerItemAccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN";
+    RollbarLocator.RollbarInstance.Configure(
+        new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" }
+        ) ;
 ```
 
 Additionally, anywhere in your code that you were sending error reports via `Rollbar.Report(Exception)` or `Rollbar.Report(string)` will need to be replaced with either something like `RollbarLocator.RollbarInstance.Error(new Exception("trying out the TraceChain", new NullReferenceException()))` or `RollbarLocator.RollbarInstance.Info("Basic info log example.")`.
