@@ -18,9 +18,19 @@
         /// Renders as string.
         /// </summary>
         /// <param name="obj">The object.</param>
+        /// <returns>System.String.</returns>
+        public static string RenderAsString(this object obj)
+        {
+            return RenderAsString(obj, null);
+        }
+
+        /// <summary>
+        /// Renders as string.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         /// <param name="indentation">The indentation.</param>
         /// <returns>System.String.</returns>
-        public static string RenderAsString(this object obj, string indentation = null)
+        public static string RenderAsString(this object obj, string indentation)
         {
             return RenderAsString(obj, indentation, new StringBuilder());
         }
@@ -43,25 +53,20 @@
 
             stringBuilder.AppendLine($"{indentation ?? string.Empty}{objType.FullName}:");
 
-            if (string.IsNullOrEmpty(indentation))
-            {
-                indentation = defaultIndentation;
-            }
-            else
-            {
-                indentation += indentation;
-            }
+            string propertiesIndentation = 
+                string.IsNullOrEmpty(indentation) ? defaultIndentation : indentation + indentation;
 
-            var properties = objType.GetProperties(BindingFlags.Public | BindingFlags.FlattenHierarchy);
+            var properties = 
+                objType.GetProperties(BindingFlags.Public | BindingFlags.FlattenHierarchy);
             foreach(var property in properties)
             {
                 if (property.PropertyType.IsPrimitive)
                 {
-                    stringBuilder.AppendLine($"{indentation}{property.Name} = {property.GetValue(obj)}");
+                    stringBuilder.AppendLine($"{propertiesIndentation}{property.Name} = {property.GetValue(obj)}");
                 }
                 else
                 {
-                    stringBuilder.Append(property.GetValue(obj).RenderAsString(indentation, stringBuilder));
+                    stringBuilder.Append(property.GetValue(obj).RenderAsString(propertiesIndentation, stringBuilder));
                 }
             }
 

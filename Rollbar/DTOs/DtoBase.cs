@@ -199,6 +199,9 @@
             }
         }
 
+        /// <summary>
+        /// Initializes static members of the <see cref="DtoBase"/> class.
+        /// </summary>
         static DtoBase()
         {
             DtoBase.stringPropertiesByType = DtoBase.ReflectStringProperies();
@@ -236,7 +239,6 @@
                 ReflectionUtility.GetSubClassesOf(typeof(DtoBase));
 
             var reflectedMetadata = new Dictionary<Type, PropertyInfo[]>(derivedTypes.Length - 1);
-            Type dictionaryType = typeof(Dictionary<,>);
 
             foreach (var type in derivedTypes)
             {

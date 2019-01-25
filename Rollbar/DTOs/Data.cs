@@ -2,9 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
-    using System.Runtime.Versioning;
-    using System.Text;
     using Newtonsoft.Json;
     using Rollbar.Common;
     using Rollbar.Diagnostics;
@@ -16,9 +13,9 @@
     public class Data
         : DtoBase
     {
-        private static readonly string NotifierAssemblyVersion = null;
+        private static readonly string NotifierAssemblyVersion;
 
-        private static readonly string DefaultFrameworkValue = null;
+        private static readonly string DefaultFrameworkValue;
 
         private static string DetectNotifierAssemblyVersion()
         {
@@ -31,6 +28,9 @@
             return StringUtility.Combine(targetFrameworks, "; ");
         }
 
+        /// <summary>
+        /// Initializes static members of the <see cref="Data"/> class.
+        /// </summary>
         static Data()
         {
             Data.NotifierAssemblyVersion = Data.DetectNotifierAssemblyVersion();
