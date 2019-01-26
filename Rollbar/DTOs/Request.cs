@@ -145,7 +145,7 @@
             }
 
             this.Method = httpRequest.Method.Method;
-            switch(this.Method.ToUpper())
+            switch(this.Method.ToUpperInvariant())
             {
                 case "POST":
                     var task = httpRequest.Content.ReadAsStringAsync();
@@ -158,7 +158,7 @@
                     break;
                 default:
                     System.Diagnostics.Trace.WriteLine(
-                        $"No-op processing {this.Method.ToUpper()} HTTP method."
+                        $"No-op processing {this.Method.ToUpperInvariant()} HTTP method."
                         );
                     break;
             }

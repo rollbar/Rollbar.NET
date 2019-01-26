@@ -17,7 +17,7 @@
         /// <returns>System.String.</returns>
         public static string SnapLocalVariables(Exception exception)
         {
-            var stackTrace = new StackTrace(exception, true); // new StackTrace(true);
+            var stackTrace = new StackTrace(exception, true);
             return SnapLocalVariables(stackTrace);
         }
 

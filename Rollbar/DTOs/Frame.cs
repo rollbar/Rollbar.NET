@@ -168,25 +168,25 @@
         {
             Assumption.AssertNotNull(frame, nameof(frame));
 
-            string returnVal = null;
+            string returnVal = defaultFileName;
 
-            if (frame != null)
+            if (frame == null)
             {
-                returnVal = frame.GetFileName();
+                return returnVal;
             }
+
+            returnVal = frame.GetFileName();
             if (!string.IsNullOrWhiteSpace(returnVal))
             {
                 return returnVal;
             }
 
             MethodBase method = frame.GetMethod();
-            if (method != null)
+            if (method != null && method.ReflectedType != null)
             {
-                returnVal = (method.ReflectedType != null) 
-                    ? method.ReflectedType.FullName 
-                    : defaultFileName;
+                returnVal = method.ReflectedType.FullName ;
             }
-            return defaultFileName;
+            return returnVal;
         }
 
         private static int? GetLineNumber(StackFrame frame)

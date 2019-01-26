@@ -276,7 +276,6 @@
                     var rightEnumeration = rightPropertyValue as IEnumerable;
                     foreach (var leftItem in leftEnumeration)
                     {
-                        var lProperties = ListInstancePublicProperties(leftItem.GetType());
                         bool hasMatchingItem = false;
                         foreach (var rightItem in rightEnumeration)
                         {

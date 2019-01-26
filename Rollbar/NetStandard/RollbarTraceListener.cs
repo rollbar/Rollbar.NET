@@ -183,8 +183,6 @@
         /// <param name="message">A message to write.</param>
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
         {
-            //base.TraceEvent(eventCache, source, eventType, id, message);
-
             // the code below is simplified way to report events to Rollbar API,
             // in production code we can do better job mapping the available event data
             // into proper Rollbar data body:
@@ -275,7 +273,6 @@
         /// <returns>A string array naming the custom attributes supported by the trace listener, or null if there are no custom attributes.</returns>
         protected override string[] GetSupportedAttributes()
         {
-            //return base.GetSupportedAttributes();
             return new string[] {
                 RollbarTraceListenerAttributes.rollbarAccessToken.ToString(),
                 RollbarTraceListenerAttributes.rollbarEnvironment.ToString(),
