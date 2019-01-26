@@ -73,7 +73,7 @@
             )
         {
             this._rollbarErrorLevelByPlugInErrorLevel = rollbarErrorLevelByPlugInErrorLevel;
-            this._customPrefix = customPrefix;//= customPrefix.EndsWith(".") ? customPrefix : customPrefix + ".";
+            this._customPrefix = customPrefix;
             this._rollbarConfig = rollbarConfig;
 
             if (this._rollbarConfig == null)
@@ -103,7 +103,7 @@
                 return;
             }
 
-            DTOs.Data data = null;// this.Translate(plugInEventData, plugInErrorLevel);
+            DTOs.Data data = null;
 
             try
             {

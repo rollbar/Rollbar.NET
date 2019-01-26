@@ -26,7 +26,7 @@ namespace Rollbar
         : IRollbar
         , IDisposable
     {
-        private static readonly Task completedTask = //Task.CompletedTask;
+        private static readonly Task completedTask = // for more recent .NET implementations it would be: Task.CompletedTask;
             Task.Factory.StartNew(state => { }, "EnqueueAsyncShortcut");
 
         private readonly object _syncRoot = new object();
@@ -34,7 +34,8 @@ namespace Rollbar
 
         private readonly IRollbarConfig _config = null;
         private readonly PayloadQueue _payloadQueue = null;
-        private readonly ConcurrentDictionary<Task, Task> _pendingTasks = new ConcurrentDictionary<Task, Task>();
+        private readonly ConcurrentDictionary<Task, Task> _pendingTasks = 
+            new ConcurrentDictionary<Task, Task>();
 
         /// <summary>
         /// Occurs when a Rollbar internal event happens.

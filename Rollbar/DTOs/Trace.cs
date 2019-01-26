@@ -19,7 +19,7 @@
             Assumption.AssertNotNullOrEmpty(callStack, nameof(callStack));
             Assumption.AssertNotNullOrEmpty(exceptionInfo, nameof(exceptionInfo));
 
-            string[] entries = callStack.Split(new string[] { Environment.NewLine,}, StringSplitOptions.None);
+            string[] entries = callStack.Split(new [] { Environment.NewLine,}, StringSplitOptions.None);
             List<DTOs.Frame> frames = new List<Frame>(entries.Length);
             foreach(var entry in entries)
             {
@@ -49,7 +49,9 @@
                     ex = new DTOs.Exception(entries[0]);
                     break;
                 default:
-                    // nothing to do
+                    System.Diagnostics.Trace.WriteLine(
+                        $"Unexpected exception info component/entry..."
+                        );
                     break;
             }
             if (ex != null)

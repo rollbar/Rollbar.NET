@@ -13,7 +13,7 @@
         : EventArgs
         , ITraceable
     {
-        private readonly RollbarLogger _logger = null;
+        private readonly RollbarLogger _logger;
 
         internal RollbarLogger Logger
         {
@@ -33,8 +33,6 @@
             object dataObject
             )
         {
-            //Assumption.AssertNotNull(logger, nameof(logger));
-
             this._logger = logger;
             if (dataObject != null)
             {

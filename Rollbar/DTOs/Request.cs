@@ -157,11 +157,13 @@
                     this.GetParams = null;
                     break;
                 default:
-                    // nothing to do...
+                    System.Diagnostics.Trace.WriteLine(
+                        $"No-op processing {this.Method.ToUpper()} HTTP method."
+                        );
                     break;
             }
 
-#if NETFX
+#if (NETFX)
             string userIP = null;
             const string HttpContextProperty = "MS_HttpContext";
             const string RemoteEndpointMessagePropery = "System.ServiceModel.Channels.RemoteEndpointMessageProperty";

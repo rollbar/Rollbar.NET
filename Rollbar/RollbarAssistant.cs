@@ -76,12 +76,6 @@
         /// </returns>
         public static IDictionary<string, object> CaptureState(Type staticType, IDictionary<string, object> stateCapture = null)
         {
-            //Assumption.AssertTrue(
-            //    staticType.IsAbstract && staticType.IsSealed 
-            //    && !staticType.IsInterface && !staticType.IsEnum
-            //    , nameof(staticType)
-            //    );
-
             if (staticType.IsInterface || staticType.IsEnum)
             {
                 return null;

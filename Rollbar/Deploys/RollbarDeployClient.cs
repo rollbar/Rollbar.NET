@@ -5,6 +5,7 @@
     using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Net;
     using System.Net.Http;
     using System.Text;
@@ -113,6 +114,7 @@
             if (postResponse.IsSuccessStatusCode)
             {
                 string reply = await postResponse.Content.ReadAsStringAsync();
+                Trace.WriteLine($"Deploy post response: {reply}.");
             }
             else
             {
