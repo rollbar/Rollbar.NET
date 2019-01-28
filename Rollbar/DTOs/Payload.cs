@@ -48,6 +48,19 @@
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Payload"/> class.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="data">The data.</param>
+        public Payload(
+            string accessToken,
+            Data data
+            )
+            : this(accessToken, data, null, null)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Payload" /> class.
         /// </summary>
         /// <param name="accessToken">The access token.</param>

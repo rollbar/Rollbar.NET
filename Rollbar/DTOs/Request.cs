@@ -218,39 +218,39 @@
             /// <summary>
             /// The URL
             /// </summary>
-            public const string Url = "url";
+            public static readonly string Url = "url";
             /// <summary>
             /// The method
             /// </summary>
-            public const string Method = "method";
+            public static readonly string Method = "method";
             /// <summary>
             /// The headers
             /// </summary>
-            public const string Headers = "headers";
+            public static readonly string Headers = "headers";
             /// <summary>
             /// The parameters
             /// </summary>
-            public const string Params = "params";
+            public static readonly string Params = "params";
             /// <summary>
             /// The get-parameters
             /// </summary>
-            public const string GetParams = "get_params";
+            public static readonly string GetParams = "get_params";
             /// <summary>
             /// The query string
             /// </summary>
-            public const string QueryString = "query_string";
+            public static readonly string QueryString = "query_string";
             /// <summary>
             /// The post-parameters
             /// </summary>
-            public const string PostParams = "post_params";
+            public static readonly string PostParams = "post_params";
             /// <summary>
             /// The post body
             /// </summary>
-            public const string PostBody = "post_body";
+            public static readonly string PostBody = "post_body";
             /// <summary>
             /// The user IP
             /// </summary>
-            public const string UserIp = "user_ip";
+            public static readonly string UserIp = "user_ip";
         }
 
         /// <summary>

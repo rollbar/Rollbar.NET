@@ -30,10 +30,10 @@ namespace Rollbar
             Task.Factory.StartNew(state => { }, "EnqueueAsyncShortcut");
 
         private readonly object _syncRoot = new object();
-        private readonly TaskScheduler _nativeTaskScheduler = null;
+        private readonly TaskScheduler _nativeTaskScheduler;
 
-        private readonly IRollbarConfig _config = null;
-        private readonly PayloadQueue _payloadQueue = null;
+        private readonly IRollbarConfig _config;
+        private readonly PayloadQueue _payloadQueue;
         private readonly ConcurrentDictionary<Task, Task> _pendingTasks = 
             new ConcurrentDictionary<Task, Task>();
 
@@ -152,6 +152,67 @@ namespace Rollbar
         }
 
         /// <summary>
+        /// Logs using the specified level.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        public Task Log(ErrorLevel level, object obj)
+        {
+            return this.Log(level, obj, null);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using critical level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        public Task Critical(object obj)
+        {
+            return this.Critical(obj, null);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using error level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        public Task Error(object obj)
+        {
+            return this.Error(obj, null);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using warning level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        public Task Warning(object obj)
+        {
+            return this.Warning(obj, null);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using informational level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        public Task Info(object obj)
+        {
+            return this.Info(obj, null);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using debug level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        public Task Debug(object obj)
+        {
+            return this.Debug(obj, null);
+        }
+
+        /// <summary>
         /// Logs the specified Rollbar Data DTO.
         /// </summary>
         /// <param name="rollbarData">The Rollbar Data DTO.</param>
@@ -168,7 +229,7 @@ namespace Rollbar
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        public Task Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null)
+        public Task Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
         {
             return this.EnqueueAsync(obj, level, custom);
         }
@@ -180,7 +241,7 @@ namespace Rollbar
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        public Task Critical(object obj, IDictionary<string, object> custom = null)
+        public Task Critical(object obj, IDictionary<string, object> custom)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Critical, custom);
         }
@@ -191,7 +252,7 @@ namespace Rollbar
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        public Task Error(object obj, IDictionary<string, object> custom = null)
+        public Task Error(object obj, IDictionary<string, object> custom)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Error, custom);
         }
@@ -202,7 +263,7 @@ namespace Rollbar
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        public Task Warning(object obj, IDictionary<string, object> custom = null)
+        public Task Warning(object obj, IDictionary<string, object> custom)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Warning, custom);
         }
@@ -213,7 +274,7 @@ namespace Rollbar
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        public Task Info(object obj, IDictionary<string, object> custom = null)
+        public Task Info(object obj, IDictionary<string, object> custom)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Info, custom);
         }
@@ -224,7 +285,7 @@ namespace Rollbar
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        public Task Debug(object obj, IDictionary<string, object> custom = null)
+        public Task Debug(object obj, IDictionary<string, object> custom)
         {
             return this.EnqueueAsync(obj, ErrorLevel.Debug, custom);
         }
@@ -293,6 +354,77 @@ namespace Rollbar
         ILogger IAsyncLogger.AsBlockingLogger(TimeSpan timeout)
         {
             return this.AsBlockingLogger(timeout);
+        }
+
+        /// <summary>
+        /// Logs the specified Rollbar Data DTO.
+        /// </summary>
+        /// <param name="rollbarData">The Rollbar Data DTO.</param>
+        /// <returns>Task.</returns>
+        Task IAsyncLogger.Log(Data rollbarData)
+        {
+            return this.Log(rollbarData);
+        }
+
+        /// <summary>
+        /// Logs using the specified level.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task IAsyncLogger.Log(ErrorLevel level, object obj)
+        {
+            return this.Log(level, obj);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using critical level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task IAsyncLogger.Critical(object obj)
+        {
+            return this.Critical(obj);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using error level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task IAsyncLogger.Error(object obj)
+        {
+            return this.Error(obj);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using warning level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task IAsyncLogger.Warning(object obj)
+        {
+            return this.Warning(obj);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using informational level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task IAsyncLogger.Info(object obj)
+        {
+            return this.Info(obj);
+        }
+
+        /// <summary>
+        /// Logs the specified object as using debug level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task IAsyncLogger.Debug(object obj)
+        {
+            return this.Debug(obj);
         }
 
         /// <summary>
@@ -373,7 +505,6 @@ namespace Rollbar
         }
 
         #endregion IDisposable explicitly
-
 
         internal Task EnqueueAsync(
             object dataObject,

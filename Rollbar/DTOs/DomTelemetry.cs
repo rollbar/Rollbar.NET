@@ -1,8 +1,6 @@
 ﻿namespace Rollbar.DTOs
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Implements DOM telemetry body.
@@ -19,7 +17,7 @@
             /// <summary>
             /// The element
             /// </summary>
-            public const string Element = "element";
+            public static readonly string Element = "element";
         }
 
         /// <summary>

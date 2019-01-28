@@ -18,7 +18,7 @@
             /// <summary>
             /// The CPU architecture
             /// </summary>
-            public const string Cpu = "cpu";
+            public static readonly string Cpu = "cpu";
         }
 
         static HostBase()

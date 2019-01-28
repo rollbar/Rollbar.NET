@@ -1,8 +1,6 @@
 ﻿namespace Rollbar.DTOs
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Implements log telemetry body.
@@ -19,7 +17,7 @@
             /// <summary>
             /// The message
             /// </summary>
-            public const string Message = "message";
+            public static readonly string Message = "message";
         }
 
         /// <summary>

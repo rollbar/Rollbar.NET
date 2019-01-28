@@ -18,7 +18,7 @@
             /// <summary>
             /// The body
             /// </summary>
-            public const string Body = "body";
+            public static readonly string Body = "body";
         }
 
         /// <summary>
