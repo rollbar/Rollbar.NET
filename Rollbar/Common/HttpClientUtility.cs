@@ -22,7 +22,7 @@
         /// </summary>
         /// <param name="proxyAddress">The proxy address.</param>
         /// <returns>HttpClient.</returns>
-        public static HttpClient CreateHttpClient(string proxyAddress = null)
+        public static HttpClient CreateHttpClient(string proxyAddress)
         {
             return HttpClientUtility.CreateHttpClient(proxyAddress, null, null);
         }
