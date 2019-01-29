@@ -64,7 +64,7 @@
         public NetworkTelemetry(
             string method
             , string url
-            , DateTime? eventStart = null
+            , DateTime? eventStart
             )
             : this(method, url, eventStart, null)
         {
@@ -80,8 +80,8 @@
         public NetworkTelemetry(
             string method
             , string url
-            , DateTime? eventStart = null
-            , DateTime? eventEnd = null
+            , DateTime? eventStart
+            , DateTime? eventEnd
             )
             : this(method, url, eventStart, eventEnd, null)
         {
@@ -98,9 +98,9 @@
         public NetworkTelemetry(
             string method
             , string url
-            , DateTime? eventStart = null
-            , DateTime? eventEnd = null
-            , int? statusCode = null
+            , DateTime? eventStart
+            , DateTime? eventEnd
+            , int? statusCode
             )
             : this(method, url, eventStart, eventEnd, statusCode, null)
         {
@@ -118,10 +118,10 @@
         public NetworkTelemetry(
             string method
             , string url
-            , DateTime? eventStart = null
-            , DateTime? eventEnd = null
-            , int? statusCode = null
-            , string subtype = null
+            , DateTime? eventStart
+            , DateTime? eventEnd
+            , int? statusCode
+            , string subtype
             )
             : this(method, url, eventStart, eventEnd, statusCode, subtype, null)
         {
