@@ -25,6 +25,10 @@
             {
             }
 
+            private NestedSingleInstance()
+            {
+            }
+
             internal static readonly IRollbar Instance = RollbarFactory.CreateNew(true);
         }
     }

@@ -12,7 +12,13 @@
         /// Captures the specified measured time.
         /// </summary>
         /// <param name="measuredTime">The measured time.</param>
+        void Capture(TimeSpan measuredTime);
+
+        /// <summary>
+        /// Captures the specified measured time.
+        /// </summary>
+        /// <param name="measuredTime">The measured time.</param>
         /// <param name="measurementClassification">The measurement classification.</param>
-        void Capture(TimeSpan measuredTime, IClassification measurementClassification = null);
+        void Capture(TimeSpan measuredTime, IClassification measurementClassification);
     }
 }

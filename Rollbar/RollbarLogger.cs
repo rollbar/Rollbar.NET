@@ -30,7 +30,6 @@ namespace Rollbar
             Task.Factory.StartNew(state => { }, "EnqueueAsyncShortcut");
 
         private readonly object _syncRoot = new object();
-        private readonly TaskScheduler _nativeTaskScheduler;
 
         private readonly IRollbarConfig _config;
         private readonly PayloadQueue _payloadQueue;
@@ -46,21 +45,18 @@ namespace Rollbar
         /// Initializes a new instance of the <see cref="RollbarLogger"/> class.
         /// </summary>
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
-        internal RollbarLogger(bool isSingleton, IRollbarConfig rollbarConfig = null)
+        internal RollbarLogger(bool isSingleton)
+            : this(isSingleton, null)
         {
-            try
-            {
-                this._nativeTaskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            }
-#pragma warning disable CS0168 // Variable is declared but never used
-            catch(InvalidOperationException ex)
-#pragma warning restore CS0168 // Variable is declared but never used
-            {
-                // it could be a valid case in some environments:
-                this._nativeTaskScheduler = null;
-            }
+        }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarLogger"/> class.
+        /// </summary>
+        /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        internal RollbarLogger(bool isSingleton, IRollbarConfig rollbarConfig)
+        {
             if (!TelemetryCollector.Instance.IsAutocollecting)
             {
                 TelemetryCollector.Instance.StartAutocollection();

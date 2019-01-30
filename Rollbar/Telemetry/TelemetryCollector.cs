@@ -46,6 +46,10 @@ namespace Rollbar.Telemetry
             {
             }
 
+            private NestedSingleInstance()
+            {
+            }
+
             /// <summary>
             /// The singleton-like instance of the service.
             /// </summary>

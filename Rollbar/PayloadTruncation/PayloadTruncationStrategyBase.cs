@@ -25,7 +25,7 @@
         /// </summary>
         /// <param name="payload">The payload.</param>
         /// <returns></returns>
-        protected int GetSizeInBytes(Payload payload)
+        protected static int GetSizeInBytes(Payload payload)
         {
             int result = 0;
 

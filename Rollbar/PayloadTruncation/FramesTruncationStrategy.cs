@@ -50,14 +50,14 @@
 
             if (traceChain == null || traceChain.Length == 0)
             {
-                return this.GetSizeInBytes(payload);
+                return GetSizeInBytes(payload);
             }
 
             foreach(var trace in traceChain)
             {
                 this.TrimFrames(trace);
             }
-            return this.GetSizeInBytes(payload);
+            return GetSizeInBytes(payload);
         }
 
         private void TrimFrames(Trace trace)

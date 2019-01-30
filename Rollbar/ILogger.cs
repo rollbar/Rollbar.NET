@@ -16,7 +16,7 @@
     /// This approach allows for easier code refactoring when switching between 
     /// asynchronous and synchronous uses of the logger.
     /// 
-    /// Normally, you would want to use asynchronous logging since it has virtually no instrumentational 
+    /// Normally, you would want to use asynchronous logging since it has virtually no instrumentation 
     /// overhead on your application execution performance at runtime. It has "fire and forget"
     /// approach to logging. However, in some specific situations, for example, while logging right before 
     /// exiting an application, you may want to use it synchronously so that the application
@@ -44,9 +44,48 @@
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
+        /// <returns></returns>
+        ILogger Log(ErrorLevel level, object obj);
+
+        /// <summary>
+        /// Logs the specified object as critical.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns></returns>
+        ILogger Critical(object obj);
+        /// <summary>
+        /// Logs the specified object as error.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns></returns>
+        ILogger Error(object obj);
+        /// <summary>
+        /// Logs the specified object as warning.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns></returns>
+        ILogger Warning(object obj);
+        /// <summary>
+        /// Logs the specified object as info.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns></returns>
+        ILogger Info(object obj);
+        /// <summary>
+        /// Logs the specified object as debug.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns></returns>
+        ILogger Debug(object obj);
+
+        /// <summary>
+        /// Logs using the specified level.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns></returns>
-        ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null);
+        ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom);
 
         /// <summary>
         /// Logs the specified object as critical.
@@ -54,34 +93,34 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns></returns>
-        ILogger Critical(object obj, IDictionary<string, object> custom = null);
+        ILogger Critical(object obj, IDictionary<string, object> custom);
         /// <summary>
         /// Logs the specified object as error.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns></returns>
-        ILogger Error(object obj, IDictionary<string, object> custom = null);
+        ILogger Error(object obj, IDictionary<string, object> custom);
         /// <summary>
         /// Logs the specified object as warning.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns></returns>
-        ILogger Warning(object obj, IDictionary<string, object> custom = null);
+        ILogger Warning(object obj, IDictionary<string, object> custom);
         /// <summary>
         /// Logs the specified object as info.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns></returns>
-        ILogger Info(object obj, IDictionary<string, object> custom = null);
+        ILogger Info(object obj, IDictionary<string, object> custom);
         /// <summary>
         /// Logs the specified object as debug.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns></returns>
-        ILogger Debug(object obj, IDictionary<string, object> custom = null);
+        ILogger Debug(object obj, IDictionary<string, object> custom);
     }
 }

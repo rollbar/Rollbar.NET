@@ -46,6 +46,10 @@
             {
             }
 
+            private NestedSingleInstance()
+            {
+            }
+
             internal static readonly EmptyDisposable Instance = new EmptyDisposable();
         }
     }

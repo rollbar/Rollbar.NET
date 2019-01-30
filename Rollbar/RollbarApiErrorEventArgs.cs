@@ -82,7 +82,7 @@
             public string Description { get; private set; }
         }
 
-        private static readonly Dictionary<int, RollbarErrorDetails> errorDetailsByCode = null;
+        private static readonly Dictionary<int, RollbarErrorDetails> errorDetailsByCode;
 
         static RollbarApiErrorEventArgs()
         {
@@ -196,7 +196,7 @@
         /// <returns>
         /// String rendering of this instance.
         /// </returns>
-        public override string TraceAsString(string indent = "")
+        public override string TraceAsString(string indent)
         {
             return base.TraceAsString(indent);
         }

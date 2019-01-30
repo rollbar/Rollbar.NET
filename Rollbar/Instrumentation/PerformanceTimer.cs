@@ -20,7 +20,7 @@
         /// <summary>
         /// The timer
         /// </summary>
-        private readonly Stopwatch _timer = null;
+        private readonly Stopwatch _timer;
         /// <summary>
         /// The performance monitor
         /// </summary>
