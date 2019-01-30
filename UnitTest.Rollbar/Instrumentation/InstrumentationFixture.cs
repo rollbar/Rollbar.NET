@@ -67,14 +67,40 @@ namespace UnitTest.Rollbar.Instrumentation
             }
         }
 
+        /// <summary>
+        /// Class PerformanceMonitor.
+        /// Implements the <see cref="Rollbar.Instrumentation.IPerformanceMonitor" />
+        /// </summary>
+        /// <seealso cref="Rollbar.Instrumentation.IPerformanceMonitor" />
         public class PerformanceMonitor
             : IPerformanceMonitor
         {
+            /// <summary>
+            /// The instance
+            /// </summary>
             private static readonly IPerformanceMonitor instance = new PerformanceMonitor();
 
+            /// <summary>
+            /// Gets the instance.
+            /// </summary>
+            /// <value>The instance.</value>
             public static IPerformanceMonitor Instance { get { return instance; } }
 
-            public void Capture(TimeSpan measuredTime, IClassification classification = null)
+            /// <summary>
+            /// Captures the specified measured time.
+            /// </summary>
+            /// <param name="measuredTime">The measured time.</param>
+            public void Capture(TimeSpan measuredTime)
+            {
+                this.Capture(measuredTime, null);
+            }
+
+            /// <summary>
+            /// Captures the specified measured time.
+            /// </summary>
+            /// <param name="measuredTime">The measured time.</param>
+            /// <param name="classification">The classification.</param>
+            public void Capture(TimeSpan measuredTime, IClassification classification)
             {
                 StringBuilder sb = new StringBuilder("*** T = " + measuredTime.TotalMilliseconds + " [msec]");
 

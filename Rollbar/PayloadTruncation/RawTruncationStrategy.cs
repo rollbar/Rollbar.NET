@@ -18,7 +18,7 @@
         /// </returns>
         public override int Truncate(Payload payload)
         {
-            return this.GetSizeInBytes(payload);
+            return GetSizeInBytes(payload);
         }
     }
 }

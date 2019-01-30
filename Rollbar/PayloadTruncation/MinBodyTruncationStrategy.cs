@@ -24,7 +24,7 @@
         {
             if  (payload == null || payload.Data == null || payload.Data.Body == null)
             {
-                return this.GetSizeInBytes(payload); //nothing to truncate ...
+                return GetSizeInBytes(payload); //nothing to truncate ...
             }
 
             Trace[] traces = payload.Data.Body.TraceChain;
@@ -36,7 +36,7 @@
             }
             if (traces == null || traces.LongLength == 0)
             {
-                return this.GetSizeInBytes(payload); //nothing to truncate ...
+                return GetSizeInBytes(payload); //nothing to truncate ...
             }
 
             foreach(var trace in traces)
@@ -59,7 +59,7 @@
                 }
             }
 
-            return this.GetSizeInBytes(payload);
+            return GetSizeInBytes(payload);
         }
     }
 }

@@ -277,7 +277,7 @@ namespace UnitTest.Rollbar
                     Assert.IsTrue(sw.ElapsedMilliseconds < maxCallLengthInMillisec);
                     Thread.Sleep(payloadSubmissionDelay);
                 }
-                catch(Exception ex)
+                catch
                 {
                     Assert.Fail("should never get here!");
                 }

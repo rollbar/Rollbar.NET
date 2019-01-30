@@ -71,11 +71,11 @@
         /// <summary>
         /// The classifiers
         /// </summary>
-        private readonly ICollection<Classifier> _classifiers = null;
+        private readonly ICollection<Classifier> _classifiers;
         /// <summary>
         /// The classifier types
         /// </summary>
-        private readonly ICollection<Type> _classifierTypes = null;
+        private readonly ICollection<Type> _classifierTypes;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="Classification"/> class from being created.

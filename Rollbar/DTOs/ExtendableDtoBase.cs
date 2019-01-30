@@ -26,7 +26,7 @@
     {
         internal const string reservedPropertiesNestedTypeName = "ReservedProperties";
 
-        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType = null;
+        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType;
 
         private readonly ExtendableDtoMetadata _metadata = null;
 

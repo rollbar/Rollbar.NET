@@ -13,9 +13,9 @@
     public class Payload
         : DtoBase
     {
-        private readonly DateTime? _timeoutAt = null;
-        private readonly SemaphoreSlim _signal = null;
-        private StringContent _asHttpContentToSend = null;
+        private readonly DateTime? _timeoutAt;
+        private readonly SemaphoreSlim _signal;
+        private StringContent _asHttpContentToSend;
 
         [JsonIgnore]
         internal DateTime? TimeoutAt

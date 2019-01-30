@@ -24,8 +24,21 @@
         /// Initializes a new instance of the <see cref="LogTelemetry"/> class.
         /// </summary>
         /// <param name="message">The message.</param>
+        public LogTelemetry(
+            string message
+            )
+            : this(TelemetryType.Log, message, null)
+        {
+        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogTelemetry"/> class.
+        /// </summary>
+        /// <param name="message">The message.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public LogTelemetry(string message, IDictionary<string, object> arbitraryKeyValuePairs = null)
+        public LogTelemetry(
+            string message, 
+            IDictionary<string, object> arbitraryKeyValuePairs
+            )
             : this(TelemetryType.Log, message, arbitraryKeyValuePairs)
         {
         }
@@ -35,8 +48,25 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="message">The message.</param>
+        protected LogTelemetry(
+            TelemetryType type,
+            string message
+            )
+            : this(type, message, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogTelemetry"/> class.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="message">The message.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        protected LogTelemetry(TelemetryType type, string message, IDictionary<string, object> arbitraryKeyValuePairs = null)
+        protected LogTelemetry(
+            TelemetryType type, 
+            string message, 
+            IDictionary<string, object> arbitraryKeyValuePairs
+            )
             : base(type, arbitraryKeyValuePairs)
         {
             this.Message = message;

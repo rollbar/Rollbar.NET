@@ -37,19 +37,19 @@
             /// <summary>
             /// The host
             /// </summary>
-            public const string Host = "host";
+            public static readonly string Host = "host";
             /// <summary>
             /// The root
             /// </summary>
-            public const string Root = "root";
+            public static readonly string Root = "root";
             /// <summary>
             /// The branch
             /// </summary>
-            public const string Branch = "branch";
+            public static readonly string Branch = "branch";
             /// <summary>
             /// The code version
             /// </summary>
-            public const string CodeVersion = "code_version";
+            public static readonly string CodeVersion = "code_version";
         }
 
         /// <summary>

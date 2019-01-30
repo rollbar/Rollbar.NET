@@ -180,7 +180,7 @@
         /// <param name="dictionary">The dictionary.</param>
         /// <param name="encoding">The encoding.</param>
         /// <param name="stringBytesLimit">The string bytes limit.</param>
-        protected void TruncateStringValues(IDictionary<string, string> dictionary, Encoding encoding, int stringBytesLimit)
+        protected static void TruncateStringValues(IDictionary<string, string> dictionary, Encoding encoding, int stringBytesLimit)
         {
             Assumption.AssertNotNull(dictionary, nameof(dictionary));
 
@@ -305,11 +305,20 @@
         /// <summary>
         /// Traces as string.
         /// </summary>
+        /// <returns>System.String.</returns>
+        public virtual string TraceAsString()
+        {
+            return this.TraceAsString(string.Empty);
+        }
+
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
         /// <param name="indent">The indent.</param>
         /// <returns>
         /// String rendering of this instance.
         /// </returns>
-        public virtual string TraceAsString(string indent = "")
+        public virtual string TraceAsString(string indent)
         {
             return this.ToString();
         }

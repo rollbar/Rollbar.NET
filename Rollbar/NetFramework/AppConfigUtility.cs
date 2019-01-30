@@ -9,7 +9,7 @@
     /// </summary>
     public static class AppConfigUtility
     {
-        private static readonly string[] listValueSplitters = new string[] { ", ", "; ", " " };
+        private static readonly string[] listValueSplitters = new [] { ", ", "; ", " " };
 
         #region RollbarConfig
 

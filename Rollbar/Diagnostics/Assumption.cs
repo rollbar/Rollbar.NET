@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Diagnostics;
+    using System.Globalization;
 
     /// <summary>
     /// Utility class aiding in validating assumptions about arguments and their values.
@@ -206,13 +207,16 @@
         public static string AssertEqual(string value, string expectedValue, bool ignoreCase, string parameterName)
         {
             if (value == null && expectedValue == null)
+            {
                 return null;
+            }
+
             if (value == null || expectedValue == null)
             {
                 string msg = $"Argument is expected to be equal to {expectedValue}, while it is actually: {value}.";
                 FailValidation(msg, parameterName);
             }
-            if (string.Compare(value, expectedValue, ignoreCase) != 0)
+            if (string.Compare(value, expectedValue, ignoreCase, CultureInfo.InvariantCulture) != 0)
             {
                 string msg = $"Argument is expected to be equal to {expectedValue}, while it is actually: {value}.";
                 FailValidation(msg, parameterName);
