@@ -46,9 +46,24 @@
         /// Creates new .
         /// </summary>
         /// <param name="performanceMonitor">The performance monitor.</param>
+        /// <returns>PerformanceTimer.</returns>
+        public static PerformanceTimer StartNew(
+            IPerformanceMonitor performanceMonitor
+            )
+        {
+            return StartNew(performanceMonitor, null);
+        }
+
+        /// <summary>
+        /// Creates new .
+        /// </summary>
+        /// <param name="performanceMonitor">The performance monitor.</param>
         /// <param name="measurementClassification">The measurement classification.</param>
         /// <returns>PerformanceTimer.</returns>
-        public static PerformanceTimer StartNew(IPerformanceMonitor performanceMonitor, IClassification measurementClassification = null)
+        public static PerformanceTimer StartNew(
+            IPerformanceMonitor performanceMonitor, 
+            IClassification measurementClassification
+            )
         {
             var timer = new PerformanceTimer(performanceMonitor, measurementClassification);
             timer._timer.Start();
