@@ -28,7 +28,7 @@
         , IRollbarConfig
         , IEquatable<IRollbarConfig>
     {
-        private readonly RollbarLogger _logger = null;
+        private readonly RollbarLogger _logger;
 
         private RollbarConfig()
         {
@@ -70,7 +70,7 @@
             this.MaxItems = 0;
             this.CaptureUncaughtExceptions = true;
             this.LogLevel = ErrorLevel.Debug;
-            this.ScrubFields = new string[]
+            this.ScrubFields = new []
             {
                 "passwd",
                 "password",
@@ -304,13 +304,22 @@
         public IpAddressCollectionPolicy IpAddressCollectionPolicy { get; set; }
 
         /// <summary>
+        /// Traces as string.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public string TraceAsString()
+        {
+            return this.TraceAsString(string.Empty);
+        }
+
+        /// <summary>
         /// Traces as a string.
         /// </summary>
         /// <param name="indent">The indent.</param>
         /// <returns>
         /// String rendering of this instance.
         /// </returns>
-        public string TraceAsString(string indent = "")
+        public string TraceAsString(string indent)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(indent + this.GetType().Name + ":");
@@ -329,7 +338,6 @@
             sb.AppendLine(indent + "  CaptureUncaughtExceptions: " + this.CaptureUncaughtExceptions);
             sb.AppendLine(indent + "  IpAddressCollectionPolicy: " + this.IpAddressCollectionPolicy);
             sb.AppendLine(indent + "  PersonDataCollectionPolicies: " + this.PersonDataCollectionPolicies);
-            //sb.AppendLine(indent + this.Result.Trace(indent + "  "));
             return sb.ToString();
         }
 

@@ -111,8 +111,6 @@ namespace Rollbar.Serialization.Json
             {
                 ScrubJson(child, scrubFields);
             }
-
-            return;
         }
 
         /// <summary>

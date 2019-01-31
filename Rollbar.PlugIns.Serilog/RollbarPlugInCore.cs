@@ -93,7 +93,7 @@
             IDictionary<string, object> custom = new Dictionary<string, object>(customCapacity);
             if (plugInEventData.Exception != null)
             {
-                custom["LogEventRenderedMessage"] = plugInEventData.RenderMessage(this._formatProvider); ;
+                custom["LogEventRenderedMessage"] = plugInEventData.RenderMessage(this._formatProvider);
             }
             if (plugInEventData.Properties != null)
             {

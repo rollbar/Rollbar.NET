@@ -1,8 +1,6 @@
 ﻿namespace Rollbar.Common
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// A utility class aiding in working with IP addresses.
@@ -38,15 +36,12 @@
 
             // try IPv6 format:
             const char ipv6CompontsSeparator = ':';
-            //const int ipv6TotalComponents = 8;
             const string ipv6Anonymizer = "...";
             components = exactIpAddress.Split(ipv6CompontsSeparator);
             if (components != null 
-                && components.Length > 0 //&& components.Length == ipv6CompontsSeparator
+                && components.Length > 0
                 )
             {
-                //components[ipv6ComponentsSeparator - 1] = ipv6Anonymizer;
-                //return string.Join($"{ipv6ComponentsSeparator}", components);
                 const int ipv6CutOffLength = 12;
                 if (exactIpAddress.Length > ipv6CutOffLength)
                 {

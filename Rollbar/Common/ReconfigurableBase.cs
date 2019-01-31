@@ -124,7 +124,7 @@
         /// <summary>
         /// The this instance type (most specific one).
         /// </summary>
-        protected readonly Type _thisInstanceType = null;
+        protected readonly Type _thisInstanceType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReconfigurableBase"/> class.
@@ -188,8 +188,6 @@
             }
 
             OnReconfigured(new EventArgs());
-
-            return;
         }
 
         /// <summary>
@@ -250,15 +248,10 @@
                 {
                     continue; // both are null...
                 }
-                if (leftPropertyValue.Equals(rightPropertyValue))
+                if ((leftPropertyValue != null) && leftPropertyValue.Equals(rightPropertyValue))
                 {
                     continue; // are equal according to values .Equals(other) method...
                 }
-                //ReconfigurableBase reconfigurableProperty = leftPropertyValue as ReconfigurableBase;
-                //if ((reconfigurableProperty != null) && reconfigurableProperty.Equals(rightPropertyValue, property.PropertyType))
-                //{
-                //    continue; // equal according to ReconfigurableBase.Equals(object other, Type otherType)...
-                //}
                 if (!((leftPropertyValue != null) && (rightPropertyValue != null)))
                 {
                     return false; // one side null another not...
@@ -281,7 +274,6 @@
                     var rightEnumeration = rightPropertyValue as IEnumerable;
                     foreach (var leftItem in leftEnumeration)
                     {
-                        var lProperties = ListInstancePublicProperties(leftItem.GetType());
                         bool hasMatchingItem = false;
                         foreach (var rightItem in rightEnumeration)
                         {

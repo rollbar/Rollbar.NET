@@ -19,10 +19,10 @@
 
         #region strings truncation support
 
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> stringPropertiesByType = null;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dictionaryPropertiesByType = null;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dtoPropertiesByType = null;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> enumerablePropertiesByType = null;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> stringPropertiesByType;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dictionaryPropertiesByType;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dtoPropertiesByType;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> enumerablePropertiesByType;
 
         internal PropertyInfo[] StringProperties
         {
@@ -180,7 +180,7 @@
         /// <param name="dictionary">The dictionary.</param>
         /// <param name="encoding">The encoding.</param>
         /// <param name="stringBytesLimit">The string bytes limit.</param>
-        protected void TruncateStringValues(IDictionary<string, string> dictionary, Encoding encoding, int stringBytesLimit)
+        protected static void TruncateStringValues(IDictionary<string, string> dictionary, Encoding encoding, int stringBytesLimit)
         {
             Assumption.AssertNotNull(dictionary, nameof(dictionary));
 
@@ -199,6 +199,9 @@
             }
         }
 
+        /// <summary>
+        /// Initializes static members of the <see cref="DtoBase"/> class.
+        /// </summary>
         static DtoBase()
         {
             DtoBase.stringPropertiesByType = DtoBase.ReflectStringProperies();
@@ -236,7 +239,6 @@
                 ReflectionUtility.GetSubClassesOf(typeof(DtoBase));
 
             var reflectedMetadata = new Dictionary<Type, PropertyInfo[]>(derivedTypes.Length - 1);
-            Type dictionaryType = typeof(Dictionary<,>);
 
             foreach (var type in derivedTypes)
             {
@@ -245,7 +247,7 @@
                     continue;
                 }
 
-                Type[] typesOfInterest = new Type[] {
+                Type[] typesOfInterest = new [] {
                     typeof(IDictionary<string, object>),
                     typeof(IDictionary<string, string>),
                 };
@@ -303,11 +305,20 @@
         /// <summary>
         /// Traces as string.
         /// </summary>
+        /// <returns>System.String.</returns>
+        public virtual string TraceAsString()
+        {
+            return this.TraceAsString(string.Empty);
+        }
+
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
         /// <param name="indent">The indent.</param>
         /// <returns>
         /// String rendering of this instance.
         /// </returns>
-        public virtual string TraceAsString(string indent = "")
+        public virtual string TraceAsString(string indent)
         {
             return this.ToString();
         }

@@ -28,6 +28,15 @@
         /// <summary>
         /// Traces as string.
         /// </summary>
+        /// <returns>System.String.</returns>
+        public string TraceAsString()
+        {
+            return this.TraceAsString(string.Empty);
+        }
+
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
         /// <param name="indent">The indent.</param>
         /// <returns>String rendering of this instance.</returns>
         public string TraceAsString(string indent = "")

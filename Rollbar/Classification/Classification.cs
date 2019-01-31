@@ -71,11 +71,11 @@
         /// <summary>
         /// The classifiers
         /// </summary>
-        private readonly ICollection<Classifier> _classifiers = null;
+        private readonly ICollection<Classifier> _classifiers;
         /// <summary>
         /// The classifier types
         /// </summary>
-        private readonly ICollection<Type> _classifierTypes = null;
+        private readonly ICollection<Type> _classifierTypes;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="Classification"/> class from being created.
@@ -124,6 +124,11 @@
         /// </summary>
         /// <param name="classifiers">The classifiers.</param>
         /// <returns>System.String.</returns>
+        /// <remarks>
+        /// WARNING:
+        /// This method is called from the type constructor.
+        /// Make sure you know what you are doing when overriding it.
+        /// </remarks>
         protected virtual string GenerateID(IEnumerable<Classifier> classifiers)
         {
             StringBuilder sb = new StringBuilder();

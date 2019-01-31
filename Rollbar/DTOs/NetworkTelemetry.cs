@@ -19,27 +19,112 @@
             /// <summary>
             /// The subtype
             /// </summary>
-            public const string Subtype = "subtype";
+            public static readonly string Subtype = "subtype";
             /// <summary>
             /// The method
             /// </summary>
-            public const string Method = "method";
+            public static readonly string Method = "method";
             /// <summary>
             /// The URL
             /// </summary>
-            public const string Url = "url";
+            public static readonly string Url = "url";
             /// <summary>
             /// The status code
             /// </summary>
-            public const string StatusCode = "status_code";
+            public static readonly string StatusCode = "status_code";
             /// <summary>
             /// The start timestamp
             /// </summary>
-            public const string StartTimestamp = "start_timestamp_ms";
+            public static readonly string StartTimestamp = "start_timestamp_ms";
             /// <summary>
             /// The end timestamp
             /// </summary>
-            public const string EndTimestamp = "end_timestamp_ms";
+            public static readonly string EndTimestamp = "end_timestamp_ms";
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkTelemetry"/> class.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="url">The URL.</param>
+        public NetworkTelemetry(
+            string method
+            , string url
+            )
+            : this(method, url, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkTelemetry"/> class.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="eventStart">The event start.</param>
+        public NetworkTelemetry(
+            string method
+            , string url
+            , DateTime? eventStart
+            )
+            : this(method, url, eventStart, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkTelemetry"/> class.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="eventStart">The event start.</param>
+        /// <param name="eventEnd">The event end.</param>
+        public NetworkTelemetry(
+            string method
+            , string url
+            , DateTime? eventStart
+            , DateTime? eventEnd
+            )
+            : this(method, url, eventStart, eventEnd, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkTelemetry"/> class.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="eventStart">The event start.</param>
+        /// <param name="eventEnd">The event end.</param>
+        /// <param name="statusCode">The status code.</param>
+        public NetworkTelemetry(
+            string method
+            , string url
+            , DateTime? eventStart
+            , DateTime? eventEnd
+            , int? statusCode
+            )
+            : this(method, url, eventStart, eventEnd, statusCode, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetworkTelemetry"/> class.
+        /// </summary>
+        /// <param name="method">The method.</param>
+        /// <param name="url">The URL.</param>
+        /// <param name="eventStart">The event start.</param>
+        /// <param name="eventEnd">The event end.</param>
+        /// <param name="statusCode">The status code.</param>
+        /// <param name="subtype">The subtype.</param>
+        public NetworkTelemetry(
+            string method
+            , string url
+            , DateTime? eventStart
+            , DateTime? eventEnd
+            , int? statusCode
+            , string subtype
+            )
+            : this(method, url, eventStart, eventEnd, statusCode, subtype, null)
+        {
         }
 
         /// <summary>
@@ -55,11 +140,11 @@
         public NetworkTelemetry(
             string method
             , string url
-            , DateTime? eventStart = null
-            , DateTime? eventEnd = null
-            , int? statusCode = null
-            , string subtype = null
-            , IDictionary<string, object> arbitraryKeyValuePairs = null
+            , DateTime? eventStart
+            , DateTime? eventEnd
+            , int? statusCode
+            , string subtype
+            , IDictionary<string, object> arbitraryKeyValuePairs
             )
             : base(TelemetryType.Network, arbitraryKeyValuePairs)
         {

@@ -26,7 +26,7 @@
     {
         internal const string reservedPropertiesNestedTypeName = "ReservedProperties";
 
-        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType = null;
+        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType;
 
         private readonly ExtendableDtoMetadata _metadata = null;
 
@@ -91,12 +91,6 @@
                     || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),    // OR not about reserved property/key
                     "conditional " + nameof(value) + " assessment"
                     );
-
-                //Assumption.AssertTrue(
-                //    !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key)                       // not about reserved property/key
-                //    , "conditional " + nameof(value) + " assessment"
-                //    );
-
 
                 Assumption.AssertTrue(!metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey.ContainsKey(key) 
                     || value == null

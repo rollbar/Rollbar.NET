@@ -8,15 +8,13 @@
 
 #if (NETSTANDARD || NETCOREAPP)
     using Microsoft.AspNetCore.Http;
-    using System.IO;
-    //using Rollbar.AspNetCore;
 #endif
 
 #if (NETCOREAPP)
     using Rollbar.AspNetCore;
 #endif
 
-#if NETFX
+#if (NETFX)
     using System.ServiceModel.Channels;
     using System.Web;
 #endif
@@ -38,20 +36,21 @@
         }
 
 #if (NETCOREAPP)
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        /// <param name="httpContext">The HTTP context.</param>
+        /// <param name="httpAttributes">The Rollbar HTTP attributes.</param>
         public Request(
             IDictionary<string, object> arbitraryKeyValuePairs
-            , RollbarHttpAttributes httpContext = null
+            , RollbarHttpAttributes httpAttributes
             )
             : base(arbitraryKeyValuePairs)
         {
-            if (httpContext != null)
+            if (httpAttributes != null)
             {
-                this.SnapProperties(httpContext);
+                this.SnapProperties(httpAttributes);
             }
         }
 
@@ -74,9 +73,23 @@
 
             this.Method = httpContext.Method;
         }
+
 #endif
 
 #if (NETSTANDARD || NETCOREAPP)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// </summary>
+        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
+        public Request(
+            IDictionary<string, object> arbitraryKeyValuePairs
+            )
+            : this(arbitraryKeyValuePairs, null as HttpRequest)
+        {
+
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
@@ -84,7 +97,7 @@
         /// <param name="httpRequest">The HTTP request.</param>
         public Request(
             IDictionary<string, object> arbitraryKeyValuePairs
-            , HttpRequest httpRequest = null
+            , HttpRequest httpRequest
             )
             : base(arbitraryKeyValuePairs)
         {
@@ -110,7 +123,22 @@
 
             this.Method = httpRequest.Method;
         }
+
 #endif
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// </summary>
+        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        public Request(
+            IDictionary<string, object> arbitraryKeyValuePairs
+            , IRollbarConfig rollbarConfig
+            )
+            : this(arbitraryKeyValuePairs, rollbarConfig, null)
+        {
+
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Request" /> class.
@@ -121,7 +149,7 @@
         public Request(
             IDictionary<string, object> arbitraryKeyValuePairs
             , IRollbarConfig rollbarConfig
-            , HttpRequestMessage httpRequest = null
+            , HttpRequestMessage httpRequest
             ) 
             : base(arbitraryKeyValuePairs)
         {
@@ -147,7 +175,7 @@
             }
 
             this.Method = httpRequest.Method.Method;
-            switch(this.Method.ToUpper())
+            switch(this.Method.ToUpperInvariant())
             {
                 case "POST":
                     var task = httpRequest.Content.ReadAsStringAsync();
@@ -158,9 +186,14 @@
                 case "GET":
                     this.GetParams = null;
                     break;
+                default:
+                    System.Diagnostics.Trace.WriteLine(
+                        $"No-op processing {this.Method.ToUpperInvariant()} HTTP method."
+                        );
+                    break;
             }
 
-#if NETFX
+#if (NETFX)
             string userIP = null;
             const string HttpContextProperty = "MS_HttpContext";
             const string RemoteEndpointMessagePropery = "System.ServiceModel.Channels.RemoteEndpointMessageProperty";
@@ -215,39 +248,39 @@
             /// <summary>
             /// The URL
             /// </summary>
-            public const string Url = "url";
+            public static readonly string Url = "url";
             /// <summary>
             /// The method
             /// </summary>
-            public const string Method = "method";
+            public static readonly string Method = "method";
             /// <summary>
             /// The headers
             /// </summary>
-            public const string Headers = "headers";
+            public static readonly string Headers = "headers";
             /// <summary>
             /// The parameters
             /// </summary>
-            public const string Params = "params";
+            public static readonly string Params = "params";
             /// <summary>
             /// The get-parameters
             /// </summary>
-            public const string GetParams = "get_params";
+            public static readonly string GetParams = "get_params";
             /// <summary>
             /// The query string
             /// </summary>
-            public const string QueryString = "query_string";
+            public static readonly string QueryString = "query_string";
             /// <summary>
             /// The post-parameters
             /// </summary>
-            public const string PostParams = "post_params";
+            public static readonly string PostParams = "post_params";
             /// <summary>
             /// The post body
             /// </summary>
-            public const string PostBody = "post_body";
+            public static readonly string PostBody = "post_body";
             /// <summary>
             /// The user IP
             /// </summary>
-            public const string UserIp = "user_ip";
+            public static readonly string UserIp = "user_ip";
         }
 
         /// <summary>

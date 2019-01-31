@@ -30,6 +30,8 @@
 
         private static ExtendableDtoMetadata Build(Type extendableDtoType)
         {
+            Assumption.AssertNotNull(extendableDtoType, nameof(extendableDtoType));
+
             ExtendableDtoMetadata result = new ExtendableDtoMetadata();
             result.ExtendableDtoType = extendableDtoType;
 
@@ -55,24 +57,14 @@
                     extendableDtoHierarchyType = extendableDtoHierarchyType.BaseType;
                 }
             }
-            //Assumption.AssertTrue(reservedPropertiesNestedTypes.Count > 0, nameof(reservedPropertiesNestedTypes.Count));
 
             List<FieldInfo> reservedAttributes = new List<FieldInfo>();
             foreach (Type reservedPropertiesNestedType in reservedPropertiesNestedTypes)
             {
-                reservedAttributes.AddRange(ReflectionUtility.GetAllPublicStaticFields(reservedPropertiesNestedType));
+                reservedAttributes.AddRange(
+                    ReflectionUtility.GetAllPublicStaticFields(reservedPropertiesNestedType)
+                    );
             }
-            //Assumption.AssertTrue(reservedAttributes.Count > 0, nameof(reservedAttributes.Count));
-
-            //Type reservedPropertiesNestedType = ReflectionUtil.GetNestedTypeByName(
-            //    extendableDtoType,
-            //    ExtendableDtoBase.reservedPropertiesNestedTypeName,
-            //    BindingFlags.Public | BindingFlags.Static
-            //    );
-            //Assumption.AssertNotNull(reservedPropertiesNestedType, nameof(reservedPropertiesNestedType));
-
-            //var reservedAttributes =
-            //    ReflectionUtil.GetAllPublicStaticFields(reservedPropertiesNestedType);
 
             Dictionary<string, PropertyInfo> reservedPropertyInfoByName = 
                 new Dictionary<string, PropertyInfo>(reservedAttributes.Count);

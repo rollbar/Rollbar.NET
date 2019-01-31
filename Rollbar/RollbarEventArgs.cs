@@ -13,7 +13,7 @@
         : EventArgs
         , ITraceable
     {
-        private readonly RollbarLogger _logger = null;
+        private readonly RollbarLogger _logger;
 
         internal RollbarLogger Logger
         {
@@ -33,8 +33,6 @@
             object dataObject
             )
         {
-            //Assumption.AssertNotNull(logger, nameof(logger));
-
             this._logger = logger;
             if (dataObject != null)
             {
@@ -61,11 +59,20 @@
         /// <summary>
         /// Traces as string.
         /// </summary>
+        /// <returns>System.String.</returns>
+        public virtual string TraceAsString()
+        {
+            return this.TraceAsString(string.Empty);
+        }
+
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
         /// <param name="indent">The indent.</param>
         /// <returns>
         /// String rendering of this instance.
         /// </returns>
-        public virtual string TraceAsString(string indent = "")
+        public virtual string TraceAsString(string indent)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(indent + this.GetType().Name + ":");

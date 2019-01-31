@@ -125,7 +125,7 @@ namespace Rollbar
             return response;
         }
 
-        private string ScrubPayload(string payload, IEnumerable<string> scrubFields)
+        private static string ScrubPayload(string payload, IEnumerable<string> scrubFields)
         {
             var jObj = JsonScrubber.CreateJsonObject(payload);
             var dataProperty = JsonScrubber.GetChildPropertyByName(jObj, "data");

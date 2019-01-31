@@ -24,6 +24,11 @@
         private readonly string _customPrefix;
 
         /// <summary>
+        /// The plug in event data type
+        /// </summary>
+        private readonly Type _plugInEventDataType;
+
+        /// <summary>
         /// The Rollbar ErrorLevel by plug-in's error level.
         /// Essentially, a one-directional map from plug-in's error level value to Rollbar ErrorLevel.
         /// </summary>
@@ -72,8 +77,9 @@
             TimeSpan? rollbarBlockingTimeout
             )
         {
+            this._plugInEventDataType = typeof(TPlugInEventData);
             this._rollbarErrorLevelByPlugInErrorLevel = rollbarErrorLevelByPlugInErrorLevel;
-            this._customPrefix = customPrefix;//= customPrefix.EndsWith(".") ? customPrefix : customPrefix + ".";
+            this._customPrefix = customPrefix;
             this._rollbarConfig = rollbarConfig;
 
             if (this._rollbarConfig == null)
@@ -98,12 +104,13 @@
         /// <param name="plugInErrorLevel">The plug in error level.</param>
         public virtual void ReportToRollbar(TPlugInEventData plugInEventData, TPlugInErrorLevel plugInErrorLevel)
         {
-            if (plugInEventData == null)
+            if ((this._plugInEventDataType.IsClass || this._plugInEventDataType.IsInterface)
+                && plugInEventData == null)
             {
                 return;
             }
 
-            DTOs.Data data = null;// this.Translate(plugInEventData, plugInErrorLevel);
+            DTOs.Data data = null;
 
             try
             {

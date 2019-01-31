@@ -18,7 +18,17 @@
             /// <summary>
             /// The body
             /// </summary>
-            public const string Body = "body";
+            public static readonly string Body = "body";
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Message"/> class.
+        /// </summary>
+        /// <param name="body">The body.</param>
+        public Message(string body)
+            : this(body, null)
+        {
+
         }
 
         /// <summary>
@@ -26,7 +36,10 @@
         /// </summary>
         /// <param name="body">The body.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Message(string body, IDictionary<string, object> arbitraryKeyValuePairs = null)
+        public Message(
+            string body, 
+            IDictionary<string, object> arbitraryKeyValuePairs
+            )
             : base(arbitraryKeyValuePairs)
         {
             Body = body;

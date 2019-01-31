@@ -20,23 +20,39 @@
             /// <summary>
             /// The level
             /// </summary>
-            public const string Level = "level";
+            public static readonly string Level = "level";
             /// <summary>
             /// The type
             /// </summary>
-            public const string Type = "type";
+            public static readonly string Type = "type";
             /// <summary>
             /// The source
             /// </summary>
-            public const string Source = "source";
+            public static readonly string Source = "source";
             /// <summary>
             /// The timestamp
             /// </summary>
-            public const string Timestamp = "timestamp_ms";
+            public static readonly string Timestamp = "timestamp_ms";
             /// <summary>
             /// The body
             /// </summary>
-            public const string Body = "body";
+            public static readonly string Body = "body";
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Telemetry"/> class.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="body">The body.</param>
+        public Telemetry(
+            TelemetrySource source
+            , TelemetryLevel level
+            , TelemetryBody body
+            )
+            : this(source, level, body, null)
+        {
+
         }
 
         /// <summary>
@@ -50,7 +66,7 @@
             TelemetrySource source
             ,TelemetryLevel level
             ,TelemetryBody body
-            ,IDictionary<string, object> arbitraryKeyValuePairs = null
+            ,IDictionary<string, object> arbitraryKeyValuePairs
             )
             : base(arbitraryKeyValuePairs)
         {

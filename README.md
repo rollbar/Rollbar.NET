@@ -1,20 +1,38 @@
-# Rollbar.NET
+# Rollbar.NET Notifier SDK
 
-A .NET Rollbar Client that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, and .NET Full Framework 4.5+.
+A .NET Rollbar Client/Notifier that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, .NET Full Framework 4.5+, Mono, Xamarin, and, in general, any implementation of the .NET Standard 2.0+.
+It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the Rollbar API for remote monitoring and analysis of the hosting application's behavior.'
 
-## CI builds status:
+It also includes a collection of Rollbar.NET plug-ins into most popular .NET logging and exception handling libraries/frameworks, like:
+*   Serilog
+*   log4net
+*   NLog
+*   Microsoft Enterprise Library's Exception Handling block
+*   etc.
+*   as well as RollbarTraceListener and ASP.NET Core Rollbar middleware. 
 
-### [Rollbar.NET](https://github.com/rollbar/Rollbar.NET) repo:
+These plug-ins simplify integration of the Rollbar.NET Notifier into codebases that are already using any of these libraries/frameworks using the libraries' native extensions mechanisms.
+
+## CI builds status
+
+### [Rollbar.NET](https://github.com/rollbar/Rollbar.NET) repo
 [![Build Status](https://dev.azure.com/rollbar/Rollbar.NET/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar/Rollbar.NET/_build/latest?definitionId=1&branchName=master)
 
-### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) repo (primary development fork):
+### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) repo (primary development fork)
 [![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
+
+## Code quality status
+
+### [Rollbar.NET](https://github.com/rollbar/Rollbar.NET) repo
+
+### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) repo (primary development fork)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9adf26abd5694ebb8fecf6d4925f1da7)](https://www.codacy.com/app/WideSpectrumComputing/WideSpectrumComputing-Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WideSpectrumComputing/Rollbar.NET&amp;utm_campaign=Badge_Grade)
 
 ## Install
 
-Nuget Package Manager:
+Using Nuget Package Manager:
 
-    Install-Package Rollbar
+    ```Install-Package Rollbar```
 
 ## Blocking vs Non-Blocking Use
 
@@ -51,9 +69,9 @@ In case of a timeout, all the blocking log methods throw `System.TimeoutExceptio
 
 ## Basic Usage
 
-* Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
-* Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
-* Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
+*   Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
+*   Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
+*   Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
 
 ## Upgrading to v2.x.x from v1.x.x versions
 
@@ -92,9 +110,10 @@ Rollbar.Init(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"));
 to
 
 ```csharp
-const string postServerItemAccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN";
-RollbarLocator.RollbarInstance
-.Configure(new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" }) ;
+    const string postServerItemAccessToken = "POST_SERVER_ITEM_ACCESS_TOKEN";
+    RollbarLocator.RollbarInstance.Configure(
+        new RollbarConfig(postServerItemAccessToken) { Environment = "proxyTest" }
+        ) ;
 ```
 
 Additionally, anywhere in your code that you were sending error reports via `Rollbar.Report(Exception)` or `Rollbar.Report(string)` will need to be replaced with either something like `RollbarLocator.RollbarInstance.Error(new Exception("trying out the TraceChain", new NullReferenceException()))` or `RollbarLocator.RollbarInstance.Info("Basic info log example.")`.
@@ -109,8 +128,7 @@ Each plug-in maintains its own versioning schema and is distributed as its own N
 
 More detailed information about Rollbar.NET usage and API reference are available at [https://docs.rollbar.com/docs/dotnet](https://docs.rollbar.com/docs/dotnet)
 
-
-## Where can you find the SDK performance benchmarking results?
+## Where you can find the SDK performance benchmarking results
 
 The benchmarking results are stored within the [Rollbar.Benchmarks folder](https://github.com/rollbar/Rollbar.NET/tree/master/Rollbar.Benchmarks) in a subfolder per an SDK release.
 You,probably, want to start by reviewing the result/Rollbar.Benchmarker.RollbarLoggerBenchmark-report.html file within each of the subfolders and, then, to drill down for more details within the rest of the
@@ -122,11 +140,10 @@ If you run into any issues, please email us at [support@rollbar.com](mailto:supp
 
 For bug reports, please [open an issue on GitHub](https://github.com/rollbar/Rollbar.NET/issues/new).
 
-
 ## Contributing
 
-1. [Fork it](https://github.com/rollbar/Rollbar.NET)
-2. Create your feature branch (```git checkout -b my-new-feature```).
-3. Commit your changes (```git commit -am 'Added some feature'```)
-4. Push to the branch (```git push origin my-new-feature```)
-5. Create new Pull Request
+1.  [Fork it](https://github.com/rollbar/Rollbar.NET)
+2.  Create your feature branch (```git checkout -b my-new-feature```).
+3.  Commit your changes (```git commit -am 'Added some feature'```)
+4.  Push to the branch (```git push origin my-new-feature```)
+5.  Create new Pull Request

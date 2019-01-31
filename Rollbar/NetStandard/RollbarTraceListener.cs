@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Diagnostics;
 
-#pragma warning disable CS1570 // XML comment has badly formed XML
     /// <summary>
     /// Class RollbarTraceListener.
     /// </summary>
@@ -25,45 +24,44 @@
     /// </remarks>
     /// <example>
     /// 
-    /// <?xml version="1.0" encoding="utf-8"?>
-    ///  <configuration>
-    ///    <!--
-    ///    <configSections>
-    ///      <section name = "rollbar" type="Rollbar.NetFramework.RollbarConfigSection, Rollbar"/>
-    ///    </configSections>
+    /// &lt;?xml version="1.0" encoding="utf-8"?&gt;
+    ///  &lt;configuration&gt;
+    ///    &lt;!--
+    ///    &lt;configSections&gt;
+    ///      &lt;section name = "rollbar" type="Rollbar.NetFramework.RollbarConfigSection, Rollbar"/&gt;
+    ///    &lt;/configSections&gt;
     ///      
-    ///    <rollbar
+    ///    &lt;rollbar
     ///      accessToken = "17965fa5041749b6bf7095a190001ded"
     ///      environment="RollbarNetPrototypes"
-    ///      />
-    ///     -->
+    ///      /?&gt;
+    ///     --?&gt;
     ///   
-    ///    <system.diagnostics>
-    ///      <trace autoflush = "true" indentsize="4">
-    ///        <listeners>
-    ///          <add name = "textFileListener"
+    ///    &lt;system.diagnostics>
+    ///      &lt;trace autoflush = "true" indentsize="4"&gt;
+    ///        &lt;listeners>
+    ///          &lt;add name = "textFileListener"
     ///               type="System.Diagnostics.TextWriterTraceListener" 
     ///               initializeData="TextTrace.log" 
     ///               traceOutputOptions="ProcessId, ThreadId, Timestamp, DateTime, Callstack,LogicalOperationStack"
-    ///               />
-    ///          <add name = "rollbarListener"
+    ///               /&gt;
+    ///          &lt;add name = "rollbarListener"
     ///               type="Rollbar.NetStandard.RollbarTraceListener,Rollbar" 
     ///               traceOutputOptions="ProcessId, ThreadId, Timestamp, DateTime, Callstack, LogicalOperationStack" 
     ///               rollbarAccessToken="17965fa5041749b6bf7095a190001ded" 
     ///               rollbarEnvironment="MyRollbarEnvironmentTag"
-    ///               />
-    ///          <remove name = "Default"
-    ///                  />
-    ///        </listeners>
-    ///      </trace >
-    ///    </system.diagnostics>
-    ///      <startup>
-    ///          <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.1"/>
-    ///      </startup>
-    ///  </configuration>
+    ///               /&gt;
+    ///          &lt;remove name = "Default"
+    ///                  /&gt;
+    ///        &lt;/listeners&gt;
+    ///      &lt;/trace&gt;
+    ///    &lt;/system.diagnostics&gt;
+    ///      &lt;startup&gt;
+    ///          &lt;supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.1"/&gt;
+    ///      &lt;/startup&gt;
+    ///  &lt;/configuration&gt;
     ///
     /// </example>
-#pragma warning restore CS1570 // XML comment has badly formed XML
     public class RollbarTraceListener
         : TraceListener
     {
@@ -72,9 +70,9 @@
         /// <summary>
         /// The instance count
         /// </summary>
-        public static int InstanceCount = 0;
+        public static int InstanceCount { get; set; }
 
-        private IRollbar _rollbar = null;
+        private IRollbar _rollbar;
 
         /// <summary>
         /// Gets the Rollbar.
@@ -183,8 +181,6 @@
         /// <param name="message">A message to write.</param>
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
         {
-            //base.TraceEvent(eventCache, source, eventType, id, message);
-
             // the code below is simplified way to report events to Rollbar API,
             // in production code we can do better job mapping the available event data
             // into proper Rollbar data body:
@@ -223,6 +219,7 @@
                     this.Rollbar.Info(message, custom);
                     break;
                 default:
+                    this.Rollbar.Critical(message, custom);
                     break;
             }
         }
@@ -275,8 +272,7 @@
         /// <returns>A string array naming the custom attributes supported by the trace listener, or null if there are no custom attributes.</returns>
         protected override string[] GetSupportedAttributes()
         {
-            //return base.GetSupportedAttributes();
-            return new string[] {
+            return new [] {
                 RollbarTraceListenerAttributes.rollbarAccessToken.ToString(),
                 RollbarTraceListenerAttributes.rollbarEnvironment.ToString(),
             };

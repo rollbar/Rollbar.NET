@@ -12,6 +12,7 @@ namespace Rollbar.Telemetry
     /// </summary>
     public class TelemetryCollector
         : ITelemetryCollector
+        , IDisposable
     {
         #region singleton implementation
 
@@ -42,7 +43,7 @@ namespace Rollbar.Telemetry
 
         private sealed class NestedSingleInstance
         {
-            static NestedSingleInstance()
+            private NestedSingleInstance()
             {
             }
 
@@ -202,10 +203,10 @@ namespace Rollbar.Telemetry
         /// </value>
         public int QueueDepth { get { return this._telemetryQueue.QueueDepth; } }
 
+        private Thread _telemetryThread;
+        private CancellationTokenSource _cancellationTokenSource;
         private readonly TelemetryConfig _config;
         private readonly TelemetryQueue _telemetryQueue = new TelemetryQueue();
-        private Thread _telemetryThread = null;
-        private CancellationTokenSource _cancellationTokenSource = null;
         private readonly object _syncRoot = new object();
 
         private void _config_Reconfigured(object sender, EventArgs e)
@@ -271,5 +272,53 @@ namespace Rollbar.Telemetry
             CompleteProcessing();
 #pragma warning restore CS0162 // Unreachable code detected
         }
+
+        #region IDisposable Support
+
+        private bool disposedValue = false; // To detect redundant calls
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    CompleteProcessing();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~TelemetryCollector() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, 
+        /// or resetting unmanaged resources.
+        /// </summary>
+        /// <remarks>
+        /// This code added to correctly implement the disposable pattern.
+        /// </remarks>
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }

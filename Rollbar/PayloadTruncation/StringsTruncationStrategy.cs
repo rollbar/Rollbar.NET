@@ -40,7 +40,7 @@
         {
             payload.TruncateStrings(Encoding.UTF8, _stringBytesLimit);
 
-            return this.GetSizeInBytes(payload);
+            return GetSizeInBytes(payload);
         }
     }
 }

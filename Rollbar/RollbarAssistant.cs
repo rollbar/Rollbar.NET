@@ -16,6 +16,67 @@
         /// including the inherited ones (if there is any).
         /// </summary>
         /// <param name="instance">The instance.</param>
+        /// <returns>
+        /// either the provided instance or a new instance of a state capture bag that is a dictionary of data field name/value pairs representing 
+        /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
+        /// (for example, when instance argument happened to be uninitialized)
+        /// </returns>
+        public static IDictionary<string, object> CaptureState(
+            object instance
+            )
+        {
+            return CaptureState(instance, null, null);
+        }
+
+        /// <summary>
+        /// Captures the state (all the data fields' values of the provided instance).
+        /// 
+        /// It captures all the static and instance data fields (public and non-public) 
+        /// including the inherited ones (if there is any).
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="stateCapture">a instance of a state capture bag.</param>
+        /// <returns>
+        /// either the provided instance or a new instance of a state capture bag that is a dictionary of data field name/value pairs representing 
+        /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
+        /// (for example, when instance argument happened to be uninitialized)
+        /// </returns>
+        public static IDictionary<string, object> CaptureState(
+            object instance,
+            IDictionary<string, object> stateCapture
+            )
+        {
+            return CaptureState(instance, null, stateCapture);
+        }
+
+        /// <summary>
+        /// Captures the state (all the data fields' values of the provided instance).
+        /// 
+        /// It captures all the static and instance data fields (public and non-public) 
+        /// including the inherited ones (if there is any).
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="instanceName">Name of the instance.</param>
+        /// <returns>
+        /// either the provided instance or a new instance of a state capture bag that is a dictionary of data field name/value pairs representing 
+        /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
+        /// (for example, when instance argument happened to be uninitialized)
+        /// </returns>
+        public static IDictionary<string, object> CaptureState(
+            object instance,
+            string instanceName
+            )
+        {
+            return CaptureState(instance, instanceName, null);
+        }
+
+        /// <summary>
+        /// Captures the state (all the data fields' values of the provided instance).
+        /// 
+        /// It captures all the static and instance data fields (public and non-public) 
+        /// including the inherited ones (if there is any).
+        /// </summary>
+        /// <param name="instance">The instance.</param>
         /// <param name="instanceName">Name of the instance.</param>
         /// <param name="stateCapture">a instance of a state capture bag.</param>
         /// <returns>
@@ -23,7 +84,11 @@
         /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
         /// (for example, when instance argument happened to be uninitialized)
         /// </returns>
-        public static IDictionary<string, object> CaptureState(object instance, string instanceName = null, IDictionary<string, object> stateCapture = null)
+        public static IDictionary<string, object> CaptureState(
+            object instance, 
+            string instanceName, 
+            IDictionary<string, object> stateCapture
+            )
         {
             if (instance == null)
             {
@@ -76,12 +141,6 @@
         /// </returns>
         public static IDictionary<string, object> CaptureState(Type staticType, IDictionary<string, object> stateCapture = null)
         {
-            //Assumption.AssertTrue(
-            //    staticType.IsAbstract && staticType.IsSealed 
-            //    && !staticType.IsInterface && !staticType.IsEnum
-            //    , nameof(staticType)
-            //    );
-
             if (staticType.IsInterface || staticType.IsEnum)
             {
                 return null;

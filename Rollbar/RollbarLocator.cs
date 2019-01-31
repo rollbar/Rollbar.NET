@@ -21,7 +21,7 @@
 
         private sealed class NestedSingleInstance
         {
-            static NestedSingleInstance()
+            private NestedSingleInstance()
             {
             }
 

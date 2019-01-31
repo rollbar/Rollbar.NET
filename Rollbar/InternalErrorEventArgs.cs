@@ -44,7 +44,7 @@
         /// <returns>
         /// String rendering of this instance.
         /// </returns>
-        public override string TraceAsString(string indent = "")
+        public override string TraceAsString(string indent)
         {
             StringBuilder sb = new StringBuilder(base.TraceAsString(indent));
             sb.AppendLine(indent + "  Error: " + this.Error);

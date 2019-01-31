@@ -40,15 +40,6 @@
             Validate();
         }
 
-        ///// <summary>
-        ///// Initializes a new instance of the <see cref="Body"/> class.
-        ///// </summary>
-        ///// <param name="exception">The exception.</param>
-        //public Body(AggregateException exception) 
-        //    : this(exception.InnerExceptions)
-        //{
-        //}
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Body"/> class.
         /// </summary>

@@ -13,9 +13,9 @@
     public class Payload
         : DtoBase
     {
-        private readonly DateTime? _timeoutAt = null;
-        private readonly SemaphoreSlim _signal = null;
-        private StringContent _asHttpContentToSend = null;
+        private readonly DateTime? _timeoutAt;
+        private readonly SemaphoreSlim _signal;
+        private StringContent _asHttpContentToSend;
 
         [JsonIgnore]
         internal DateTime? TimeoutAt
@@ -48,6 +48,19 @@
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Payload"/> class.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="data">The data.</param>
+        public Payload(
+            string accessToken,
+            Data data
+            )
+            : this(accessToken, data, null, null)
+        {
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Payload" /> class.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -57,8 +70,8 @@
         public Payload(
             string accessToken, 
             Data data, 
-            DateTime? timeoutAt = null,
-            SemaphoreSlim signal = null
+            DateTime? timeoutAt,
+            SemaphoreSlim signal
             )
         {
             this._timeoutAt = timeoutAt;

@@ -19,7 +19,7 @@
             Assumption.AssertNotNullOrEmpty(callStack, nameof(callStack));
             Assumption.AssertNotNullOrEmpty(exceptionInfo, nameof(exceptionInfo));
 
-            string[] entries = callStack.Split(new string[] { Environment.NewLine,}, StringSplitOptions.None);
+            string[] entries = callStack.Split(new [] { Environment.NewLine,}, StringSplitOptions.None);
             List<DTOs.Frame> frames = new List<Frame>(entries.Length);
             foreach(var entry in entries)
             {
@@ -35,7 +35,7 @@
                 this.Frames = frames.ToArray();
             }
 
-            entries = exceptionInfo.Split(new string[] { ": ", }, StringSplitOptions.None);
+            entries = exceptionInfo.Split(new [] { ": ", }, StringSplitOptions.None);
             DTOs.Exception ex = null;
             switch (entries.Length)
             {
@@ -47,6 +47,11 @@
                     break;
                 case 1:
                     ex = new DTOs.Exception(entries[0]);
+                    break;
+                default:
+                    System.Diagnostics.Trace.WriteLine(
+                        $"Unexpected exception info component/entry..."
+                        );
                     break;
             }
             if (ex != null)
@@ -65,8 +70,8 @@
             Assumption.AssertNotNull(frames, nameof(frames));
             Assumption.AssertNotNull(exception, nameof(exception));
 
-            Frames = frames;
-            Exception = exception;
+            this.Frames = frames;
+            this.Exception = exception;
         }
 
         /// <summary>
@@ -79,8 +84,8 @@
 
             var frames = new StackTrace(exception, true).GetFrames() ?? new StackFrame[0];
 
-            Frames = frames.Select(frame => new Frame(frame)).ToArray();
-            Exception = new Exception(exception);
+            this.Frames = frames.Select(frame => new Frame(frame)).ToArray();
+            this.Exception = new DTOs.Exception(exception);
         }
 
         /// <summary>

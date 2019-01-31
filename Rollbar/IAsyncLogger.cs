@@ -42,9 +42,17 @@
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task Log(ErrorLevel level, object obj);
+
+        /// <summary>
+        /// Logs using the specified level.
+        /// </summary>
+        /// <param name="level">The level.</param>
+        /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        Task Log(ErrorLevel level, object obj, IDictionary<string, object> custom = null);
+        Task Log(ErrorLevel level, object obj, IDictionary<string, object> custom);
 
         #region Convenience methods
 
@@ -52,9 +60,23 @@
         /// Logs the specified object as using critical level.
         /// </summary>
         /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task Critical(object obj);
+
+        /// <summary>
+        /// Logs the specified object as using critical level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        Task Critical(object obj, IDictionary<string, object> custom = null);
+        Task Critical(object obj, IDictionary<string, object> custom);
+
+        /// <summary>
+        /// Logs the specified object as using error level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task Error(object obj);
 
         /// <summary>
         /// Logs the specified object as using error level.
@@ -62,7 +84,14 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        Task Error(object obj, IDictionary<string, object> custom = null);
+        Task Error(object obj, IDictionary<string, object> custom);
+
+        /// <summary>
+        /// Logs the specified object as using warning level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task Warning(object obj);
 
         /// <summary>
         /// Logs the specified object as using warning level.
@@ -70,7 +99,14 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        Task Warning(object obj, IDictionary<string, object> custom = null);
+        Task Warning(object obj, IDictionary<string, object> custom);
+
+        /// <summary>
+        /// Logs the specified object as using informational level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task Info(object obj);
 
         /// <summary>
         /// Logs the specified object as using informational level.
@@ -78,7 +114,14 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        Task Info(object obj, IDictionary<string, object> custom = null);
+        Task Info(object obj, IDictionary<string, object> custom);
+
+        /// <summary>
+        /// Logs the specified object as using debug level.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>Task.</returns>
+        Task Debug(object obj);
 
         /// <summary>
         /// Logs the specified object as using debug level.
@@ -86,7 +129,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Task.</returns>
-        Task Debug(object obj, IDictionary<string, object> custom = null);
+        Task Debug(object obj, IDictionary<string, object> custom);
 
         #endregion Convenience methods
     }
