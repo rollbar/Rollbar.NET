@@ -98,7 +98,7 @@
         /// </remarks>
         protected virtual string GenerateClassifierID(object classifierObject)
         {
-            return classifierObject.GetType().FullName + ": " + classifierObject.ToString();
+            return classifierObject.GetType().FullName + ": " + classifierObject;
         }
     }
 }
