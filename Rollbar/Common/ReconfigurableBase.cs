@@ -124,7 +124,7 @@
         /// <summary>
         /// The this instance type (most specific one).
         /// </summary>
-        protected readonly Type _thisInstanceType = null;
+        protected readonly Type _thisInstanceType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReconfigurableBase"/> class.
