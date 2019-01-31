@@ -45,12 +45,28 @@
         /// <param name="source">The source.</param>
         /// <param name="level">The level.</param>
         /// <param name="body">The body.</param>
+        public Telemetry(
+            TelemetrySource source
+            , TelemetryLevel level
+            , TelemetryBody body
+            )
+            : this(source, level, body, null)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Telemetry"/> class.
+        /// </summary>
+        /// <param name="source">The source.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="body">The body.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public Telemetry(
             TelemetrySource source
             ,TelemetryLevel level
             ,TelemetryBody body
-            ,IDictionary<string, object> arbitraryKeyValuePairs = null
+            ,IDictionary<string, object> arbitraryKeyValuePairs
             )
             : base(arbitraryKeyValuePairs)
         {

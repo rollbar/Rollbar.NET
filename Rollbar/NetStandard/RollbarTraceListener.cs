@@ -72,7 +72,7 @@
         /// </summary>
         public static int InstanceCount { get; set; }
 
-        private IRollbar _rollbar = null;
+        private IRollbar _rollbar;
 
         /// <summary>
         /// Gets the Rollbar.
@@ -206,6 +206,9 @@
            
             switch (eventType)
             {
+                case TraceEventType.Critical:
+                    this.Rollbar.Critical(message, custom);
+                    break;
                 case TraceEventType.Error:
                     this.Rollbar.Error(message, custom);
                     break;
@@ -215,7 +218,6 @@
                 case TraceEventType.Information:
                     this.Rollbar.Info(message, custom);
                     break;
-                case TraceEventType.Critical:
                 default:
                     this.Rollbar.Critical(message, custom);
                     break;

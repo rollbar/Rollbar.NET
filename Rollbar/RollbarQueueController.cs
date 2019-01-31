@@ -6,7 +6,6 @@ namespace Rollbar
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using Rollbar.NetStandard;
-    using Rollbar.Serialization.Json;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -14,7 +13,6 @@ namespace Rollbar
     using System.Linq;
     using System.Net;
     using System.Net.Http;
-    using System.Text;
     using System.Threading;
 
 #if NETFX
@@ -29,8 +27,9 @@ namespace Rollbar
     /// It makes sure that Rollbar access token rate limits handled properly.
     /// </summary>
     public sealed class RollbarQueueController
+        : IDisposable
 #if NETFX
-        : IRegisteredObject
+        , IRegisteredObject
 #endif
     {
         #region singleton implementation
@@ -59,10 +58,6 @@ namespace Rollbar
 
         private sealed class NestedSingleInstance
         {
-            static NestedSingleInstance()
-            {
-            }
-
             private NestedSingleInstance()
             {
             }
@@ -184,7 +179,7 @@ namespace Rollbar
 
         private readonly object _syncLock = new object();
 
-        private Thread _rollbarCommThread = null;
+        private Thread _rollbarCommThread;
 
         private readonly HashSet<PayloadQueue> _allQueues =
             new HashSet<PayloadQueue>();
@@ -540,7 +535,7 @@ namespace Rollbar
             }
         }
 
-        private CancellationTokenSource _cancellationTokenSource = null;
+        private CancellationTokenSource _cancellationTokenSource;
 
         private void Start()
         {
@@ -594,5 +589,49 @@ namespace Rollbar
         }
 
 #endif
+
+
+        #region IDisposable Support
+
+        private bool disposedValue = false; // To detect redundant calls
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects).
+                    CompleteProcessing();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
+        // ~RollbarQueueController() {
+        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+        //   Dispose(false);
+        // }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// <remarks>
+        /// This code added to correctly implement the disposable pattern.
+        /// </remarks>
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+
+        #endregion IDisposable Support
     }
 }

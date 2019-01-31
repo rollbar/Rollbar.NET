@@ -36,20 +36,21 @@
         }
 
 #if (NETCOREAPP)
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        /// <param name="httpContext">The HTTP context.</param>
+        /// <param name="httpAttributes">The Rollbar HTTP attributes.</param>
         public Request(
             IDictionary<string, object> arbitraryKeyValuePairs
-            , RollbarHttpAttributes httpContext = null
+            , RollbarHttpAttributes httpAttributes
             )
             : base(arbitraryKeyValuePairs)
         {
-            if (httpContext != null)
+            if (httpAttributes != null)
             {
-                this.SnapProperties(httpContext);
+                this.SnapProperties(httpAttributes);
             }
         }
 
@@ -72,9 +73,23 @@
 
             this.Method = httpContext.Method;
         }
+
 #endif
 
 #if (NETSTANDARD || NETCOREAPP)
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// </summary>
+        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
+        public Request(
+            IDictionary<string, object> arbitraryKeyValuePairs
+            )
+            : this(arbitraryKeyValuePairs, null as HttpRequest)
+        {
+
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
@@ -82,7 +97,7 @@
         /// <param name="httpRequest">The HTTP request.</param>
         public Request(
             IDictionary<string, object> arbitraryKeyValuePairs
-            , HttpRequest httpRequest = null
+            , HttpRequest httpRequest
             )
             : base(arbitraryKeyValuePairs)
         {
@@ -108,7 +123,22 @@
 
             this.Method = httpRequest.Method;
         }
+
 #endif
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// </summary>
+        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        public Request(
+            IDictionary<string, object> arbitraryKeyValuePairs
+            , IRollbarConfig rollbarConfig
+            )
+            : this(arbitraryKeyValuePairs, rollbarConfig, null)
+        {
+
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Request" /> class.
@@ -119,7 +149,7 @@
         public Request(
             IDictionary<string, object> arbitraryKeyValuePairs
             , IRollbarConfig rollbarConfig
-            , HttpRequestMessage httpRequest = null
+            , HttpRequestMessage httpRequest
             ) 
             : base(arbitraryKeyValuePairs)
         {

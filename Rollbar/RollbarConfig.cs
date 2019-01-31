@@ -28,7 +28,7 @@
         , IRollbarConfig
         , IEquatable<IRollbarConfig>
     {
-        private readonly RollbarLogger _logger = null;
+        private readonly RollbarLogger _logger;
 
         private RollbarConfig()
         {
@@ -70,7 +70,7 @@
             this.MaxItems = 0;
             this.CaptureUncaughtExceptions = true;
             this.LogLevel = ErrorLevel.Debug;
-            this.ScrubFields = new string[]
+            this.ScrubFields = new []
             {
                 "passwd",
                 "password",
@@ -302,6 +302,15 @@
         /// </value>
         [JsonConverter(typeof(StringEnumConverter))]
         public IpAddressCollectionPolicy IpAddressCollectionPolicy { get; set; }
+
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public string TraceAsString()
+        {
+            return this.TraceAsString(string.Empty);
+        }
 
         /// <summary>
         /// Traces as a string.

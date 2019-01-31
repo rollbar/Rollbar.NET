@@ -86,7 +86,7 @@
 
         static RollbarApiErrorEventArgs()
         {
-            RollbarErrorDetails[] errorDetails = new RollbarErrorDetails[]
+            RollbarErrorDetails[] errorDetails = new []
             {
                 new RollbarErrorDetails(
                     RollbarError.BadRequest,

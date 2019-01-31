@@ -15,7 +15,7 @@
         public static bool Load(RollbarConfig config)
         {
             // try app.config file:
-            if (NetFramework.AppConfigUtility.LoadAppSettings(ref config))
+            if (NetFramework.AppConfigUtility.LoadAppSettings(config))
             {
                 return true;
             }
@@ -39,7 +39,7 @@
         public static bool Load(TelemetryConfig config)
         {
             // try app.config file:
-            if (NetFramework.AppConfigUtility.LoadAppSettings(ref config))
+            if (NetFramework.AppConfigUtility.LoadAppSettings(config))
             {
                 return true;
             }

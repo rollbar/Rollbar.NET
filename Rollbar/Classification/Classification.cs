@@ -124,6 +124,11 @@
         /// </summary>
         /// <param name="classifiers">The classifiers.</param>
         /// <returns>System.String.</returns>
+        /// <remarks>
+        /// WARNING:
+        /// This method is called from the type constructor.
+        /// Make sure you know what you are doing when overriding it.
+        /// </remarks>
         protected virtual string GenerateID(IEnumerable<Classifier> classifiers)
         {
             StringBuilder sb = new StringBuilder();

@@ -55,13 +55,64 @@
         internal static string DefaultLanguage { get; set; } = "c#";
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Data"/> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="body">The body.</param>
+        public Data(
+            IRollbarConfig config,
+            Body body
+            )
+            : this(config, body, null, null)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Data"/> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="body">The body.</param>
+        /// <param name="request">The request.</param>
+        public Data(
+            IRollbarConfig config,
+            Body body,
+            Request request
+            )
+            : this(config, body, null, request)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Data"/> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="body">The body.</param>
+        /// <param name="custom">The custom.</param>
+        public Data(
+            IRollbarConfig config,
+            Body body,
+            IDictionary<string, object> custom
+            )
+            : this(config, body, custom, null)
+        {
+
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Data" /> class.
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <param name="body">The body.</param>
         /// <param name="custom">The custom.</param>
         /// <param name="request">The request.</param>
-        public Data(IRollbarConfig config, Body body, IDictionary<string, object> custom = null, Request request = null)
+        public Data(
+            IRollbarConfig config, 
+            Body body, 
+            IDictionary<string, object> custom, 
+            Request request
+            )
         {
             Assumption.AssertNotNull(config, nameof(config));
             Assumption.AssertNotNull(body, nameof(body));

@@ -24,8 +24,23 @@
         /// Initializes a new instance of the <see cref="DomTelemetry"/> class.
         /// </summary>
         /// <param name="element">The element.</param>
+        public DomTelemetry(
+            string element
+            )
+            : base(TelemetryType.Dom, null)
+        {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DomTelemetry"/> class.
+        /// </summary>
+        /// <param name="element">The element.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public DomTelemetry(string element, IDictionary<string, object> arbitraryKeyValuePairs = null)
+        public DomTelemetry(
+            string element, 
+            IDictionary<string, object> arbitraryKeyValuePairs
+            )
             : base(TelemetryType.Dom, arbitraryKeyValuePairs)
         {
             this.Element = element;
