@@ -35,7 +35,7 @@
             }
 
             string token = @"at ";
-            int tokenIndex = frameString.IndexOf(token);
+            int tokenIndex = frameString.IndexOf(token, StringComparison.InvariantCulture);
             frameString = frameString.Remove(tokenIndex, token.Length);
             frameString = frameString.Trim();
             string[] components = frameString.Split(new [] { " in ", }, StringSplitOptions.None);

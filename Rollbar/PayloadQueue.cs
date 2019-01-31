@@ -9,10 +9,10 @@ namespace Rollbar
 
     internal class PayloadQueue
     {
-        private readonly object _syncLock = null;
-        private readonly Queue<Payload> _queue = null;
-        private readonly RollbarLogger _logger = null;
-        private RollbarClient _client = null;
+        private readonly object _syncLock;
+        private readonly Queue<Payload> _queue;
+        private readonly RollbarLogger _logger;
+        private RollbarClient _client;
         private bool _isReleased;
 
         private PayloadQueue()
@@ -29,6 +29,7 @@ namespace Rollbar
             this._syncLock = new object();
             this._queue = new Queue<Payload>();
             this._client = client;
+            this._isReleased = false;
         }
 
         public void Release()

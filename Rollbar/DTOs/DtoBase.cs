@@ -19,10 +19,10 @@
 
         #region strings truncation support
 
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> stringPropertiesByType = null;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dictionaryPropertiesByType = null;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dtoPropertiesByType = null;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> enumerablePropertiesByType = null;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> stringPropertiesByType;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dictionaryPropertiesByType;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dtoPropertiesByType;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> enumerablePropertiesByType;
 
         internal PropertyInfo[] StringProperties
         {
@@ -247,7 +247,7 @@
                     continue;
                 }
 
-                Type[] typesOfInterest = new Type[] {
+                Type[] typesOfInterest = new [] {
                     typeof(IDictionary<string, object>),
                     typeof(IDictionary<string, string>),
                 };

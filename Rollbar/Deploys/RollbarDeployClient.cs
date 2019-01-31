@@ -122,8 +122,6 @@
             }
 
             this.Release(httpClient);
-
-            return;
         }
 
         /// <summary>

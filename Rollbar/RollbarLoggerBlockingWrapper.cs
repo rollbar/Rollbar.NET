@@ -21,7 +21,7 @@ namespace Rollbar
         : ILogger
         , IDisposable
     {
-        private readonly RollbarLogger _asyncLogger = null;
+        private readonly RollbarLogger _asyncLogger;
         private readonly TimeSpan _timeout;
 
         private void Report(object dataObject, ErrorLevel level, IDictionary<string, object> custom = null)

@@ -18,9 +18,9 @@
         /// </summary>
         /// <param name="rollbarConfig">The Rollbar configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(ref RollbarConfig rollbarConfig)
+        public static bool LoadAppSettings(RollbarConfig rollbarConfig)
         {
-            return AppConfigUtility.LoadAppSettings(ref rollbarConfig, RollbarConfigSection.GetConfiguration());
+            return AppConfigUtility.LoadAppSettings(rollbarConfig, RollbarConfigSection.GetConfiguration());
         }
 
         /// <summary>
@@ -29,7 +29,7 @@
         /// <param name="rollbarConfig">The configuration.</param>
         /// <param name="rollbarConfigSection">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(ref RollbarConfig rollbarConfig, RollbarConfigSection rollbarConfigSection)
+        public static bool LoadAppSettings(RollbarConfig rollbarConfig, RollbarConfigSection rollbarConfigSection)
         {
             if (rollbarConfigSection == null)
             {
@@ -117,9 +117,9 @@
         /// </summary>
         /// <param name="telemetryConfig">The configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(ref TelemetryConfig telemetryConfig)
+        public static bool LoadAppSettings(TelemetryConfig telemetryConfig)
         {
-            return AppConfigUtility.LoadAppSettings(ref telemetryConfig, RollbarTelemetryConfigSection.GetConfiguration());
+            return AppConfigUtility.LoadAppSettings(telemetryConfig, RollbarTelemetryConfigSection.GetConfiguration());
         }
 
         /// <summary>
@@ -128,7 +128,7 @@
         /// <param name="telemetryConfig">The configuration.</param>
         /// <param name="telemetryConfigSection">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(ref TelemetryConfig telemetryConfig, RollbarTelemetryConfigSection telemetryConfigSection)
+        public static bool LoadAppSettings(TelemetryConfig telemetryConfig, RollbarTelemetryConfigSection telemetryConfigSection)
         {
             if (telemetryConfigSection == null)
             {

@@ -188,8 +188,6 @@
             }
 
             OnReconfigured(new EventArgs());
-
-            return;
         }
 
         /// <summary>

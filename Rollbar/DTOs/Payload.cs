@@ -70,8 +70,8 @@
         public Payload(
             string accessToken, 
             Data data, 
-            DateTime? timeoutAt = null,
-            SemaphoreSlim signal = null
+            DateTime? timeoutAt,
+            SemaphoreSlim signal
             )
         {
             this._timeoutAt = timeoutAt;

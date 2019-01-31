@@ -24,11 +24,11 @@
         /// <summary>
         /// The performance monitor
         /// </summary>
-        private readonly IPerformanceMonitor _performanceMonitor = null;
+        private readonly IPerformanceMonitor _performanceMonitor;
         /// <summary>
         /// The measurement classification
         /// </summary>
-        private readonly IClassification _measurementClassification = null;
+        private readonly IClassification _measurementClassification;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PerformanceTimer"/> class.

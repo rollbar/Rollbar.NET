@@ -26,7 +26,7 @@
             HostBase.DetectedCpu = RuntimeEnvironmentUtility.GetCpuArchitecture();
         }
 
-        private static readonly string DetectedCpu = null;
+        private static readonly string DetectedCpu;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="HostBase"/> class from being created.
