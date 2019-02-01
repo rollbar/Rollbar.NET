@@ -39,7 +39,7 @@
         /// </summary>
         /// <param name="indent">The indent.</param>
         /// <returns>String rendering of this instance.</returns>
-        public string TraceAsString(string indent = "")
+        public string TraceAsString(string indent)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(indent + this.GetType().Name + ":");

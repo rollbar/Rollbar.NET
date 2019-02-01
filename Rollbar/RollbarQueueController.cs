@@ -213,7 +213,9 @@ namespace Rollbar
 #pragma warning restore CS0168 // Variable is declared but never used
 
                 if (cancellationToken.IsCancellationRequested)
+                {
                     break;
+                }
 
                 Thread.Sleep(this._sleepInterval);
             }
