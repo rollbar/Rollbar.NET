@@ -364,6 +364,11 @@
             return this.ScrubFields.Where(i => !whitelist.Contains(i)).ToArray();
         }
 
+        /// <summary>
+        /// Reconfigures this object similar to the specified one.
+        /// </summary>
+        /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>
+        /// <returns>Reconfigured instance.</returns>
         IRollbarConfig IReconfigurable<IRollbarConfig, IRollbarConfig>.Reconfigure(IRollbarConfig likeMe)
         {
             return this.Reconfigure(likeMe);

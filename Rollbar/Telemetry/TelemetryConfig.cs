@@ -16,8 +16,9 @@
 #pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
     public class TelemetryConfig
         : ReconfigurableBase<TelemetryConfig, ITelemetryConfig>
-        , ITelemetryConfig
         , ITraceable
+        , ITelemetryConfig
+        , IEquatable<ITelemetryConfig>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TelemetryConfig"/> class.
@@ -124,5 +125,14 @@
             NetStandard.RollbarConfigUtility.Load(this);
         }
 
+        /// <summary>
+        /// Reconfigures this object similar to the specified one.
+        /// </summary>
+        /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>
+        /// <returns>Reconfigured instance.</returns>
+        ITelemetryConfig IReconfigurable<ITelemetryConfig, ITelemetryConfig>.Reconfigure(ITelemetryConfig likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
     }
 }
