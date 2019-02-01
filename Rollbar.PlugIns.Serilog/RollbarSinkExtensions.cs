@@ -51,7 +51,7 @@
                 rollbarAccessToken,
                 rollbarEnvironment,
                 null,
-                null
+                formatProvider
                 );
         }
 
@@ -93,7 +93,8 @@
                   string rollbarAccessToken,
                   string rollbarEnvironment,
                   TimeSpan? rollbarBlockingLoggingTimeout,
-                  IFormatProvider formatProvider)
+                  IFormatProvider formatProvider
+            )
         {
             IRollbarConfig config = new RollbarConfig(rollbarAccessToken)
             {
@@ -114,7 +115,12 @@
                   IRollbarConfig rollbarConfig
                   )
         {
-            return RollbarSink(loggerConfiguration, rollbarConfig, null, null);
+            return RollbarSink(
+                loggerConfiguration, 
+                rollbarConfig, 
+                null, 
+                null
+                );
         }
 
         /// <summary>
@@ -130,7 +136,12 @@
                   TimeSpan? rollbarBlockingLoggingTimeout
                   )
         {
-            return RollbarSink(loggerConfiguration, rollbarConfig, rollbarBlockingLoggingTimeout);
+            return RollbarSink(
+                loggerConfiguration, 
+                rollbarConfig, 
+                rollbarBlockingLoggingTimeout, 
+                null
+                );
         }
 
         /// <summary>
@@ -146,7 +157,12 @@
                   IFormatProvider formatProvider
                   )
         {
-            return RollbarSink(loggerConfiguration, rollbarConfig, null, formatProvider);
+            return RollbarSink(
+                loggerConfiguration, 
+                rollbarConfig, 
+                null, 
+                formatProvider
+                );
         }
 
         /// <summary>
@@ -163,7 +179,9 @@
                   TimeSpan? rollbarBlockingLoggingTimeout,
                   IFormatProvider formatProvider)
         {
-            return loggerConfiguration.Sink(new RollbarSink(rollbarConfig, rollbarBlockingLoggingTimeout, formatProvider));
+            return loggerConfiguration.Sink(
+                new RollbarSink(rollbarConfig, rollbarBlockingLoggingTimeout, formatProvider)
+                );
         }
     }
 }
