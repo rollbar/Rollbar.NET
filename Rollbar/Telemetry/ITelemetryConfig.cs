@@ -1,5 +1,6 @@
 ﻿namespace Rollbar.Telemetry
 {
+    using Rollbar.Common;
     using Rollbar.DTOs;
     using System;
 
@@ -7,6 +8,9 @@
     /// Defines telemetry configuration interface.
     /// </summary>
     public interface ITelemetryConfig
+        : IReconfigurable<ITelemetryConfig, ITelemetryConfig>
+        , IEquatable<ITelemetryConfig>
+        , ITraceable
     {
         /// <summary>
         /// Gets a value indicating whether telemetry is enabled.

@@ -11,6 +11,8 @@
     <NotifierVersion>2.2.1</NotifierVersion>
     <PackageReleaseNotes>
       Improvements and fixes:
+      - resolve #284: ReconfigurableBase&lt;T&gt;: Override 'Equals(object)'.
+      - resolve #283: ReconfigurableBase&lt;T, TBase&gt;: Override 'Equals(object)'.
       - resolve #277: Implement all Codacy recommendations after its rules are tuned and configured.
       - resolve #276: Analyze, tune Codacy rules and settings for the project's codebase.
       - resolve #275: Complete Codacy integration.
