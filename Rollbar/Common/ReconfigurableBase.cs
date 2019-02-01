@@ -71,7 +71,7 @@
         where T : ReconfigurableBase<T, TBase>, TBase
     {
 
-        private readonly Type _baseInstanceType = null;
+        private readonly Type _baseInstanceType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReconfigurableBase{T, TBase}"/> class.
