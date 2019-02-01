@@ -34,7 +34,7 @@
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TBase">The type of the base.</typeparam>
-    public interface IReconfigurable<T, in TBase>
+    public interface IReconfigurable<out T, in TBase>
         where T : TBase
     {
         /// <summary>

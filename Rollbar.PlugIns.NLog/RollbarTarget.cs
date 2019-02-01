@@ -11,7 +11,8 @@
     /// Class RollbarTarget for NLog.
     /// </summary>
     [Target("Rollbar.PlugIns.NLog")]
-    public class RollbarTarget : TargetWithContext
+    public class RollbarTarget 
+        : TargetWithContext
     {
         private readonly RollbarPlugInCore _rollbarPlugIn;
 
@@ -56,7 +57,7 @@
         /// <returns>System.String.</returns>
         public string GetFormattedEventMessage(LogEventInfo logEventInfo)
         {
-            return RenderLogEvent(Layout, logEventInfo);
+            return RenderLogEvent(this.Layout, logEventInfo);
         }
 
         /// <summary>

@@ -28,7 +28,7 @@
 
         private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType;
 
-        private readonly ExtendableDtoMetadata _metadata = null;
+        private readonly ExtendableDtoMetadata _metadata;
 
         /// <summary>
         /// The keyed values

@@ -264,7 +264,9 @@ namespace Rollbar.Telemetry
                 }
 
                 if (cancellationToken.IsCancellationRequested)
+                {
                     break;
+                }
 
                 Thread.Sleep(this.Config.TelemetryAutoCollectionInterval);
             }

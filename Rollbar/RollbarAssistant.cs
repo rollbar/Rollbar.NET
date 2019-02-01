@@ -133,13 +133,32 @@
         /// Captures the state of a static type (all the data fields' values of the provided static type).
         /// </summary>
         /// <param name="staticType">Type of a static class.</param>
+        /// <returns>
+        /// either the provided instance or a new instance of a state capture bag that is a dictionary of data field name/value pairs representing 
+        /// the captured state of the supplied static type or null whenever the state capture is not applicable 
+        /// (for example, when static type argument happened to represent an Enum or an interface).
+        /// </returns>
+        public static IDictionary<string, object> CaptureState(
+            Type staticType
+            )
+        {
+            return CaptureState(staticType, null);
+        }
+
+        /// <summary>
+        /// Captures the state of a static type (all the data fields' values of the provided static type).
+        /// </summary>
+        /// <param name="staticType">Type of a static class.</param>
         /// <param name="stateCapture">a instance of a state capture bag.</param>
         /// <returns>
         /// either the provided instance or a new instance of a state capture bag that is a dictionary of data field name/value pairs representing 
         /// the captured state of the supplied static type or null whenever the state capture is not applicable 
         /// (for example, when static type argument happened to represent an Enum or an interface).
         /// </returns>
-        public static IDictionary<string, object> CaptureState(Type staticType, IDictionary<string, object> stateCapture = null)
+        public static IDictionary<string, object> CaptureState(
+            Type staticType, 
+            IDictionary<string, object> stateCapture
+            )
         {
             if (staticType.IsInterface || staticType.IsEnum)
             {
