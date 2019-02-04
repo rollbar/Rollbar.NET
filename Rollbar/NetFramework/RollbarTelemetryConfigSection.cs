@@ -2,7 +2,6 @@
 {
     using System;
     using System.Configuration;
-    using Rollbar.Common;
     using Rollbar.DTOs;
 
     /// <summary>

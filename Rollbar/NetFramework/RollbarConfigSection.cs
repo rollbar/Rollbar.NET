@@ -3,8 +3,6 @@
     using System;
     using System.Configuration;
     using System.Diagnostics;
-    using System.IO;
-    using Rollbar.Common;
 
     /// <summary>
     /// Implements Rollbar custom configuration section for .NET Framework only!
@@ -199,7 +197,7 @@
             }
         }
 
-            /// <summary>
+        /// <summary>
         /// Gets the maximum items limit.
         /// </summary>
         /// <value>
