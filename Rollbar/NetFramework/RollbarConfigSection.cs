@@ -2,8 +2,7 @@
 {
     using System;
     using System.Configuration;
-    using System.IO;
-    using Rollbar.Common;
+    using System.Diagnostics;
 
     /// <summary>
     /// Implements Rollbar custom configuration section for .NET Framework only!
@@ -23,15 +22,21 @@
         /// <returns></returns>
         public static RollbarConfigSection GetConfiguration()
         {
-            if (!FileUtility.AppConfigFilePresent())
+            try
             {
+                RollbarConfigSection configuration =
+                    ConfigurationManager.GetSection("rollbar")
+                    as RollbarConfigSection;
+                return configuration;
+            }
+            catch (Exception ex)
+            {
+                //let's just trace it for now:
+                Trace.TraceError(
+                    "Error while attempting to get RollbarConfigSection:" + System.Environment.NewLine + ex
+                    );
                 return null;
             }
-
-            RollbarConfigSection configuration =
-                ConfigurationManager.GetSection("rollbar")
-                as RollbarConfigSection;
-            return configuration;
         }
 
         /// <summary>
@@ -192,7 +197,7 @@
             }
         }
 
-            /// <summary>
+        /// <summary>
         /// Gets the maximum items limit.
         /// </summary>
         /// <value>
