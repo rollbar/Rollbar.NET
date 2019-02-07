@@ -48,11 +48,15 @@
         }
 
         /// <summary>
-        /// Gets or sets the CPU architecture.
+        /// Gets or sets the CPU architecture (OPTIONAL).
         /// </summary>
         /// <value>
         /// The CPU architecture.
         /// </value>
+        /// <remarks>
+        /// Optional: cpu
+        /// A string up to 255 characters
+        /// </remarks>
         public string Cpu
         {
             get { return this._keyedValues[ReservedProperties.Cpu] as string; }

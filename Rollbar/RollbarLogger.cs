@@ -563,9 +563,20 @@ namespace Rollbar
         {
             lock (this._syncRoot)
             {
-                var data = RollbarUtility.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
-                var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
-                DoSend(payload);
+                try
+                {
+                    var data = RollbarUtility.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
+                    var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
+                    payload.Validate();
+                    DoSend(payload);
+                }
+                catch(System.Exception exception)
+                {
+                    var errorEvent = 
+                        new InternalErrorEventArgs(this, dataObject, exception, "EXCEPTION within RollbarLogger.Enque(...) method");
+                    System.Diagnostics.Trace.TraceError(errorEvent.TraceAsString());
+                    this.OnRollbarEvent(errorEvent);
+                }
             }
         }
 
