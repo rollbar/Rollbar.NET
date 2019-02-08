@@ -17,9 +17,11 @@ namespace Rollbar.AspNet.Mvc
             //throw new NotImplementedException();
 
             //RollbarLocator.RollbarInstance.Info("Next will be an exception!");
-            RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromHours(10)).Critical(filterContext.Exception);
+            //RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromHours(10)).Critical(filterContext.Exception);
 
-            //RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(10)).Critical(new ExceptionContextPackagingStrategy(filterContext));
+            //var data = new ExceptionContextPackagingStrategy(filterContext).PackageAsRollbarData();
+
+            RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromHours(10)).Critical(new ExceptionContextPackagingStrategy(filterContext));
         }
     }
 }

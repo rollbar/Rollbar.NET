@@ -17,12 +17,15 @@
         /// <returns>IDictionary&lt;System.String, System.Object&gt;.</returns>
         public static IDictionary<string, object> ToObjectDictionary(this IDictionary<string, string> stringDictionary)
         {
-            if (stringDictionary == null || stringDictionary.Count == 0)
+            int capacity = stringDictionary?.Count ?? 0;
+            var objectDictionary = new Dictionary<string, object>(capacity);
+
+            foreach(var key in stringDictionary.Keys.Where(k => k != null))
             {
-                return new Dictionary<string, object>();
+                objectDictionary[key] = stringDictionary[key];
             }
 
-            return stringDictionary.Keys.Where(n => n != null).ToDictionary(k => k, k => stringDictionary[k] as object);
+            return objectDictionary;
         }
 
     }

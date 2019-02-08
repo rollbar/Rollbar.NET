@@ -565,9 +565,13 @@ namespace Rollbar
             {
                 try
                 {
+                    // compose the payload:
                     var data = RollbarUtility.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
                     var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
+                    //payload.Data.Environment = this._config.Environment;
+                    //payload.Data.Level = level;
                     payload.Validate();
+
                     DoSend(payload);
                 }
                 catch(System.Exception exception)

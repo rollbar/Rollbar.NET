@@ -111,7 +111,7 @@ namespace Rollbar.AspNet.Mvc
                 }
                 request.UserIp = forwardedFor ?? httpRequest.UserHostAddress;
 
-                request.Params = httpRequest.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.RenderAsString()).ToObjectDictionary();
+                request.Params = httpRequest.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Value.ToString()).ToObjectDictionary();
 
                 rollbarData.Request = request;
 
