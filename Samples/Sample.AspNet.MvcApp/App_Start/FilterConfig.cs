@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using Rollbar.AspNet.Mvc;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Sample.AspNet.MvcApp
@@ -8,6 +9,7 @@ namespace Sample.AspNet.MvcApp
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new RollbarExceptionFilter());
         }
     }
 }

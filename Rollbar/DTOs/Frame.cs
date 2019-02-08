@@ -186,7 +186,12 @@
             {
                 returnVal = method.ReflectedType.FullName ;
             }
-            return returnVal;
+            if (!string.IsNullOrWhiteSpace(returnVal))
+            {
+                return returnVal;
+            }
+
+            return defaultFileName;
         }
 
         private static int? GetLineNumber(StackFrame frame)

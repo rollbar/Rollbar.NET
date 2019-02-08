@@ -100,8 +100,8 @@
             SemaphoreSlim signal
             )
         {
-            Assumption.AssertNotNullOrWhiteSpace(this.AccessToken, nameof(this.AccessToken));
-            Assumption.AssertNotNull(this.Data, nameof(this.Data));
+            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
+            Assumption.AssertNotNull(data, nameof(data));
 
             this._timeoutAt = timeoutAt;
             this._signal = signal;

@@ -3,6 +3,7 @@
     using System;
     using System.Text;
     using System.Reflection;
+    using System.Web;
 
     /// <summary>
     /// Class ObjectExtension.
@@ -72,5 +73,39 @@
 
             return stringBuilder.ToString();
         }
+
+#if NETFX
+
+        /// <summary>
+        /// Renders as string.
+        /// </summary>
+        /// <param name="httpPostedFile">The HTTP posted file.</param>
+        /// <returns>System.String.</returns>
+        public static string RenderAsString(this HttpPostedFile httpPostedFile)
+        {
+            return RenderAsString(httpPostedFile, null);
+
+        }
+
+        /// <summary>
+        /// Renders as string.
+        /// </summary>
+        /// <param name="httpPostedFile">The HTTP posted file.</param>
+        /// <param name="indentation">The indentation.</param>
+        /// <returns>System.String.</returns>
+        public static string RenderAsString(this HttpPostedFile httpPostedFile, string indentation)
+        {
+            if (httpPostedFile.ContentLength == 0 && string.IsNullOrEmpty(httpPostedFile.FileName))
+                return "[empty]";
+
+            return string.Format("{0}{1} ({2}, {3} bytes)"
+                , (indentation != null) ? indentation : string.Empty
+                , httpPostedFile.FileName
+                , httpPostedFile.ContentType
+                , httpPostedFile.ContentLength
+                );
+        }
+
+#endif
     }
 }

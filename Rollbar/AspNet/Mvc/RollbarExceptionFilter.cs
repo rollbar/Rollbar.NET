@@ -14,7 +14,12 @@ namespace Rollbar.AspNet.Mvc
     {
         public void OnException(ExceptionContext filterContext)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+
+            //RollbarLocator.RollbarInstance.Info("Next will be an exception!");
+            RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromHours(10)).Critical(filterContext.Exception);
+
+            //RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(10)).Critical(new ExceptionContextPackagingStrategy(filterContext));
         }
     }
 }
