@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Rollbar;
+using Rollbar.AspNet.Mvc;
 using Rollbar.DTOs;
 
 namespace Sample.AspNet.MvcApp
@@ -24,12 +25,17 @@ namespace Sample.AspNet.MvcApp
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        //protected void Application_Error()
-        //{
-        //    var exception = Server.GetLastError();
-        //    var httpContext = HttpContext.Current;
-        //    //RollbarLocator.RollbarInstance.Critical(new ExceptionContextPackagingStrategy(filterContext, this._commonRollbarDataTitle));
-        //}
+        protected void Application_Error()
+        {
+            var exception = Server.GetLastError();
+            var httpContext = HttpContext.Current;
+            IRollbarPackagingStrategy packagingStrategy = new ExceptionPackagingStrategy(exception, "EXCEPTION intercepted by MvcApplication.Application_Error()");
+            if (httpContext != null)
+            {
+                packagingStrategy = new HttpContextPackagingStrategyDecorator(packagingStrategy, httpContext);
+            }
+            RollbarLocator.RollbarInstance.Critical(packagingStrategy);
+        }
 
 
         /// <summary>

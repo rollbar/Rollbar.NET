@@ -15,16 +15,14 @@ namespace Rollbar.AspNet.Mvc
     public class HttpRequestPackagingStrategyDecorator
             : RollbarPackagingStrategyDecoratorBase
     {
-        //private readonly Data _rollbarData;
+
         private readonly HttpRequestBase _httpRequest;
 
         public HttpRequestPackagingStrategyDecorator(IRollbarPackagingStrategy strategyToDecorate, HttpRequestBase httpRequest)
             : base(strategyToDecorate)
         {
-            //Assumption.AssertNotNull(rollbarData, nameof(rollbarData));
             Assumption.AssertNotNull(httpRequest, nameof(httpRequest));
 
-            //this._rollbarData = rollbarData;
             this._httpRequest = httpRequest;
         }
 
