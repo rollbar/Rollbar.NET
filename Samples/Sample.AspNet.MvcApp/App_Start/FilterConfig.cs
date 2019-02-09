@@ -9,7 +9,7 @@ namespace Sample.AspNet.MvcApp
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
-            filters.Add(new RollbarExceptionFilter());
+            filters.Add(new RollbarExceptionFilter("SOURCE: Sample.AspNet.MvcApp's RollbarExceptionFilter"));
         }
     }
 }

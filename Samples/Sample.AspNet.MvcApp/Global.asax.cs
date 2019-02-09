@@ -15,8 +15,7 @@ namespace Sample.AspNet.MvcApp
         protected void Application_Start()
         {
             ConfigureRollbarSingleton();
-
-            //RollbarLocator.RollbarInstance.Info("Rollbar.NET is ready to roll!");
+            RollbarLocator.RollbarInstance.Info("Rollbar.NET is ready to roll!");
 
 
             AreaRegistration.RegisterAllAreas();
@@ -25,6 +24,12 @@ namespace Sample.AspNet.MvcApp
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
+        //protected void Application_Error()
+        //{
+        //    var exception = Server.GetLastError();
+        //    var httpContext = HttpContext.Current;
+        //    //RollbarLocator.RollbarInstance.Critical(new ExceptionContextPackagingStrategy(filterContext, this._commonRollbarDataTitle));
+        //}
 
 
         /// <summary>
@@ -54,22 +59,6 @@ namespace Sample.AspNet.MvcApp
             // optional step if you would like to monitor all Rollbar instances' internal events within your application:
             //RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
 
-            // Optional info about reporting Rollbar user:
-            SetRollbarReportingUser("007", "jbond@mi6.uk", "JBOND");
-        }
-
-        /// <summary>
-        /// Sets the rollbar reporting user.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="email">The email.</param>
-        /// <param name="userName">Name of the user.</param>
-        private static void SetRollbarReportingUser(string id, string email, string userName)
-        {
-            Person person = new Person(id);
-            person.Email = email;
-            person.UserName = userName;
-            RollbarLocator.RollbarInstance.Config.Person = person;
         }
 
         /// <summary>
