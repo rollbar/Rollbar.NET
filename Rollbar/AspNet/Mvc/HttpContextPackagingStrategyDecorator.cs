@@ -32,6 +32,7 @@ namespace Rollbar.AspNet.Mvc
         {
             if (this._httpContext?.Request != null)
             {
+                // here we essentially piggy-back on capabilities of already implemented HttpRequestPackagingStrategyDecorator instead of this decorator:
                 IRollbarPackagingStrategy strategy = new HttpRequestPackagingStrategyDecorator(this._strategyToDecorate, new HttpRequestWrapper(this._httpContext.Request));
                 return strategy.PackageAsRollbarData();
             }
