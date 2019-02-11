@@ -6,8 +6,8 @@
 
     <PluginVersion>1.0.2</PluginVersion>
     <PackageReleaseNotes>
-      Initial release.
-    </PackageReleaseNotes>
+ Making sure Rollbar dependency is up-to-date.
+</PackageReleaseNotes>
 
     <Title>Rollbar.NET Notifier plug-in for Serilog.</Title>
     <Description>Rollbar.NET Notifier as a Serilog Sink.</Description>
@@ -20,9 +20,9 @@
     <Company>Rollbar Inc</Company>
     <Product>Rollbar.Net Notifier SDK</Product>
 
-    <Version>$(PluginVersion)</Version>
-    <AssemblyVersion>$(PluginVersion)</AssemblyVersion>
-    <FileVersion>$(PluginVersion)</FileVersion>
+    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <FileVersion>1.0.3</FileVersion>
 
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright (c) 2018-$(CurrentYear) Rollbar Inc</Copyright>

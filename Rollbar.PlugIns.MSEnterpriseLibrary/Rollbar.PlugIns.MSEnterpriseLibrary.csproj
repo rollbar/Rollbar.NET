@@ -4,8 +4,7 @@
     <TargetFramework>net461</TargetFramework>
 
     <PluginVersion>1.0.0</PluginVersion>
-    <PackageReleaseNotes>
-      Initial release.
+    <PackageReleaseNotes>Making sure Rollbar dependency is up-to-date.
 </PackageReleaseNotes>
 
     <Title>Rollbar.NET Notifier plug-in for Microsoft Enterprise Library v6.</Title>
@@ -19,9 +18,9 @@
     <Company>Rollbar Inc</Company>
     <Product>Rollbar.Net Notifier SDK</Product>
 
-    <Version>$(PluginVersion)</Version>
-    <AssemblyVersion>$(PluginVersion)</AssemblyVersion>
-    <FileVersion>$(PluginVersion)</FileVersion>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <FileVersion>1.0.1</FileVersion>
 
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright (c) 2018-$(CurrentYear) Rollbar Inc</Copyright>
