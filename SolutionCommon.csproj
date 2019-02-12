@@ -18,6 +18,7 @@
       - ref #289: Improve flexibility composing Data DTO.
       - ref #290: Improve comments related to meaning of DTOs properties.
       - ref #291: Define IRollbarPackagingStrategy
+      - resolve #297: Assumption failure when setting nullable value for a key in ExtendableDtoBase
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>

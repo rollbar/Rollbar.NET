@@ -61,6 +61,7 @@
 
             RollbarLocator.RollbarInstance
                 // minimally required Rollbar configuration:
+                // if you remove line below the logger's configuration will be auto-loaded from appsettings.json
                 .Configure(new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment })
                 // optional step if you would like to monitor Rollbar internal events within your application:
                 .InternalEvent += OnRollbarInternalEvent
