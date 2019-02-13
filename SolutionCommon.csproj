@@ -20,6 +20,7 @@
       - ref #291: Define IRollbarPackagingStrategy
       - ref #296: Out of memory exception with high exceptions rate in multi threaded environment.
       - resolve #297: Assumption failure when setting nullable value for a key in ExtendableDtoBase
+      - resolve #298: Make initialization of RollbarConfig via config files or explicitly specified access token as mutually exclusive.
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>
