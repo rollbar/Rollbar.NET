@@ -1,4 +1,4 @@
-﻿using Rollbar;
+using Rollbar;
 using Rollbar.DTOs;
 using Rollbar.Telemetry;
 using System;

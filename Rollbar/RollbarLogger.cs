@@ -523,12 +523,22 @@ namespace Rollbar
             {
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
+
+            // adding logic here that would prevent potential flooding with the tasks when reaching the application thread pool starvation for any reason: 
+            if (this._pendingTasks.Count > this.Config.ReportingQueueDepth)
+            {
+                //return Task.Factory.StartNew(() => { }); // this is essentially a no-op/empty task
+                return null; // let's save on crating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
+            }
+
             // we are taking here a fire-and-forget approach:
             Task task = new Task(state => Enqueue(utcTimestamp, dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");
+
             if (!this._pendingTasks.TryAdd(task, task))
             {
                 this.OnRollbarEvent(new InternalErrorEventArgs(this, dataObject, null, "Couldn't add a pending task while performing EnqueueAsync(...)..."));
-                return Task.Factory.StartNew(() => { });
+                //return Task.Factory.StartNew(() => { }); // this is essentially a no-op/empty task
+                return null; // let's save on crating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
             }
 
             task.ContinueWith(RemovePendingTask)
@@ -546,10 +556,12 @@ namespace Rollbar
         private void RemovePendingTask(Task task)
         {
             bool success = false;
+            Task taskToRemove = null;
             do
             {
-                success = this._pendingTasks.TryRemove(task, out Task taskOut);
+                success = this._pendingTasks.TryRemove(task, out taskToRemove);
             } while (!success);
+            taskToRemove.Dispose();
         }
 
         private void Enqueue(
