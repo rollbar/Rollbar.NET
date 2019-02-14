@@ -8,10 +8,10 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>2.2.2</NotifierVersion>
+    <NotifierVersion>2.2.3</NotifierVersion>
     <PackageReleaseNotes>
       Hot-fix:
-      - resolve #292: Missing exception frame filename causes payload transmission failure.
+      - resolve #296: Out of memory exception with high exceptions rate in multi threaded environment.
     </PackageReleaseNotes>
 
     <Version>$(NotifierVersion)</Version>

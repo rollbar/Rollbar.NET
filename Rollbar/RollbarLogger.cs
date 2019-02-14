@@ -510,6 +510,12 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
+            // adding logic here that would prevent potential flooding with the tasks when reaching the application thread pool starvation for any reason: 
+            if (this._pendingTasks.Count > this.Config.ReportingQueueDepth)
+            {
+                return null; // let's save on creating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
+            }
+
             DateTime utcTimestamp = DateTime.UtcNow;
 
             if (this.Config.LogLevel.HasValue && level < this.Config.LogLevel.Value)
@@ -528,7 +534,7 @@ namespace Rollbar
             if (!this._pendingTasks.TryAdd(task, task))
             {
                 this.OnRollbarEvent(new InternalErrorEventArgs(this, dataObject, null, "Couldn't add a pending task while performing EnqueueAsync(...)..."));
-                return Task.Factory.StartNew(() => { });
+                return null; // let's save on creating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
             }
 
             task.ContinueWith(RemovePendingTask)
