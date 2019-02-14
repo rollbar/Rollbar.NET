@@ -29,14 +29,6 @@ namespace Rollbar.AspNet.Mvc
         private readonly string _message;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="ExceptionContextPackagingStrategy" /> class from being created.
-        /// </summary>
-        private ExceptionContextPackagingStrategy()
-        {
-
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ExceptionContextPackagingStrategy" /> class.
         /// </summary>
         /// <param name="exceptionContext">The exception context.</param>
@@ -51,6 +43,7 @@ namespace Rollbar.AspNet.Mvc
         /// <param name="exceptionContext">The exception context.</param>
         /// <param name="message">The message.</param>
         public ExceptionContextPackagingStrategy(ExceptionContext exceptionContext, string message)
+            : base(false)
         {
             this._exceptionContext = exceptionContext;
             this._message = message;

@@ -15,7 +15,27 @@ namespace Rollbar
         /// <returns></returns>
         public static IRollbar CreateNew()
         {
-            return RollbarFactory.CreateNew(false);
+            return RollbarFactory.CreateNew(null);
+        }
+
+        /// <summary>
+        /// Creates the new instance of IRollbar.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <returns></returns>
+        public static IRollbar CreateNew(IRollbarConfig rollbarConfig)
+        {
+            return RollbarFactory.CreateNew(false, rollbarConfig);
+        }
+
+        /// <summary>
+        /// Creates the new instance of IRollbar.
+        /// </summary>
+        /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
+        /// <returns>IRollbar.</returns>
+        internal static IRollbar CreateNew(bool isSingleton)
+        {
+            return new RollbarLogger(isSingleton, null);
         }
 
         /// <summary>
@@ -24,7 +44,7 @@ namespace Rollbar
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <returns>IRollbar.</returns>
-        internal static IRollbar CreateNew(bool isSingleton, IRollbarConfig rollbarConfig = null)
+        internal static IRollbar CreateNew(bool isSingleton, IRollbarConfig rollbarConfig)
         {
             return new RollbarLogger(isSingleton, rollbarConfig);
         }

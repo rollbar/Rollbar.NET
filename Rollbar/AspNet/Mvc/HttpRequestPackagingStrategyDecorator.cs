@@ -12,27 +12,43 @@ namespace Rollbar.AspNet.Mvc
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Class HttpRequestPackagingStrategyDecorator.
+    /// Implements the <see cref="Rollbar.RollbarPackagingStrategyDecoratorBase" /></summary>
+    /// <seealso cref="Rollbar.RollbarPackagingStrategyDecoratorBase" />
     public class HttpRequestPackagingStrategyDecorator
-            : RollbarPackagingStrategyDecoratorBase
+                : RollbarPackagingStrategyDecoratorBase
     {
 
+        /// <summary>
+        /// The HTTP request
+        /// </summary>
         private readonly HttpRequestBase _httpRequest;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpRequestPackagingStrategyDecorator" /> class.
+        /// </summary>
+        /// <param name="strategyToDecorate">The strategy to decorate.</param>
+        /// <param name="httpRequest">The HTTP request.</param>
         public HttpRequestPackagingStrategyDecorator(IRollbarPackagingStrategy strategyToDecorate, HttpRequestBase httpRequest)
-            : base(strategyToDecorate)
+                    : base(strategyToDecorate, false)
         {
             Assumption.AssertNotNull(httpRequest, nameof(httpRequest));
 
             this._httpRequest = httpRequest;
         }
 
+        /// <summary>
+        /// Packages as rollbar data.
+        /// </summary>
+        /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
         public override Data PackageAsRollbarData()
         {
             Data rollbarData = base.PackageAsRollbarData();
 
             // try harvesting Request DTO info:
             ///////////////////////////////////
-            ///
+            
             var request = new Request();
 
             request.Url = this._httpRequest.Url.ToString();
@@ -58,7 +74,7 @@ namespace Rollbar.AspNet.Mvc
                 // Files from request could not be read here because they are streamed
                 // and have been read earlier by e.g. WCF Rest Service or Open RIA Services
             }
-            
+
             // if the X-Forwarded-For header exists, use that as the user's IP.
             // that will be the true remote IP of a user behind a proxy server or load balancer
             var forwardedFor = this._httpRequest.Headers["X-Forwarded-For"];
@@ -69,7 +85,7 @@ namespace Rollbar.AspNet.Mvc
             request.UserIp = forwardedFor ?? this._httpRequest.UserHostAddress;
 
             request.Params = this._httpRequest.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Value.ToString()).ToObjectDictionary();
-            
+
             // try harvesting custom HTTP session info:
             try
             {
@@ -91,6 +107,7 @@ namespace Rollbar.AspNet.Mvc
 
             // let's try to get any useful data from the HTTP request's server variables:
             /////////////////////////////////////////////////////////////////////////////
+
             var serverVariables = this._httpRequest?.ServerVariables;
             if (serverVariables != null)
             {
