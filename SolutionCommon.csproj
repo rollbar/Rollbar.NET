@@ -15,9 +15,9 @@
       Improvements and fixes:
       - ref #287: Add more seamless integration with ASP.NET (Full Framework) based applications.
       - ref #288: Add sample of Rollbar.NET within ASP.NET (Full Framework) based applications.
-      - ref #289: Improve flexibility composing Data DTO.
-      - ref #290: Improve comments related to meaning of DTOs properties.
-      - ref #291: Define IRollbarPackagingStrategy
+      - resolve #289: Improve flexibility composing Data DTO.
+      - resolve #290: Improve comments related to meaning of DTOs properties.
+      - resolve #291: Define IRollbarPackagingStrategy
       - ref #296: Out of memory exception with high exceptions rate in multi threaded environment.
       - resolve #297: Assumption failure when setting nullable value for a key in ExtendableDtoBase
       - resolve #298: Make initialization of RollbarConfig via config files or explicitly specified access token as mutually exclusive.
