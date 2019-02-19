@@ -39,16 +39,14 @@ namespace Rollbar.AspNet.Mvc
         }
 
         /// <summary>
-        /// Packages as rollbar data.
+        /// Decorates the specified rollbar data.
         /// </summary>
-        /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        public override Data PackageAsRollbarData()
+        /// <param name="rollbarData">The rollbar data.</param>
+        protected override void Decorate(Data rollbarData)
         {
-            Data rollbarData = base.PackageAsRollbarData();
-
             // try harvesting Request DTO info:
             ///////////////////////////////////
-            
+
             var request = new Request();
 
             request.Url = this._httpRequest.Url.ToString();
@@ -160,9 +158,6 @@ namespace Rollbar.AspNet.Mvc
                     UserName = Environment.UserName,
                 };
             }
-
-            // return the now enriched Data DTO:
-            return rollbarData;
         }
     }
 }

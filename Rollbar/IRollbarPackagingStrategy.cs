@@ -35,5 +35,11 @@
         /// </summary>
         /// <value><c>true</c> if needs to package synchronously; otherwise, <c>false</c>.</value>
         bool MustApplySynchronously { get; }
+
+        /// <summary>
+        /// Gets the rollbar data packaged by this strategy (if any).
+        /// </summary>
+        /// <value>The rollbar data.</value>
+        Data RollbarData { get; }
     }
 }

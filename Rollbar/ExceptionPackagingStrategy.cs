@@ -49,10 +49,10 @@
         }
 
         /// <summary>
-        /// Packages as rollbar data.
+        /// Produces the rollbar data.
         /// </summary>
-        /// <returns>Data.</returns>
-        public override Data PackageAsRollbarData()
+        /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
+        protected override Data ProduceRollbarData()
         {
             Body rollbarBody = new Body(this._exceptionToPackage);
             IDictionary<string, object> custom = null;

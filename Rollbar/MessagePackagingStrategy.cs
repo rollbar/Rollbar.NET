@@ -78,10 +78,10 @@
         }
 
         /// <summary>
-        /// Packages as rollbar data.
+        /// Produces the rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        public override Data PackageAsRollbarData()
+        protected override Data ProduceRollbarData()
         {
             Message rollbarMessage = new Message(this._messageToPackage, this._extraInfo);
             Body rollbarBody = new Body(rollbarMessage);

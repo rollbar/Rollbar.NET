@@ -47,6 +47,9 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(exceptionMessage, rollbarData.Body.Trace.Exception.Message);
             Assert.AreEqual(exception.GetType().FullName, rollbarData.Body.Trace.Exception.Class);
 
+            Assert.IsTrue(rollbarData.Timestamp.HasValue);
+            long initialTimestamp = rollbarData.Timestamp.Value;
+
             const string personID = "007";
             const string personUsername = "JamesBond";
             const string personEmail = "jbond@mi6.uk";
@@ -75,6 +78,13 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(personID, rollbarData.Person.Id);
             Assert.AreEqual(personUsername, rollbarData.Person.UserName);
             Assert.AreEqual(personEmail, rollbarData.Person.Email);
+
+            // Make sure the Data.Timestamp was not overwritten:
+
+            Assert.IsTrue(rollbarData.Timestamp.HasValue);
+            Assert.AreEqual(initialTimestamp, rollbarData.Timestamp.Value);
+            System.Diagnostics.Debug.WriteLine($"Initial timestamp: {initialTimestamp}");
+            System.Diagnostics.Debug.WriteLine($"Decorated timestamp: {rollbarData.Timestamp.Value}");
         }
 
     }

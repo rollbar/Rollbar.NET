@@ -52,14 +52,12 @@
         }
 
         /// <summary>
-        /// Packages as rollbar data.
+        /// Decorates the specified rollbar data.
         /// </summary>
-        /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        public override Data PackageAsRollbarData()
+        /// <param name="rollbarData">The rollbar data.</param>
+        protected override void Decorate(Data rollbarData)
         {
-            Data rollbarData = base.PackageAsRollbarData();
             rollbarData.Person = this._person;
-            return rollbarData;
         }
     }
 }

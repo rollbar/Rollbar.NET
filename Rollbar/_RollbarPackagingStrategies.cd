@@ -1,60 +1,67 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="Rollbar.ExceptionPackagingStrategy">
-    <Position X="8.5" Y="3.75" Width="6" />
+    <Position X="0.5" Y="8.25" Width="6" />
     <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <HashCode>AAAAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
       <FileName>ExceptionPackagingStrategy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.RollbarPackagingStrategyBase">
     <Position X="4.5" Y="0.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <HashCode>EAAABAAAAAAAAAAAAgAAAEAAAACAAAAAAAAAQAAQAAA=</HashCode>
       <FileName>RollbarPackagingStrategyBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Rollbar.RollbarPackagingStrategyDecoratorBase">
-    <Position X="1" Y="3.5" Width="3.75" />
+    <Position X="8.5" Y="4.5" Width="7.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAABAAAAAAAAAAAAAQAAA=</HashCode>
+      <HashCode>AAAABAAAAAAAAAAAAgAAAAAAABAAAAAAAAAAQAAwAAA=</HashCode>
       <FileName>RollbarPackagingStrategyDecoratorBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Rollbar.PersonPackagingStrategyDecorator">
-    <Position X="1" Y="6.25" Width="3.75" />
+    <Position X="8.5" Y="8" Width="9" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAgAAA=</HashCode>
       <FileName>PersonPackagingStrategyDecorator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.AspNet.Mvc.ExceptionContextPackagingStrategy">
-    <Position X="8.5" Y="6.25" Width="6" />
+    <Position X="0.5" Y="11.25" Width="6" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAABAAAAEAAAAAAAAAA=</HashCode>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAABAAAAEAAAAAAAAAA=</HashCode>
       <FileName>AspNet\Mvc\ExceptionContextPackagingStrategy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.AspNet.Mvc.HttpContextPackagingStrategyDecorator">
-    <Position X="1" Y="10.5" Width="3.75" />
+    <Position X="8.5" Y="13.25" Width="9" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAACAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAABAAAAAAAAAAAAAgAAA=</HashCode>
       <FileName>AspNet\Mvc\HttpContextPackagingStrategyDecorator.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.AspNet.Mvc.HttpRequestPackagingStrategyDecorator">
-    <Position X="1" Y="8.5" Width="3.75" />
+    <Position X="8.5" Y="10.75" Width="9" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAgAAA=</HashCode>
       <FileName>AspNet\Mvc\HttpRequestPackagingStrategyDecorator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.MessagePackagingStrategy">
+    <Position X="0.5" Y="5" Width="6" />
+    <TypeIdentifier>
+      <HashCode>IAAAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>MessagePackagingStrategy.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="Rollbar.IRollbarPackagingStrategy">
     <Position X="1" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAQAAQAAA=</HashCode>
       <FileName>IRollbarPackagingStrategy.cs</FileName>
     </TypeIdentifier>
   </Interface>

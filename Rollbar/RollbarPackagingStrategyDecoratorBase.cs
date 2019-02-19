@@ -38,12 +38,30 @@
         }
 
         /// <summary>
+        /// Produces the rollbar data.
+        /// </summary>
+        /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
+        protected override Data ProduceRollbarData()
+        {
+            // this is a decorator, it does not produce Rollbar Data, but decorates provided one (if any)
+            return null; 
+        }
+
+        /// <summary>
+        /// Decorates the specified rollbar data.
+        /// </summary>
+        /// <param name="rollbarData">The rollbar data.</param>
+        protected abstract void Decorate(Data rollbarData);
+
+        /// <summary>
         /// Packages as rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
         public override Data PackageAsRollbarData()
         {
-            return this._strategyToDecorate?.PackageAsRollbarData();
+            Data rollbarData = this._strategyToDecorate?.PackageAsRollbarData();
+            this.Decorate(rollbarData);
+            return rollbarData;
         }
 
         /// <summary>
@@ -56,6 +74,8 @@
         {
             get
             {
+                // here, we are looking for the first/closest (if any) strategy 
+                // in the decoration chain that must be applied synchronously:
                 if (this._mustApplySynchronously)
                 {
                     return true;
@@ -70,5 +90,20 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the rollbar data packaged by this strategy (if any).
+        /// </summary>
+        /// <value>The rollbar data.</value>
+        public override Data RollbarData
+        {
+            get
+            {
+                // a decorator is not expected to have its own Rollbar Data,
+                // but can get it from a wrapped/decorated strategy (if any):
+                return this._strategyToDecorate?.RollbarData;
+            }
+        }
+
     }
 }

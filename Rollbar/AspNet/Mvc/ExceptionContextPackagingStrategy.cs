@@ -50,10 +50,10 @@ namespace Rollbar.AspNet.Mvc
         }
 
         /// <summary>
-        /// Packages as rollbar data.
+        /// Produces the rollbar data.
         /// </summary>
-        /// <returns>Rollbar.DTOs.Data.</returns>
-        public override Data PackageAsRollbarData()
+        /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
+        protected override Data ProduceRollbarData()
         {
             if (this._exceptionContext == null)
             {
@@ -61,7 +61,7 @@ namespace Rollbar.AspNet.Mvc
             }
 
             // let's use composition of available strategies:    
-            
+
             IRollbarPackagingStrategy packagingStrategy = new ExceptionPackagingStrategy(this._exceptionContext.Exception, this._message);
 
             var httpRequest = this._exceptionContext?.RequestContext?.HttpContext?.Request;

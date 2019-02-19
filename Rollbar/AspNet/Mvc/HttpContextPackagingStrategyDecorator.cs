@@ -44,19 +44,20 @@ namespace Rollbar.AspNet.Mvc
         }
 
         /// <summary>
-        /// Packages as rollbar data.
+        /// Decorates the specified rollbar data.
         /// </summary>
-        /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        public override Data PackageAsRollbarData()
+        /// <param name="rollbarData">The rollbar data.</param>
+        protected override void Decorate(Data rollbarData)
         {
             if (this._httpContext?.Request != null)
             {
-                // here we essentially piggy-back on capabilities of already implemented HttpRequestPackagingStrategyDecorator instead of this decorator:
-                IRollbarPackagingStrategy strategy = new HttpRequestPackagingStrategyDecorator(this._strategyToDecorate, new HttpRequestWrapper(this._httpContext.Request));
-                return strategy.PackageAsRollbarData();
+                // here we essentially piggy-back on capabilities of 
+                // already implemented HttpRequestPackagingStrategyDecorator 
+                // instead of this decorator:
+                HttpRequestPackagingStrategyDecorator strategy =
+                    new HttpRequestPackagingStrategyDecorator(this._strategyToDecorate, new HttpRequestWrapper(this._httpContext.Request));
+                strategy.PackageAsRollbarData();
             }
-
-            return base.PackageAsRollbarData();
         }
     }
 }
