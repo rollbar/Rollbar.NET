@@ -4,7 +4,7 @@
     using Rollbar.DTOs;
 
     /// <summary>
-    /// Interface IRollbarPackagingStrategy
+    /// Interface IRollbarPackage
     /// 
     /// Defines API for implementing packaging strategies of how to package 
     /// a particular object type as Rollbar Data DTO.
@@ -13,7 +13,7 @@
     /// Rollbar Logger, then, would use this strategy to package the object as 
     /// a Rollbar Data DTO according to the strategy implementation.
     /// </summary>
-    public interface IRollbarPackagingStrategy
+    public interface IRollbarPackage
     {
         /// <summary>
         /// Packages as rollbar data.

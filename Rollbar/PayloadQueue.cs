@@ -25,9 +25,9 @@ namespace Rollbar
             Assumption.AssertNotNull(client, nameof(client));
             Assumption.AssertTrue(object.ReferenceEquals(logger.Config, client.Config), nameof(client.Config));
 
-            this._logger = logger;
             this._syncLock = new object();
             this._queue = new Queue<Payload>();
+            this._logger = logger;
             this._client = client;
             this._isReleased = false;
         }

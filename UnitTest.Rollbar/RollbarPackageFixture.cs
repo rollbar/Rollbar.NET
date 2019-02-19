@@ -9,8 +9,8 @@ namespace UnitTest.Rollbar
     using System.Collections.Generic;
 
     [TestClass]
-    [TestCategory(nameof(RollbarPackagingStrategyFixture))]
-    public class RollbarPackagingStrategyFixture
+    [TestCategory(nameof(RollbarPackageFixture))]
+    public class RollbarPackageFixture
     {
         [TestInitialize]
         public void SetupFixture()
@@ -23,14 +23,14 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        public void ExceptionPackagingStrategyTest()
+        public void ExceptionPackageTest()
         {
             const string rollbarDataTitle = "You have some coding to do...";
             const string exceptionMessage = "Forgotten method";
             System.Exception exception = new NotImplementedException(exceptionMessage);
 
-            IRollbarPackagingStrategy packagingStrategy = 
-                new ExceptionPackagingStrategy(exception, rollbarDataTitle);
+            IRollbarPackage packagingStrategy = 
+                new ExceptionPackage(exception, rollbarDataTitle);
 
             Assert.IsFalse(packagingStrategy.MustApplySynchronously, "Expected to be an async strategy!");
 
@@ -49,7 +49,7 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        public void OuterExceptionPackagingStrategyTest()
+        public void OuterExceptionPackageTest()
         {
             const string rollbarDataTitle = "You have some coding to do...";
             const string innerExceptionMessage = "Forgotten method";
@@ -57,8 +57,8 @@ namespace UnitTest.Rollbar
             const string exceptionMessage = "Application level exception";
             System.Exception exception = new ApplicationException(exceptionMessage, innerException);
 
-            IRollbarPackagingStrategy packagingStrategy =
-                new ExceptionPackagingStrategy(exception, rollbarDataTitle);
+            IRollbarPackage packagingStrategy =
+                new ExceptionPackage(exception, rollbarDataTitle);
 
             Assert.IsFalse(packagingStrategy.MustApplySynchronously, "Expected to be an async strategy!");
 
@@ -85,7 +85,7 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        public void AggregateExceptionPackagingStrategyTest()
+        public void AggregateExceptionPackageTest()
         {
             const string rollbarDataTitle = "You have some coding to do...";
             const string innerExceptionMessage1 = "Forgotten method";
@@ -95,8 +95,8 @@ namespace UnitTest.Rollbar
             const string exceptionMessage = "Application level exception";
             System.Exception exception = new AggregateException(exceptionMessage, innerException1, innerException2);
 
-            IRollbarPackagingStrategy packagingStrategy =
-                new ExceptionPackagingStrategy(exception, rollbarDataTitle);
+            IRollbarPackage packagingStrategy =
+                new ExceptionPackage(exception, rollbarDataTitle);
 
             Assert.IsFalse(packagingStrategy.MustApplySynchronously, "Expected to be an async strategy!");
 
@@ -123,7 +123,7 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        public void MessagePackagingStrategyTest()
+        public void MessagePackageTest()
         {
             const string rollbarDataTitle = "Got a message...";
             const string message = "My message to report to Rollbar";
@@ -133,8 +133,8 @@ namespace UnitTest.Rollbar
                 { "extra2", "Info 2"},
             };
 
-            IRollbarPackagingStrategy packagingStrategy =
-                new MessagePackagingStrategy(message, rollbarDataTitle, extraInfo);
+            IRollbarPackage packagingStrategy =
+                new MessagePackage(message, rollbarDataTitle, extraInfo);
 
             Assert.IsFalse(packagingStrategy.MustApplySynchronously, "Expected to be an async strategy!");
 

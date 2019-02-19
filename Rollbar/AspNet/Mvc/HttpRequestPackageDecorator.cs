@@ -13,11 +13,11 @@ namespace Rollbar.AspNet.Mvc
     using Rollbar.DTOs;
 
     /// <summary>
-    /// Class HttpRequestPackagingStrategyDecorator.
-    /// Implements the <see cref="Rollbar.RollbarPackagingStrategyDecoratorBase" /></summary>
-    /// <seealso cref="Rollbar.RollbarPackagingStrategyDecoratorBase" />
-    public class HttpRequestPackagingStrategyDecorator
-                : RollbarPackagingStrategyDecoratorBase
+    /// Class HttpRequestPackageDecorator.
+    /// Implements the <see cref="Rollbar.RollbarPackageDecoratorBase" /></summary>
+    /// <seealso cref="Rollbar.RollbarPackageDecoratorBase" />
+    public class HttpRequestPackageDecorator
+                : RollbarPackageDecoratorBase
     {
 
         /// <summary>
@@ -26,12 +26,12 @@ namespace Rollbar.AspNet.Mvc
         private readonly HttpRequestBase _httpRequest;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpRequestPackagingStrategyDecorator" /> class.
+        /// Initializes a new instance of the <see cref="HttpRequestPackageDecorator" /> class.
         /// </summary>
-        /// <param name="strategyToDecorate">The strategy to decorate.</param>
+        /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="httpRequest">The HTTP request.</param>
-        public HttpRequestPackagingStrategyDecorator(IRollbarPackagingStrategy strategyToDecorate, HttpRequestBase httpRequest)
-                    : base(strategyToDecorate, false)
+        public HttpRequestPackageDecorator(IRollbarPackage packageToDecorate, HttpRequestBase httpRequest)
+                    : base(packageToDecorate, false)
         {
             Assumption.AssertNotNull(httpRequest, nameof(httpRequest));
 

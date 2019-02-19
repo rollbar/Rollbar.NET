@@ -8,12 +8,12 @@
     using Rollbar.DTOs;
 
     /// <summary>
-    /// Class PersonPackagingStrategyDecorator.
-    /// Implements the <see cref="Rollbar.RollbarPackagingStrategyDecoratorBase" />
+    /// Class PersonPackageDecorator.
+    /// Implements the <see cref="Rollbar.RollbarPackageDecoratorBase" />
     /// </summary>
-    /// <seealso cref="Rollbar.RollbarPackagingStrategyDecoratorBase" />
-    public class PersonPackagingStrategyDecorator
-        : RollbarPackagingStrategyDecoratorBase
+    /// <seealso cref="Rollbar.RollbarPackageDecoratorBase" />
+    public class PersonPackageDecorator
+        : RollbarPackageDecoratorBase
     {
         /// <summary>
         /// The person
@@ -21,32 +21,32 @@
         private readonly Person _person;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PersonPackagingStrategyDecorator"/> class.
+        /// Initializes a new instance of the <see cref="PersonPackageDecorator" /> class.
         /// </summary>
-        /// <param name="strategyToDecorate">The strategy to decorate.</param>
+        /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="personId">The person identifier.</param>
         /// <param name="personUsername">The person username.</param>
         /// <param name="personEmail">The person email.</param>
-        public PersonPackagingStrategyDecorator(
-            IRollbarPackagingStrategy strategyToDecorate,
+        public PersonPackageDecorator(
+            IRollbarPackage packageToDecorate,
             string personId,
             string personUsername,
             string personEmail
             )
-            : this(strategyToDecorate, new Person(personId) { UserName = personUsername, Email = personEmail })
+            : this(packageToDecorate, new Person(personId) { UserName = personUsername, Email = personEmail })
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PersonPackagingStrategyDecorator"/> class.
+        /// Initializes a new instance of the <see cref="PersonPackageDecorator" /> class.
         /// </summary>
-        /// <param name="strategyToDecorate">The strategy to decorate.</param>
+        /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="person">The person.</param>
-        public PersonPackagingStrategyDecorator(
-            IRollbarPackagingStrategy strategyToDecorate,
+        public PersonPackageDecorator(
+            IRollbarPackage packageToDecorate,
             Person person
             ) 
-            : base(strategyToDecorate, false)
+            : base(packageToDecorate, false)
         {
             this._person = person;
         }

@@ -10,12 +10,13 @@
     using Rollbar.DTOs;
 
     /// <summary>
-    /// Class RollbarPackagingStrategyBase.
-    /// Implements the <see cref="Rollbar.IRollbarPackagingStrategy" />
+    /// Class RollbarPackageBase.
+    /// Implements the <see cref="Rollbar.IRollbarPackage" />
     /// </summary>
-    /// <seealso cref="Rollbar.IRollbarPackagingStrategy" />
-    public abstract class RollbarPackagingStrategyBase
-        : IRollbarPackagingStrategy
+    /// <seealso cref="Rollbar.IRollbarPackage" />
+    public abstract class RollbarPackageBase
+        : IRollbarPackage
+
     {
         /// <summary>
         /// The time stamp
@@ -30,18 +31,18 @@
         private Data _rollbarData;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="RollbarPackagingStrategyBase"/> class from being created.
+        /// Prevents a default instance of the <see cref="RollbarPackageBase"/> class from being created.
         /// </summary>
-        private RollbarPackagingStrategyBase()
+        private RollbarPackageBase()
         {
 
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarPackagingStrategyBase"/> class.
+        /// Initializes a new instance of the <see cref="RollbarPackageBase"/> class.
         /// </summary>
         /// <param name="mustApplySynchronously">if set to <c>true</c> the strategy must be apply synchronously.</param>
-        protected RollbarPackagingStrategyBase(bool mustApplySynchronously)
+        protected RollbarPackageBase(bool mustApplySynchronously)
         {
             this._mustApplySynchronously = mustApplySynchronously;
         }
@@ -79,7 +80,7 @@
 
             // a packaging strategy decorator is never expected to have its own valid instance of this._rollbarData:
             Assumption.AssertFalse(
-                this.GetType().IsSubclassOf(typeof(RollbarPackagingStrategyDecoratorBase)) 
+                this.GetType().IsSubclassOf(typeof(RollbarPackageDecoratorBase)) 
                 && (this._rollbarData != null), 
                 nameof(this._rollbarData)
                 );

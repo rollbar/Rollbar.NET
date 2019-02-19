@@ -44,7 +44,7 @@
                 return data;
             }
 
-            IRollbarPackagingStrategy rollbarPackagingStrategy = obj as IRollbarPackagingStrategy;
+            IRollbarPackage rollbarPackagingStrategy = obj as IRollbarPackage;
             if (rollbarPackagingStrategy != null)
             {
                 data = rollbarPackagingStrategy.PackageAsRollbarData();

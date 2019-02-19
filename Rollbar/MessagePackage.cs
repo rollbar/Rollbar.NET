@@ -9,12 +9,12 @@
     using Rollbar.DTOs;
 
     /// <summary>
-    /// Class MessagePackagingStrategy.
-    /// Implements the <see cref="Rollbar.RollbarPackagingStrategyBase" />
+    /// Class MessagePackage.
+    /// Implements the <see cref="Rollbar.RollbarPackageBase" />
     /// </summary>
-    /// <seealso cref="Rollbar.RollbarPackagingStrategyBase" />
-    public class MessagePackagingStrategy
-        : RollbarPackagingStrategyBase
+    /// <seealso cref="Rollbar.RollbarPackageBase" />
+    public class MessagePackage
+        : RollbarPackageBase
     {
         /// <summary>
         /// The message to package
@@ -32,11 +32,11 @@
         private readonly IDictionary<string, object> _extraInfo;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessagePackagingStrategy"/> class.
+        /// Initializes a new instance of the <see cref="MessagePackage"/> class.
         /// </summary>
         /// <param name="messageToPackage">The message to package.</param>
         /// <param name="rollbarDataTitle">The rollbar data title.</param>
-        public MessagePackagingStrategy(
+        public MessagePackage(
             string messageToPackage, 
             string rollbarDataTitle
             )
@@ -45,11 +45,11 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessagePackagingStrategy" /> class.
+        /// Initializes a new instance of the <see cref="MessagePackage" /> class.
         /// </summary>
         /// <param name="messageToPackage">The message to package.</param>
         /// <param name="extraInfo">The extra information.</param>
-        public MessagePackagingStrategy(
+        public MessagePackage(
             string messageToPackage, 
             IDictionary<string, object> extraInfo
             )
@@ -58,12 +58,12 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MessagePackagingStrategy" /> class.
+        /// Initializes a new instance of the <see cref="MessagePackage" /> class.
         /// </summary>
         /// <param name="messageToPackage">The message to package.</param>
         /// <param name="rollbarDataTitle">The rollbar data title.</param>
         /// <param name="extraInfo">The extra information.</param>
-        public MessagePackagingStrategy(
+        public MessagePackage(
             string messageToPackage, 
             string rollbarDataTitle, 
             IDictionary<string, object> extraInfo

@@ -101,19 +101,19 @@
       <FileName>RollbarAssistant.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.RollbarPackagingStrategyBase">
-    <Position X="0.5" Y="23.25" Width="6" />
+  <Class Name="Rollbar.RollbarPackageBase">
+    <Position X="0.5" Y="23.25" Width="6.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAQAAA=</HashCode>
-      <FileName>RollbarPackagingStrategyBase.cs</FileName>
+      <HashCode>EAAABAAAAAAAAAAAAgAAAEAAAACAAAAAAAAAQAAQAAA=</HashCode>
+      <FileName>RollbarPackageBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Rollbar.RollbarPackagingStrategyDecoratorBase">
-    <Position X="0.5" Y="26.25" Width="8" />
+  <Class Name="Rollbar.RollbarPackageDecoratorBase">
+    <Position X="0.5" Y="27.25" Width="6.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAABAAAAAAAAAAAAAQAAA=</HashCode>
-      <FileName>RollbarPackagingStrategyDecoratorBase.cs</FileName>
+      <HashCode>AAAABAAAAAAAAAAAAgAAAAAAAAAAAAAAgAAAQAAwAAA=</HashCode>
+      <FileName>RollbarPackageDecoratorBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -152,11 +152,11 @@
       <FileName>IAsyncLogger.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Rollbar.IRollbarPackagingStrategy">
+  <Interface Name="Rollbar.IRollbarPackage">
     <Position X="0.5" Y="21" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
-      <FileName>IRollbarPackagingStrategy.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAQAAQAAA=</HashCode>
+      <FileName>IRollbarPackage.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="Rollbar.ErrorLevel">

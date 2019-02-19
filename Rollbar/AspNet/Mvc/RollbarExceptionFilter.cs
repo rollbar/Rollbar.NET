@@ -46,7 +46,7 @@ namespace Rollbar.AspNet.Mvc
         public void OnException(ExceptionContext filterContext)
         {
             RollbarLocator.RollbarInstance.Critical(
-                new ExceptionContextPackagingStrategy(filterContext, this._commonRollbarDataTitle)
+                new ExceptionContextPackage(filterContext, this._commonRollbarDataTitle)
                 );
         }
     }

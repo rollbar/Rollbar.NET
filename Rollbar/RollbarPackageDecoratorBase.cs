@@ -9,32 +9,32 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Class RollbarPackagingStrategyDecoratorBase.
-    /// Implements the <see cref="Rollbar.RollbarPackagingStrategyBase" />
-    /// Implements the <see cref="Rollbar.IRollbarPackagingStrategy" />
+    /// Class RollbarPackageDecoratorBase.
+    /// Implements the <see cref="Rollbar.RollbarPackageBase" />
+    /// Implements the <see cref="Rollbar.IRollbarPackage" />
     /// </summary>
-    /// <seealso cref="Rollbar.RollbarPackagingStrategyBase" />
-    /// <seealso cref="Rollbar.IRollbarPackagingStrategy" />
-    public abstract class RollbarPackagingStrategyDecoratorBase
-        : RollbarPackagingStrategyBase
-        , IRollbarPackagingStrategy
+    /// <seealso cref="Rollbar.RollbarPackageBase" />
+    /// <seealso cref="Rollbar.IRollbarPackage" />
+    public abstract class RollbarPackageDecoratorBase
+        : RollbarPackageBase
+        , IRollbarPackage
     {
         /// <summary>
         /// The strategy to decorate
         /// </summary>
-        private readonly IRollbarPackagingStrategy _strategyToDecorate;
+        private readonly IRollbarPackage _packageToDecorate;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarPackagingStrategyDecoratorBase" /> class.
+        /// Initializes a new instance of the <see cref="RollbarPackageDecoratorBase" /> class.
         /// </summary>
-        /// <param name="strategyToDecorate">The strategy to decorate.</param>
+        /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="mustApplySynchronously">if set to <c>true</c> the strategy must be apply synchronously.</param>
-        protected RollbarPackagingStrategyDecoratorBase(IRollbarPackagingStrategy strategyToDecorate, bool mustApplySynchronously)
+        protected RollbarPackageDecoratorBase(IRollbarPackage packageToDecorate, bool mustApplySynchronously)
             : base(mustApplySynchronously)
         {
-            Assumption.AssertNotNull(strategyToDecorate, nameof(strategyToDecorate));
+            Assumption.AssertNotNull(packageToDecorate, nameof(packageToDecorate));
 
-            this._strategyToDecorate = strategyToDecorate;
+            this._packageToDecorate = packageToDecorate;
         }
 
         /// <summary>
@@ -59,7 +59,7 @@
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
         public override Data PackageAsRollbarData()
         {
-            Data rollbarData = this._strategyToDecorate?.PackageAsRollbarData();
+            Data rollbarData = this._packageToDecorate?.PackageAsRollbarData();
             this.Decorate(rollbarData);
             return rollbarData;
         }
@@ -80,9 +80,9 @@
                 {
                     return true;
                 }
-                else if (this._strategyToDecorate != null)
+                else if (this._packageToDecorate != null)
                 {
-                    return this._strategyToDecorate.MustApplySynchronously;
+                    return this._packageToDecorate.MustApplySynchronously;
                 }
                 else
                 {
@@ -101,7 +101,7 @@
             {
                 // a decorator is not expected to have its own Rollbar Data,
                 // but can get it from a wrapped/decorated strategy (if any):
-                return this._strategyToDecorate?.RollbarData;
+                return this._packageToDecorate?.RollbarData;
             }
         }
 

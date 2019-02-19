@@ -9,12 +9,12 @@
     using Rollbar.DTOs;
 
     /// <summary>
-    /// Class ExceptionPackagingStrategy.
-    /// Implements the <see cref="Rollbar.RollbarPackagingStrategyBase" />
+    /// Class ExceptionPackage.
+    /// Implements the <see cref="Rollbar.RollbarPackageBase" />
     /// </summary>
-    /// <seealso cref="Rollbar.RollbarPackagingStrategyBase" />
-    public class ExceptionPackagingStrategy
-        : RollbarPackagingStrategyBase
+    /// <seealso cref="Rollbar.RollbarPackageBase" />
+    public class ExceptionPackage
+        : RollbarPackageBase
     {
         /// <summary>
         /// The exception to package
@@ -26,20 +26,20 @@
         private readonly string _rollbarDataTitle;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExceptionPackagingStrategy"/> class.
+        /// Initializes a new instance of the <see cref="ExceptionPackage"/> class.
         /// </summary>
         /// <param name="exceptionToPackage">The exception to package.</param>
-        public ExceptionPackagingStrategy(System.Exception exceptionToPackage)
+        public ExceptionPackage(System.Exception exceptionToPackage)
             : this(exceptionToPackage, null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExceptionPackagingStrategy"/> class.
+        /// Initializes a new instance of the <see cref="ExceptionPackage"/> class.
         /// </summary>
         /// <param name="exceptionToPackage">The exception to package.</param>
         /// <param name="rollbarDataTitle">The rollbar data title.</param>
-        public ExceptionPackagingStrategy(System.Exception exceptionToPackage, string rollbarDataTitle)
+        public ExceptionPackage(System.Exception exceptionToPackage, string rollbarDataTitle)
             : base(false)
         {
             Assumption.AssertNotNull(exceptionToPackage, nameof(exceptionToPackage));

@@ -14,6 +14,8 @@
     <PackageReleaseNotes>
       Improvements and fixes:
 
+      - resolve #287: Add more seamless integration with ASP.NET (Full Framework) based applications.
+      - resolve #288: Add sample of Rollbar.NET within ASP.NET (Full Framework) based applications.
       - resolve #289: Improve flexibility composing Data DTO.
       - resolve #290: Improve comments related to meaning of DTOs properties.
       - resolve #291: Define IRollbarPackagingStrategy
@@ -28,10 +30,10 @@
       - resolve #305: Implement packaging strategy decorator for Person info.
       - resolve #306: Implement packaging strategy decorator for HttpRequest info.
       - resolve #307: Implement packaging strategy decorator for HttpContext info.
-
       - resolve #308: Implement automatic strategy/Data time-stamping.
-      - resolve #287: Add more seamless integration with ASP.NET (Full Framework) based applications.
-      - resolve #288: Add sample of Rollbar.NET within ASP.NET (Full Framework) based applications.
+
+      - ref #309: Complete integration of packaging strategies.
+
 
     </PackageReleaseNotes>
 

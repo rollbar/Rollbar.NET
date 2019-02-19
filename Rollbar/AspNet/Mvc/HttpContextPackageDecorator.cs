@@ -13,34 +13,34 @@ namespace Rollbar.AspNet.Mvc
     using Rollbar.DTOs;
 
     /// <summary>
-    /// Class HttpContextPackagingStrategyDecorator.
-    /// Implements the <see cref="Rollbar.RollbarPackagingStrategyDecoratorBase" /></summary>
-    /// <seealso cref="Rollbar.RollbarPackagingStrategyDecoratorBase" />
-    public class HttpContextPackagingStrategyDecorator
-                : RollbarPackagingStrategyDecoratorBase
+    /// Class HttpContextPackageDecorator.
+    /// Implements the <see cref="Rollbar.RollbarPackageDecoratorBase" /></summary>
+    /// <seealso cref="Rollbar.RollbarPackageDecoratorBase" />
+    public class HttpContextPackageDecorator
+                : RollbarPackageDecoratorBase
     {
         /// <summary>
         /// The strategy to decorate
         /// </summary>
-        private readonly IRollbarPackagingStrategy _strategyToDecorate;
+        private readonly IRollbarPackage _packageToDecorate;
         /// <summary>
         /// The HTTP context
         /// </summary>
         private readonly HttpContext _httpContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpContextPackagingStrategyDecorator" /> class.
+        /// Initializes a new instance of the <see cref="HttpContextPackageDecorator" /> class.
         /// </summary>
         /// <param name="strategyToDecorate">The strategy to decorate.</param>
         /// <param name="httpContext">The HTTP context.</param>
-        public HttpContextPackagingStrategyDecorator(IRollbarPackagingStrategy strategyToDecorate, HttpContext httpContext)
-                    : base(strategyToDecorate, false)
+        public HttpContextPackageDecorator(IRollbarPackage packageToDecorate, HttpContext httpContext)
+                    : base(packageToDecorate, false)
         {
             Assumption.AssertNotNull(httpContext, nameof(httpContext));
 
             this._httpContext = httpContext;
 
-            this._strategyToDecorate = strategyToDecorate;
+            this._packageToDecorate = packageToDecorate;
         }
 
         /// <summary>
@@ -52,10 +52,10 @@ namespace Rollbar.AspNet.Mvc
             if (this._httpContext?.Request != null)
             {
                 // here we essentially piggy-back on capabilities of 
-                // already implemented HttpRequestPackagingStrategyDecorator 
+                // already implemented HttpRequestPackageDecorator 
                 // instead of this decorator:
-                HttpRequestPackagingStrategyDecorator strategy =
-                    new HttpRequestPackagingStrategyDecorator(this._strategyToDecorate, new HttpRequestWrapper(this._httpContext.Request));
+                HttpRequestPackageDecorator strategy =
+                    new HttpRequestPackageDecorator(this._packageToDecorate, new HttpRequestWrapper(this._httpContext.Request));
                 strategy.PackageAsRollbarData();
             }
         }

@@ -15,11 +15,11 @@ namespace Rollbar.AspNet.Mvc
     using Rollbar.DTOs;
 
     /// <summary>
-    /// Class ExceptionContextPackagingStrategy.
-    /// Implements the <see cref="Rollbar.RollbarPackagingStrategyBase" /></summary>
-    /// <seealso cref="Rollbar.RollbarPackagingStrategyBase" />
-    public class ExceptionContextPackagingStrategy
-            : RollbarPackagingStrategyBase
+    /// Class ExceptionContextPackage.
+    /// Implements the <see cref="Rollbar.RollbarPackageBase" /></summary>
+    /// <seealso cref="Rollbar.RollbarPackageBase" />
+    public class ExceptionContextPackage
+            : RollbarPackageBase
     {
         /// <summary>
         /// The exception context
@@ -29,20 +29,20 @@ namespace Rollbar.AspNet.Mvc
         private readonly string _message;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExceptionContextPackagingStrategy" /> class.
+        /// Initializes a new instance of the <see cref="ExceptionContextPackage" /> class.
         /// </summary>
         /// <param name="exceptionContext">The exception context.</param>
-        public ExceptionContextPackagingStrategy(ExceptionContext exceptionContext)
+        public ExceptionContextPackage(ExceptionContext exceptionContext)
             : this(exceptionContext, null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExceptionContextPackagingStrategy" /> class.
+        /// Initializes a new instance of the <see cref="ExceptionContextPackage" /> class.
         /// </summary>
         /// <param name="exceptionContext">The exception context.</param>
         /// <param name="message">The message.</param>
-        public ExceptionContextPackagingStrategy(ExceptionContext exceptionContext, string message)
+        public ExceptionContextPackage(ExceptionContext exceptionContext, string message)
             : base(false)
         {
             this._exceptionContext = exceptionContext;
@@ -62,12 +62,12 @@ namespace Rollbar.AspNet.Mvc
 
             // let's use composition of available strategies:    
 
-            IRollbarPackagingStrategy packagingStrategy = new ExceptionPackagingStrategy(this._exceptionContext.Exception, this._message);
+            IRollbarPackage packagingStrategy = new ExceptionPackage(this._exceptionContext.Exception, this._message);
 
             var httpRequest = this._exceptionContext?.RequestContext?.HttpContext?.Request;
             if (httpRequest != null)
             {
-                packagingStrategy = new HttpRequestPackagingStrategyDecorator(packagingStrategy, httpRequest);
+                packagingStrategy = new HttpRequestPackageDecorator(packagingStrategy, httpRequest);
             }
 
             Data rollbarData = packagingStrategy.PackageAsRollbarData();
