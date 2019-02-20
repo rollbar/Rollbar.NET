@@ -13,39 +13,39 @@
     public class Payload
         : DtoBase
     {
-        private readonly DateTime? _timeoutAt;
-        private readonly SemaphoreSlim _signal;
-        private StringContent _asHttpContentToSend;
+        //private readonly DateTime? _timeoutAt;
+        //private readonly SemaphoreSlim _signal;
+        //private StringContent _asHttpContentToSend;
 
-        [JsonIgnore]
-        internal DateTime? TimeoutAt
-        {
-            get { return this._timeoutAt; }
-        }
+        //[JsonIgnore]
+        //internal DateTime? TimeoutAt
+        //{
+        //    get { return this._timeoutAt; }
+        //}
 
-        [JsonIgnore]
-        internal SemaphoreSlim Signal
-        {
-            get { return this._signal; }
-        }
+        //[JsonIgnore]
+        //internal SemaphoreSlim Signal
+        //{
+        //    get { return this._signal; }
+        //}
 
-        /// <summary>
-        /// Gets or sets this payload rendered as HTTP content to send.
-        /// We may need it as optimization cache for re-tries.
-        /// </summary>
-        /// <value>An HTTP content to send.</value>
-        [JsonIgnore]
-        internal StringContent AsHttpContentToSend
-        {
-            get
-            {
-                return this._asHttpContentToSend;
-            }
-            set
-            {
-                this._asHttpContentToSend = value;
-            }
-        }
+        ///// <summary>
+        ///// Gets or sets this payload rendered as HTTP content to send.
+        ///// We may need it as optimization cache for re-tries.
+        ///// </summary>
+        ///// <value>An HTTP content to send.</value>
+        //[JsonIgnore]
+        //internal StringContent AsHttpContentToSend
+        //{
+        //    get
+        //    {
+        //        return this._asHttpContentToSend;
+        //    }
+        //    set
+        //    {
+        //        this._asHttpContentToSend = value;
+        //    }
+        //}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Payload"/> class.
@@ -63,26 +63,11 @@
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="data">The data.</param>
-        public Payload(
-            string accessToken,
-            Data data
-            )
-            : this(accessToken, data, null, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Payload" /> class.
-        /// </summary>
-        /// <param name="data">The data.</param>
-        /// <param name="timeoutAt">The timeout at.</param>
-        /// <param name="signal">The signal.</param>
         //public Payload(
-        //    Data data,
-        //    DateTime? timeoutAt,
-        //    SemaphoreSlim signal
+        //    string accessToken,
+        //    Data data
         //    )
-        //    : this(null, data, timeoutAt, signal)
+        //    : this(accessToken, data, null, null)
         //{
         //}
 
@@ -91,20 +76,18 @@
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="data">The data.</param>
-        /// <param name="timeoutAt">The timeout at.</param>
-        /// <param name="signal">The signal.</param>
         public Payload(
             string accessToken, 
-            Data data, 
-            DateTime? timeoutAt,
-            SemaphoreSlim signal
+            Data data//, 
+            //DateTime? timeoutAt,
+            //SemaphoreSlim signal
             )
         {
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNull(data, nameof(data));
 
-            this._timeoutAt = timeoutAt;
-            this._signal = signal;
+            //this._timeoutAt = timeoutAt;
+            //this._signal = signal;
 
             AccessToken = accessToken;
             Data = data;

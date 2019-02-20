@@ -40,7 +40,28 @@
         /// <param name="exceptionToPackage">The exception to package.</param>
         /// <param name="rollbarDataTitle">The rollbar data title.</param>
         public ExceptionPackage(System.Exception exceptionToPackage, string rollbarDataTitle)
-            : base(false)
+            : this(exceptionToPackage, rollbarDataTitle, false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExceptionPackage"/> class.
+        /// </summary>
+        /// <param name="exceptionToPackage">The exception to package.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> the strategy must be apply synchronously.</param>
+        public ExceptionPackage(System.Exception exceptionToPackage, bool mustApplySynchronously)
+            : this(exceptionToPackage, null, mustApplySynchronously)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExceptionPackage" /> class.
+        /// </summary>
+        /// <param name="exceptionToPackage">The exception to package.</param>
+        /// <param name="rollbarDataTitle">The rollbar data title.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> the strategy must be apply synchronously.</param>
+        public ExceptionPackage(System.Exception exceptionToPackage, string rollbarDataTitle, bool mustApplySynchronously)
+            : base(mustApplySynchronously)
         {
             Assumption.AssertNotNull(exceptionToPackage, nameof(exceptionToPackage));
 

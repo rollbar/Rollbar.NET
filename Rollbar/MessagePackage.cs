@@ -35,6 +35,17 @@
         /// Initializes a new instance of the <see cref="MessagePackage"/> class.
         /// </summary>
         /// <param name="messageToPackage">The message to package.</param>
+        public MessagePackage(
+            string messageToPackage
+            )
+            : this(messageToPackage, null, null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessagePackage"/> class.
+        /// </summary>
+        /// <param name="messageToPackage">The message to package.</param>
         /// <param name="rollbarDataTitle">The rollbar data title.</param>
         public MessagePackage(
             string messageToPackage, 

@@ -26,15 +26,15 @@ namespace Rollbar
         : IRollbar
         , IDisposable
     {
-        private static readonly Task completedTask = // for more recent .NET implementations it would be: Task.CompletedTask;
-            Task.Factory.StartNew(state => { }, "EnqueueAsyncShortcut");
+        //private static readonly Task completedTask = // for more recent .NET implementations it would be: Task.CompletedTask;
+        //    Task.Factory.StartNew(state => { }, "EnqueueAsyncShortcut");
 
         private readonly object _syncRoot = new object();
 
         private readonly IRollbarConfig _config;
         private readonly PayloadQueue _payloadQueue;
-        private readonly ConcurrentDictionary<Task, Task> _pendingTasks = 
-            new ConcurrentDictionary<Task, Task>();
+        //private readonly ConcurrentDictionary<Task, Task> _pendingTasks = 
+        //    new ConcurrentDictionary<Task, Task>();
 
         /// <summary>
         /// Occurs when a Rollbar internal event happens.
@@ -103,7 +103,7 @@ namespace Rollbar
         /// Gets the logger.
         /// </summary>
         /// <value>The logger.</value>
-        public IAsyncLogger Logger => this;
+        public ILogger Logger => this;
 
         /// <summary>
         /// Gets the configuration.
@@ -138,13 +138,15 @@ namespace Rollbar
 
         #endregion IRollbar
 
-        #region IAsyncLogger
+        #region ILogger
 
         /// <summary>
         /// Returns blocking/synchronous implementation of this ILogger.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
-        /// <returns>ILogger.</returns>
+        /// <returns>Blocking (fully synchronous) instance of an ILogger.
+        /// It either completes logging calls within the specified timeout
+        /// or throws a TimeoutException.</returns>
         public ILogger AsBlockingLogger(TimeSpan timeout)
         {
             return new RollbarLoggerBlockingWrapper(this, timeout);
@@ -155,70 +157,70 @@ namespace Rollbar
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        public Task Log(ErrorLevel level, object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Log(ErrorLevel level, object obj)
         {
             return this.Log(level, obj, null);
         }
 
         /// <summary>
-        /// Logs the specified object as using critical level.
+        /// Logs the specified object as critical.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        public Task Critical(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Critical(object obj)
         {
             return this.Critical(obj, null);
         }
 
         /// <summary>
-        /// Logs the specified object as using error level.
+        /// Logs the specified object as error.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        public Task Error(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Error(object obj)
         {
             return this.Error(obj, null);
         }
 
         /// <summary>
-        /// Logs the specified object as using warning level.
+        /// Logs the specified object as warning.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        public Task Warning(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Warning(object obj)
         {
             return this.Warning(obj, null);
         }
 
         /// <summary>
-        /// Logs the specified object as using informational level.
+        /// Logs the specified object as info.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        public Task Info(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Info(object obj)
         {
             return this.Info(obj, null);
         }
 
         /// <summary>
-        /// Logs the specified object as using debug level.
+        /// Logs the specified object as debug.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        public Task Debug(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Debug(object obj)
         {
             return this.Debug(obj, null);
         }
 
         /// <summary>
-        /// Logs the specified Rollbar Data DTO.
+        /// Logs the specified rollbar data.
         /// </summary>
-        /// <param name="rollbarData">The Rollbar Data DTO.</param>
-        /// <returns>Task.</returns>
-        public Task Log(DTOs.Data rollbarData)
+        /// <param name="rollbarData">The rollbar data.</param>
+        /// <returns>ILogger.</returns>
+        public ILogger Log(DTOs.Data rollbarData)
         {
-            return this.EnqueueAsync(rollbarData, rollbarData.Level.HasValue ? rollbarData.Level.Value : ErrorLevel.Debug, null);
+            return this.Enqueue(rollbarData, rollbarData.Level.HasValue ? rollbarData.Level.Value : ErrorLevel.Debug, null);
         }
 
         /// <summary>
@@ -226,70 +228,70 @@ namespace Rollbar
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        public Task Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
         {
-            return this.EnqueueAsync(obj, level, custom);
+            return this.Enqueue(obj, level, custom);
         }
 
 
         /// <summary>
-        /// Logs the specified object as using critical level.
+        /// Logs the specified object as critical.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        public Task Critical(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Critical(object obj, IDictionary<string, object> custom)
         {
-            return this.EnqueueAsync(obj, ErrorLevel.Critical, custom);
+            return this.Enqueue(obj, ErrorLevel.Critical, custom);
         }
 
         /// <summary>
-        /// Logs the specified object as using error level.
+        /// Logs the specified object as error.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        public Task Error(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Error(object obj, IDictionary<string, object> custom)
         {
-            return this.EnqueueAsync(obj, ErrorLevel.Error, custom);
+            return this.Enqueue(obj, ErrorLevel.Error, custom);
         }
 
         /// <summary>
-        /// Logs the specified object as using warning level.
+        /// Logs the specified object as warning.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        public Task Warning(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Warning(object obj, IDictionary<string, object> custom)
         {
-            return this.EnqueueAsync(obj, ErrorLevel.Warning, custom);
+            return this.Enqueue(obj, ErrorLevel.Warning, custom);
         }
 
         /// <summary>
-        /// Logs the specified object as using informational level.
+        /// Logs the specified object as info.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        public Task Info(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Info(object obj, IDictionary<string, object> custom)
         {
-            return this.EnqueueAsync(obj, ErrorLevel.Info, custom);
+            return this.Enqueue(obj, ErrorLevel.Info, custom);
         }
 
         /// <summary>
-        /// Logs the specified object as using debug level.
+        /// Logs the specified object as debug.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        public Task Debug(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        public ILogger Debug(object obj, IDictionary<string, object> custom)
         {
-            return this.EnqueueAsync(obj, ErrorLevel.Debug, custom);
+            return this.Enqueue(obj, ErrorLevel.Debug, custom);
         }
 
-        #endregion IAsyncLogger
+        #endregion ILogger
 
         #region IRollbar explicitly
 
@@ -303,7 +305,7 @@ namespace Rollbar
         /// Gets the logger.
         /// </summary>
         /// <value>The logger.</value>
-        IAsyncLogger IRollbar.Logger { get { return this; } }
+        ILogger IRollbar.Logger { get { return this; } }
 
         /// <summary>
         /// Configures the using specified settings.
@@ -343,24 +345,26 @@ namespace Rollbar
 
         #endregion IRollbar explicitly
 
-        #region IAsyncLogger explicitly
+        #region ILogger explicitly
 
         /// <summary>
-        /// Returns as the blocking logger.
+        /// Returns blocking/synchronous implementation of this ILogger.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
-        /// <returns>ILogger.</returns>
-        ILogger IAsyncLogger.AsBlockingLogger(TimeSpan timeout)
+        /// <returns>Blocking (fully synchronous) instance of an ILogger.
+        /// It either completes logging calls within the specified timeout
+        /// or throws a TimeoutException.</returns>
+        ILogger ILogger.AsBlockingLogger(TimeSpan timeout)
         {
             return this.AsBlockingLogger(timeout);
         }
 
         /// <summary>
-        /// Logs the specified Rollbar Data DTO.
+        /// Logs the specified rollbar data.
         /// </summary>
-        /// <param name="rollbarData">The Rollbar Data DTO.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Log(Data rollbarData)
+        /// <param name="rollbarData">The rollbar data.</param>
+        /// <returns>ILogger.</returns>
+        ILogger ILogger.Log(Data rollbarData)
         {
             return this.Log(rollbarData);
         }
@@ -370,58 +374,58 @@ namespace Rollbar
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Log(ErrorLevel level, object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Log(ErrorLevel level, object obj)
         {
             return this.Log(level, obj);
         }
 
         /// <summary>
-        /// Logs the specified object as using critical level.
+        /// Logs the specified object as critical.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Critical(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Critical(object obj)
         {
             return this.Critical(obj);
         }
 
         /// <summary>
-        /// Logs the specified object as using error level.
+        /// Logs the specified object as error.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Error(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Error(object obj)
         {
             return this.Error(obj);
         }
 
         /// <summary>
-        /// Logs the specified object as using warning level.
+        /// Logs the specified object as warning.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Warning(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Warning(object obj)
         {
             return this.Warning(obj);
         }
 
         /// <summary>
-        /// Logs the specified object as using informational level.
+        /// Logs the specified object as info.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Info(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Info(object obj)
         {
             return this.Info(obj);
         }
 
         /// <summary>
-        /// Logs the specified object as using debug level.
+        /// Logs the specified object as debug.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Debug(object obj)
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Debug(object obj)
         {
             return this.Debug(obj);
         }
@@ -431,70 +435,70 @@ namespace Rollbar
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
         {
             return this.Log(level, obj, custom);
         }
 
 
         /// <summary>
-        /// Logs the specified object as using critical level.
+        /// Logs the specified object as critical.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Critical(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Critical(object obj, IDictionary<string, object> custom)
         {
             return this.Critical(obj, custom);
         }
 
         /// <summary>
-        /// Logs the specified object as using error level.
+        /// Logs the specified object as error.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Error(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Error(object obj, IDictionary<string, object> custom)
         {
             return this.Error(obj, custom);
         }
 
         /// <summary>
-        /// Logs the specified object as using warning level.
+        /// Logs the specified object as warning.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Warning(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Warning(object obj, IDictionary<string, object> custom)
         {
             return this.Warning(obj, custom);
         }
 
         /// <summary>
-        /// Logs the specified object as using informational level.
+        /// Logs the specified object as info.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Info(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Info(object obj, IDictionary<string, object> custom)
         {
             return this.Info(obj, custom);
         }
 
         /// <summary>
-        /// Logs the specified object as using debug level.
+        /// Logs the specified object as debug.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <param name="custom">The custom.</param>
-        /// <returns>Task.</returns>
-        Task IAsyncLogger.Debug(object obj, IDictionary<string, object> custom)
+        /// <param name="custom">The custom data.</param>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
+        ILogger ILogger.Debug(object obj, IDictionary<string, object> custom)
         {
             return this.Debug(obj, custom);
         }
 
-        #endregion IAsyncLogger explicitly 
+        #endregion ILogger explicitly 
 
         #region IDisposable explicitly
 
@@ -505,7 +509,7 @@ namespace Rollbar
 
         #endregion IDisposable explicitly
 
-        internal Task EnqueueAsync(
+        internal ILogger Enqueue(
             object dataObject,
             ErrorLevel level,
             IDictionary<string, object> custom,
@@ -513,18 +517,15 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
-            // adding logic here that would prevent potential flooding with the tasks when reaching the application thread pool starvation for any reason: 
-            if (this._pendingTasks.Count > this.Config.ReportingQueueDepth)
-            {
-                return null; // let's save on creating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
-            }
-
-            DateTime utcTimestamp = DateTime.UtcNow;
-
-            if (this.Config.LogLevel.HasValue && level < this.Config.LogLevel.Value)
+            // here is the last chance to decide if we need to actually send this payload
+            // based on the current config settings:
+            if (string.IsNullOrWhiteSpace(this._config.AccessToken)
+                || this._config.Enabled == false
+                || (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+                )
             {
                 // nice shortcut:
-                return completedTask;
+                return this;
             }
 
             DateTime? timeoutAt = null;
@@ -533,132 +534,192 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
 
-            // we are taking here a fire-and-forget approach:
-            Task task = new Task(state => Enqueue(utcTimestamp, dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");
+            PayloadQueuePackage payloadQueuePackage = null;
 
-            if (!this._pendingTasks.TryAdd(task, task))
+            IRollbarPackage rollbarPackage = dataObject as IRollbarPackage;
+            if (rollbarPackage != null)
             {
-                this.OnRollbarEvent(new InternalErrorEventArgs(this, dataObject, null, "Couldn't add a pending task while performing EnqueueAsync(...)..."));
-                return null; // let's save on creating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
+                if (rollbarPackage.MustApplySynchronously)
+                {
+                    rollbarPackage.PackageAsRollbarData();
+                }
+                payloadQueuePackage =
+                    new PayloadQueuePackage(this.Config, rollbarPackage, level, custom, timeoutAt, signal);
+            }
+            else
+            {
+                payloadQueuePackage =
+                    new PayloadQueuePackage(this.Config, dataObject, level, custom, timeoutAt, signal);
             }
 
-            task.ContinueWith(RemovePendingTask)
-                .ContinueWith(p => {
-                    OnRollbarEvent(new InternalErrorEventArgs(this, null, p.Exception, "While performing EnqueueAsync(...)..."));
-                    System.Diagnostics.Trace.TraceError(p.Exception.ToString());
-                    }, 
-                    TaskContinuationOptions.OnlyOnFaulted
-                    );
-            task.Start();
-
-            return task;
-        }
-
-        private void RemovePendingTask(Task task)
-        {
-            bool success = false;
-            Task taskToRemove = null;
-            do
+            if (payloadQueuePackage == null)
             {
-                success = this._pendingTasks.TryRemove(task, out taskToRemove);
-            } while (!success);
-            taskToRemove.Dispose();
-        }
+                //TODO: we may want to report that there is some problem with packaging...
+                return this;
+            }
 
-        private void Enqueue(
-            DateTime utcTimestamp,
-            object dataObject,
-            ErrorLevel level,
-            IDictionary<string, object> custom,
-            DateTime? timeoutAt = null,
-            SemaphoreSlim signal = null
-            )
-        {
             lock (this._syncRoot)
             {
-                try
-                {
-                    // compose the payload:
-                    var data = RollbarUtility.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
-                    var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
-                    //payload.Data.Environment = this._config.Environment;
-                    //payload.Data.Level = level;
-                    payload.Validate();
-
-                    DoSend(payload);
-                }
-                catch(System.Exception exception)
-                {
-                    var errorEvent = 
-                        new InternalErrorEventArgs(this, dataObject, exception, "EXCEPTION within RollbarLogger.Enque(...) method");
-                    System.Diagnostics.Trace.TraceError(errorEvent.TraceAsString());
-                    this.OnRollbarEvent(errorEvent);
-                }
+                this._payloadQueue.Enqueue(payloadQueuePackage);
             }
+
+            return this;
         }
 
-        private void DoSend(Payload payload)
-        {
-            //lock (this._syncRoot)
-            {
-                // here is the last chance to decide if we need to actually send this payload
-                // based on the current config settings:
-                if (string.IsNullOrWhiteSpace(this._config.AccessToken)
-                    || this._config.Enabled == false
-                    || (this._config.LogLevel.HasValue && payload.Data.Level < this._config.LogLevel.Value)
-                    )
-                {
-                    return;
-                }
+        //internal Task EnqueueAsync(
+        //    object dataObject,
+        //    ErrorLevel level,
+        //    IDictionary<string, object> custom,
+        //    TimeSpan? timeout = null,
+        //    SemaphoreSlim signal = null
+        //    )
+        //{
+        //    // adding logic here that would prevent potential flooding with the tasks when reaching the application thread pool starvation for any reason: 
+        //    if (this._pendingTasks.Count > this.Config.ReportingQueueDepth)
+        //    {
+        //        return null; // let's save on creating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
+        //    }
 
-                if (TelemetryCollector.Instance.Config.TelemetryEnabled)
-                {
-                    payload.Data.Body.Telemetry =
-                        TelemetryCollector.Instance.GetQueueContent();
-                }
+        //    DateTime utcTimestamp = DateTime.UtcNow;
 
-                if (this._config.Server != null)
-                {
-                    payload.Data.Server = this._config.Server;
-                }
+        //    if (this.Config.LogLevel.HasValue && level < this.Config.LogLevel.Value)
+        //    {
+        //        // nice shortcut:
+        //        return completedTask;
+        //    }
 
-                try
-                {
-                    if (this._config.CheckIgnore != null
-                        && this._config.CheckIgnore.Invoke(payload)
-                        )
-                    {
-                        return;
-                    }
-                }
-                catch (System.Exception ex)
-                {
-                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
-                }
+        //    DateTime? timeoutAt = null;
+        //    if (timeout.HasValue)
+        //    {
+        //        timeoutAt = DateTime.Now.Add(timeout.Value);
+        //    }
 
-                try
-                {
-                    this._config.Transform?.Invoke(payload);
-                }
-                catch (System.Exception ex)
-                {
-                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
-                }
+        //    // we are taking here a fire-and-forget approach:
+        //    Task task = new Task(state => Enqueue(utcTimestamp, dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");
 
-                try
-                {
-                    this._config.Truncate?.Invoke(payload);
-                }
-                catch (System.Exception ex)
-                {
-                    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
-                }
+        //    if (!this._pendingTasks.TryAdd(task, task))
+        //    {
+        //        this.OnRollbarEvent(new InternalErrorEventArgs(this, dataObject, null, "Couldn't add a pending task while performing EnqueueAsync(...)..."));
+        //        return null; // let's save on creating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
+        //    }
 
-                this._payloadQueue.Enqueue(payload);
+        //    task.ContinueWith(RemovePendingTask)
+        //        .ContinueWith(p => {
+        //            OnRollbarEvent(new InternalErrorEventArgs(this, null, p.Exception, "While performing EnqueueAsync(...)..."));
+        //            System.Diagnostics.Trace.TraceError(p.Exception.ToString());
+        //            }, 
+        //            TaskContinuationOptions.OnlyOnFaulted
+        //            );
+        //    task.Start();
 
-                return;
-            }
-        }
+        //    return task;
+        //}
+
+        //private void RemovePendingTask(Task task)
+        //{
+        //    bool success = false;
+        //    Task taskToRemove = null;
+        //    do
+        //    {
+        //        success = this._pendingTasks.TryRemove(task, out taskToRemove);
+        //    } while (!success);
+        //    taskToRemove.Dispose();
+        //}
+
+        //private void Enqueue(
+        //    DateTime utcTimestamp,
+        //    object dataObject,
+        //    ErrorLevel level,
+        //    IDictionary<string, object> custom,
+        //    DateTime? timeoutAt = null,
+        //    SemaphoreSlim signal = null
+        //    )
+        //{
+        //    lock (this._syncRoot)
+        //    {
+        //        try
+        //        {
+        //            // compose the payload:
+        //            var data = RollbarUtility.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
+        //            var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
+        //            //payload.Data.Environment = this._config.Environment;
+        //            //payload.Data.Level = level;
+        //            payload.Validate();
+
+        //            DoSend(payload);
+        //        }
+        //        catch(System.Exception exception)
+        //        {
+        //            var errorEvent = 
+        //                new InternalErrorEventArgs(this, dataObject, exception, "EXCEPTION within RollbarLogger.Enque(...) method");
+        //            System.Diagnostics.Trace.TraceError(errorEvent.TraceAsString());
+        //            this.OnRollbarEvent(errorEvent);
+        //        }
+        //    }
+        //}
+
+        //private void DoSend(Payload payload)
+        //{
+        //    //lock (this._syncRoot)
+        //    {
+        //        // here is the last chance to decide if we need to actually send this payload
+        //        // based on the current config settings:
+        //        if (string.IsNullOrWhiteSpace(this._config.AccessToken)
+        //            || this._config.Enabled == false
+        //            || (this._config.LogLevel.HasValue && payload.Data.Level < this._config.LogLevel.Value)
+        //            )
+        //        {
+        //            return;
+        //        }
+
+        //        if (TelemetryCollector.Instance.Config.TelemetryEnabled)
+        //        {
+        //            payload.Data.Body.Telemetry =
+        //                TelemetryCollector.Instance.GetQueueContent();
+        //        }
+
+        //        if (this._config.Server != null)
+        //        {
+        //            payload.Data.Server = this._config.Server;
+        //        }
+
+        //        try
+        //        {
+        //            if (this._config.CheckIgnore != null
+        //                && this._config.CheckIgnore.Invoke(payload)
+        //                )
+        //            {
+        //                return;
+        //            }
+        //        }
+        //        catch (System.Exception ex)
+        //        {
+        //            OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
+        //        }
+
+        //        try
+        //        {
+        //            this._config.Transform?.Invoke(payload);
+        //        }
+        //        catch (System.Exception ex)
+        //        {
+        //            OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
+        //        }
+
+        //        try
+        //        {
+        //            this._config.Truncate?.Invoke(payload);
+        //        }
+        //        catch (System.Exception ex)
+        //        {
+        //            OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
+        //        }
+
+        //        this._payloadQueue.Enqueue(payload);
+
+        //        return;
+        //    }
+        //}
 
         internal virtual void OnRollbarEvent(RollbarEventArgs e)
         {
@@ -680,7 +741,7 @@ namespace Rollbar
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    Task.WaitAll(this._pendingTasks.Values.ToArray(), TimeSpan.FromMilliseconds(500));
+                    //Task.WaitAll(this._pendingTasks.Values.ToArray(), TimeSpan.FromMilliseconds(500));
                     this._payloadQueue.Release();
                 }
 

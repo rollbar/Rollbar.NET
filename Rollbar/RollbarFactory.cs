@@ -56,24 +56,20 @@ namespace Rollbar
         /// <param name="rollbarBlockingLoggingTimeout">The rollbar blocking logging timeout.</param>
         /// <param name="rollbarAsyncLogger">The rollbar asynchronous logger.</param>
         /// <param name="rollbarLogger">The rollbar logger.</param>
-        public static void CreateProper(
+        public static ILogger CreateProper(
             IRollbarConfig rollbarConfig,
-            TimeSpan? rollbarBlockingLoggingTimeout,
-            out IAsyncLogger rollbarAsyncLogger,
-            out ILogger rollbarLogger
+            TimeSpan? rollbarBlockingLoggingTimeout
             )
         {
             IRollbar rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig);
 
             if (rollbarBlockingLoggingTimeout.HasValue)
             {
-                rollbarLogger = rollbar.AsBlockingLogger(rollbarBlockingLoggingTimeout.Value);
-                rollbarAsyncLogger = null;
+                return rollbar.AsBlockingLogger(rollbarBlockingLoggingTimeout.Value);
             }
             else
             {
-                rollbarLogger = null;
-                rollbarAsyncLogger = rollbar;
+                return rollbar.Logger;
             }
         }
 

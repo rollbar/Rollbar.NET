@@ -19,11 +19,6 @@
 
     {
         /// <summary>
-        /// The time stamp
-        /// </summary>
-        private readonly DateTime _timeStamp = DateTime.UtcNow;
-
-        /// <summary>
         /// The must apply synchronously
         /// </summary>
         protected readonly bool _mustApplySynchronously = false;
@@ -85,11 +80,6 @@
                 nameof(this._rollbarData)
                 );
 
-            // here we need to make sure the rollbarData is properly timestamped with this instance's timestamp:
-            if (this._rollbarData != null)
-            {
-                this._rollbarData.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(this._timeStamp);
-            }
             return this._rollbarData;
         }
 

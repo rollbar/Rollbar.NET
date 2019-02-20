@@ -8,7 +8,7 @@
     /// <seealso cref="Rollbar.ILogger" />
     /// <seealso cref="System.IDisposable" />
     public interface IRollbar
-        : IAsyncLogger
+        : ILogger
         , IDisposable
     {
         /// <summary>
@@ -39,7 +39,7 @@
         /// <value>
         /// The logger.
         /// </value>
-        IAsyncLogger Logger { get; }
+        ILogger Logger { get; }
 
         /// <summary>
         /// Occurs when a Rollbar internal event happens.

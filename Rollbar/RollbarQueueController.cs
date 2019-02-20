@@ -245,8 +245,8 @@ namespace Rollbar
                 if (DateTimeOffset.Now >= queue.NextDequeueTime)
                 {
                     RollbarResponse response = null;
-                    Payload payload = Process(queue, out response);
-                    if (payload == null || response == null)
+                    PayloadQueuePackage payloadPackage = Process(queue, out response);
+                    if (payloadPackage == null || response == null)
                     {
                         continue;
                     }
@@ -254,21 +254,21 @@ namespace Rollbar
                     switch (response.Error)
                     {
                         case (int)RollbarApiErrorEventArgs.RollbarError.None:
-                            payload.Signal?.Release();
+                            payloadPackage.Signal?.Release();
                             queue.Dequeue();
                             tokenMetadata.ResetTokenUsageDelay();
                             break;
                         case (int)RollbarApiErrorEventArgs.RollbarError.TooManyRequests:
-                            ObeyPayloadTimeout(payload, queue);
+                            ObeyPayloadTimeout(payloadPackage, queue);
                             tokenMetadata.IncrementTokenUsageDelay();
                             this.OnRollbarEvent(
-                                new RollbarApiErrorEventArgs(queue.Logger, payload, response)
+                                new RollbarApiErrorEventArgs(queue.Logger, payloadPackage.GetPayload(), response)
                                 );
                             return;
                         default:
-                            ObeyPayloadTimeout(payload, queue);
+                            ObeyPayloadTimeout(payloadPackage, queue);
                             this.OnRollbarEvent(
-                                new RollbarApiErrorEventArgs(queue.Logger, payload, response)
+                                new RollbarApiErrorEventArgs(queue.Logger, payloadPackage.GetPayload(), response)
                                 );
                             break;
                     }
@@ -288,19 +288,21 @@ namespace Rollbar
 
         }
 
-        private void ObeyPayloadTimeout(Payload payload, PayloadQueue queue)
+        private void ObeyPayloadTimeout(PayloadQueuePackage payloadPackage, PayloadQueue queue)
         {
-            if (payload.TimeoutAt.HasValue && (DateTime.Now.Add(this._sleepInterval) >= payload.TimeoutAt.Value))
+            if (payloadPackage.TimeoutAt.HasValue && (DateTime.Now.Add(this._sleepInterval) >= payloadPackage.TimeoutAt.Value))
             {
                 queue.Dequeue();
             }
         }
 
-        private Payload Process(PayloadQueue queue, out RollbarResponse response)
+        private PayloadQueuePackage Process(PayloadQueue queue, out RollbarResponse response)
         {
             response = null;
 
-            Payload payload = queue.Peek();
+            PayloadQueuePackage payloadPackage = queue.Peek();
+
+            Payload payload = payloadPackage.GetPayload();
             if (payload == null)
             {
                 return null;
@@ -311,7 +313,7 @@ namespace Rollbar
             {
                 try
                 {
-                    response = queue.Client.PostAsJson(payload);
+                    response = queue.Client.PostAsJson(payloadPackage);
                 }
                 catch (WebException ex)
                 {
@@ -347,7 +349,7 @@ namespace Rollbar
                     );
             }
 
-            return payload;
+            return payloadPackage;
         }
 
         private void Config_Reconfigured(object sender, EventArgs e)

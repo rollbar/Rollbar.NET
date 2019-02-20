@@ -28,7 +28,7 @@ namespace Rollbar
         {
             using (var signal = CreateSignalObject())
             {
-                this._asyncLogger.EnqueueAsync(dataObject, level, custom, this._timeout, signal);
+                this._asyncLogger.Enqueue(dataObject, level, custom, this._timeout, signal);
 
                 WaitAndCompleteReport(signal);
             }

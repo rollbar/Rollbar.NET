@@ -18,11 +18,6 @@
         protected readonly IRollbarConfig _rollbarConfig;
         
         /// <summary>
-        /// The Rollbar asynchronous logger
-        /// </summary>
-        private readonly IAsyncLogger _rollbarAsyncLogger;
-
-        /// <summary>
         /// The Rollbar logger
         /// </summary>
         private readonly ILogger _rollbarLogger;
@@ -49,17 +44,14 @@
 
             if (this._rollbarConfig == null)
             {
-                IRollbarConfig config = NetStandard.RollbarConfigUtility.LoadRollbarConfig();
+                IRollbarConfig config = 
+                    NetStandard.RollbarConfigUtility.LoadRollbarConfig();
 
                 this._rollbarConfig = config;
             }
 
-            RollbarFactory.CreateProper(
-                this._rollbarConfig,
-                rollbarBlockingTimeout,
-                out this._rollbarAsyncLogger,
-                out this._rollbarLogger
-                );
+            this._rollbarLogger = 
+                RollbarFactory.CreateProper(this._rollbarConfig, rollbarBlockingTimeout);
         }
 
         /// <summary>
@@ -84,11 +76,7 @@
         /// <param name="rollbarData">The Rollbar data.</param>
         protected void ReportToRollbar(DTOs.Data rollbarData)
         {
-            if (this._rollbarAsyncLogger != null)
-            {
-                ReportToRollbar(this._rollbarAsyncLogger, rollbarData);
-            }
-            else if (this._rollbarLogger != null)
+            if (this._rollbarLogger != null)
             {
                 ReportToRollbar(this._rollbarLogger, rollbarData);
             }
@@ -132,7 +120,6 @@
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    (this._rollbarAsyncLogger as IDisposable)?.Dispose();
                     (this._rollbarLogger as IDisposable)?.Dispose();
                 }
 

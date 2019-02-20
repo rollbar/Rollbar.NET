@@ -149,7 +149,8 @@ namespace UnitTest.Rollbar
                 try
                 {
                     this.ExpectedCommunicationEventsTotal++;
-                    logger.Error(new System.Exception("test exception")).Wait();
+                    //TODO: implement and add SynchronousPackage around the payload object!!!
+                    logger.Error(new ExceptionPackage(new System.Exception("test exception"), true));
                 }
                 catch
                 {
@@ -174,7 +175,8 @@ namespace UnitTest.Rollbar
                     try
                     {
                         this.ExpectedCommunicationEventsTotal++;
-                        logger.Error(new System.Exception("outer exception", ex)).Wait();
+                        //TODO: implement and add SynchronousPackage around the payload object!!!
+                        logger.Error(new System.Exception("outer exception", ex));
                     }
                     catch
                     {
@@ -192,7 +194,8 @@ namespace UnitTest.Rollbar
                 try
                 {
                     this.ExpectedCommunicationEventsTotal++;
-                    logger.Log(ErrorLevel.Error, "test message").Wait();
+                    //TODO: implement and add SynchronousPackage around the payload object!!!
+                    logger.Log(ErrorLevel.Error, "test message");
                 }
                 catch
                 {
@@ -227,23 +230,24 @@ namespace UnitTest.Rollbar
             {
                 try
                 {
+                    //TODO: implement and add SynchronousPackage around the payload object!!!
                     var ex = new Exception();
                     switch (expectedLogLevel)
                     {
                         case ErrorLevel.Critical:
-                            logger.Critical(ex).Wait();
+                            logger.Critical(ex);
                             break;
                         case ErrorLevel.Error:
-                            logger.Error(ex).Wait();
+                            logger.Error(ex);
                             break;
                         case ErrorLevel.Warning:
-                            logger.Warning(ex).Wait();
+                            logger.Warning(ex);
                             break;
                         case ErrorLevel.Info:
-                            logger.Info(ex).Wait();
+                            logger.Info(ex);
                             break;
                         case ErrorLevel.Debug:
-                            logger.Debug(ex).Wait();
+                            logger.Debug(ex);
                             break;
                     }
                 }
