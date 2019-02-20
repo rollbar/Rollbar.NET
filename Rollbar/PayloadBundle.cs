@@ -11,7 +11,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal class PayloadQueuePackage
+    internal class PayloadBundle
     {
         private readonly DateTime _timeStamp = DateTime.UtcNow;
 
@@ -49,12 +49,12 @@
             }
         }
 
-        private PayloadQueuePackage()
+        private PayloadBundle()
         {
 
         }
 
-        public PayloadQueuePackage(
+        public PayloadBundle(
             IRollbarConfig rollbarConfig,
             IRollbarPackage payloadPackage,
             ErrorLevel level
@@ -63,7 +63,7 @@
         {
         }
 
-        public PayloadQueuePackage(
+        public PayloadBundle(
             IRollbarConfig rollbarConfig,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
@@ -73,7 +73,7 @@
         {
         }
 
-        public PayloadQueuePackage(
+        public PayloadBundle(
             IRollbarConfig rollbarConfig,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
@@ -84,7 +84,7 @@
         {
         }
 
-        public PayloadQueuePackage(
+        public PayloadBundle(
             IRollbarConfig rollbarConfig,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
@@ -97,7 +97,7 @@
             this._rollbarPackage = payloadPackage;
         }
 
-        public PayloadQueuePackage(
+        public PayloadBundle(
             IRollbarConfig rollbarConfig,
             object payloadObject,
             ErrorLevel level
@@ -106,7 +106,7 @@
         {
         }
 
-        public PayloadQueuePackage(
+        public PayloadBundle(
             IRollbarConfig rollbarConfig,
             object payloadObject,
             ErrorLevel level,
@@ -116,7 +116,7 @@
         {
         }
 
-        public PayloadQueuePackage(
+        public PayloadBundle(
             IRollbarConfig rollbarConfig,
             object payloadObject,
             ErrorLevel level,
@@ -127,7 +127,7 @@
         {
         }
 
-        public PayloadQueuePackage(
+        public PayloadBundle(
             IRollbarConfig rollbarConfig,
             object payloadObject,
             ErrorLevel level,

@@ -63,30 +63,30 @@ namespace Rollbar
 
         public IRollbarConfig Config { get { return this._config; } }
 
-        public RollbarResponse PostAsJson(PayloadQueuePackage payloadPackage)
+        public RollbarResponse PostAsJson(PayloadBundle payloadBundle)
         {
-            Assumption.AssertNotNull(payloadPackage, nameof(payloadPackage));
+            Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
-            var task = this.PostAsJsonAsync(payloadPackage);
+            var task = this.PostAsJsonAsync(payloadBundle);
 
             task.Wait();
 
             return task.Result;
         }
 
-        public async Task<RollbarResponse> PostAsJsonAsync(PayloadQueuePackage payloadPackage)
+        public async Task<RollbarResponse> PostAsJsonAsync(PayloadBundle payloadBundle)
         {
-            Assumption.AssertNotNull(payloadPackage, nameof(payloadPackage));
+            Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
-            Payload payload = payloadPackage.GetPayload();
+            Payload payload = payloadBundle.GetPayload();
             Assumption.AssertNotNull(payload, nameof(payload));
 
-            if (payloadPackage.AsHttpContentToSend == null)
+            if (payloadBundle.AsHttpContentToSend == null)
             {
-                if (this._payloadTruncationStrategy.Truncate(payloadPackage.GetPayload()) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
+                if (this._payloadTruncationStrategy.Truncate(payloadBundle.GetPayload()) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
                 {
                     throw new ArgumentOutOfRangeException(
-                        paramName: nameof(payloadPackage),
+                        paramName: nameof(payloadBundle),
                         message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
                         );
                 }
@@ -94,17 +94,17 @@ namespace Rollbar
                 var jsonData = JsonConvert.SerializeObject(payload);
                 jsonData = ScrubPayload(jsonData, this._config.GetFieldsToScrub());
 
-                payloadPackage.AsHttpContentToSend =
+                payloadBundle.AsHttpContentToSend =
                     new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
             }
 
-            Assumption.AssertNotNull(payloadPackage.AsHttpContentToSend, nameof(payloadPackage.AsHttpContentToSend));
+            Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
             Assumption.AssertTrue(string.Equals(payload.AccessToken, this._config.AccessToken), nameof(payload.AccessToken));
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
             const string accessTokenHeader = "X-Rollbar-Access-Token";
             request.Headers.Add(accessTokenHeader, this._config.AccessToken);
-            request.Content = payloadPackage.AsHttpContentToSend;
+            request.Content = payloadBundle.AsHttpContentToSend;
 
             var postResponse = await this._httpClient.SendAsync(request);
 

@@ -534,7 +534,7 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
 
-            PayloadQueuePackage payloadQueuePackage = null;
+            PayloadBundle payloadBundle = null;
 
             IRollbarPackage rollbarPackage = dataObject as IRollbarPackage;
             if (rollbarPackage != null)
@@ -543,16 +543,16 @@ namespace Rollbar
                 {
                     rollbarPackage.PackageAsRollbarData();
                 }
-                payloadQueuePackage =
-                    new PayloadQueuePackage(this.Config, rollbarPackage, level, custom, timeoutAt, signal);
+                payloadBundle =
+                    new PayloadBundle(this.Config, rollbarPackage, level, custom, timeoutAt, signal);
             }
             else
             {
-                payloadQueuePackage =
-                    new PayloadQueuePackage(this.Config, dataObject, level, custom, timeoutAt, signal);
+                payloadBundle =
+                    new PayloadBundle(this.Config, dataObject, level, custom, timeoutAt, signal);
             }
 
-            if (payloadQueuePackage == null)
+            if (payloadBundle == null)
             {
                 //TODO: we may want to report that there is some problem with packaging...
                 return this;
@@ -560,7 +560,7 @@ namespace Rollbar
 
             lock (this._syncRoot)
             {
-                this._payloadQueue.Enqueue(payloadQueuePackage);
+                this._payloadQueue.Enqueue(payloadBundle);
             }
 
             return this;
