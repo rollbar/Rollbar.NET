@@ -22,7 +22,9 @@
         private readonly DateTime? _timeoutAt;
         private readonly SemaphoreSlim _signal;
 
-        // caches:
+        // one-time calculated caches:
+        //****************************
+        private bool? _ignorable;
         private IRollbarPackage _rollbarPackage;
         private Payload _payload;
         private StringContent _asHttpContentToSend;
@@ -147,6 +149,18 @@
             this._signal = signal;
         }
 
+        public bool Ignorable
+        {
+            get
+            {
+                if (!this._ignorable.HasValue)
+                {
+                    GetPayload(); // it actually calculates and sets this._ignorable value...
+                }
+                return this._ignorable.Value;
+            }
+        }
+
         public Payload GetPayload()
         {
             if (this._payload == null)
@@ -154,13 +168,53 @@
                 Data data = this.GetPayloadData();
                 if (data != null)
                 {
-                    data.Environment = this._rollbarConfig?.Environment;
+                    // we are already setting environment within the ConfigAttributesPackageDecorator:
+                    //data.Environment = this._rollbarConfig?.Environment;
+
                     data.Level = this._level;
                     //update the data timestamp from the data creation timestamp to the passed
                     //object-to-log capture timestamp:
                     data.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(this._timeStamp);
 
                     this._payload = new Payload(this._rollbarConfig.AccessToken, data);
+
+                    try // payload check-ignore:
+                    {
+                        if (this._rollbarConfig.CheckIgnore != null
+                            && this._rollbarConfig.CheckIgnore.Invoke(this._payload)
+                            )
+                        {
+                            this._ignorable = true;
+                            return this._payload;     //shortcut...
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        //TODO: substitute following:
+                        //OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
+                    }
+                    this._ignorable = false;
+
+                    try // payload transformation:
+                    {
+                        this._rollbarConfig.Transform?.Invoke(this._payload);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        //TODO: substitute following:
+                        //OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
+                    }
+
+                    try // payload truncation:
+                    {
+                        this._rollbarConfig.Truncate?.Invoke(this._payload);
+                    }
+                    catch (System.Exception ex)
+                    {
+                        //TODO: substitute following:
+                        //OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
+                    }
+
                     this._payload.Validate();
                     //TODO: we may want to handle/report nicely if the validation failed...
                 }
@@ -244,53 +298,13 @@
 
         private IRollbarPackage ApplyConfigPackageDecorator(IRollbarPackage packageToDecorate)
         {
-            //TODO: implement...
-            //      based on the logic below...
+            if (this._rollbarConfig == null)
+            {
+                return packageToDecorate; // nothing to decorate with
+            }
 
-            //if (TelemetryCollector.Instance.Config.TelemetryEnabled)
-            //{
-            //    payload.Data.Body.Telemetry =
-            //        TelemetryCollector.Instance.GetQueueContent();
-            //}
+            return new ConfigAttributesPackageDecorator(packageToDecorate, this._rollbarConfig);
 
-            //if (this._config.Server != null)
-            //{
-            //    payload.Data.Server = this._config.Server;
-            //}
-
-            //try
-            //{
-            //    if (this._config.CheckIgnore != null
-            //        && this._config.CheckIgnore.Invoke(payload)
-            //        )
-            //    {
-            //        return;
-            //    }
-            //}
-            //catch (System.Exception ex)
-            //{
-            //    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
-            //}
-
-            //try
-            //{
-            //    this._config.Transform?.Invoke(payload);
-            //}
-            //catch (System.Exception ex)
-            //{
-            //    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
-            //}
-
-            //try
-            //{
-            //    this._config.Truncate?.Invoke(payload);
-            //}
-            //catch (System.Exception ex)
-            //{
-            //    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
-            //}
-
-            return packageToDecorate;
         }
     }
 }

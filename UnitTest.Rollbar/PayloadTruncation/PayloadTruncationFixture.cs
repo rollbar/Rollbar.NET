@@ -48,7 +48,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
             Payload[] testPayloads = new Payload[]
             {
                 new Payload(this._config.AccessToken, new Data(
-                    this._config, 
+                    this._config,
                     new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
@@ -58,12 +58,12 @@ namespace UnitTest.Rollbar.PayloadTruncation
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
                 new Payload(this._config.AccessToken, new Data(
-                    this._config, 
+                    this._config,
                     new Body(GetException()),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
                 new Payload(this._config.AccessToken, new Data(
-                    this._config, 
+                    this._config,
                     new Body(GetAggregateException()),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
@@ -230,10 +230,10 @@ namespace UnitTest.Rollbar.PayloadTruncation
 
         private static void ThrowAnException()
         {
-            SimulatException();
+            SimulateException();
         }
 
-        private static void SimulatException()
+        private static void SimulateException()
         {
             throw new System.Exception("Test");
         }

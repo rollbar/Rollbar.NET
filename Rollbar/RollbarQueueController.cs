@@ -301,6 +301,15 @@ namespace Rollbar
             response = null;
 
             PayloadBundle payloadBundle = queue.Peek();
+            while(payloadBundle != null && (payloadBundle.Ignorable || payloadBundle.GetPayload() == null))
+            {
+                queue.Dequeue();              //throw away the useless one...
+                payloadBundle = queue.Peek(); //try next...
+            }
+            if (payloadBundle == null)
+            {
+                return null; //no bundles to process...
+            }
 
             Payload payload = payloadBundle.GetPayload();
             if (payload == null)

@@ -150,7 +150,7 @@ namespace UnitTest.Rollbar
                 {
                     this.ExpectedCommunicationEventsTotal++;
                     //TODO: implement and add SynchronousPackage around the payload object!!!
-                    logger.Error(new ExceptionPackage(new System.Exception("test exception"), true));
+                    logger.Error(new System.Exception("test exception"));
                 }
                 catch
                 {
