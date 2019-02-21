@@ -33,12 +33,12 @@
       - resolve #312: Implement packaging strategy for Data DTO
       - resolve #313: Implement packaging strategy for Body DTO
       - resolve #314: Implement packaging strategy decorator for custom Key Value Pairs
+      - resolve #315: Implement packaging strategy decorator for custom RollbarConfig
       - resolve #311: Rename packaging strategies and their decorators into "Package"s and "PackageDecorator"s
+      - resolve #310: Implement PayloadBundle
       - resolve #308: Implement automatic strategy/Data time-stamping.
 
       - ref #309: Complete integration of packaging strategies
-      - resolve #310: Implement PayloadBundle
-      - resolve #315: Implement packaging strategy decorator for custom RollbarConfig
       
 
 
