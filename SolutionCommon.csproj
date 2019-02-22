@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <!--
     <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <TargetFrameworks>net472;netcoreapp2.1;netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
@@ -66,7 +66,6 @@
       - resolve #308: Implement automatic strategy/Data time-stamping.
       - resolve #309: Complete integration of packaging strategies
       - resolve #317: Consolidate dependencies versions.
-      - resolve #318: Add explicit build target for .NET Core 2.2
 
     </PackageReleaseNotes>
 
