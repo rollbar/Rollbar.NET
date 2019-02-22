@@ -39,6 +39,7 @@
       - resolve #310: Implement PayloadBundle
       - resolve #308: Implement automatic strategy/Data time-stamping.
       - resolve #309: Complete integration of packaging strategies
+      - resolve #317: Consolidate dependencies versions.
 
     </PackageReleaseNotes>
 
