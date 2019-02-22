@@ -183,7 +183,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
                     {
                         case MethodVariant.Async:
                             {
-                                IAsyncLogger logger = rollbar;
+                                ILogger logger = rollbar;
                                 using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
                                 {
                                     logger.Log(ErrorLevel.Warning, payload);
@@ -192,10 +192,12 @@ namespace UnitTest.Rollbar.RollbarPerformance
                             }
                         case MethodVariant.AsyncWaited:
                             {
-                                IAsyncLogger logger = rollbar;
+                                ILogger logger = rollbar;
                                 using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
                                 {
-                                    logger.Log(ErrorLevel.Warning, payload).Wait();
+                                    //TODO: implement and add SynchronousPackage around the payload object!!!
+                                    logger.Log(ErrorLevel.Warning, new ObjectPackage(payload, true));
+                                    //logger.Log(ErrorLevel.Warning, payload);
                                 }
                                 break;
                             }

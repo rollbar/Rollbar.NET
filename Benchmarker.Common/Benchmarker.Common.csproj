@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <!--TargetFramework>netstandard2.0</TargetFramework-->
-    <TargetFrameworks>netcoreapp2.1;net461;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net461;net472</TargetFrameworks>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.4" />
   </ItemGroup>
 
   <ItemGroup>

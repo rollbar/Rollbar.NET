@@ -29,53 +29,57 @@
         /// Returns blocking/synchronous implementation of this ILogger.
         /// </summary>
         /// <param name="timeout">The timeout.</param>
-        /// <returns></returns>
+        /// <returns>
+        /// Blocking (fully synchronous) instance of an ILogger. 
+        /// It either completes logging calls within the specified timeout
+        /// or throws a TimeoutException.
+        /// </returns>
         ILogger AsBlockingLogger(TimeSpan timeout);
 
         /// <summary>
         /// Logs the specified data.
         /// </summary>
         /// <param name="data">The data.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Log(dto.Data data);
- 
+
         /// <summary>
         /// Logs using the specified level.
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Log(ErrorLevel level, object obj);
 
         /// <summary>
         /// Logs the specified object as critical.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Critical(object obj);
         /// <summary>
         /// Logs the specified object as error.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Error(object obj);
         /// <summary>
         /// Logs the specified object as warning.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Warning(object obj);
         /// <summary>
         /// Logs the specified object as info.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Info(object obj);
         /// <summary>
         /// Logs the specified object as debug.
         /// </summary>
         /// <param name="obj">The object.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Debug(object obj);
 
         /// <summary>
@@ -84,7 +88,7 @@
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom);
 
         /// <summary>
@@ -92,35 +96,35 @@
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Critical(object obj, IDictionary<string, object> custom);
         /// <summary>
         /// Logs the specified object as error.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Error(object obj, IDictionary<string, object> custom);
         /// <summary>
         /// Logs the specified object as warning.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Warning(object obj, IDictionary<string, object> custom);
         /// <summary>
         /// Logs the specified object as info.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Info(object obj, IDictionary<string, object> custom);
         /// <summary>
         /// Logs the specified object as debug.
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
-        /// <returns></returns>
+        /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Debug(object obj, IDictionary<string, object> custom);
     }
 }

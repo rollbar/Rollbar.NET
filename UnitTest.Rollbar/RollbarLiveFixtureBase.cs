@@ -6,6 +6,7 @@ namespace UnitTest.Rollbar
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Threading;
 
     /// <summary>
@@ -63,30 +64,25 @@ namespace UnitTest.Rollbar
         private void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
             Console.WriteLine(e.TraceAsString());
+            Debug.WriteLine(e.TraceAsString());
 
-            RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
-            if (apiErrorEvent != null)
+            switch (e)
             {
-                this.ApiErrorEvents.Add(apiErrorEvent);
-                return;
-            }
-            CommunicationEventArgs commEvent = e as CommunicationEventArgs;
-            if (commEvent != null)
-            {
-                this.CommunicationEvents.Add(commEvent);
-                return;
-            }
-            CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
-            if (commErrorEvent != null)
-            {
-                this.CommunicationErrorEvents.Add(commErrorEvent);
-                return;
-            }
-            InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
-            if (internalErrorEvent != null)
-            {
-                this.InternalSdkErrorEvents.Add(internalErrorEvent);
-                return;
+                case RollbarApiErrorEventArgs apiErrorEvent:
+                    this.ApiErrorEvents.Add(apiErrorEvent);
+                    return;
+                case CommunicationEventArgs commEvent:
+                    this.CommunicationEvents.Add(commEvent);
+                    return;
+                case CommunicationErrorEventArgs commErrorEvent:
+                    this.CommunicationErrorEvents.Add(commErrorEvent);
+                    return;
+                case InternalErrorEventArgs internalErrorEvent:
+                    this.InternalSdkErrorEvents.Add(internalErrorEvent);
+                    return;
+                default:
+                    Assert.Fail("Unexpected RollbarEventArgs specialization type!");
+                    return;
             }
         }
 

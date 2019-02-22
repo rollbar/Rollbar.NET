@@ -8,6 +8,11 @@
     /// Models Rollbar Server DTO.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.ExtendableDtoBase" />
+    /// <remarks>
+    /// Optional: server
+    /// Data about the server related to this event.
+    /// Can contain any arbitrary keys.
+    /// </remarks>
     public class Server 
         : HostBase
     {
@@ -58,6 +63,9 @@
         /// <value>
         /// The host.
         /// </value>
+        /// <remarks>
+        /// host: The server hostname. Will be indexed.
+        /// </remarks>
         public string Host
         {
             get { return this._keyedValues[ReservedProperties.Host] as string; }
@@ -70,6 +78,10 @@
         /// <value>
         /// The root.
         /// </value>
+        /// <remarks>
+        /// root: Path to the application code root, not including the final slash.
+        /// Used to collapse non-project code when displaying tracebacks.
+        /// </remarks>
         public string Root
         {
             get { return this._keyedValues[ReservedProperties.Root] as string; }
@@ -82,6 +94,9 @@
         /// <value>
         /// The branch.
         /// </value>
+        /// <remarks>
+        /// branch: Name of the checked-out source control branch. Defaults to "master"
+        /// </remarks>
         public string Branch
         {
             get { return this._keyedValues[ReservedProperties.Branch] as string; }
@@ -89,11 +104,15 @@
         }
 
         /// <summary>
-        /// Gets or sets the code version.
+        /// Gets or sets the code version (OPTIONAL).
         /// </summary>
         /// <value>
         /// The code version.
         /// </value>
+        /// <remarks>
+        /// Optional: code_version
+        /// String describing the running code version on the server
+        /// </remarks>
         public string CodeVersion
         {
             get { return this._keyedValues[ReservedProperties.CodeVersion] as string; }

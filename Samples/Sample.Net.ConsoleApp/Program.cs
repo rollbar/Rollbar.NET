@@ -1,4 +1,4 @@
-﻿namespace Sample.Net.ConsoleApp
+namespace Sample.Net.ConsoleApp
 {
     using GameDomainModel;
     using Rollbar;

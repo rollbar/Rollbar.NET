@@ -10,7 +10,7 @@
 
   <PropertyGroup>
 
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <!--
     <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
     <TargetFramework>net472</TargetFramework>
@@ -27,7 +27,7 @@
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp2.0'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp2.0'">
     <NetVariant>NET_CORE</NetVariant>
     <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
@@ -58,10 +58,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.2" />
-    <PackageReference Include="Moq" Version="4.8.3" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.3.2" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.3.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="Moq" Version="4.10.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>

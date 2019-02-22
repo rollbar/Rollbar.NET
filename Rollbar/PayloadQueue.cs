@@ -10,7 +10,7 @@ namespace Rollbar
     internal class PayloadQueue
     {
         private readonly object _syncLock;
-        private readonly Queue<Payload> _queue;
+        private readonly Queue<PayloadBundle> _queue;
         private readonly RollbarLogger _logger;
         private RollbarClient _client;
         private bool _isReleased;
@@ -25,9 +25,9 @@ namespace Rollbar
             Assumption.AssertNotNull(client, nameof(client));
             Assumption.AssertTrue(object.ReferenceEquals(logger.Config, client.Config), nameof(client.Config));
 
-            this._logger = logger;
             this._syncLock = new object();
-            this._queue = new Queue<Payload>();
+            this._queue = new Queue<PayloadBundle>();
+            this._logger = logger;
             this._client = client;
             this._isReleased = false;
         }
@@ -65,7 +65,7 @@ namespace Rollbar
             get { return this._client; }
         }
 
-        public void Enqueue(Payload payload)
+        public void Enqueue(PayloadBundle payload)
         {
             Assumption.AssertNotNull(payload, nameof(payload));
 
@@ -79,11 +79,11 @@ namespace Rollbar
             }
         }
 
-        public Payload Peek()
+        public PayloadBundle Peek()
         {
             lock(this._syncLock)
             {
-                Payload result = null;
+                PayloadBundle result = null;
 
                 if (this._queue.Count > 0)
                 {
@@ -94,11 +94,11 @@ namespace Rollbar
             }
         }
 
-        public Payload Dequeue()
+        public PayloadBundle Dequeue()
         {
             lock (this._syncLock)
             {
-                Payload result = null;
+                PayloadBundle result = null;
 
                 if (this._queue.Count > 0)
                 {

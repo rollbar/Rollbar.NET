@@ -13,7 +13,7 @@
     
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'">
     <DefineConstants>NETCOREAPP;INSTRUMENT</DefineConstants>
   </PropertyGroup>
 

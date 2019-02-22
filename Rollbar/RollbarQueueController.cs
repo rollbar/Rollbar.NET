@@ -69,7 +69,7 @@ namespace Rollbar
         #endregion singleton implementation
 
 
-        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(50);
+        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(500);
         internal readonly int _totalRetries = 3;
 
         private readonly ConcurrentDictionary<string, HttpClient> _httpClientsByProxySettings = 
@@ -245,8 +245,8 @@ namespace Rollbar
                 if (DateTimeOffset.Now >= queue.NextDequeueTime)
                 {
                     RollbarResponse response = null;
-                    Payload payload = Process(queue, out response);
-                    if (payload == null || response == null)
+                    PayloadBundle payloadBundle = Process(queue, out response);
+                    if (payloadBundle == null || response == null)
                     {
                         continue;
                     }
@@ -254,21 +254,21 @@ namespace Rollbar
                     switch (response.Error)
                     {
                         case (int)RollbarApiErrorEventArgs.RollbarError.None:
-                            payload.Signal?.Release();
+                            payloadBundle.Signal?.Release();
                             queue.Dequeue();
                             tokenMetadata.ResetTokenUsageDelay();
                             break;
                         case (int)RollbarApiErrorEventArgs.RollbarError.TooManyRequests:
-                            ObeyPayloadTimeout(payload, queue);
+                            ObeyPayloadTimeout(payloadBundle, queue);
                             tokenMetadata.IncrementTokenUsageDelay();
                             this.OnRollbarEvent(
-                                new RollbarApiErrorEventArgs(queue.Logger, payload, response)
+                                new RollbarApiErrorEventArgs(queue.Logger, payloadBundle.GetPayload(), response)
                                 );
                             return;
                         default:
-                            ObeyPayloadTimeout(payload, queue);
+                            ObeyPayloadTimeout(payloadBundle, queue);
                             this.OnRollbarEvent(
-                                new RollbarApiErrorEventArgs(queue.Logger, payload, response)
+                                new RollbarApiErrorEventArgs(queue.Logger, payloadBundle.GetPayload(), response)
                                 );
                             break;
                     }
@@ -288,19 +288,30 @@ namespace Rollbar
 
         }
 
-        private void ObeyPayloadTimeout(Payload payload, PayloadQueue queue)
+        private void ObeyPayloadTimeout(PayloadBundle payloadBundle, PayloadQueue queue)
         {
-            if (payload.TimeoutAt.HasValue && (DateTime.Now.Add(this._sleepInterval) >= payload.TimeoutAt.Value))
+            if (payloadBundle.TimeoutAt.HasValue && (DateTime.Now.Add(this._sleepInterval) >= payloadBundle.TimeoutAt.Value))
             {
                 queue.Dequeue();
             }
         }
 
-        private Payload Process(PayloadQueue queue, out RollbarResponse response)
+        private PayloadBundle Process(PayloadQueue queue, out RollbarResponse response)
         {
             response = null;
 
-            Payload payload = queue.Peek();
+            PayloadBundle payloadBundle = queue.Peek();
+            while(payloadBundle != null && (payloadBundle.Ignorable || payloadBundle.GetPayload() == null))
+            {
+                queue.Dequeue();              //throw away the useless one...
+                payloadBundle = queue.Peek(); //try next...
+            }
+            if (payloadBundle == null)
+            {
+                return null; //no bundles to process...
+            }
+
+            Payload payload = payloadBundle.GetPayload();
             if (payload == null)
             {
                 return null;
@@ -311,7 +322,7 @@ namespace Rollbar
             {
                 try
                 {
-                    response = queue.Client.PostAsJson(payload);
+                    response = queue.Client.PostAsJson(payloadBundle);
                 }
                 catch (WebException ex)
                 {
@@ -347,7 +358,7 @@ namespace Rollbar
                     );
             }
 
-            return payload;
+            return payloadBundle;
         }
 
         private void Config_Reconfigured(object sender, EventArgs e)
@@ -549,7 +560,8 @@ namespace Rollbar
                 this._rollbarCommThread = new Thread(new ParameterizedThreadStart(this.KeepProcessingAllQueues))
                 {
                     IsBackground = true,
-                    Name = "Rollbar Communication Thread"
+                    Name = "RollbarProcessor",
+                    //Priority = ThreadPriority.AboveNormal,
                 };
 
                 this._cancellationTokenSource = new CancellationTokenSource();

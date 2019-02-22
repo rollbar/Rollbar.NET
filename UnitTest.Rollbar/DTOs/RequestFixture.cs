@@ -134,7 +134,7 @@ namespace UnitTest.Rollbar.DTOs
             var json = JsonConvert.SerializeObject(_request);
             Assert.IsTrue(json.Contains("\"One\":1"));
             Assert.IsTrue(json.Contains("\"Name\":\"Chris\""));
-            var jObject = JObject.Parse(json)["get_params"] as JObject;
+            var jObject = JObject.Parse(json)["GET"] as JObject;
             Assert.IsNotNull(jObject);
 
             var keys = getParams.Keys.OrderBy(x => x);
@@ -176,7 +176,7 @@ namespace UnitTest.Rollbar.DTOs
             var json = JsonConvert.SerializeObject(_request);
             Assert.IsTrue(json.Contains("\"One\":1"));
             Assert.IsTrue(json.Contains("\"Name\":\"Chris\""));
-            var jObject = JObject.Parse(json)["post_params"] as JObject;
+            var jObject = JObject.Parse(json)["POST"] as JObject;
             Assert.IsNotNull(jObject);
 
             var left = postParams.Keys.OrderBy(x => x);
@@ -203,7 +203,7 @@ namespace UnitTest.Rollbar.DTOs
             var json = JsonConvert.SerializeObject(_request);
             Assert.IsTrue(json.Contains(postBody));
             var jObject = JObject.Parse(json);
-            Assert.AreEqual(postBody, jObject["post_body"]);
+            Assert.AreEqual(postBody, jObject["body"]);
         }
 
         [TestMethod]

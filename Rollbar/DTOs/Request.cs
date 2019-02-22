@@ -17,12 +17,18 @@
 #if (NETFX)
     using System.ServiceModel.Channels;
     using System.Web;
+    using Newtonsoft.Json;
 #endif
 
     /// <summary>
-    /// Models Rollbar Request DTO.
+    /// Models Rollbar HTTP Request DTO.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.ExtendableDtoBase" />
+    /// <remarks>
+    /// Optional: request
+    /// Data about the request this event occurred in.
+    /// Can contain any arbitrary keys.
+    /// </remarks>
     public class Request 
         : ExtendableDtoBase
     {
@@ -264,7 +270,7 @@
             /// <summary>
             /// The get-parameters
             /// </summary>
-            public static readonly string GetParams = "get_params";
+            public static readonly string GetParams = "GET";
             /// <summary>
             /// The query string
             /// </summary>
@@ -272,11 +278,11 @@
             /// <summary>
             /// The post-parameters
             /// </summary>
-            public static readonly string PostParams = "post_params";
+            public static readonly string PostParams = "POST";
             /// <summary>
             /// The post body
             /// </summary>
-            public static readonly string PostBody = "post_body";
+            public static readonly string PostBody = "body";
             /// <summary>
             /// The user IP
             /// </summary>
@@ -289,6 +295,9 @@
         /// <value>
         /// The URL.
         /// </value>
+        /// <remarks>
+        /// url: full URL where this event occurred
+        /// </remarks>
         public string Url
         {
             get { return this._keyedValues[ReservedProperties.Url] as string; }
@@ -301,6 +310,9 @@
         /// <value>
         /// The method.
         /// </value>
+        /// <remarks>
+        /// method: the request method
+        /// </remarks>
         public string Method
         {
             get { return this._keyedValues[ReservedProperties.Method] as string; }
@@ -308,11 +320,14 @@
         }
 
         /// <summary>
-        /// Gets or sets the headers.
+        /// Gets or sets the HTTP request headers.
         /// </summary>
         /// <value>
         /// The headers.
         /// </value>
+        /// <remarks>
+        /// headers: object containing the request headers
+        /// </remarks>
         public IDictionary<string, string> Headers
         {
             get { return this._keyedValues[ReservedProperties.Headers] as IDictionary<string, string>; }
@@ -325,6 +340,9 @@
         /// <value>
         /// The parameters.
         /// </value>
+        /// <remarks>
+        /// params: any routing parameters
+        /// </remarks>
         public IDictionary<string, object> Params
         {
             get { return this._keyedValues[ReservedProperties.Params] as IDictionary<string, object>; }
@@ -332,11 +350,14 @@
         }
 
         /// <summary>
-        /// Gets or sets the get-parameters.
+        /// Gets or sets the GET-parameters.
         /// </summary>
         /// <value>
-        /// The get-parameters.
+        /// The GET-parameters.
         /// </value>
+        /// <remarks>
+        /// GET: query string params
+        /// </remarks>
         public IDictionary<string, object> GetParams
         {
             get { return this._keyedValues[ReservedProperties.GetParams] as IDictionary<string, object>; }
@@ -349,6 +370,9 @@
         /// <value>
         /// The query string.
         /// </value>
+        /// <remarks>
+        /// query_string: the raw query string
+        /// </remarks>
         public string QueryString
         {
             get { return this._keyedValues[ReservedProperties.QueryString] as string; }
@@ -361,6 +385,9 @@
         /// <value>
         /// The post-parameters.
         /// </value>
+        /// <remarks>
+        /// POST: POST params
+        /// </remarks>
         public IDictionary<string, object> PostParams
         {
             get { return this._keyedValues[ReservedProperties.PostParams] as IDictionary<string, object>; }
@@ -373,6 +400,9 @@
         /// <value>
         /// The post-body.
         /// </value>
+        /// <remarks>
+        /// body: the raw POST body
+        /// </remarks>
         public string PostBody
         {
             get { return this._keyedValues[ReservedProperties.PostBody] as string; }
@@ -385,6 +415,11 @@
         /// <value>
         /// The user IP.
         /// </value>
+        /// <remarks>
+        /// user_ip: the user's IP address as a string.
+        /// Can also be the special value "$remote_ip", which will be replaced with the source IP of the API request.
+        /// Will be indexed, as long as it is a valid IPv4 address.
+        /// </remarks>
         public string UserIp
         {
             get { return this._keyedValues[ReservedProperties.UserIp] as string; }

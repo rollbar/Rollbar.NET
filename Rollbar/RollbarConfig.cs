@@ -30,18 +30,12 @@
     {
         private readonly RollbarLogger _logger;
 
-        private RollbarConfig()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarConfig"/> class.
+        /// </summary>
+        public RollbarConfig()
+            : this(null as string)
         {
-        }
-
-        internal RollbarConfig(RollbarLogger logger)
-        {
-            this._logger = logger;
-
-            this.SetDefaults();
-
-            // initialize based on application configuration file (if any):
-            NetStandard.RollbarConfigUtility.Load(this);
         }
 
         /// <summary>
@@ -54,7 +48,22 @@
 
             this.SetDefaults();
 
-            this.AccessToken = accessToken;
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                this.AccessToken = accessToken;
+            }
+            else
+            {
+                // initialize based on application configuration file (if any):
+                NetStandard.RollbarConfigUtility.Load(this);
+            }
+        }
+
+        internal RollbarConfig(RollbarLogger logger)
+        {
+            this._logger = logger;
+
+            this.SetDefaults();
 
             // initialize based on application configuration file (if any):
             NetStandard.RollbarConfigUtility.Load(this);

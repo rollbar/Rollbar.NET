@@ -15,7 +15,27 @@ namespace Rollbar
         /// <returns></returns>
         public static IRollbar CreateNew()
         {
-            return RollbarFactory.CreateNew(false);
+            return RollbarFactory.CreateNew(null);
+        }
+
+        /// <summary>
+        /// Creates the new instance of IRollbar.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <returns></returns>
+        public static IRollbar CreateNew(IRollbarConfig rollbarConfig)
+        {
+            return RollbarFactory.CreateNew(false, rollbarConfig);
+        }
+
+        /// <summary>
+        /// Creates the new instance of IRollbar.
+        /// </summary>
+        /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
+        /// <returns>IRollbar.</returns>
+        internal static IRollbar CreateNew(bool isSingleton)
+        {
+            return new RollbarLogger(isSingleton, null);
         }
 
         /// <summary>
@@ -24,7 +44,7 @@ namespace Rollbar
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <returns>IRollbar.</returns>
-        internal static IRollbar CreateNew(bool isSingleton, IRollbarConfig rollbarConfig = null)
+        internal static IRollbar CreateNew(bool isSingleton, IRollbarConfig rollbarConfig)
         {
             return new RollbarLogger(isSingleton, rollbarConfig);
         }
@@ -36,24 +56,20 @@ namespace Rollbar
         /// <param name="rollbarBlockingLoggingTimeout">The rollbar blocking logging timeout.</param>
         /// <param name="rollbarAsyncLogger">The rollbar asynchronous logger.</param>
         /// <param name="rollbarLogger">The rollbar logger.</param>
-        public static void CreateProper(
+        public static ILogger CreateProper(
             IRollbarConfig rollbarConfig,
-            TimeSpan? rollbarBlockingLoggingTimeout,
-            out IAsyncLogger rollbarAsyncLogger,
-            out ILogger rollbarLogger
+            TimeSpan? rollbarBlockingLoggingTimeout
             )
         {
             IRollbar rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig);
 
             if (rollbarBlockingLoggingTimeout.HasValue)
             {
-                rollbarLogger = rollbar.AsBlockingLogger(rollbarBlockingLoggingTimeout.Value);
-                rollbarAsyncLogger = null;
+                return rollbar.AsBlockingLogger(rollbarBlockingLoggingTimeout.Value);
             }
             else
             {
-                rollbarLogger = null;
-                rollbarAsyncLogger = rollbar;
+                return rollbar.Logger;
             }
         }
 

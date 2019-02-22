@@ -44,6 +44,21 @@
                 return data;
             }
 
+            IRollbarPackage rollbarPackagingStrategy = obj as IRollbarPackage;
+            if (rollbarPackagingStrategy != null)
+            {
+                data = rollbarPackagingStrategy.PackageAsRollbarData();
+                if (data != null)
+                {
+                    data.Environment = rollbarConfig?.Environment;
+                    data.Level = level;
+                    //update the data timestamp from the data creation timestamp to the passed
+                    //object-to-log capture timestamp:
+                    data.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(utcTimestamp);
+                }
+                return data;
+            }
+
             Body body = obj as Body;
             if (body == null)
             {

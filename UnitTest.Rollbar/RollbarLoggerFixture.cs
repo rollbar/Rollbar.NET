@@ -149,7 +149,8 @@ namespace UnitTest.Rollbar
                 try
                 {
                     this.ExpectedCommunicationEventsTotal++;
-                    logger.Error(new System.Exception("test exception")).Wait();
+                    //TODO: implement and add SynchronousPackage around the payload object!!!
+                    logger.Error(new System.Exception("test exception"));
                 }
                 catch
                 {
@@ -174,7 +175,8 @@ namespace UnitTest.Rollbar
                     try
                     {
                         this.ExpectedCommunicationEventsTotal++;
-                        logger.Error(new System.Exception("outer exception", ex)).Wait();
+                        //TODO: implement and add SynchronousPackage around the payload object!!!
+                        logger.Error(new System.Exception("outer exception", ex));
                     }
                     catch
                     {
@@ -192,7 +194,8 @@ namespace UnitTest.Rollbar
                 try
                 {
                     this.ExpectedCommunicationEventsTotal++;
-                    logger.Log(ErrorLevel.Error, "test message").Wait();
+                    //TODO: implement and add SynchronousPackage around the payload object!!!
+                    logger.Log(ErrorLevel.Error, "test message");
                 }
                 catch
                 {
@@ -227,23 +230,24 @@ namespace UnitTest.Rollbar
             {
                 try
                 {
+                    //TODO: implement and add SynchronousPackage around the payload object!!!
                     var ex = new Exception();
                     switch (expectedLogLevel)
                     {
                         case ErrorLevel.Critical:
-                            logger.Critical(ex).Wait();
+                            logger.Critical(ex);
                             break;
                         case ErrorLevel.Error:
-                            logger.Error(ex).Wait();
+                            logger.Error(ex);
                             break;
                         case ErrorLevel.Warning:
-                            logger.Warning(ex).Wait();
+                            logger.Warning(ex);
                             break;
                         case ErrorLevel.Info:
-                            logger.Info(ex).Wait();
+                            logger.Info(ex);
                             break;
                         case ErrorLevel.Debug:
-                            logger.Debug(ex).Wait();
+                            logger.Debug(ex);
                             break;
                     }
                 }
@@ -394,7 +398,7 @@ namespace UnitTest.Rollbar
             });
         }
 
-        private void PerformTheMultithreadedStressTest(IAsyncLogger[] loggers)
+        private void PerformTheMultithreadedStressTest(ILogger[] loggers)
         {
             //first let's make sure the controller queues are not populated by previous tests:
             RollbarQueueController.Instance.FlushQueues();
@@ -455,66 +459,66 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
         }
 
-        private void PerformTheMultithreadedStressTest(ILogger[] loggers)
-        {
-            //first let's make sure the controller queues are not populated by previous tests:
-            RollbarQueueController.Instance.FlushQueues();
+        //private void PerformTheMultithreadedStressTest(ILogger[] loggers)
+        //{
+        //    //first let's make sure the controller queues are not populated by previous tests:
+        //    RollbarQueueController.Instance.FlushQueues();
 
-            RollbarQueueController.Instance.InternalEvent += RollbarStress_InternalEvent;
+        //    RollbarQueueController.Instance.InternalEvent += RollbarStress_InternalEvent;
 
-            List<Task> tasks =
-                new List<Task>(MultithreadedStressTestParams.TotalThreads);
-            for (int t = 0; t < MultithreadedStressTestParams.TotalThreads; t++)
-            {
-                var task = new Task((state) =>
-                {
-                    int taskIndex = (int)state;
-                    TimeSpan sleepIntervalDelta =
-                        TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
-                    var logger = loggers[taskIndex];
-                    int i = 0;
-                    while (i < MultithreadedStressTestParams.LogsPerThread)
-                    {
-                        var customFields = new Dictionary<string, object>(Fields.FieldsCount)
-                        {
-                            [Fields.ThreadID] = taskIndex + 1,
-                            [Fields.ThreadLogID] = i + 1,
-                            [Fields.Timestamp] = DateTimeOffset.UtcNow
-                        };
+        //    List<Task> tasks =
+        //        new List<Task>(MultithreadedStressTestParams.TotalThreads);
+        //    for (int t = 0; t < MultithreadedStressTestParams.TotalThreads; t++)
+        //    {
+        //        var task = new Task((state) =>
+        //        {
+        //            int taskIndex = (int)state;
+        //            TimeSpan sleepIntervalDelta =
+        //                TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
+        //            var logger = loggers[taskIndex];
+        //            int i = 0;
+        //            while (i < MultithreadedStressTestParams.LogsPerThread)
+        //            {
+        //                var customFields = new Dictionary<string, object>(Fields.FieldsCount)
+        //                {
+        //                    [Fields.ThreadID] = taskIndex + 1,
+        //                    [Fields.ThreadLogID] = i + 1,
+        //                    [Fields.Timestamp] = DateTimeOffset.UtcNow
+        //                };
 
-                        logger.Info(
-                            //$"{customFields[Fields.Timestamp]} Stress test: thread #{customFields[Fields.ThreadID]}, log #{customFields[Fields.ThreadLogID]}"
-                            "Stress test"
-                            , customFields
-                            );
+        //                logger.Info(
+        //                    //$"{customFields[Fields.Timestamp]} Stress test: thread #{customFields[Fields.ThreadID]}, log #{customFields[Fields.ThreadLogID]}"
+        //                    "Stress test"
+        //                    , customFields
+        //                    );
 
-                        Thread.Sleep(MultithreadedStressTestParams.LogIntervalBase.Add(sleepIntervalDelta));
-                        i++;
-                    }
-                }
-                , t
-                );
+        //                Thread.Sleep(MultithreadedStressTestParams.LogIntervalBase.Add(sleepIntervalDelta));
+        //                i++;
+        //            }
+        //        }
+        //        , t
+        //        );
 
-                tasks.Add(task);
-            }
+        //        tasks.Add(task);
+        //    }
 
-            tasks.ForEach(t => t.Start());
+        //    tasks.ForEach(t => t.Start());
 
-            Task.WaitAll(tasks.ToArray());
+        //    Task.WaitAll(tasks.ToArray());
 
-            int expectedCount = 2 * //we are subscribing to the internal events twice: on individual rollbar level and on the queue controller level
-                MultithreadedStressTestParams.TotalThreads * MultithreadedStressTestParams.LogsPerThread;
+        //    int expectedCount = 2 * //we are subscribing to the internal events twice: on individual rollbar level and on the queue controller level
+        //        MultithreadedStressTestParams.TotalThreads * MultithreadedStressTestParams.LogsPerThread;
 
-            //we need this delay loop for async logs:
-            while (RollbarQueueController.Instance.GetTotalPayloadCount() > 0)
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(50));
-            }
+        //    //we need this delay loop for async logs:
+        //    while (RollbarQueueController.Instance.GetTotalPayloadCount() > 0)
+        //    {
+        //        Thread.Sleep(TimeSpan.FromMilliseconds(50));
+        //    }
 
-            RollbarQueueController.Instance.InternalEvent -= RollbarStress_InternalEvent;
+        //    RollbarQueueController.Instance.InternalEvent -= RollbarStress_InternalEvent;
 
-            Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
-        }
+        //    Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
+        //}
 
         private static int stressLogsCount = 0;
         private static void RollbarStress_InternalEvent(object sender, RollbarEventArgs e)
