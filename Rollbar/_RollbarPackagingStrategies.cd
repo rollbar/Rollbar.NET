@@ -79,6 +79,13 @@
       <FileName>CustomKeyValuePackageDecorator.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Rollbar.ObjectPackage">
+    <Position X="0.5" Y="19.5" Width="8" />
+    <TypeIdentifier>
+      <HashCode>AAAAJAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>ObjectPackage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Rollbar.IRollbarPackage">
     <Position X="1" Y="0.5" Width="2.75" />
     <TypeIdentifier>

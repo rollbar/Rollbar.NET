@@ -31,11 +31,14 @@ namespace UnitTest.Rollbar.DTOs
         public void ClientRenderedWithCpuValue()
         {
             string cpuValue = this._client.Cpu ?? "null";
-            //Assert.AreEqual("{\"cpu\":\"" + cpuValue + "\"}", JsonConvert.SerializeObject(_client));
             Assert.AreEqual(
-                "{\"cpu\":" + cpuValue + "}", JsonConvert.SerializeObject(_client), 
+                "{\"cpu\":\"" + cpuValue + "\"}", 
                 JsonConvert.SerializeObject(_client)
                 );
+            //Assert.AreEqual(
+            //    "{\"cpu\":" + cpuValue + "}", 
+            //    JsonConvert.SerializeObject(_client)
+            //    );
         }
 
         [TestMethod]

@@ -196,7 +196,8 @@ namespace UnitTest.Rollbar.RollbarPerformance
                                 using (PerformanceUtil.GetPerformanceTimer(classificationDeclaration))
                                 {
                                     //TODO: implement and add SynchronousPackage around the payload object!!!
-                                    logger.Log(ErrorLevel.Warning, payload);
+                                    logger.Log(ErrorLevel.Warning, new ObjectPackage(payload, true));
+                                    //logger.Log(ErrorLevel.Warning, payload);
                                 }
                                 break;
                             }

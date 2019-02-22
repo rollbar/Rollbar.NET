@@ -69,7 +69,7 @@ namespace Rollbar
         #endregion singleton implementation
 
 
-        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(50);
+        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(500);
         internal readonly int _totalRetries = 3;
 
         private readonly ConcurrentDictionary<string, HttpClient> _httpClientsByProxySettings = 
@@ -560,7 +560,8 @@ namespace Rollbar
                 this._rollbarCommThread = new Thread(new ParameterizedThreadStart(this.KeepProcessingAllQueues))
                 {
                     IsBackground = true,
-                    Name = "Rollbar Communication Thread"
+                    Name = "RollbarProcessor",
+                    //Priority = ThreadPriority.AboveNormal,
                 };
 
                 this._cancellationTokenSource = new CancellationTokenSource();

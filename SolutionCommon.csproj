@@ -19,28 +19,26 @@
       - resolve #289: Improve flexibility composing Data DTO.
       - resolve #290: Improve comments related to meaning of DTOs properties.
       - resolve #291: Define IRollbarPackage
-      - ref #296: Out of memory exception with high exceptions rate in multi threaded environment.
+      - resolve #296: Out of memory exception with high exceptions rate in multi threaded environment.
       - resolve #297: Assumption failure when setting nullable value for a key in ExtendableDtoBase
       - resolve #298: Make initialization of RollbarConfig via config files or explicitly specified access token as mutually exclusive.
       - resolve #300: Implement packaging strategy abstraction.
       - resolve #301: Implement packaging strategy decorator abstraction.
+      - resolve #316: Implement packaging strategy for arbitrary object payload.
       - resolve #302: Implement packaging strategy for messages.
       - resolve #303: Implement packaging strategy for exceptions.
       - resolve #304: Implement packaging strategy for ExceptionContext.
-      - resolve #305: Implement packaging strategy decorator for Person info.
-      - resolve #306: Implement packaging strategy decorator for HttpRequest info.
-      - resolve #307: Implement packaging strategy decorator for HttpContext info.
       - resolve #312: Implement packaging strategy for Data DTO
       - resolve #313: Implement packaging strategy for Body DTO
+      - resolve #305: Implement packaging strategy decorator for Person info.
       - resolve #314: Implement packaging strategy decorator for custom Key Value Pairs
       - resolve #315: Implement packaging strategy decorator for custom RollbarConfig
+      - resolve #306: Implement packaging strategy decorator for HttpRequest info.
+      - resolve #307: Implement packaging strategy decorator for HttpContext info.
       - resolve #311: Rename packaging strategies and their decorators into "Package"s and "PackageDecorator"s
       - resolve #310: Implement PayloadBundle
       - resolve #308: Implement automatic strategy/Data time-stamping.
-
-      - ref #309: Complete integration of packaging strategies
-      
-
+      - resolve #309: Complete integration of packaging strategies
 
     </PackageReleaseNotes>
 

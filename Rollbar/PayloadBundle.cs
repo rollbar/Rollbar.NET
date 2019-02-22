@@ -96,7 +96,12 @@
             )
             : this(rollbarConfig, payloadPackage as object, level, custom, timeoutAt, signal)
         {
-            this._rollbarPackage = payloadPackage;
+            if (payloadPackage != null)
+            {
+                IRollbarPackage package = ApplyCustomKeyValueDecorator(payloadPackage);
+                //package = ApplyConfigPackageDecorator(package);
+                this._rollbarPackage = package;
+            }
         }
 
         public PayloadBundle(
@@ -229,11 +234,11 @@
             IRollbarPackage rollbarPackage = GetRollbarPackage();
             Assumption.AssertNotNull(rollbarPackage, nameof(rollbarPackage));
 
-            if (rollbarPackage.RollbarData != null)
-            {
-                data = rollbarPackage.RollbarData;
-            }
-            else
+            //if (rollbarPackage.RollbarData != null)
+            //{
+            //    data = rollbarPackage.RollbarData;
+            //}
+            //else
             {
                 data = rollbarPackage.PackageAsRollbarData();
             }
