@@ -10,7 +10,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>3.0.0-preview</NotifierVersion>
+    <NotifierVersion>3.0.0</NotifierVersion>
     <PackageReleaseNotes>
       
       What's new and what are the most significant changes of v3 of the SDK?
@@ -70,7 +70,7 @@
 
     </PackageReleaseNotes>
 
-    <Version>$(NotifierVersion)</Version>
+    <Version>$(NotifierVersion)-preview</Version>
     <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
     <FileVersion>$(NotifierVersion)</FileVersion>
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>

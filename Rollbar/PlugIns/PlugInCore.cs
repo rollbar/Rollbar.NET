@@ -97,10 +97,10 @@
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <param name="rollbarData">The Rollbar data.</param>
-        private static void ReportToRollbar(IAsyncLogger logger, DTOs.Data rollbarData)
-        {
-            logger.Log(rollbarData);
-        }
+        //private static void ReportToRollbar(IAsyncLogger logger, DTOs.Data rollbarData)
+        //{
+        //    logger.Log(rollbarData);
+        //}
 
         #region IDisposable Support
 
