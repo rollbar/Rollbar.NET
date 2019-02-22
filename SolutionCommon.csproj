@@ -10,8 +10,34 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>2.3.0</NotifierVersion>
+    <NotifierVersion>3.0.0-preview</NotifierVersion>
     <PackageReleaseNotes>
+      
+      What's new and what are the most significant changes of v3 of the SDK?
+      
+      Rollbar Notifier/Logger performs 3 distinct internal operations when forwarding any data to the Rollbar API:
+        1. queuing the data object(s) to log into a queue associated with particular Rollbar access token;
+        2. packaging/parsing the data object into a Rollbar API specified data format;
+        3. transmitting the packaged data from a queue to the Rollbar API.
+      
+      When you call any of the ILogger's logging methods on a RollbarLogger instance, the operation 1 is executed and the method returns immediately, 
+      while operations 2 and 3 are performed later on asynchronously on a background thread.
+      
+      When you call any of the ILogger's logging methods via AsBlockingLogger(timeout) ILoger's instance - all the three operations performed on 
+      the calling thread (unless timeout with a timeout exception) before the method returns.
+      
+      If you prefer operations 1 and 2 (packaging and queuing) to be performed synchronously on the logging method calling thread before a logging method 
+      returns - call a logging method of ILogger directly on a RollbarLogger instance (not the one returned by AsBlockingLogger(timeout)) but wrap the logged
+      object into an ObjectPackage (implementing the IRollbarPackage interface) while setting its constructor optional parameter/flag mustApplySynchronously to true.
+      
+      The approaches described above allowed us to remove IAsyncLogger interface from the SDK (and, most importantly, stop using its Task return types that may be
+      a cause of some resource contention when used within application hosts that are heavily multi-threaded with very active threads and use of logging that are 
+      operating above some threshold defined by the host hardware and the rest of execution environment).
+      
+      The SDK also includes rich collection of other types implementing the IRollbarPackage interface in form of either ...Package(s) or ...PackageDecorator.
+      The decorators are the packages and can be "wrapped" around any other package instance. These packages are used to define any arbitrary data packaging rues and
+      at what point of the logging pipeline to apply them. Most inner wrapper is executed first, most outer - last.
+      
       Improvements and fixes:
 
       - resolve #287: Add more seamless integration with ASP.NET (Full Framework) based applications.
