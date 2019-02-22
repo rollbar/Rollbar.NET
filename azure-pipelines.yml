@@ -31,14 +31,14 @@ steps:
 # NuGet Tool Installer
 # Acquires a specific version of NuGet from the internet or the tools cache and adds it to the PATH. Use this task to change the version of NuGet used in the NuGet tasks.
 - task: NuGetToolInstaller@0
-  inputs:
+  #inputs:
     #versionSpec: '4.3.0' 
     #checkLatest: false # Optional
 
 # Visual Studio Test Platform Installer
 # Acquires the test platform from nuget.org or the tools cache. Satisfies the ‘vstest’ demand and can be used for running tests and collecting diagnostic data using the Visual Studio Test task.
 - task: VisualStudioTestPlatformInstaller@1
-  inputs:
+  #inputs:
     #packageFeedSelector: 'nugetOrg' # Options: nugetOrg, customFeed, netShare
     #versionSelector: 'latestPreRelease' # Required when packageFeedSelector == NugetOrg || PackageFeedSelector == CustomFeed# Options: latestPreRelease, latestStable, specificVersion
     #testPlatformVersion: # Required when versionSelector == SpecificVersion
