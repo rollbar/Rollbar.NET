@@ -23,7 +23,7 @@ steps:
 
 - script: dotnet --info
 
-- script: dotnet restoreSolution
+- script: dotnet restore rolbar.sln
 
 - task: NuGetToolInstaller@0
 
