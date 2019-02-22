@@ -23,6 +23,8 @@ steps:
 
 - script: dotnet --info
 
+- script: dotnet restoreSolution
+
 - task: NuGetToolInstaller@0
 
 - task: NuGetCommand@2
