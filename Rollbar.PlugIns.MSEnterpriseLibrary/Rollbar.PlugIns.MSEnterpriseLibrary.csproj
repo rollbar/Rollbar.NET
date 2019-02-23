@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 
     <PluginVersion>1.0.0</PluginVersion>
     <PackageReleaseNotes>Making sure Rollbar dependency is up-to-date.</PackageReleaseNotes>

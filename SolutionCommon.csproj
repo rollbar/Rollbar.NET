@@ -9,6 +9,7 @@
     <TargetFramework>net472</TargetFramework>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
 
     <NotifierVersion>3.0.1</NotifierVersion>
     <PackageReleaseNotes>
