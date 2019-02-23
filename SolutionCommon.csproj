@@ -92,6 +92,12 @@
 
   <ItemGroup Condition="
              '$(NetVariant)' == 'NET_CORE' 
+             ">
+    <PackageReference Include="Microsoft.NETCore.App" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="
+             '$(NetVariant)' == 'NET_CORE' 
              Or '$(NetVariant)' == 'NET_STANDARD'
              ">
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
