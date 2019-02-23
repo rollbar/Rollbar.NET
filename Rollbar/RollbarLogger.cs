@@ -6,11 +6,8 @@ namespace Rollbar
     using Rollbar.DTOs;
     using Rollbar.Telemetry;
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Implements disposable implementation of IRollbar.
@@ -26,15 +23,9 @@ namespace Rollbar
         : IRollbar
         , IDisposable
     {
-        //private static readonly Task completedTask = // for more recent .NET implementations it would be: Task.CompletedTask;
-        //    Task.Factory.StartNew(state => { }, "EnqueueAsyncShortcut");
-
-        private readonly object _syncRoot = new object();
 
         private readonly IRollbarConfig _config;
         private readonly PayloadQueue _payloadQueue;
-        //private readonly ConcurrentDictionary<Task, Task> _pendingTasks = 
-        //    new ConcurrentDictionary<Task, Task>();
 
         /// <summary>
         /// Occurs when a Rollbar internal event happens.
@@ -75,7 +66,11 @@ namespace Rollbar
 
             var rollbarClient = new RollbarClient(
                 this._config
-                , RollbarQueueController.Instance.ProvideHttpClient(this._config.ProxyAddress, this._config.ProxyUsername, this._config.ProxyPassword)
+                , RollbarQueueController.Instance.ProvideHttpClient(
+                    this._config.ProxyAddress, 
+                    this._config.ProxyUsername, 
+                    this._config.ProxyPassword
+                    )
                 );
 
             this._payloadQueue = new PayloadQueue(this, rollbarClient);
@@ -558,168 +553,10 @@ namespace Rollbar
                 return this;
             }
 
-            lock (this._syncRoot)
-            {
-                this._payloadQueue.Enqueue(payloadBundle);
-            }
+            this._payloadQueue.Enqueue(payloadBundle);
 
             return this;
         }
-
-        //internal Task EnqueueAsync(
-        //    object dataObject,
-        //    ErrorLevel level,
-        //    IDictionary<string, object> custom,
-        //    TimeSpan? timeout = null,
-        //    SemaphoreSlim signal = null
-        //    )
-        //{
-        //    // adding logic here that would prevent potential flooding with the tasks when reaching the application thread pool starvation for any reason: 
-        //    if (this._pendingTasks.Count > this.Config.ReportingQueueDepth)
-        //    {
-        //        return null; // let's save on creating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
-        //    }
-
-        //    DateTime utcTimestamp = DateTime.UtcNow;
-
-        //    if (this.Config.LogLevel.HasValue && level < this.Config.LogLevel.Value)
-        //    {
-        //        // nice shortcut:
-        //        return completedTask;
-        //    }
-
-        //    DateTime? timeoutAt = null;
-        //    if (timeout.HasValue)
-        //    {
-        //        timeoutAt = DateTime.Now.Add(timeout.Value);
-        //    }
-
-        //    // we are taking here a fire-and-forget approach:
-        //    Task task = new Task(state => Enqueue(utcTimestamp, dataObject, level, custom, timeoutAt, signal), "EnqueueAsync");
-
-        //    if (!this._pendingTasks.TryAdd(task, task))
-        //    {
-        //        this.OnRollbarEvent(new InternalErrorEventArgs(this, dataObject, null, "Couldn't add a pending task while performing EnqueueAsync(...)..."));
-        //        return null; // let's save on creating empty tasks. Task is a reference type - before usage, should be null-tested anyway...
-        //    }
-
-        //    task.ContinueWith(RemovePendingTask)
-        //        .ContinueWith(p => {
-        //            OnRollbarEvent(new InternalErrorEventArgs(this, null, p.Exception, "While performing EnqueueAsync(...)..."));
-        //            System.Diagnostics.Trace.TraceError(p.Exception.ToString());
-        //            }, 
-        //            TaskContinuationOptions.OnlyOnFaulted
-        //            );
-        //    task.Start();
-
-        //    return task;
-        //}
-
-        //private void RemovePendingTask(Task task)
-        //{
-        //    bool success = false;
-        //    Task taskToRemove = null;
-        //    do
-        //    {
-        //        success = this._pendingTasks.TryRemove(task, out taskToRemove);
-        //    } while (!success);
-        //    taskToRemove.Dispose();
-        //}
-
-        //private void Enqueue(
-        //    DateTime utcTimestamp,
-        //    object dataObject,
-        //    ErrorLevel level,
-        //    IDictionary<string, object> custom,
-        //    DateTime? timeoutAt = null,
-        //    SemaphoreSlim signal = null
-        //    )
-        //{
-        //    lock (this._syncRoot)
-        //    {
-        //        try
-        //        {
-        //            // compose the payload:
-        //            var data = RollbarUtility.PackageAsPayloadData(utcTimestamp, this.Config, level, dataObject, custom);
-        //            var payload = new Payload(this._config.AccessToken, data, timeoutAt, signal);
-        //            //payload.Data.Environment = this._config.Environment;
-        //            //payload.Data.Level = level;
-        //            payload.Validate();
-
-        //            DoSend(payload);
-        //        }
-        //        catch(System.Exception exception)
-        //        {
-        //            var errorEvent = 
-        //                new InternalErrorEventArgs(this, dataObject, exception, "EXCEPTION within RollbarLogger.Enque(...) method");
-        //            System.Diagnostics.Trace.TraceError(errorEvent.TraceAsString());
-        //            this.OnRollbarEvent(errorEvent);
-        //        }
-        //    }
-        //}
-
-        //private void DoSend(Payload payload)
-        //{
-        //    //lock (this._syncRoot)
-        //    {
-        //        // here is the last chance to decide if we need to actually send this payload
-        //        // based on the current config settings:
-        //        if (string.IsNullOrWhiteSpace(this._config.AccessToken)
-        //            || this._config.Enabled == false
-        //            || (this._config.LogLevel.HasValue && payload.Data.Level < this._config.LogLevel.Value)
-        //            )
-        //        {
-        //            return;
-        //        }
-
-        //        if (TelemetryCollector.Instance.Config.TelemetryEnabled)
-        //        {
-        //            payload.Data.Body.Telemetry =
-        //                TelemetryCollector.Instance.GetQueueContent();
-        //        }
-
-        //        if (this._config.Server != null)
-        //        {
-        //            payload.Data.Server = this._config.Server;
-        //        }
-
-        //        try
-        //        {
-        //            if (this._config.CheckIgnore != null
-        //                && this._config.CheckIgnore.Invoke(payload)
-        //                )
-        //            {
-        //                return;
-        //            }
-        //        }
-        //        catch (System.Exception ex)
-        //        {
-        //            OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
-        //        }
-
-        //        try
-        //        {
-        //            this._config.Transform?.Invoke(payload);
-        //        }
-        //        catch (System.Exception ex)
-        //        {
-        //            OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
-        //        }
-
-        //        try
-        //        {
-        //            this._config.Truncate?.Invoke(payload);
-        //        }
-        //        catch (System.Exception ex)
-        //        {
-        //            OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
-        //        }
-
-        //        this._payloadQueue.Enqueue(payload);
-
-        //        return;
-        //    }
-        //}
 
         internal virtual void OnRollbarEvent(RollbarEventArgs e)
         {
@@ -741,7 +578,6 @@ namespace Rollbar
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    //Task.WaitAll(this._pendingTasks.Values.ToArray(), TimeSpan.FromMilliseconds(500));
                     this._payloadQueue.Release();
                 }
 

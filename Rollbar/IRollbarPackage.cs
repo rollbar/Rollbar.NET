@@ -1,6 +1,5 @@
 ﻿namespace Rollbar
 {
-    //using System.Threading.Tasks;
     using Rollbar.DTOs;
 
     /// <summary>
@@ -20,12 +19,6 @@
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
         Data PackageAsRollbarData();
-
-        /// <summary>
-        /// Packages as rollbar data asynchronously.
-        /// </summary>
-        /// <returns>Task&lt;Data&gt; producing Rollbar Data DTO or null.</returns>
-        //Task<Data> PackageAsRollbarDataAsync();
 
         /// <summary>
         /// Gets a value indicating whether to package synchronously (within the logging method call).
