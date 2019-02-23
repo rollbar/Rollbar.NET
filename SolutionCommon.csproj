@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <!--
     <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <TargetFrameworks>net472;netcoreapp2.1;netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
@@ -10,66 +10,19 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>3.0.0</NotifierVersion>
+    <NotifierVersion>3.0.1</NotifierVersion>
     <PackageReleaseNotes>
-      
-      What's new and what are the most significant changes of v3 of the SDK?
-      
-      Rollbar Notifier/Logger performs 3 distinct internal operations when forwarding any data to the Rollbar API:
-        1. queuing the data object(s) to log into a queue associated with particular Rollbar access token;
-        2. packaging/parsing the data object into a Rollbar API specified data format;
-        3. transmitting the packaged data from a queue to the Rollbar API.
-      
-      When you call any of the ILogger's logging methods on a RollbarLogger instance, the operation 1 is executed and the method returns immediately, 
-      while operations 2 and 3 are performed later on asynchronously on a background thread.
-      
-      When you call any of the ILogger's logging methods via AsBlockingLogger(timeout) ILoger's instance - all the three operations performed on 
-      the calling thread (unless timeout with a timeout exception) before the method returns.
-      
-      If you prefer operations 1 and 2 (packaging and queuing) to be performed synchronously on the logging method calling thread before a logging method 
-      returns - call a logging method of ILogger directly on a RollbarLogger instance (not the one returned by AsBlockingLogger(timeout)) but wrap the logged
-      object into an ObjectPackage (implementing the IRollbarPackage interface) while setting its constructor optional parameter/flag mustApplySynchronously to true.
-      
-      The approaches described above allowed us to remove IAsyncLogger interface from the SDK (and, most importantly, stop using its Task return types that may be
-      a cause of some resource contention when used within application hosts that are heavily multi-threaded with very active threads and use of logging that are 
-      operating above some threshold defined by the host hardware and the rest of execution environment).
-      
-      The SDK also includes rich collection of other types implementing the IRollbarPackage interface in form of either ...Package(s) or ...PackageDecorator.
-      The decorators are the packages and can be "wrapped" around any other package instance. These packages are used to define any arbitrary data packaging rues and
-      at what point of the logging pipeline to apply them. Most inner wrapper is executed first, most outer - last.
-      
+
       Improvements and fixes:
 
-      - resolve #287: Add more seamless integration with ASP.NET (Full Framework) based applications.
-      - resolve #288: Add sample of Rollbar.NET within ASP.NET (Full Framework) based applications.
-      - resolve #289: Improve flexibility composing Data DTO.
-      - resolve #290: Improve comments related to meaning of DTOs properties.
-      - resolve #291: Define IRollbarPackage
-      - resolve #296: Out of memory exception with high exceptions rate in multi threaded environment.
-      - resolve #297: Assumption failure when setting nullable value for a key in ExtendableDtoBase
-      - resolve #298: Make initialization of RollbarConfig via config files or explicitly specified access token as mutually exclusive.
-      - resolve #300: Implement packaging strategy abstraction.
-      - resolve #301: Implement packaging strategy decorator abstraction.
-      - resolve #316: Implement packaging strategy for arbitrary object payload.
-      - resolve #302: Implement packaging strategy for messages.
-      - resolve #303: Implement packaging strategy for exceptions.
-      - resolve #304: Implement packaging strategy for ExceptionContext.
-      - resolve #312: Implement packaging strategy for Data DTO
-      - resolve #313: Implement packaging strategy for Body DTO
-      - resolve #305: Implement packaging strategy decorator for Person info.
-      - resolve #314: Implement packaging strategy decorator for custom Key Value Pairs
-      - resolve #315: Implement packaging strategy decorator for custom RollbarConfig
-      - resolve #306: Implement packaging strategy decorator for HttpRequest info.
-      - resolve #307: Implement packaging strategy decorator for HttpContext info.
-      - resolve #311: Rename packaging strategies and their decorators into "Package"s and "PackageDecorator"s
-      - resolve #310: Implement PayloadBundle
-      - resolve #308: Implement automatic strategy/Data time-stamping.
-      - resolve #309: Complete integration of packaging strategies
-      - resolve #317: Consolidate dependencies versions.
+      - ref #322: General codebase cleanup.
+      - ref #321: Address latest Codacy review results.
+      - ref #318: Add explicit build target for .NET Core 2.2.
+      - ref #320: Update CI build scripts/environment.
 
     </PackageReleaseNotes>
 
-    <Version>$(NotifierVersion)-preview</Version>
+    <Version>$(NotifierVersion)</Version>
     <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
     <FileVersion>$(NotifierVersion)</FileVersion>
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
