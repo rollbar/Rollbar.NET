@@ -91,9 +91,9 @@
 
 
   <ItemGroup Condition="
-             '$(NetVariant)' == 'NET_CORE' 
+             '$(NetVariant)' == 'NET_STANDARD' 
              ">
-    <PackageReference Include="Microsoft.NETCore.App" Version="2.0.0" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition="
