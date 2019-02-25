@@ -31,14 +31,18 @@ namespace UnitTest.Rollbar.DTOs
         public void ClientRenderedWithCpuValue()
         {
             string cpuValue = this._client.Cpu ?? "null";
+
+#if NETFX
             Assert.AreEqual(
                 "{\"cpu\":\"" + cpuValue + "\"}", 
                 JsonConvert.SerializeObject(_client)
                 );
-            //Assert.AreEqual(
-            //    "{\"cpu\":" + cpuValue + "}", 
-            //    JsonConvert.SerializeObject(_client)
-            //    );
+#else
+            Assert.AreEqual(
+                "{\"cpu\":" + cpuValue + "}",
+                JsonConvert.SerializeObject(_client)
+                );
+#endif
         }
 
         [TestMethod]
