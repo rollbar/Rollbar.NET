@@ -2,14 +2,14 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net472;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <!--
     <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <TargetFrameworks>net472;netcoreapp2.1;netcoreapp2.0;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <TargetFramework>net472</TargetFramework>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
-    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
+    <TargetLatestRuntimePatch>false</TargetLatestRuntimePatch>
 
     <NotifierVersion>3.0.1</NotifierVersion>
     <PackageReleaseNotes>
@@ -88,13 +88,6 @@
                  ">
     <DefineConstants>NETFX_47nOlder;NETFX</DefineConstants>
   </PropertyGroup>
-
-
-  <ItemGroup Condition="
-             '$(NetVariant)' == 'NET_STANDARD' 
-             ">
-    <PackageReference Include="NETStandard.Library" Version="2.0.0" />
-  </ItemGroup>
 
   <ItemGroup Condition="
              '$(NetVariant)' == 'NET_CORE' 
