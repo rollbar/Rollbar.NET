@@ -43,8 +43,8 @@
         /// </summary>
         private readonly SemaphoreSlim _signal;
 
-        // one-time calculated caches:
-        //****************************
+        #region one-time calculated caches
+
         /// <summary>
         /// The ignorable
         /// </summary>
@@ -61,6 +61,7 @@
         /// As HTTP content to send
         /// </summary>
         private StringContent _asHttpContentToSend;
+        #endregion one-time calculated caches
 
         /// <summary>
         /// Gets the timeout at.
@@ -177,7 +178,6 @@
             if (payloadPackage != null)
             {
                 IRollbarPackage package = ApplyCustomKeyValueDecorator(payloadPackage);
-                //package = ApplyConfigPackageDecorator(package);
                 this._rollbarPackage = package;
             }
         }
@@ -289,9 +289,6 @@
                 Data data = this.GetPayloadData();
                 if (data != null)
                 {
-                    // we are already setting environment within the ConfigAttributesPackageDecorator:
-                    //data.Environment = this._rollbarConfig?.Environment;
-
                     data.Level = this._level;
                     //update the data timestamp from the data creation timestamp to the passed
                     //object-to-log capture timestamp:
@@ -354,14 +351,7 @@
             IRollbarPackage rollbarPackage = GetRollbarPackage();
             Assumption.AssertNotNull(rollbarPackage, nameof(rollbarPackage));
 
-            //if (rollbarPackage.RollbarData != null)
-            //{
-            //    data = rollbarPackage.RollbarData;
-            //}
-            //else
-            {
-                data = rollbarPackage.PackageAsRollbarData();
-            }
+            data = rollbarPackage.PackageAsRollbarData();
             Assumption.AssertNotNull(data, nameof(data));
 
             return data;
@@ -401,7 +391,6 @@
                     return this._rollbarPackage;
                 case Body bodyObject:
                     this._rollbarPackage = new BodyPackage(this._rollbarConfig, bodyObject, this._custom);
-                    //this._rollbarPackage = ApplyCustomKeyValueDecorator(this._rollbarPackage);
                     return this._rollbarPackage;
                 case System.Exception exceptionObject:
                     this._rollbarPackage = new ExceptionPackage(exceptionObject);
