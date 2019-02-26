@@ -4,8 +4,7 @@
     <TargetFramework>net461</TargetFramework>
 
     <PluginVersion>1.0.0</PluginVersion>
-    <PackageReleaseNotes>Making sure Rollbar dependency is up-to-date.
-</PackageReleaseNotes>
+    <PackageReleaseNotes>Making sure Rollbar dependency is up-to-date.</PackageReleaseNotes>
 
     <Title>Rollbar.NET Notifier plug-in for Microsoft Enterprise Library v6.</Title>
     <Description>Rollbar.NET Notifier as an IExceptionHandler.</Description>

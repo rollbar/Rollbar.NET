@@ -1,20 +1,31 @@
 ﻿namespace Rollbar
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using Rollbar.Telemetry;
 
+    /// <summary>
+    /// Class ConfigAttributesPackageDecorator.
+    /// Implements the <see cref="Rollbar.RollbarPackageDecoratorBase" />
+    /// </summary>
+    /// <seealso cref="Rollbar.RollbarPackageDecoratorBase" />
     public class ConfigAttributesPackageDecorator
         : RollbarPackageDecoratorBase
     {
+        /// <summary>
+        /// The rollbar configuration
+        /// </summary>
         private readonly IRollbarConfig _rollbarConfig;
+        /// <summary>
+        /// The captured telemetry records
+        /// </summary>
         private readonly DTOs.Telemetry[] _capturedTelemetryRecords;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigAttributesPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
         public ConfigAttributesPackageDecorator(
             IRollbarPackage packageToDecorate, 
             IRollbarConfig rollbarConfig
@@ -23,6 +34,12 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigAttributesPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ConfigAttributesPackageDecorator(
             IRollbarPackage packageToDecorate, 
             IRollbarConfig rollbarConfig, 
@@ -43,6 +60,10 @@
             }
         }
 
+        /// <summary>
+        /// Decorates the specified rollbar data.
+        /// </summary>
+        /// <param name="rollbarData">The rollbar data.</param>
         protected override void Decorate(Data rollbarData)
         {
             // telemetry data is based on the configuration,
@@ -72,40 +93,6 @@
             {
                 rollbarData.Person = this._rollbarConfig.Person;
             }
-
-
-
-            //try
-            //{
-            //    if (this._config.CheckIgnore != null
-            //        && this._config.CheckIgnore.Invoke(payload)
-            //        )
-            //    {
-            //        return;
-            //    }
-            //}
-            //catch (System.Exception ex)
-            //{
-            //    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
-            //}
-
-            //try
-            //{
-            //    this._config.Transform?.Invoke(payload);
-            //}
-            //catch (System.Exception ex)
-            //{
-            //    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
-            //}
-
-            //try
-            //{
-            //    this._config.Truncate?.Invoke(payload);
-            //}
-            //catch (System.Exception ex)
-            //{
-            //    OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
-            //}
         }
     }
 }

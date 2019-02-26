@@ -8,13 +8,31 @@
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Class ObjectPackage.
+    /// Implements the <see cref="Rollbar.RollbarPackageBase" />
+    /// </summary>
+    /// <seealso cref="Rollbar.RollbarPackageBase" />
     public class ObjectPackage
         : RollbarPackageBase
     {
+        /// <summary>
+        /// The object to package
+        /// </summary>
         private readonly object _objectToPackage;
+        /// <summary>
+        /// The rollbar data title
+        /// </summary>
         private readonly string _rollbarDataTitle;
-        private IDictionary<string, object> _custom; 
+        /// <summary>
+        /// The custom
+        /// </summary>
+        private IDictionary<string, object> _custom;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
+        /// </summary>
+        /// <param name="objectToPackage">The object to package.</param>
         public ObjectPackage(
             object objectToPackage
             )
@@ -22,6 +40,11 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
+        /// </summary>
+        /// <param name="objectToPackage">The object to package.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ObjectPackage(
             object objectToPackage,
             bool mustApplySynchronously
@@ -30,6 +53,11 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
+        /// </summary>
+        /// <param name="objectToPackage">The object to package.</param>
+        /// <param name="custom">The custom.</param>
         public ObjectPackage(
             object objectToPackage,
             IDictionary<string, object> custom
@@ -38,6 +66,12 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
+        /// </summary>
+        /// <param name="objectToPackage">The object to package.</param>
+        /// <param name="custom">The custom.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ObjectPackage(
             object objectToPackage,
             IDictionary<string, object> custom,
@@ -47,6 +81,12 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
+        /// </summary>
+        /// <param name="objectToPackage">The object to package.</param>
+        /// <param name="rollbarDataTitle">The rollbar data title.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ObjectPackage(
             object objectToPackage,
             string rollbarDataTitle,
@@ -56,6 +96,12 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
+        /// </summary>
+        /// <param name="objectToPackage">The object to package.</param>
+        /// <param name="rollbarDataTitle">The rollbar data title.</param>
+        /// <param name="custom">The custom.</param>
         public ObjectPackage(
             object objectToPackage,
             string rollbarDataTitle,
@@ -65,6 +111,13 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
+        /// </summary>
+        /// <param name="objectToPackage">The object to package.</param>
+        /// <param name="rollbarDataTitle">The rollbar data title.</param>
+        /// <param name="custom">The custom.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ObjectPackage(
             object objectToPackage, 
             string rollbarDataTitle, 
@@ -80,6 +133,10 @@
             this._custom = custom;
         }
 
+        /// <summary>
+        /// Produces the rollbar data.
+        /// </summary>
+        /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
         protected override Data ProduceRollbarData()
         {
             Data data = null;

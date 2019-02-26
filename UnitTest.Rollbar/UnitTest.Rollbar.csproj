@@ -10,9 +10,11 @@
 
   <PropertyGroup>
 
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;net472;net471;net47;net46;net45</TargetFrameworks>
     <!--
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
+
+<TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
     <TargetFramework>net472</TargetFramework>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
@@ -21,6 +23,15 @@
 
     <Configurations>Debug;Release;Instrumented</Configurations>
   </PropertyGroup>
+
+  <!-- We only want to run performance evaluation unit tests under .NET Core -->
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'
+                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'
+                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU'
+                 ">
+    <DefineConstants>INSTRUMENT</DefineConstants>
+  </PropertyGroup>
+  
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <NetVariant>NET_STANDARD</NetVariant>

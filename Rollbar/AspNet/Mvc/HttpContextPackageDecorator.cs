@@ -2,13 +2,7 @@
 
 namespace Rollbar.AspNet.Mvc
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.Web;
-    using System.Web.Hosting;
-    using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
 
@@ -31,7 +25,7 @@ namespace Rollbar.AspNet.Mvc
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpContextPackageDecorator" /> class.
         /// </summary>
-        /// <param name="strategyToDecorate">The strategy to decorate.</param>
+        /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="httpContext">The HTTP context.</param>
         public HttpContextPackageDecorator(IRollbarPackage packageToDecorate, HttpContext httpContext)
                     : base(packageToDecorate, false)

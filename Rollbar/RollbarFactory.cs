@@ -54,8 +54,6 @@ namespace Rollbar
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarBlockingLoggingTimeout">The rollbar blocking logging timeout.</param>
-        /// <param name="rollbarAsyncLogger">The rollbar asynchronous logger.</param>
-        /// <param name="rollbarLogger">The rollbar logger.</param>
         public static ILogger CreateProper(
             IRollbarConfig rollbarConfig,
             TimeSpan? rollbarBlockingLoggingTimeout

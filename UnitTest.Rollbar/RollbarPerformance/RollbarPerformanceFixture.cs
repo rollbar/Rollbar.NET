@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
+#if INSTRUMENT
 namespace UnitTest.Rollbar.RollbarPerformance
 {
     using System;
@@ -16,6 +17,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
     using global::Rollbar.Common;
     using global::Rollbar.Diagnostics;
     using global::Rollbar.DTOs;
+
 
     [TestClass]
     [TestCategory(nameof(RollbarPerformanceFixture))]
@@ -47,6 +49,7 @@ namespace UnitTest.Rollbar.RollbarPerformance
         }
 
         [TestMethod]
+        [Conditional(InstrumentationCondition.Instrument)]
         public void EvaluatePerformance()
         {
             ResetAllCounts();
@@ -335,3 +338,4 @@ namespace UnitTest.Rollbar.RollbarPerformance
 
     }
 }
+#endif
