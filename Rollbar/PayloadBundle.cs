@@ -5,40 +5,85 @@
     using Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net.Http;
-    using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
 
+    /// <summary>
+    /// Class PayloadBundle.
+    /// </summary>
     internal class PayloadBundle
     {
+        /// <summary>
+        /// The time stamp
+        /// </summary>
         private readonly DateTime _timeStamp = DateTime.UtcNow;
 
+        /// <summary>
+        /// The payload object
+        /// </summary>
         private readonly object _payloadObject;
+        /// <summary>
+        /// The custom
+        /// </summary>
         private readonly IDictionary<string, object> _custom;
+        /// <summary>
+        /// The level
+        /// </summary>
         private readonly ErrorLevel _level;
+        /// <summary>
+        /// The rollbar configuration
+        /// </summary>
         private readonly IRollbarConfig _rollbarConfig;
+        /// <summary>
+        /// The timeout at
+        /// </summary>
         private readonly DateTime? _timeoutAt;
+        /// <summary>
+        /// The signal
+        /// </summary>
         private readonly SemaphoreSlim _signal;
 
         // one-time calculated caches:
         //****************************
+        /// <summary>
+        /// The ignorable
+        /// </summary>
         private bool? _ignorable;
+        /// <summary>
+        /// The rollbar package
+        /// </summary>
         private IRollbarPackage _rollbarPackage;
+        /// <summary>
+        /// The payload
+        /// </summary>
         private Payload _payload;
+        /// <summary>
+        /// As HTTP content to send
+        /// </summary>
         private StringContent _asHttpContentToSend;
 
+        /// <summary>
+        /// Gets the timeout at.
+        /// </summary>
+        /// <value>The timeout at.</value>
         internal DateTime? TimeoutAt
         {
             get { return this._timeoutAt; }
         }
 
+        /// <summary>
+        /// Gets the signal.
+        /// </summary>
+        /// <value>The signal.</value>
         internal SemaphoreSlim Signal
         {
             get { return this._signal; }
         }
 
+        /// <summary>
+        /// Gets or sets as HTTP content to send.
+        /// </summary>
+        /// <value>As HTTP content to send.</value>
         internal StringContent AsHttpContentToSend
         {
             get
@@ -51,11 +96,20 @@
             }
         }
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="PayloadBundle"/> class from being created.
+        /// </summary>
         private PayloadBundle()
         {
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="payloadPackage">The payload package.</param>
+        /// <param name="level">The level.</param>
         public PayloadBundle(
             IRollbarConfig rollbarConfig,
             IRollbarPackage payloadPackage,
@@ -65,6 +119,13 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="payloadPackage">The payload package.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="custom">The custom.</param>
         public PayloadBundle(
             IRollbarConfig rollbarConfig,
             IRollbarPackage payloadPackage,
@@ -75,6 +136,14 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="payloadPackage">The payload package.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="timeoutAt">The timeout at.</param>
+        /// <param name="signal">The signal.</param>
         public PayloadBundle(
             IRollbarConfig rollbarConfig,
             IRollbarPackage payloadPackage,
@@ -86,6 +155,15 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="payloadPackage">The payload package.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="custom">The custom.</param>
+        /// <param name="timeoutAt">The timeout at.</param>
+        /// <param name="signal">The signal.</param>
         public PayloadBundle(
             IRollbarConfig rollbarConfig,
             IRollbarPackage payloadPackage,
@@ -104,6 +182,12 @@
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="payloadObject">The payload object.</param>
+        /// <param name="level">The level.</param>
         public PayloadBundle(
             IRollbarConfig rollbarConfig,
             object payloadObject,
@@ -113,6 +197,13 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="payloadObject">The payload object.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="custom">The custom.</param>
         public PayloadBundle(
             IRollbarConfig rollbarConfig,
             object payloadObject,
@@ -123,6 +214,14 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="payloadObject">The payload object.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="timeoutAt">The timeout at.</param>
+        /// <param name="signal">The signal.</param>
         public PayloadBundle(
             IRollbarConfig rollbarConfig,
             object payloadObject,
@@ -134,6 +233,15 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="payloadObject">The payload object.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="custom">The custom.</param>
+        /// <param name="timeoutAt">The timeout at.</param>
+        /// <param name="signal">The signal.</param>
         public PayloadBundle(
             IRollbarConfig rollbarConfig,
             object payloadObject,
@@ -154,6 +262,10 @@
             this._signal = signal;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="PayloadBundle"/> is ignorable.
+        /// </summary>
+        /// <value><c>true</c> if ignorable; otherwise, <c>false</c>.</value>
         public bool Ignorable
         {
             get
@@ -166,6 +278,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets the payload.
+        /// </summary>
+        /// <returns>Payload.</returns>
         public Payload GetPayload()
         {
             if (this._payload == null)
@@ -227,6 +343,10 @@
             return this._payload;
         }
 
+        /// <summary>
+        /// Gets the payload data.
+        /// </summary>
+        /// <returns>Data.</returns>
         private Data GetPayloadData()
         {
             Data data;
@@ -247,6 +367,10 @@
             return data;
         }
 
+        /// <summary>
+        /// Gets the rollbar package.
+        /// </summary>
+        /// <returns>IRollbarPackage.</returns>
         private IRollbarPackage GetRollbarPackage()
         {
             IRollbarPackage rollbarPackage = CreateRollbarPackage();
@@ -254,6 +378,10 @@
             return rollbarPackage;
         }
 
+        /// <summary>
+        /// Creates the rollbar package.
+        /// </summary>
+        /// <returns>IRollbarPackage.</returns>
         private IRollbarPackage CreateRollbarPackage()
         {
             if (this._rollbarPackage != null)
@@ -291,6 +419,11 @@
             }
         }
 
+        /// <summary>
+        /// Applies the custom key value decorator.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <returns>IRollbarPackage.</returns>
         private IRollbarPackage ApplyCustomKeyValueDecorator(IRollbarPackage packageToDecorate)
         {
             if (this._custom == null || this._custom.Count == 0)
@@ -301,6 +434,11 @@
             return new CustomKeyValuePackageDecorator(packageToDecorate, this._custom);
         }
 
+        /// <summary>
+        /// Applies the configuration package decorator.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <returns>IRollbarPackage.</returns>
         private IRollbarPackage ApplyConfigPackageDecorator(IRollbarPackage packageToDecorate)
         {
             if (this._rollbarConfig == null)

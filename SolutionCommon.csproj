@@ -17,7 +17,7 @@
 
       Improvements and fixes:
 
-      - ref #322: General codebase cleanup.
+      - resolve #322: General codebase cleanup.
       - ref #321: Address latest Codacy review results.
       - ref #318: Add explicit build target for .NET Core 2.2.
       - resolve #320: Update CI build scripts/environment.
