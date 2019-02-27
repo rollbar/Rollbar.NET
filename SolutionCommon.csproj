@@ -20,11 +20,12 @@
       - resolve #322: General codebase cleanup.
       - resolve #321: Address latest Codacy review results.
       - resolve #320: Update CI build scripts/environment.
-      - ref #325: Extract integration with .NET Framework ASP.NET MVC into separate project.
+      - resolve #325: Extract integration with .NET Framework ASP.NET MVC into separate project (Rollbar.Net.AspNet.Mvc).
+      - resolve #326: Extract integration with .NET Framework ASP.NET Web API into separate project (Rollbar.Net.AspNet.WebApi).
 
     </PackageReleaseNotes>
 
-    <Version>$(NotifierVersion)</Version>
+    <Version>$(NotifierVersion)-preview</Version>
     <AssemblyVersion>$(NotifierVersion)</AssemblyVersion>
     <FileVersion>$(NotifierVersion)</FileVersion>
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
