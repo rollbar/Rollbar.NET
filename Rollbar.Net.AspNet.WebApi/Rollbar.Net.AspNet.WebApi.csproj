@@ -8,8 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+
+    <!--Reference Include="System.Web" />
     
-    <!--Reference Include="System.Web" /-->
+    <Reference Include="System.Web.Http" /-->
 
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="4.0.20505" />
 

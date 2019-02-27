@@ -23,6 +23,11 @@
         /// <param name="actionExecutedContext">The action executed context.</param>
         public override void OnException(HttpActionExecutedContext actionExecutedContext)
         {
+            IRollbarPackage rollbarPackage = 
+                new ExceptionPackage(actionExecutedContext.Exception, nameof(this.OnException));
+
+            RollbarLocator.RollbarInstance.Critical(rollbarPackage);
+
             base.OnException(actionExecutedContext);
         }
     }

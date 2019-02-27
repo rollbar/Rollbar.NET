@@ -8,6 +8,8 @@ Implement Rollbar's System.Web.IHttpModule
 
 
 Resources:
+https://docs.microsoft.com/en-us/aspnet/web-api/overview/error-handling/web-api-global-error-handling
+
 
 https://stackoverflow.com/questions/13831933/mvc-4-global-exception-filter-how-to-implement
 

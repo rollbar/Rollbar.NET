@@ -78,9 +78,29 @@
             {
                 forwardedFor = forwardedFor.Split(',').Last().Trim();
             }
-            request.UserIp = forwardedFor ?? this._httpRequest.UserHostAddress;
 
-            request.Params = this._httpRequest.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Value.ToString()).ToObjectDictionary();
+            try
+            {
+                request.UserIp = 
+                    forwardedFor ?? this._httpRequest.UserHostAddress;
+            }
+            catch
+            {
+                // calls in try-block may throw an exception. we are just trying our best...
+
+            }
+
+            try
+            {
+                request.Params = 
+                    this._httpRequest.RequestContext.RouteData.Values
+                    .ToDictionary(v => v.Key, v => v.Value.ToString()).ToObjectDictionary();
+            }
+            catch
+            {
+                // calls in try-block may throw an exception. we are just trying our best...
+
+            }
 
             // try harvesting custom HTTP session info:
             try
@@ -104,57 +124,65 @@
             // let's try to get any useful data from the HTTP request's server variables:
             /////////////////////////////////////////////////////////////////////////////
 
-            var serverVariables = this._httpRequest?.ServerVariables;
-            if (serverVariables != null)
+            try
             {
-                // try harvesting Person DTO info:
-                //////////////////////////////////
-                string username =
-                    serverVariables["AUTH_USER"] ??
-                    serverVariables["LOGON_USER"] ??
-                    serverVariables["REMOTE_USER"];
-                if (!string.IsNullOrWhiteSpace(username))
+                var serverVariables = this._httpRequest?.ServerVariables;
+                if (serverVariables != null)
                 {
-                    rollbarData.Person = new Person(username)
+                    // try harvesting Person DTO info:
+                    //////////////////////////////////
+                    string username =
+                        serverVariables["AUTH_USER"] ??
+                        serverVariables["LOGON_USER"] ??
+                        serverVariables["REMOTE_USER"];
+                    if (!string.IsNullOrWhiteSpace(username))
                     {
-                        UserName = username,
+                        rollbarData.Person = new Person(username)
+                        {
+                            UserName = username,
+                        };
+                    }
+
+                    // try harvesting Server DTO info:
+                    //////////////////////////////////
+                    var host = serverVariables.Get("HTTP_HOST");
+
+                    if (string.IsNullOrEmpty(host))
+                        host = serverVariables.Get("SERVER_NAME");
+
+                    var root = serverVariables.Get("APPL_PHYSICAL_PATH");
+
+                    if (string.IsNullOrEmpty(root))
+                        root = HttpRuntime.AppDomainAppPath ?? Environment.CurrentDirectory;
+
+                    var machine = Environment.MachineName;
+                    var webServer = serverVariables["SERVER_SOFTWARE"];
+
+                    if (!string.IsNullOrWhiteSpace(host)
+                        || !string.IsNullOrWhiteSpace(root)
+                        || !string.IsNullOrWhiteSpace(machine)
+                        || !string.IsNullOrWhiteSpace(webServer)
+                        )
+                    {
+                        rollbarData.Server = new Server { Host = host, Root = root, };
+                        rollbarData.Server["host_machine"] = machine;
+                        rollbarData.Server["host_webserver"] = webServer;
+                    }
+                }
+                else if (!HostingEnvironment.IsHosted)
+                {
+                    // try harvesting Person DTO info (from Environment):
+                    /////////////////////////////////////////////////////
+                    rollbarData.Person = new Person($"{Environment.MachineName}\\{Environment.UserName}")
+                    {
+                        UserName = Environment.UserName,
                     };
                 }
-
-                // try harvesting Server DTO info:
-                //////////////////////////////////
-                var host = serverVariables.Get("HTTP_HOST");
-
-                if (string.IsNullOrEmpty(host))
-                    host = serverVariables.Get("SERVER_NAME");
-
-                var root = serverVariables.Get("APPL_PHYSICAL_PATH");
-
-                if (string.IsNullOrEmpty(root))
-                    root = HttpRuntime.AppDomainAppPath ?? Environment.CurrentDirectory;
-
-                var machine = Environment.MachineName;
-                var webServer = serverVariables["SERVER_SOFTWARE"];
-
-                if (!string.IsNullOrWhiteSpace(host)
-                    || !string.IsNullOrWhiteSpace(root)
-                    || !string.IsNullOrWhiteSpace(machine)
-                    || !string.IsNullOrWhiteSpace(webServer)
-                    )
-                {
-                    rollbarData.Server = new Server { Host = host, Root = root, };
-                    rollbarData.Server["host_machine"] = machine;
-                    rollbarData.Server["host_webserver"] = webServer;
-                }
             }
-            else if (!HostingEnvironment.IsHosted)
+            catch
             {
-                // try harvesting Person DTO info (from Environment):
-                /////////////////////////////////////////////////////
-                rollbarData.Person = new Person($"{Environment.MachineName}\\{Environment.UserName}")
-                {
-                    UserName = Environment.UserName,
-                };
+                // calls in try-block may throw an exception. we are just trying our best...
+
             }
         }
     }
