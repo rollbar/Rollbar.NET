@@ -1,6 +1,4 @@
-﻿#if NETFX
-
-namespace Rollbar.AspNet.Mvc
+﻿namespace Rollbar.Net.AspNet.Mvc
 {
     using System;
     using System.Collections.Generic;
@@ -161,5 +159,3 @@ namespace Rollbar.AspNet.Mvc
         }
     }
 }
-
-#endif

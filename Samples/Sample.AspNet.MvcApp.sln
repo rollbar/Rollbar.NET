@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar", "..\Rollbar\Rollb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.AspNet.MvcApp", "Sample.AspNet.MvcApp\Sample.AspNet.MvcApp.csproj", "{3FF57EEE-31D9-4D56-A62E-CCF06E41119E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.Net.AspNet.Mvc", "..\Rollbar.Net.AspNet.Mvc\Rollbar.Net.AspNet.Mvc.csproj", "{0D8E7DD6-0760-4DD0-9356-50B676CEA102}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3FF57EEE-31D9-4D56-A62E-CCF06E41119E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FF57EEE-31D9-4D56-A62E-CCF06E41119E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FF57EEE-31D9-4D56-A62E-CCF06E41119E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D8E7DD6-0760-4DD0-9356-50B676CEA102}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D8E7DD6-0760-4DD0-9356-50B676CEA102}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D8E7DD6-0760-4DD0-9356-50B676CEA102}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D8E7DD6-0760-4DD0-9356-50B676CEA102}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

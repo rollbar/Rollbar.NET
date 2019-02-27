@@ -45,7 +45,7 @@
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAKAAACAEAAgAUgCIAAACCMAJhAEAYCIQAgIAEAA=</HashCode>
+      <HashCode>AAAAAKAAACAEAAgAUgCIAAACCMAJhAEAQCIQAgIAEAA=</HashCode>
       <FileName>RollbarQueueController.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -102,15 +102,15 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.RollbarPackageBase">
-    <Position X="0.5" Y="23.25" Width="6.25" />
+    <Position X="0.5" Y="18.5" Width="6.25" />
     <TypeIdentifier>
-      <HashCode>EAAABAAAAAAAAAAAAgAAAEAAAACAAAAAAAAAQAAQAAA=</HashCode>
+      <HashCode>AAAABAAAAAAAAAAAAgAAAEAAAACAAAAAAAAAQAAQAAA=</HashCode>
       <FileName>RollbarPackageBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Rollbar.RollbarPackageDecoratorBase">
-    <Position X="0.5" Y="27.25" Width="6.25" />
+    <Position X="0.5" Y="22.5" Width="6.25" />
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAAAAAAAgAAAAAAAAAAAAAAgAAAQAAwAAA=</HashCode>
       <FileName>RollbarPackageDecoratorBase.cs</FileName>
@@ -118,7 +118,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Rollbar.IRollbar">
-    <Position X="0.5" Y="17.5" Width="5.5" />
+    <Position X="0.5" Y="12.75" Width="5.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgIAAAAAQABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IRollbar.cs</FileName>
@@ -145,15 +145,8 @@
       <FileName>IRollbarConfig.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Rollbar.IAsyncLogger">
-    <Position X="0.5" Y="13" Width="5.5" />
-    <TypeIdentifier>
-      <HashCode>AAAIAAAAAAAAAYAAAAAAABAAAAgAAAAAAAEAAEAAAAA=</HashCode>
-      <FileName>IAsyncLogger.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="Rollbar.IRollbarPackage">
-    <Position X="0.5" Y="21" Width="3" />
+    <Position X="0.5" Y="16.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAQAAQAAA=</HashCode>
       <FileName>IRollbarPackage.cs</FileName>

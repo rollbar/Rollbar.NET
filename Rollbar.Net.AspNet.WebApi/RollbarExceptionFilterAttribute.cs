@@ -1,6 +1,4 @@
-﻿#if NETFX
-
-namespace Rollbar.AspNet.WebApi
+﻿namespace Rollbar.Net.AspNet.WebApi
 {
     using System;
     using System.Collections.Generic;
@@ -29,5 +27,3 @@ namespace Rollbar.AspNet.WebApi
         }
     }
 }
-
-#endif

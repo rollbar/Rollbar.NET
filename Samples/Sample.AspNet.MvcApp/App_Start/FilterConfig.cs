@@ -1,4 +1,4 @@
-﻿using Rollbar.AspNet.Mvc;
+﻿using Rollbar.Net.AspNet.Mvc;
 using System.Web;
 using System.Web.Mvc;
 

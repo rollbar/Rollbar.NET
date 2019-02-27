@@ -1,6 +1,4 @@
-﻿#if NETFX
-
-namespace Rollbar.AspNet.Mvc
+﻿namespace Rollbar.Net.AspNet.Mvc
 {
     using System.Web;
     using Rollbar.Diagnostics;
@@ -55,5 +53,3 @@ namespace Rollbar.AspNet.Mvc
         }
     }
 }
-
-#endif
