@@ -1,5 +1,6 @@
 ﻿namespace Rollbar
 {
+
     /// <summary>
     /// Singleton-like locator of the single shared instance of IRollbar component.
     /// </summary>

@@ -6,8 +6,8 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Rollbar;
-using Rollbar.AspNet.Mvc;
 using Rollbar.DTOs;
+using Rollbar.Net.AspNet.Mvc;
 
 namespace Sample.AspNet.MvcApp
 {
@@ -29,10 +29,10 @@ namespace Sample.AspNet.MvcApp
         {
             var exception = Server.GetLastError();
             var httpContext = HttpContext.Current;
-            IRollbarPackagingStrategy packagingStrategy = new ExceptionPackagingStrategy(exception, "EXCEPTION intercepted by MvcApplication.Application_Error()");
+            IRollbarPackage packagingStrategy = new ExceptionPackage(exception, "EXCEPTION intercepted by MvcApplication.Application_Error()");
             if (httpContext != null)
             {
-                packagingStrategy = new HttpContextPackagingStrategyDecorator(packagingStrategy, httpContext);
+                packagingStrategy = new HttpContextPackageDecorator(packagingStrategy, httpContext);
             }
             RollbarLocator.RollbarInstance.Critical(packagingStrategy);
         }

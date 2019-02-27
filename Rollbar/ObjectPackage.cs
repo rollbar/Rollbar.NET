@@ -144,10 +144,10 @@
             {
                 case Data dataObj:
                     data = dataObj;
-                    return data;
+                    break;
                 case IRollbarPackage rollbarPackageObj:
                     data = rollbarPackageObj.PackageAsRollbarData();
-                    return data;
+                    break;
                 default:
                     Body body = this._objectToPackage as Body;
                     if (body == null)
@@ -156,8 +156,15 @@
                     }
 
                     data = new Data(null, body, this._custom);
-                    return data;
+                    break;
             }
+
+            if (!string.IsNullOrWhiteSpace(this._rollbarDataTitle))
+            {
+                data.Title = this._rollbarDataTitle;
+            }
+
+            return data;
         }
     }
 }

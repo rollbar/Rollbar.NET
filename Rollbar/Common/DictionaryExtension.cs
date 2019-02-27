@@ -1,9 +1,7 @@
 ﻿namespace Rollbar.Common
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
 
     /// <summary>
     /// Class DictionaryExtension.
@@ -19,6 +17,10 @@
         {
             int capacity = stringDictionary?.Count ?? 0;
             var objectDictionary = new Dictionary<string, object>(capacity);
+            if (capacity == 0)
+            {
+                return objectDictionary;
+            }
 
             foreach(var key in stringDictionary.Keys.Where(k => k != null))
             {

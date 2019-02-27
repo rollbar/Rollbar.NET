@@ -17,10 +17,10 @@
 
       Improvements and fixes:
 
-      - ref #322: General codebase cleanup.
-      - ref #321: Address latest Codacy review results.
-      - ref #318: Add explicit build target for .NET Core 2.2.
+      - resolve #322: General codebase cleanup.
+      - resolve #321: Address latest Codacy review results.
       - resolve #320: Update CI build scripts/environment.
+      - ref #325: Extract integration with .NET Framework ASP.NET MVC into separate project.
 
     </PackageReleaseNotes>
 
@@ -113,10 +113,6 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.ServiceModel" />
-
-    <!--For supporting integration with ASP.NET (Full Framework) MVC4+ and WebApi: -->
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="4.0.20505" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="4.0.20505" />
-  </ItemGroup>
+</ItemGroup>
 
 </Project>

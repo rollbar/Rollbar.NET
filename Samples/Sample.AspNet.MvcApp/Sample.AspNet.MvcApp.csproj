@@ -188,6 +188,10 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Rollbar.Net.AspNet.Mvc\Rollbar.Net.AspNet.Mvc.csproj">
+      <Project>{0d8e7dd6-0760-4dd0-9356-50b676cea102}</Project>
+      <Name>Rollbar.Net.AspNet.Mvc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Rollbar\Rollbar.csproj">
       <Project>{fa70ac31-5cd9-4947-8d5f-624d9a1fb510}</Project>
       <Name>Rollbar</Name>

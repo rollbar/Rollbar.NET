@@ -60,7 +60,7 @@
                 return; // nothing to decorate with...
             }
 
-            if (rollbarData.Custom != null || rollbarData.Custom.Count == 0)
+            if (rollbarData.Custom == null || rollbarData.Custom.Count == 0)
             {
                 // assign custom key-values:
                 rollbarData.Custom = this._custom;

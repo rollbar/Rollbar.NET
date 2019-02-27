@@ -198,12 +198,12 @@
         /// <summary>
         /// Reports to rollbar.
         /// </summary>
-        /// <param name="plugInEventData">The plug in event data.</param>
-        /// <param name="plugInErrorLevel">The plug in error level.</param>
+        /// <param name="plugInEventData">The plug-in event data.</param>
+        /// <param name="plugInErrorLevel">The plug-in error level.</param>
         public virtual void ReportToRollbar(TPlugInEventData plugInEventData, TPlugInErrorLevel plugInErrorLevel)
         {
             if ((this._plugInEventDataType.IsClass || this._plugInEventDataType.IsInterface)
-                && plugInEventData == null)
+                && object.Equals(plugInEventData, default(TPlugInEventData)))
             {
                 return;
             }

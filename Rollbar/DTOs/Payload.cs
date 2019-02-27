@@ -3,8 +3,6 @@
     using Newtonsoft.Json;
     using Rollbar.Diagnostics;
     using System;
-    using System.Net.Http;
-    using System.Threading;
 
     /// <summary>
     /// Models Rollbar Payload DTO.
@@ -26,9 +24,6 @@
         {
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNull(data, nameof(data));
-
-            //this._timeoutAt = timeoutAt;
-            //this._signal = signal;
 
             AccessToken = accessToken;
             Data = data;

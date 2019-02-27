@@ -62,7 +62,7 @@ namespace Rollbar
             {
             }
 
-            internal static readonly RollbarQueueController Instance = 
+            internal static readonly RollbarQueueController Instance =
                 new RollbarQueueController();
         }
 
