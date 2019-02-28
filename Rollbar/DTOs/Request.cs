@@ -1,4 +1,4 @@
-﻿namespace Rollbar.DTOs
+namespace Rollbar.DTOs
 {
     using Rollbar.Diagnostics;
     using System.Collections.Generic;
@@ -12,6 +12,8 @@
 
 #if (NETCOREAPP)
     using Rollbar.AspNetCore;
+    using System.IO;
+    using System.Text;
 #endif
 
 #if (NETFX)
@@ -82,7 +84,7 @@
 
 #endif
 
-#if (NETSTANDARD || NETCOREAPP)
+#if (NETCOREAPP)//(NETSTANDARD || NETCOREAPP)
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Request"/> class.
@@ -128,6 +130,27 @@
             }
 
             this.Method = httpRequest.Method;
+
+            switch (this.Method.ToUpper())
+            {
+                case "POST":
+                    httpRequest.Body.Seek(0, SeekOrigin.Begin);
+                    this.PostBody = GetBodyAsString(httpRequest);
+                    break;
+            }
+        }
+
+        private static string GetBodyAsString(HttpRequest request, Encoding encoding = null)
+        {
+            if (encoding == null)
+            {
+                encoding = Encoding.UTF8;
+            }
+
+            using (StreamReader reader = new StreamReader(request.Body, encoding))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
 #endif

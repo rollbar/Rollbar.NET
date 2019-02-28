@@ -1,9 +1,10 @@
-﻿#if NETCOREAPP
+#if NETCOREAPP
 
 namespace Rollbar.AspNetCore
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
+    using Microsoft.AspNetCore.Http.Internal;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -89,6 +90,7 @@ namespace Rollbar.AspNetCore
             requestId = context?.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
+            context?.Request.EnableRewind();
             using (_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
                 NetworkTelemetry networkTelemetry = null;

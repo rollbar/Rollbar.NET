@@ -10,6 +10,7 @@
     using Microsoft.Extensions.Options;
     using Rollbar;
     using Rollbar.AspNetCore;
+    using Swashbuckle.AspNetCore.Swagger;
 
     public class Startup
     {
@@ -32,6 +33,12 @@
                 loggerOptions.Filter = (loggerName, loglevel) => loglevel >= LogLevel.Trace;
             });
 
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
+            });
+
             services.AddMvc();
         }
 
@@ -47,6 +54,16 @@
 
             // Any other middleware component intended to be "monitored" by Rollbar.NET middleware
             // go below this line:
+
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseMvc();
         }

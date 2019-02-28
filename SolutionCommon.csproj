@@ -12,7 +12,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     -->
 
-    <NotifierVersion>3.0.1</NotifierVersion>
+    <NotifierVersion>3.0.2</NotifierVersion>
     <PackageReleaseNotes>
 
       Improvements and fixes:
@@ -22,6 +22,8 @@
       - resolve #320: Update CI build scripts/environment.
       - resolve #325: Extract integration with .NET Framework ASP.NET MVC into separate project (Rollbar.Net.AspNet.Mvc).
       - resolve #326: Extract integration with .NET Framework ASP.NET Web API into separate project (Rollbar.Net.AspNet.WebApi).
+      - ref #327: Extract integration with .NET Core ASP.NET (middleware) into separate project.
+      - ref #329: ASP.NET code middleware not reporting request data.
 
     </PackageReleaseNotes>
 
