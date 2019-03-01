@@ -11,7 +11,6 @@ namespace Rollbar.DTOs
 #endif
 
 #if (NETCOREAPP)
-    using Rollbar.AspNetCore;
     using System.IO;
     using System.Text;
 #endif
@@ -39,121 +38,21 @@ namespace Rollbar.DTOs
         /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
         public Request()
-            : base(null)
+            : this(null)
         {
         }
-
-#if (NETCOREAPP)
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Request"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        /// <param name="httpAttributes">The Rollbar HTTP attributes.</param>
         public Request(
             IDictionary<string, object> arbitraryKeyValuePairs
-            , RollbarHttpAttributes httpAttributes
             )
             : base(arbitraryKeyValuePairs)
         {
-            if (httpAttributes != null)
-            {
-                this.SnapProperties(httpAttributes);
-            }
-        }
-
-        private void SnapProperties(RollbarHttpAttributes httpContext)
-        {
-            Assumption.AssertNotNull(httpContext, nameof(httpContext));
-
-            this.Url = httpContext.Host.Value + httpContext.Path;
-            this.QueryString = httpContext.Query.Value;
-            this.Params = null;
-
-            this.Headers = new Dictionary<string, string>(httpContext.Headers.Count());
-            foreach (var header in httpContext.Headers)
-            {
-                if (header.Value.Count() == 0)
-                    continue;
-
-                this.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
-            }
-
-            this.Method = httpContext.Method;
-        }
-
-#endif
-
-#if (NETCOREAPP)//(NETSTANDARD || NETCOREAPP)
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Request"/> class.
-        /// </summary>
-        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Request(
-            IDictionary<string, object> arbitraryKeyValuePairs
-            )
-            : this(arbitraryKeyValuePairs, null as HttpRequest)
-        {
 
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Request"/> class.
-        /// </summary>
-        /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        /// <param name="httpRequest">The HTTP request.</param>
-        public Request(
-            IDictionary<string, object> arbitraryKeyValuePairs
-            , HttpRequest httpRequest
-            )
-            : base(arbitraryKeyValuePairs)
-        {
-            if (httpRequest != null)
-            {
-                this.SnapProperties(httpRequest);
-            }
-        }
-
-        private void SnapProperties(HttpRequest httpRequest)
-        {
-            Assumption.AssertNotNull(httpRequest, nameof(httpRequest));
-
-            this.Url = httpRequest.Host.Value + httpRequest.Path;
-            this.QueryString = httpRequest.QueryString.Value;
-            this.Params = null;
-
-            this.Headers = new Dictionary<string, string>(httpRequest.Headers.Count());
-            foreach (var header in httpRequest.Headers)
-            {
-                this.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
-            }
-
-            this.Method = httpRequest.Method;
-
-            switch (this.Method.ToUpper())
-            {
-                case "POST":
-                    httpRequest.Body.Seek(0, SeekOrigin.Begin);
-                    this.PostBody = GetBodyAsString(httpRequest);
-                    break;
-            }
-        }
-
-        private static string GetBodyAsString(HttpRequest request, Encoding encoding = null)
-        {
-            if (encoding == null)
-            {
-                encoding = Encoding.UTF8;
-            }
-
-            using (StreamReader reader = new StreamReader(request.Body, encoding))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-#endif
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Request"/> class.

@@ -18,6 +18,7 @@
 - ref #327: Extract integration with .NET Core ASP.NET (middleware) into a separate module/Nuget-package Rollbar.NetCore.AspNet.
 - ref #330: Implement RollbarHttpModule as part of Rollbar.Net.AspNet integration module/Nuget-package.
 - ref #329: ASP.NET code middleware not reporting request data.
+- ref #331: Verify and correct sample apps to adopt latest SDK changes related to multiple integration modules
 
     </PackageReleaseNotes>
 
