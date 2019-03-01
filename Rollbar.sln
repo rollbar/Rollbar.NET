@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 		ReadMe.txt = ReadMe.txt
+		ReleaseNotes.md = ReleaseNotes.md
+		SdkCommon.csproj = SdkCommon.csproj
 		Sequential.runsettings = Sequential.runsettings
 		SolutionCommon.csproj = SolutionCommon.csproj
 	EndProjectSection
@@ -44,9 +46,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.Net.AspNet.Mvc", "R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.Net.AspNet.WebApi", "Rollbar.Net.AspNet.WebApi\Rollbar.Net.AspNet.WebApi.csproj", "{E48268CA-7487-4F94-941D-F1A8EA5C0B02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Rollbar.Net.AspNet.WebApi", "UnitTest.Rollbar.Net.AspNet.WebApi\UnitTest.Rollbar.Net.AspNet.WebApi.csproj", "{A9654D0D-DF0E-4036-AABD-0369F8998555}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.Net.AspNet.WebApi", "UnitTest.Rollbar.Net.AspNet.WebApi\UnitTest.Rollbar.Net.AspNet.WebApi.csproj", "{A9654D0D-DF0E-4036-AABD-0369F8998555}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Rollbar.Net.AspNet.Mvc", "UnitTest.Rollbar.Net.AspNet.Mvc\UnitTest.Rollbar.Net.AspNet.Mvc.csproj", "{8EEA898F-1E43-4C7D-B41F-51EC4D3F4417}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.Net.AspNet.Mvc", "UnitTest.Rollbar.Net.AspNet.Mvc\UnitTest.Rollbar.Net.AspNet.Mvc.csproj", "{8EEA898F-1E43-4C7D-B41F-51EC4D3F4417}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.Net.AspNet", "Rollbar.Net.AspNet\Rollbar.Net.AspNet.csproj", "{3248F1D9-9AA8-418B-B7F6-D89A801B24FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.NetCore.AspNet", "Rollbar.NetCore.AspNet\Rollbar.NetCore.AspNet.csproj", "{D9EDC779-BE13-4C72-80A9-690B404D0384}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -145,6 +151,18 @@ Global
 		{8EEA898F-1E43-4C7D-B41F-51EC4D3F4417}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
 		{8EEA898F-1E43-4C7D-B41F-51EC4D3F4417}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EEA898F-1E43-4C7D-B41F-51EC4D3F4417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3248F1D9-9AA8-418B-B7F6-D89A801B24FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3248F1D9-9AA8-418B-B7F6-D89A801B24FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3248F1D9-9AA8-418B-B7F6-D89A801B24FA}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{3248F1D9-9AA8-418B-B7F6-D89A801B24FA}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{3248F1D9-9AA8-418B-B7F6-D89A801B24FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3248F1D9-9AA8-418B-B7F6-D89A801B24FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

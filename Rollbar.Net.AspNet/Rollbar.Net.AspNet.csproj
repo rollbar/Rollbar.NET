@@ -7,19 +7,18 @@
   <Import Project="..\SdkCommon.csproj" />
 
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
-    <Description>Implements Rollbar Notifier integration with .NET Framework ASP.NET MVC based application.</Description>
+    <Description>Implements Rollbar Notifier integration with .NET Framework ASP.NET based application.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    
+    <!--
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" /
+    <Reference Include="System.ServiceModel" />
+    -->
     <Reference Include="System.Web" />
-
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="3.0.20105.1" />
-
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
-  </ItemGroup>
 
 </Project>

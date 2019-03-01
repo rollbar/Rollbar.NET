@@ -1,10 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project ToolsVersion="15.0">
 
   <PropertyGroup>
     <TargetFrameworks>net472;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
-    <!--
-    <TargetFrameworks>net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
-    -->
+  </PropertyGroup>
+
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="SDK Common NuGet Packaging Info" >
+    <Description>Implements Rollbar Notifier integration with .NET Framework ASP.NET WebAPI based application.</Description>
   </PropertyGroup>
 
   <ItemGroup>

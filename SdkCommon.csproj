@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+
+  <PropertyGroup Label="Toolset Related">
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  
+  <PropertyGroup Label="SDK Common NuGet Packaging Info" >
+
+  <SdkVersion>3.0.2</SdkVersion>
+    
+    <PackageReleaseNotes>
+
+- resolve #322: General codebase cleanup.
+- resolve #321: Address latest Codacy review results.
+- resolve #320: Update CI build scripts/environment.
+- resolve #325: Extract integration with .NET Framework ASP.NET MVC into a separate module/Nuget-package Rollbar.Net.AspNet.Mvc.
+- resolve #326: Extract integration with .NET Framework ASP.NET Web API into a separate module/Nuget-package Rollbar.Net.AspNet.WebApi.
+- ref #327: Extract integration with .NET Core ASP.NET (middleware) into a separate module/Nuget-package Rollbar.NetCore.AspNet.
+- ref #330: Implement RollbarHttpModule as part of Rollbar.Net.AspNet integration module/Nuget-package.
+- ref #329: ASP.NET code middleware not reporting request data.
+
+    </PackageReleaseNotes>
+
+    <Version>$(SdkVersion)</Version>
+    <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
+    <FileVersion>$(SdkVersion)</FileVersion>
+    <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
+    <Company>Rollbar Inc</Company>
+    <Title>Rollbar.NET Notifier</Title>
+    <Product>Rollbar.Net Notifier SDK</Product>
+    <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
+    <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
+    <Copyright>Copyright (c) 2015-$(CurrentYear) Rollbar Inc</Copyright>
+    <PackageTags>error exception tracking reporting log analysis monitoring aggregation crash reporting</PackageTags>
+    <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+  </PropertyGroup>
+
+  <ItemGroup Label=".NET Global References">
+    
+  </ItemGroup>
+
+  <ItemGroup Label="Project References">
+
+  </ItemGroup>
+
+  <ItemGroup Label="Package References">
+
+  </ItemGroup>
+
+
+</Project>

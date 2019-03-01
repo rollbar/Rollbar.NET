@@ -20,9 +20,10 @@
       - resolve #322: General codebase cleanup.
       - resolve #321: Address latest Codacy review results.
       - resolve #320: Update CI build scripts/environment.
-      - resolve #325: Extract integration with .NET Framework ASP.NET MVC into separate project (Rollbar.Net.AspNet.Mvc).
-      - resolve #326: Extract integration with .NET Framework ASP.NET Web API into separate project (Rollbar.Net.AspNet.WebApi).
-      - ref #327: Extract integration with .NET Core ASP.NET (middleware) into separate project.
+      - resolve #325: Extract integration with .NET Framework ASP.NET MVC into a separate module/Nuget-package Rollbar.Net.AspNet.Mvc.
+      - resolve #326: Extract integration with .NET Framework ASP.NET Web API into a separate module/Nuget-package Rollbar.Net.AspNet.WebApi.
+      - ref #327: Extract integration with .NET Core ASP.NET (middleware) into a separate module/Nuget-package Rollbar.NetCore.AspNet.
+      - ref #330: Implement RollbarHttpModule as part of Rollbar.Net.AspNet integration module/Nuget-package.
       - ref #329: ASP.NET code middleware not reporting request data.
 
     </PackageReleaseNotes>
@@ -116,6 +117,6 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.ServiceModel" />
-</ItemGroup>
+  </ItemGroup>
 
 </Project>
