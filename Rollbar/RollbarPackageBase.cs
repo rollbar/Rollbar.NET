@@ -65,6 +65,12 @@
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
         public virtual Data PackageAsRollbarData()
         {
+            if (this._rollbarData != null)
+            {
+                //we do not want to do the job more than once:
+                return this._rollbarData;
+            }
+
             this._rollbarData = this.ProduceRollbarData();
 
             // a packaging strategy decorator is never expected to have its own valid instance of this._rollbarData:

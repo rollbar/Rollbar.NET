@@ -9,7 +9,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar;
-    using Rollbar.AspNetCore;
+    using Rollbar.NetCore.AspNet;
     using Swashbuckle.AspNetCore.Swagger;
 
     public class Startup

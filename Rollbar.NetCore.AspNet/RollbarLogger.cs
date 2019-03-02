@@ -154,7 +154,7 @@
             var currentContext = GetCurrentContext();
             if (currentContext != null)
             {
-                rollbarPackage = new RollbarHttpContextPackageDecorator(rollbarPackage, currentContext);
+                rollbarPackage = new RollbarHttpContextPackageDecorator(rollbarPackage, currentContext, true);
             }
 
             var rollbarErrorLevel = RollbarLogger.Convert(logLevel);

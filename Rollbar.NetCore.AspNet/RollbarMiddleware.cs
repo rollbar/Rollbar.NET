@@ -149,7 +149,7 @@ namespace Rollbar.NetCore.AspNet
                     else
                     {
                         IRollbarPackage rollbarPackage = new ExceptionPackage(ex, $"{nameof(RollbarMiddleware)} processed uncaught exception.");
-                        rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request);
+                        rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
                         RollbarLocator.RollbarInstance.Critical(rollbarPackage);
                     }
 
