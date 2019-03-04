@@ -25,8 +25,16 @@ steps:
     version: '2.2.104' # replace this value with the version that you need for your project
 - task: DotNetCoreInstaller@0
   inputs:
-    packageType: 'sdk' # 'sdk' or 'runtime'
-    version: '2.1.504' # replace this value with the version that you need for your project
+    packageType: 'runtime' # 'sdk' or 'runtime'
+    version: '2.2.2' # replace this value with the version that you need for your project
+- task: DotNetCoreInstaller@0
+  inputs:
+    packageType: 'runtime' # 'sdk' or 'runtime'
+    version: '2.1.8' # replace this value with the version that you need for your project
+- task: DotNetCoreInstaller@0
+  inputs:
+    packageType: 'runtime' # 'sdk' or 'runtime'
+    version: '2.0.9' # replace this value with the version that you need for your project
     
 - script: dotnet --version
 
