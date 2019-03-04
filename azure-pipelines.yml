@@ -23,6 +23,10 @@ steps:
   inputs:
     packageType: 'sdk' # 'sdk' or 'runtime'
     version: '2.2.104' # replace this value with the version that you need for your project
+- task: DotNetCoreInstaller@0
+  inputs:
+    packageType: 'sdk' # 'sdk' or 'runtime'
+    version: '2.1.504' # replace this value with the version that you need for your project
     
 - script: dotnet --version
 
