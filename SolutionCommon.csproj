@@ -99,7 +99,7 @@
              '$(NetVariant)' == 'NET_CORE' 
              And ('TargetFramework' == 'netcoreapp2.1' Or 'TargetFramework' == 'netcoreapp2.2')
              ">
-    <PackageReference Include="Microsoft.AspNetCore.App"  />
+    <PackageReference Include="Microsoft.NetCore.App"  />
  </ItemGroup>
 
   <ItemGroup Condition="
