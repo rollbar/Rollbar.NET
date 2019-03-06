@@ -95,7 +95,8 @@
     <DefineConstants>NETFX_47nOlder;NETFX</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="
+  <ItemGroup Label="Required for netcoreapp2.1 and above..." 
+             Condition="
              '$(NetVariant)' == 'NET_CORE' 
              And ('TargetFramework' == 'netcoreapp2.1' Or 'TargetFramework' == 'netcoreapp2.2')
              ">
@@ -105,13 +106,13 @@
   <ItemGroup Condition="
              '$(NetVariant)' == 'NET_CORE' 
              ">
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
  </ItemGroup>
@@ -119,13 +120,13 @@
     <ItemGroup Condition="
              '$(NetVariant)' == 'NET_STANDARD'
              ">
+     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
  </ItemGroup>
