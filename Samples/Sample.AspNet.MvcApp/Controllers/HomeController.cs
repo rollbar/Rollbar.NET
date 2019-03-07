@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Rollbar;
+using Rollbar.Net.AspNet.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -37,6 +39,9 @@ namespace Sample.AspNet.MvcApp.Controllers
         protected override void OnException(ExceptionContext filterContext)
         {
             base.OnException(filterContext);
+
+            IRollbarPackage packagingStrategy = new ExceptionContextPackage(filterContext, "EXCEPTION intercepted by Controller.OnException(...)");
+            RollbarLocator.RollbarInstance.Critical(packagingStrategy);
         }
     }
 }

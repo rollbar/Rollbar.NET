@@ -1,4 +1,5 @@
 ﻿using Rollbar;
+using Rollbar.Net.AspNet.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +39,10 @@ namespace Sample.WebForms.Site
             var metaData = new Dictionary<string, object>();
             metaData.Add("reportLevel", "PageLevel");
             metaData.Add("failedPage", this.AppRelativeVirtualPath);
-            RollbarLocator.RollbarInstance.Error(exception, metaData);
+            IRollbarPackage package = new ExceptionPackage(exception, "Page_Error", true);
+            package = new CustomKeyValuePackageDecorator(package, metaData);
+            package = new HttpContextPackageDecorator(package, this.Context);
+            RollbarLocator.RollbarInstance.Error(package);
 
             // Handle specific exception. 
             if (exception is InvalidOperationException)
