@@ -23,6 +23,8 @@
       - resolve #325: Extract integration with .NET Framework ASP.NET MVC into a separate module/Nuget-package Rollbar.Net.AspNet.Mvc.
       - resolve #326: Extract integration with .NET Framework ASP.NET Web API into a separate module/Nuget-package Rollbar.Net.AspNet.WebApi.
       - resolve #327: Extract integration with .NET Core ASP.NET (middleware) into a separate module/Nuget-package Rollbar.NetCore.AspNet.
+      - resolve #332: Complete cleanup of the Request DTO constructors that are based on specialized framework types
+      - resolve #334: Fix Azure build pipeline
       - ref #330: Implement RollbarHttpModule as part of Rollbar.Net.AspNet integration module/Nuget-package.
       - resolve #329: ASP.NET code middleware not reporting request data.
       - ref #331: Verify and correct sample apps to adopt latest SDK changes related to multiple integration modules
