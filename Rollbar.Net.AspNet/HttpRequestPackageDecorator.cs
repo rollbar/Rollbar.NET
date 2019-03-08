@@ -1,4 +1,4 @@
-﻿namespace Rollbar.Net.AspNet.Mvc
+﻿namespace Rollbar.Net.AspNet
 {
     using System;
     using System.Collections.Generic;
@@ -22,6 +22,16 @@
         /// The HTTP request
         /// </summary>
         private readonly HttpRequestBase _httpRequest;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpRequestPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="httpRequest">The HTTP request.</param>
+        public HttpRequestPackageDecorator(IRollbarPackage packageToDecorate, HttpRequest httpRequest)
+                    : this(packageToDecorate, new HttpRequestWrapper(httpRequest))
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpRequestPackageDecorator" /> class.
