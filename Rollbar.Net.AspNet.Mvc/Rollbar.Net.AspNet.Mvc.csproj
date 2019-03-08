@@ -6,7 +6,7 @@
 
   <Import Project="..\SdkCommon.csproj" />
 
-  <PropertyGroup Label="SDK Common NuGet Packaging Info" >
+  <PropertyGroup Label="SDK Common NuGet Packaging Info">
     <Description>Implements Rollbar Notifier integration with .NET Framework ASP.NET MVC based application.</Description>
   </PropertyGroup>
 
@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rollbar.Net.AspNet\Rollbar.Net.AspNet.csproj" />
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 

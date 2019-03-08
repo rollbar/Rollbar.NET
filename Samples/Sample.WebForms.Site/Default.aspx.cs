@@ -1,5 +1,5 @@
 ﻿using Rollbar;
-using Rollbar.Net.AspNet.Mvc;
+using Rollbar.Net.AspNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
