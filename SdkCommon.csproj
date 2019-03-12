@@ -2,6 +2,7 @@
 
   <PropertyGroup Label="Toolset Related">
     <LangVersion>7.3</LangVersion>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
@@ -9,7 +10,6 @@
   <SdkVersion>3.0.2</SdkVersion>
     
     <PackageReleaseNotes>
-
       - resolve #322: General codebase cleanup.
       - resolve #321: Address latest Codacy review results.
       - resolve #320: Update CI build scripts/environment.
@@ -21,20 +21,22 @@
       - resolve #334: Fix Azure build pipeline
       - resolve #329: ASP.NET code middleware not reporting request data.
       - resolve #331: Verify and correct sample apps to adopt latest SDK changes related to multiple integration modules
-
+      - resolve #336: Extract SdkCommon.csproj and clean-up SDK projects' settings
+      - resolve #337: Unify/sync-up SDK components versioning
     </PackageReleaseNotes>
 
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
     <FileVersion>$(SdkVersion)</FileVersion>
-    <Authors>Andrey Kornich (Wide Spectrum Computing LLC), Chris Pfohl, Daniel Steuernol</Authors>
     <Company>Rollbar Inc</Company>
+    <Owners>Andrey Kornich (Wide Spectrum Computing LLC), Rollbar Inc.</Owners>
+    <Authors>Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
     <Title>Rollbar.NET Notifier</Title>
     <Product>Rollbar.Net Notifier SDK</Product>
     <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright (c) 2015-$(CurrentYear) Rollbar Inc</Copyright>
-    <PackageTags>error exception tracking reporting log analysis monitoring aggregation crash reporting</PackageTags>
+    <PackageTags>rollbar;error;exception;crash;tracking;reporting;log;analysis;monitoring;aggregation</PackageTags>
     <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
@@ -46,15 +48,15 @@
   </PropertyGroup>
 
   <ItemGroup Label=".NET Global References">
-    
+    <!--ADD here-->
   </ItemGroup>
 
   <ItemGroup Label="Project References">
-
+    <!--ADD here-->
   </ItemGroup>
 
   <ItemGroup Label="Package References">
-
+    <!--ADD here-->
   </ItemGroup>
 
 

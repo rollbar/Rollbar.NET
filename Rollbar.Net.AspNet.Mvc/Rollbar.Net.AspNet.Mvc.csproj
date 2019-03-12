@@ -2,25 +2,29 @@
 
   <PropertyGroup>
     <TargetFrameworks>net472;net471;net47;net462;net461;net46;net452;net451;net45</TargetFrameworks>
+    <AssemblyName>Rollbar.Net.AspNet.Mvc</AssemblyName>
+    <RootNamespace>Rollbar.Net.AspNet.Mvc</RootNamespace>
   </PropertyGroup>
 
   <Import Project="..\SdkCommon.csproj" />
 
-  <PropertyGroup Label="SDK Common NuGet Packaging Info">
-    <Description>Implements Rollbar Notifier integration with .NET Framework ASP.NET MVC based application.</Description>
+  <PropertyGroup Label="Appned or Override SDK Common NuGet Packaging Info">
+    <Title>$(Title) for a .NET Framework ASP.NET MVC based application.</Title>
+    <Description>Implements Rollbar Notifier integration with .NET Framework ASP.NET MVC based application. $(Description)</Description>
+    <PackageTags>$(PackageTags);.net-framework;asp.net;mvc</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup>
-    
+  <ItemGroup Label=".NET Global References">
     <Reference Include="System.Web" />
-
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="3.0.20105.1" />
-
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Label="Project References">
     <ProjectReference Include="..\Rollbar.Net.AspNet\Rollbar.Net.AspNet.csproj" />
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="Package References">
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="3.0.20105.1" />
   </ItemGroup>
 
 </Project>

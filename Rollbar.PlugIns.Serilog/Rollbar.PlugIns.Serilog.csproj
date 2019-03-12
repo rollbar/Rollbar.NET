@@ -1,46 +1,29 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project ToolsVersion="15.0">
 
   <PropertyGroup>
-
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
-
-    <PluginVersion>1.0.3</PluginVersion>
-    <PackageReleaseNotes>Making sure Rollbar dependency is up-to-date.</PackageReleaseNotes>
-
-    <Title>Rollbar.NET Notifier plug-in for Serilog.</Title>
-    <Description>Rollbar.NET Notifier as a Serilog Sink.</Description>
-    <PackageTags>serilog;serilog-sink;rollbar;logging</PackageTags>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <AssemblyName>Rollbar.PlugIns.Serilog</AssemblyName>
     <RootNamespace>Rollbar.PlugIns.Serilog</RootNamespace>
-
-    <Authors>Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
-    <Owners>Andrey Kornich (Wide Spectrum Computing LLC), Rollbar Inc.</Owners>
-    <Company>Rollbar Inc</Company>
-    <Product>Rollbar.Net Notifier SDK</Product>
-
-    <Version>$(PluginVersion)</Version>
-    <AssemblyVersion>$(PluginVersion)</AssemblyVersion>
-    <FileVersion>$(PluginVersion)</FileVersion>
-
-    <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
-    <Copyright>Copyright (c) 2018-$(CurrentYear) Rollbar Inc</Copyright>
-
-    <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="2.8.0" />
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="Appned or Override SDK Common NuGet Packaging Info">
+    <Title>$(Title) plug-in for Serilog.</Title>
+    <Description>Rollbar.NET Notifier as a Serilog Sink. $(Description)</Description>
+    <PackageTags>$(PackageTags);serilog;sink;serilog-sink</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Label=".NET Global References">
+    <!--ADD here-->
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Label="Project References">
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="Package References">
+    <PackageReference Include="Serilog" Version="2.8.0" />
   </ItemGroup>
 
 </Project>
