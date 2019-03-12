@@ -4,11 +4,15 @@
     using System.Collections.Generic;
     using global::Serilog.Events;
 
+#pragma warning disable CS1658 // Warning is overriding an error
+#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
     /// <summary>
     /// Class RollbarPlugInCore.
     /// Implements the <see cref="Rollbar.PlugIns.PlugInCore{Serilog.Events.LogEventLevel, Serilog.Events.LogEvent}" />
     /// </summary>
     /// <seealso cref="Rollbar.PlugIns.PlugInCore{Serilog.Events.LogEventLevel, Serilog.Events.LogEvent}" />
+#pragma warning restore CS1658 // Warning is overriding an error
+#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
     internal class RollbarPlugInCore
          : PlugInCore<LogEventLevel, LogEvent>
     {

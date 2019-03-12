@@ -23,6 +23,8 @@
       - resolve #331: Verify and correct sample apps to adopt latest SDK changes related to multiple integration modules
       - resolve #336: Extract SdkCommon.csproj and clean-up SDK projects' settings
       - resolve #337: Unify/sync-up SDK components versioning
+      - resolve #318: Add explicit build target for .NET Core 2.2
+      - resolve #338: Fix all the build warnings across the SDK
     </PackageReleaseNotes>
 
     <Version>$(SdkVersion)</Version>

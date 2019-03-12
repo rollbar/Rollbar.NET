@@ -6,22 +6,45 @@
     using Rollbar.Common;
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Class RollbarHttpContextPackageDecorator.
+    /// Implements the <see cref="Rollbar.RollbarPackageDecoratorBase" />
+    /// </summary>
+    /// <seealso cref="Rollbar.RollbarPackageDecoratorBase" />
     public class RollbarHttpContextPackageDecorator
         : RollbarPackageDecoratorBase
     {
+        /// <summary>
+        /// The rollbar HTTP context
+        /// </summary>
         private readonly RollbarHttpContext _rollbarHttpContext;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarHttpContextPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="rollbarHttpContext">The rollbar HTTP context.</param>
         public RollbarHttpContextPackageDecorator(IRollbarPackage packageToDecorate, RollbarHttpContext rollbarHttpContext) 
             : this(packageToDecorate, rollbarHttpContext, false)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarHttpContextPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="rollbarHttpContext">The rollbar HTTP context.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public RollbarHttpContextPackageDecorator(IRollbarPackage packageToDecorate, RollbarHttpContext rollbarHttpContext, bool mustApplySynchronously) 
             : base(packageToDecorate, mustApplySynchronously)
         {
             this._rollbarHttpContext = rollbarHttpContext;
         }
 
+        /// <summary>
+        /// Decorates the specified rollbar data.
+        /// </summary>
+        /// <param name="rollbarData">The rollbar data.</param>
         protected override void Decorate(Data rollbarData)
         {
             if (this._rollbarHttpContext == null)

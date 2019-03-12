@@ -4,6 +4,17 @@
     using System;
     using System.Collections.Generic;
 
+#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
+#pragma warning disable CS1658 // Warning is overriding an error
+    /// <summary>
+    /// Class RollbarExceptionHandler.
+    /// Implements the <see cref="Rollbar.PlugIns.PlugInCore{System.Exception, System.Exception}" />
+    /// Implements the <see cref="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.IExceptionHandler" />
+    /// </summary>
+    /// <seealso cref="Rollbar.PlugIns.PlugInCore{System.Exception, System.Exception}" />
+    /// <seealso cref="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.IExceptionHandler" />
+#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
+#pragma warning restore CS1658 // Warning is overriding an error
     public class RollbarExceptionHandler
         : PlugInCore<Exception, Exception>
         , IExceptionHandler
@@ -22,7 +33,7 @@
         };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarExceptionHandler"/> class.
+        /// Initializes a new instance of the <see cref="RollbarExceptionHandler" /> class.
         /// </summary>
         /// <param name="rollbarAccessToken">The rollbar access token.</param>
         /// <param name="rollbarEnvironment">The rollbar environment.</param>
@@ -40,7 +51,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarExceptionHandler"/> class.
+        /// Initializes a new instance of the <see cref="RollbarExceptionHandler" /> class.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarBlockingTimeout">The rollbar blocking timeout.</param>
