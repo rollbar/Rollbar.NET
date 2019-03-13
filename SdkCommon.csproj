@@ -25,6 +25,8 @@
       - resolve #337: Unify/sync-up SDK components versioning
       - resolve #318: Add explicit build target for .NET Core 2.2
       - resolve #338: Fix all the build warnings across the SDK
+      - resolve #263: PostBody is always null
+      - resolve #335: Update documentation regarding v3 changes
     </PackageReleaseNotes>
 
     <Version>$(SdkVersion)</Version>
