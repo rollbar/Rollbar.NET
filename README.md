@@ -44,12 +44,17 @@ Therefore, this call will perform the quickest possible asynchronous logging (tr
 
 ```csharp
 RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, "test message");
+// which is equivalent:
+// RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, new ObjectPackage("test message", false));
 ```
 
 while the following call will perform somewhat quick asynchronous logging (only having its payload packaging and queuing complete by the end of the call):
 
 ```csharp
-RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, "test message").Wait();
+var package = new ObjectPackage("test message", true);
+// OR to make it a bit leaner:
+// var package = new MessagePackage("test message", true);
+RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, package);
 ```
 
 while next call will perform fully blocking/synchronous logging with a timeout of 5 seconds (including the payload delivery to the Rollbar API either complete or failed due to the timeout by the end of the call):
@@ -65,6 +70,30 @@ In case of a timeout, all the blocking log methods throw `System.TimeoutExceptio
 *   Configure Rollbar with `RollbarLocator.RollbarInstance.Configure(new RollbarConfig("POST_SERVER_ITEM_ACCESS_TOKEN"))`
 *   Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
 *   Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
+
+## Upgrading to v3.x.x from v2.x.x versions
+
+Some Rollbar functionality and API types related to specific more narrow .NET sub-technology
+were moved into separate dedicated modules. For example, Rollbar Asp.Net Core middleware moved into 
+the Rollbar.NetCore.AspNet module while changing its namespace to follow the module naming.
+So, might need to add extra reference to a relevant module and update namespaces when upgrading to v3.
+
+The `IAsyncLogger` is gone. There is only `ILogger`.
+So, if you had some code relying on the `IAsyncLogger` where you used to wait on a Task like:
+
+```csharp
+RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, "test message").Wait();
+```
+
+now, the easiest fix is to rework it into:
+
+```csharp
+RollbarLocator.RollbarInstance.Log(ErrorLevel.Error, new ObjectPackage("test message", true));
+```
+
+to achieve the same behavior of the logger.
+
+For more details about the v3 specific changes, please, refer to the `ReleaseNotes.md` in the root of this repository.
 
 ## Upgrading to v2.x.x from v1.x.x versions
 
@@ -120,12 +149,6 @@ Each plug-in maintains its own versioning schema and is distributed as its own N
 ## More Information about the SDK
 
 More detailed information about Rollbar.NET usage and API reference are available at [https://docs.rollbar.com/docs/dotnet](https://docs.rollbar.com/docs/dotnet)
-
-## Where you can find the SDK performance benchmarking results
-
-The benchmarking results are stored within the [Rollbar.Benchmarks folder](https://github.com/rollbar/Rollbar.NET/tree/master/Rollbar.Benchmarks) in a subfolder per an SDK release.
-You,probably, want to start by reviewing the result/Rollbar.Benchmarker.RollbarLoggerBenchmark-report.html file within each of the subfolders and, then, to drill down for more details within the rest of the
-BenchmarkDotNet generated artifacts.
 
 ## Help / Support
 
