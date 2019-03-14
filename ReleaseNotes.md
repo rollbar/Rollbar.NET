@@ -2,7 +2,7 @@
 
 ## Upgrade Notes
 
-Depending on how you were integrating the Notifier into you application prior to v3, you might have to perform some or all of the following changes when moving to v3 of our SDK:
+Depending on how you were integrating the Notifier into your application prior to v3, you might have to perform some or all of the following changes when moving to v3 of our SDK:
 
   - in addition to Rollbar assembly reference, add references to relevant .NET Specific Technology/Application Integration Modules (these modules are described in the next sections);
   - if you did have to add one or more references to the .NET Specific Technology/Application Integration Modules, you will have to update namespaces of the types that were moved from Rollbar to these new modules;
@@ -128,7 +128,7 @@ To minimize impact of logging on the calling thread, ideally, it would be nice t
 However, in cases when highly mutable data is about to be logged it is essential to have step 2 performed on the calling thread before returning from the logging method.
 In v2 we introduced `IAsynLogger` to help handle such cases. Its methods were a complete copy of `ILogger`'s methods with one main difference - they all used to return a Task, 
 so that the client code could wait for it to complete steps 1 and 2 before proceeding further if that is what needed in a specific case. 
-While was a nice flexible and easy to use solution from API point of view, the tasks did not perform well (as we learned it the hard way) under EXTREMELY high AND sustained rate of load. 
+While it was a nice flexible and easy to use solution from API point of view, the tasks did not perform well (as we learned it the hard way) under EXTREMELY high AND sustained rate of load. 
 So, in v3, we went away from the Tasks and removed `IAsynLogger` all together. We are now back to having only `ILogger` and we have a substitute for the eliminated Tasks in the form of `IRollbarPackage`.
 Think of the `IRollbarPackage` as a basis for implementing arbitrary data packaging strategies with explicit flag (named as `MustApplySynchronously`) that signifies need to apply the packaging (steps 1 and 2)
 on the calling thread before returning from a logging method. We also provide with abstract base classes like `RollbarPackageBase` and `RollbarPackageDecoratorBase` for implementing custom packaging strategies and their decorators.
