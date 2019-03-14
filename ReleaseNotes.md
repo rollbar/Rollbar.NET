@@ -54,6 +54,8 @@ Here are examples of currently available modules in each category:
 
 Each of the modules is available via NuGet as stand-alone package. 
 
+We are also unifying versioning all of the modules to follow common SDK versioning. 
+
 ### Fixes and Improvements
 
 #### v3.0.0-preview
