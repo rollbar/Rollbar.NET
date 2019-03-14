@@ -1,11 +1,9 @@
-﻿#if NETCOREAPP
-
-namespace Microsoft.Extensions.Logging
+﻿namespace Microsoft.Extensions.Logging
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
-    using Rollbar.AspNetCore;
+    using Rollbar.NetCore.AspNet;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -38,5 +36,3 @@ namespace Microsoft.Extensions.Logging
         }
     }
 }
-
-#endif

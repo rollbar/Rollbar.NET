@@ -1,6 +1,4 @@
-﻿#if NETCOREAPP
-
-namespace Rollbar.AspNetCore
+﻿namespace Rollbar.NetCore.AspNet
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
@@ -123,5 +121,3 @@ namespace Rollbar.AspNetCore
 
     }
 }
-
-#endif

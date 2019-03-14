@@ -4,7 +4,7 @@ namespace Microsoft.Extensions.Logging
 {
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Rollbar.AspNetCore;
+    using Rollbar.NetCore.AspNet;
 
     /// <summary>
     /// Implements Rollbar extension to the Microsoft.Extensions.Logging.LoggingBuilderExtensions.

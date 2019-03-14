@@ -1,4 +1,4 @@
-﻿namespace Rollbar.Net.AspNet.Mvc
+﻿namespace Rollbar.Net.AspNet
 {
     using System.Web;
     using Rollbar.Diagnostics;

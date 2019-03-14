@@ -1,6 +1,4 @@
-﻿#if NETCOREAPP
-
-namespace Rollbar.AspNetCore
+﻿namespace Rollbar.NetCore.AspNet
 {
     using System;
     using Microsoft.Extensions.DependencyInjection;
@@ -59,5 +57,3 @@ namespace Rollbar.AspNetCore
 
     }
 }
-
-#endif

@@ -1,15 +1,16 @@
 ﻿namespace Rollbar.PlugIns.Serilog
 {
     using System;
-    using System.Collections.Generic;
     using global::Serilog.Core;
     using global::Serilog.Events;
 
+#pragma warning disable CS1574 // XML comment has cref attribute that could not be resolved
     /// <summary>
     /// Class RollbarSink for Serilog.
     /// Implements the <see cref="Serilog.Core.ILogEventSink" />
     /// </summary>
     /// <seealso cref="Serilog.Core.ILogEventSink" />
+#pragma warning restore CS1574 // XML comment has cref attribute that could not be resolved
     public class RollbarSink
         : ILogEventSink
     {

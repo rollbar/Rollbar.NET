@@ -297,6 +297,14 @@
     <TypeScriptCompile Include="Scripts\index.d.ts" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Rollbar.Net.AspNet.Mvc\Rollbar.Net.AspNet.Mvc.csproj">
+      <Project>{2d3ebe08-0f9b-4df0-9f88-36e5dce1a93f}</Project>
+      <Name>Rollbar.Net.AspNet.Mvc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Rollbar.Net.AspNet\Rollbar.Net.AspNet.csproj">
+      <Project>{86e067a6-3f9d-46bf-8353-6abe428424b4}</Project>
+      <Name>Rollbar.Net.AspNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Rollbar\Rollbar.csproj">
       <Project>{fa70ac31-5cd9-4947-8d5f-624d9a1fb510}</Project>
       <Name>Rollbar</Name>

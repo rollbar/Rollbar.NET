@@ -1,6 +1,4 @@
-﻿#if NETCOREAPP
-
-namespace Rollbar.AspNetCore
+﻿namespace Rollbar.NetCore.AspNet
 {
     using System;
 
@@ -27,5 +25,3 @@ namespace Rollbar.AspNetCore
             = DateTimeOffset.UtcNow;
     }
 }
-
-#endif

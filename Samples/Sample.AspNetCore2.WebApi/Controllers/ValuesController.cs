@@ -39,7 +39,7 @@
             }
 
             //// Let's simulate an unhandled exception:
-            throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController");
+            throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Get()");
 
             return new string[] { "value1", "value2" };
         }
@@ -69,6 +69,7 @@
         [HttpPost]
         public void Post([FromBody]string value)
         {
+            throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Post(...)");
         }
 
         // PUT api/values/5

@@ -1,10 +1,8 @@
-﻿#if NETCOREAPP
-
-namespace Microsoft.AspNetCore.Builder
+﻿namespace Microsoft.AspNetCore.Builder
 {
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Rollbar.AspNetCore;
+    using Rollbar.NetCore.AspNet;
 
     /// <summary>
     /// Implements Rollbar middleware extensions to IApplicationBuilder.
@@ -28,5 +26,3 @@ namespace Microsoft.AspNetCore.Builder
         }
     }
 }
-
-#endif

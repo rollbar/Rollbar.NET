@@ -1,6 +1,4 @@
-﻿#if NETCOREAPP
-
-namespace Rollbar.AspNetCore
+﻿namespace Rollbar.NetCore.AspNet
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
@@ -127,5 +125,3 @@ namespace Rollbar.AspNetCore
         #endregion
     }
 }
-
-#endif

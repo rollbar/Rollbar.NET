@@ -1,6 +1,4 @@
-﻿#if NETCOREAPP
-
-namespace Rollbar.AspNetCore
+﻿namespace Rollbar.NetCore.AspNet
 {
     using System;
     using System.Collections.Generic;
@@ -47,7 +45,7 @@ namespace Rollbar.AspNetCore
             this._rollbarOptions = rollbarOptions;
             this._httpContextAccessor = httpContextAccessor;
 
-            this._rollbar = RollbarFactory.CreateNew(false).Configure(rollbarConfig);
+            this._rollbar = RollbarFactory.CreateNew(rollbarConfig);
         }
 
         /// <summary>
@@ -120,14 +118,19 @@ namespace Rollbar.AspNetCore
                 message = formatter(state, exception);
             }
 
-            Rollbar.DTOs.Body payloadBody = null;
+            IRollbarPackage rollbarPackage = null;
+            //Rollbar.DTOs.Body payloadBody = null;
             if (exception != null)
             {
-                payloadBody = new DTOs.Body(exception);
+                //payloadBody = new DTOs.Body(exception);
+
+                rollbarPackage = new ExceptionPackage(exception, "RollbarLogger.LogTState exception");
             }
             else if (!string.IsNullOrWhiteSpace(message))
             {
-                payloadBody = new DTOs.Body(new DTOs.Message(message));
+                //payloadBody = new DTOs.Body(new DTOs.Message(message));
+
+                rollbarPackage = new MessagePackage(message, "RollbarLogger.LogTState message");
             }
             else
             {
@@ -143,37 +146,20 @@ namespace Rollbar.AspNetCore
             {
                 customProperties.Add("LogMessage", message);
             }
-
-            var currentContext = GetCurrentContext();
-
-            Dictionary<string, object> customRequestFields = null;
-            if (currentContext != null)
+            if (customProperties != null && customProperties.Count > 0)
             {
-                customRequestFields = new Dictionary<string, object>();
-                customRequestFields.Add("httpRequestTimestamp", currentContext.Timestamp);
-                if (currentContext.HttpAttributes != null)
-                {
-                    customRequestFields.Add("httpRequestID", currentContext.HttpAttributes.RequestID);
-                    customRequestFields.Add("statusCode", currentContext.HttpAttributes.StatusCode);
-                    customRequestFields.Add("scheme", currentContext.HttpAttributes.Scheme);
-                    customRequestFields.Add("protocol", currentContext.HttpAttributes.Protocol);
-                }
+                rollbarPackage = new CustomKeyValuePackageDecorator(rollbarPackage, customProperties);
             }
 
-            var requestDto = new DTOs.Request(customRequestFields, currentContext?.HttpAttributes);
-
-            DTOs.Data dataDto = new DTOs.Data(
-                config: RollbarLocator.RollbarInstance.Config
-                , body: payloadBody
-                , custom: customProperties
-                , request: requestDto
-                )
+            var currentContext = GetCurrentContext();
+            if (currentContext != null)
             {
-                Level = RollbarLogger.Convert(logLevel),
-            };
+                rollbarPackage = new RollbarHttpContextPackageDecorator(rollbarPackage, currentContext, true);
+            }
 
-            // log the Data object (the exception + the HTTP request data):
-            RollbarLocator.RollbarInstance.Log(dataDto);
+            var rollbarErrorLevel = RollbarLogger.Convert(logLevel);
+
+            RollbarLocator.RollbarInstance.Log(rollbarErrorLevel, rollbarPackage);
         }
 
         /// <summary>
@@ -280,5 +266,3 @@ namespace Rollbar.AspNetCore
         #endregion
     }
 }
-
-#endif

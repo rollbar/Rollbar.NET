@@ -1,6 +1,4 @@
-﻿#if NETCOREAPP
-
-namespace Rollbar.AspNetCore
+﻿namespace Rollbar.NetCore.AspNet
 {
     using System;
     using Microsoft.Extensions.Logging;
@@ -18,5 +16,3 @@ namespace Rollbar.AspNetCore
             ;
     }
 }
-
-#endif

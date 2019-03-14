@@ -1,6 +1,4 @@
-﻿#if NETCOREAPP
-
-namespace Rollbar.AspNetCore
+﻿namespace Rollbar.NetCore.AspNet
 {
     using System;
     using System.Threading;
@@ -63,5 +61,3 @@ namespace Rollbar.AspNetCore
 
     }
 }
-
-#endif

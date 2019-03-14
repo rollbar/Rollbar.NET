@@ -5,11 +5,15 @@
     using System.Text;
     using log4net.Core;
 
+#pragma warning disable CS1658 // Warning is overriding an error
+#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
     /// <summary>
     /// Class RollbarPlugInCore.
     /// Implements the <see cref="Rollbar.PlugIns.PlugInCore{System.Int32, log4net.Core.LoggingEvent}" />
     /// </summary>
     /// <seealso cref="Rollbar.PlugIns.PlugInCore{System.Int32, log4net.Core.LoggingEvent}" />
+#pragma warning restore CS1658 // Warning is overriding an error
+#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
     internal class RollbarPlugInCore
         : PlugInCore<int, LoggingEvent>
     {

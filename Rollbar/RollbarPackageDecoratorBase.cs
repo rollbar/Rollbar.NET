@@ -25,6 +25,11 @@
         private readonly IRollbarPackage _packageToDecorate;
 
         /// <summary>
+        /// The decorator was already applied
+        /// </summary>
+        private bool _decoratorWasAlreadyApplied = false;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RollbarPackageDecoratorBase" /> class.
         /// </summary>
         /// <param name="packageToDecorate">The package to decorate.</param>
@@ -60,7 +65,13 @@
         public override Data PackageAsRollbarData()
         {
             Data rollbarData = this._packageToDecorate?.PackageAsRollbarData();
-            this.Decorate(rollbarData);
+            if (!this._decoratorWasAlreadyApplied)
+            {
+                // we want to apply a decorator only once:
+                this.Decorate(rollbarData);
+                this._decoratorWasAlreadyApplied = true;
+
+            }
             return rollbarData;
         }
 

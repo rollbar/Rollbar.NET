@@ -19,10 +19,22 @@ steps:
 # .NET Core SDK Installer
 # Acquires a specific version of the .NET Core SDK from the internet or the local cache and adds it to the PATH. 
 # Use this task to change the version of .NET Core used in subsequent tasks.
-- task: DotNetCoreInstaller@0
-  inputs:
-    packageType: 'sdk' # 'sdk' or 'runtime'
-    version: '2.1.503' # replace this value with the version that you need for your project
+# - task: DotNetCoreInstaller@0
+#   inputs:
+#     packageType: 'runtime' # 'sdk' or 'runtime'
+#     version: '2.2.2' # replace this value with the version that you need for your project
+# - task: DotNetCoreInstaller@0
+#   inputs:
+#     packageType: 'runtime' # 'sdk' or 'runtime'
+#     version: '2.1.8' # replace this value with the version that you need for your project
+# - task: DotNetCoreInstaller@0
+#   inputs:
+#     packageType: 'runtime' # 'sdk' or 'runtime'
+#     version: '2.0.9' # replace this value with the version that you need for your project
+# - task: DotNetCoreInstaller@0
+#   inputs:
+#     packageType: 'sdk' # 'sdk' or 'runtime'
+#     version: '2.2.104' # replace this value with the version that you need for your project
     
 - script: dotnet --version
 
@@ -50,6 +62,8 @@ steps:
 - task: NuGetCommand@2
   inputs:
     restoreSolution: '$(solution)'
+
+- script: dotnet restore Rollbar.sln
 
 - task: VSBuild@1
   inputs:

@@ -1,6 +1,6 @@
-﻿#if NETCOREAPP
+﻿#if NETCOREAPP || NETSTANDARD
 
-namespace Rollbar.AspNetCore
+namespace Rollbar.NetCore
 {
     using System;
     using Microsoft.Extensions.Configuration;
