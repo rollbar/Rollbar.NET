@@ -48,10 +48,11 @@ namespace Rollbar.NetCore.AspNet
         /// <summary>
         /// The next request processor within the middleware pipeline
         /// </summary>
-        private readonly RequestDelegate _nextRequestProcessor = null;
+        private readonly RequestDelegate _nextRequestProcessor;
 
-        private readonly ILogger _logger = null;
-        private readonly RollbarOptions _rollbarOptions = null;
+        private readonly ILogger _logger;
+
+        private readonly RollbarOptions _rollbarOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarMiddleware" /> class.
@@ -126,7 +127,7 @@ namespace Rollbar.NetCore.AspNet
                     if (!RollbarLocator.RollbarInstance.Config.CaptureUncaughtExceptions)
                     {
                         // just rethrow since the Rollbar SDK is configured not to auto-capture uncaught exceptions:
-                        throw ex; 
+                        throw; 
                     }
 
                     if (RollbarScope.Current != null 
@@ -138,12 +139,12 @@ namespace Rollbar.NetCore.AspNet
                         {
                             // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
                             RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
-                            throw ex;
+                            throw;
                         }
                         else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.MaxItems)
                         {
                             // just rethrow since the Rollbar SDK already exceeded MaxItems limit:
-                            throw ex;
+                            throw;
                         }
                     }
                     else
@@ -153,7 +154,7 @@ namespace Rollbar.NetCore.AspNet
                         RollbarLocator.RollbarInstance.Critical(rollbarPackage);
                     }
 
-                    throw new System.Exception("The included internal exception processed by the Rollbar middleware", ex);
+                    throw new RollbarMiddlewareException(ex);
                 }
                 finally
                 {

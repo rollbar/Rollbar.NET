@@ -12,8 +12,10 @@
     {
         public const string MaxItemsReachedWarning = "MaxItems limit was reached! Suspending further reports per current scope.";
 
-        private readonly string _name = null;
-        private readonly object _state = null;
+        private readonly string _name;
+
+        private readonly object _state;
+
         private int _logItemsCount; // counts log items instances per scope...
 
         public RollbarScope(string name, object state)

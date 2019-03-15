@@ -8,11 +8,11 @@
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
   <SdkVersion>3.0.3</SdkVersion>
-    
     <PackageReleaseNotes>
       - resolve #340: Add v3 specifics info into "Blocking vs Non-Blocking Use" section of ReadMe.md.
+      - resolve #341: "Merge" v3 release notes content into Rollbar.NET docs on Rollbar.com.
+      - ref #343: Fix latest Codacy issues.
     </PackageReleaseNotes>
-
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
     <FileVersion>$(SdkVersion)</FileVersion>
@@ -32,7 +32,6 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
   </PropertyGroup>
 
   <ItemGroup Label=".NET Global References">
@@ -46,6 +45,5 @@
   <ItemGroup Label="Package References">
     <!--ADD here-->
   </ItemGroup>
-
 
 </Project>
