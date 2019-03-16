@@ -19,11 +19,11 @@
         private readonly ConcurrentDictionary<string, RollbarLogger> _loggers =
             new ConcurrentDictionary<string, RollbarLogger>();
 
-        private readonly IRollbarConfig _rollbarConfig = null;
+        private readonly IRollbarConfig _rollbarConfig;
 
-        private readonly RollbarOptions _rollbarOptions = null;
+        private readonly RollbarOptions _rollbarOptions;
 
-        private readonly IHttpContextAccessor _httpContextAccessor = null;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarLoggerProvider" /> class from being created.

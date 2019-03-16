@@ -25,9 +25,9 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 Using Nuget Package Manager:
 
-    ```
-	Install-Package Rollbar
-	```
+```
+Install-Package Rollbar
+```
 
 ## Blocking vs Non-Blocking Use
 

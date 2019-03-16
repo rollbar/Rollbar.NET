@@ -163,7 +163,9 @@
                     var root = serverVariables.Get("APPL_PHYSICAL_PATH");
 
                     if (string.IsNullOrEmpty(root))
+                    {
                         root = HttpRuntime.AppDomainAppPath ?? Environment.CurrentDirectory;
+                    }
 
                     var machine = Environment.MachineName;
                     var webServer = serverVariables["SERVER_SOFTWARE"];
@@ -192,7 +194,6 @@
             catch
             {
                 // calls in try-block may throw an exception. we are just trying our best...
-
             }
         }
     }

@@ -77,6 +77,10 @@
                     this._httpRequest.Body.Seek(0, SeekOrigin.Begin);
                     rollbarData.Request.PostBody = GetBodyAsString(this._httpRequest);
                     break;
+                case "GET":
+                default:
+                    // nothing to do...
+                    break;
             }
         }
 

@@ -15,11 +15,13 @@
             : mslogging.ILogger
             , IDisposable
     {
-        private readonly string _name = null;
-        private readonly RollbarOptions _rollbarOptions = null;
-        private readonly IHttpContextAccessor _httpContextAccessor = null;
+        private readonly string _name;
 
-        private readonly IRollbar _rollbar = null;
+        private readonly RollbarOptions _rollbarOptions;
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly IRollbar _rollbar;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarLogger" /> class from being created.
@@ -86,10 +88,14 @@
             )
         {
             if (!this.IsEnabled(logLevel))
+            {
                 return;
+            }
 
-            if (state == null && exception == null)
+            if (object.Equals(state, default(TState)) && exception == null)
+            {
                 return;
+            }
 
             if (RollbarScope.Current != null 
                 && RollbarLocator.RollbarInstance.Config.MaxItems > 0
@@ -119,17 +125,12 @@
             }
 
             IRollbarPackage rollbarPackage = null;
-            //Rollbar.DTOs.Body payloadBody = null;
             if (exception != null)
             {
-                //payloadBody = new DTOs.Body(exception);
-
                 rollbarPackage = new ExceptionPackage(exception, "RollbarLogger.LogTState exception");
             }
             else if (!string.IsNullOrWhiteSpace(message))
             {
-                //payloadBody = new DTOs.Body(new DTOs.Message(message));
-
                 rollbarPackage = new MessagePackage(message, "RollbarLogger.LogTState message");
             }
             else

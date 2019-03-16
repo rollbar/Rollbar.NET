@@ -66,7 +66,6 @@
                 }
             }
 
-            //DTOs.Request requestDto = rollbarData.Request;
             if (customRequestFields != null && customRequestFields.Count > 0)
             {
                 if (rollbarData.Request == null)

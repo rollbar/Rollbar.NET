@@ -78,12 +78,6 @@
                 rollbarData.Server = this._rollbarConfig.Server;
             }
 
-            //if (this._rollbarConfig.Client != null)
-            //{
-            //    rollbarData.Client. = this._rollbarConfig.Client;
-            //}
-
-
             if (!string.IsNullOrWhiteSpace(this._rollbarConfig.Environment))
             {
                 rollbarData.Environment = this._rollbarConfig.Environment;
