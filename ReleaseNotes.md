@@ -17,9 +17,9 @@ Most of it is just a "find-and-replace" with a few "compile-and-correct-the-buil
 Starting with v3 we split the Rollbar.NET Notifier SDK into more components or modules.
 
 These components can be logically grouped into the following categories:
-- Core Modules
-- .NET Specific Technology/Application Integration Modules
-- Third-party Logging Libraries/Frameworks' Integration Plug-ins
+-   Core Modules
+-   .NET Specific Technology/Application Integration Modules
+-   Third-party Logging Libraries/Frameworks' Integration Plug-ins
 
 Core Modules implement the very basic stand-alone core functionality of the Rollbar.NET Notifier. 
 They have least possible amount of dependencies and only rely on functionality provided by most basic .NET implementation types 
@@ -36,19 +36,19 @@ like Serilog, log4net, etc. (because you are already relying on one of these) - 
 Here are examples of currently available modules in each category:
 
 -   Core Modules: 
-  1.  Rollbar.
+1.   Rollbar.
 
 -   .NET Specific Technology/Application Integration Modules: 
-  1.  Rollbar.Net.AspNet, 
-  2.  Rollbar.Net.AspNet.Mvc, 
-  3.  Rollbar.Net.AspNet.WebApi, 
-  4.  Rollbar.NetCore.AspNet.
+1.   Rollbar.Net.AspNet, 
+2.   Rollbar.Net.AspNet.Mvc, 
+3.   Rollbar.Net.AspNet.WebApi, 
+4.   Rollbar.NetCore.AspNet.
 
 -   Third-party Logging Libraries/Frameworks' Integration Plug-ins:
-  1.  Rollbar.PlugIns.Log4net,
-  2.  Rollbar.PlugIns.MSEnterpriseLibrary,
-  3.  Rollbar.PlugIns.NLog,
-  4.  Rollbar.PlugIns.Serilog.
+ 1.   Rollbar.PlugIns.Log4net,
+ 2.   Rollbar.PlugIns.MSEnterpriseLibrary,
+ 3.   Rollbar.PlugIns.NLog,
+ 4.   Rollbar.PlugIns.Serilog.
 
 Each of the modules is available via NuGet as stand-alone package. 
 
@@ -116,9 +116,9 @@ We are also unifying versioning all of the modules to follow common SDK versioni
 
 The most fundamental API of the Notifier is `ILogger`. It defines a collection of convenience methods for sending different kinds of data payloads using different logging levels flags.
 Internally, any implementation of the `ILogger` that we have performs these three distinct steps when any of its logging methods is called:
-1.  enqueue the data object(s) to log for future transmission to the Rollbar API;
-2.  package/snap-shot the incoming/enqueued data object(s) into proper Rollbar data structure while applying some rules specified as part of relevant RollbarConfig instance;
-3.  transmit the enqueued items to the Rollbar API according to relevant RollbarConfig settings.
+1.   enqueue the data object(s) to log for future transmission to the Rollbar API;
+2.   package/snap-shot the incoming/enqueued data object(s) into proper Rollbar data structure while applying some rules specified as part of relevant RollbarConfig instance;
+3.   transmit the enqueued items to the Rollbar API according to relevant RollbarConfig settings.
 
 To minimize impact of logging on the calling thread, ideally, it would be nice to perform all the steps on auxiliary background thread(s). 
 
