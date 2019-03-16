@@ -3,11 +3,8 @@
 ## Upgrade Notes
 
 Depending on how you were integrating the Notifier into your application prior to v3, you might have to perform some or all of the following changes when moving to v3 of our SDK:
-
 -   in addition to Rollbar assembly reference, add references to relevant .NET Specific Technology/Application Integration Modules (these modules are described in the next sections);
-
 -   if you did have to add one or more references to the .NET Specific Technology/Application Integration Modules, you will have to update namespaces of the types that were moved from Rollbar to these new modules;
-
 -   if you have any calls to IAsyncLogger's methods where you are waiting on the returned Task object to complete, you will now have to wrap your data (originally passed into the logging method) into an `ObjectPackage` instance while setting its `MustApplySynchronously` flag and pass the wrapper instead of the original data into the same logging method.
 
 All of these changes are very straightforward and the compiler will help you and guide you along the way as needed. 
@@ -119,9 +116,9 @@ We are also unifying versioning all of the modules to follow common SDK versioni
 
 The most fundamental API of the Notifier is `ILogger`. It defines a collection of convenience methods for sending different kinds of data payloads using different logging levels flags.
 Internally, any implementation of the `ILogger` that we have performs these three distinct steps when any of its logging methods is called:
-  1. enqueue the data object(s) to log for future transmission to the Rollbar API;
-  2. package/snap-shot the incoming/enqueued data object(s) into proper Rollbar data structure while applying some rules specified as part of relevant RollbarConfig instance;
-  3. transmit the enqueued items to the Rollbar API according to relevant RollbarConfig settings.
+1.  enqueue the data object(s) to log for future transmission to the Rollbar API;
+2.  package/snap-shot the incoming/enqueued data object(s) into proper Rollbar data structure while applying some rules specified as part of relevant RollbarConfig instance;
+3.  transmit the enqueued items to the Rollbar API according to relevant RollbarConfig settings.
 
 To minimize impact of logging on the calling thread, ideally, it would be nice to perform all the steps on auxiliary background thread(s). 
 
@@ -149,40 +146,40 @@ All the Asp.Net Core middleware related classes were moved to the new Rollbar.Ne
 All the .NET Framework's HttpRequest and HttpContext capture functionality was moved to Rollbar.Net.AspNet module.
 
 New abstractions:
-  - `IRollbarPackage`
-  - `RollbarPackageBase` 
-  - `RollbarPackageDecoratorBase`
+-   `IRollbarPackage`
+-   `RollbarPackageBase` 
+-   `RollbarPackageDecoratorBase`
 
 New useful types:
-  - `ObjectPackage`
-  - `ExceptionPackage`
-  - `MessagePackage`
-  - `DataPackage`
-  - `BodyPackage`
-  - `PersonPackageDecorator`
-  - `CustomKeyValuePackageDecorator`
-  - `ConfigAttributesPackageDecorator`
-  - `HttpRequestMessagePackageDecorator`
+-   `ObjectPackage`
+-   `ExceptionPackage`
+-   `MessagePackage`
+-   `DataPackage`
+-   `BodyPackage`
+-   `PersonPackageDecorator`
+-   `CustomKeyValuePackageDecorator`
+-   `ConfigAttributesPackageDecorator`
+-   `HttpRequestMessagePackageDecorator`
 
 ### .NET Specific Technology/Application Integration Modules
 
 #### Rollbar.Net.AspNet
 
 New useful types:
-  - `HttpContextPackageDecorator`
-  - `HttpRequestPackageDecorator`
-  - `RollbarHttpModule`
+-   `HttpContextPackageDecorator`
+-   `HttpRequestPackageDecorator`
+-   `RollbarHttpModule`
 
 #### Rollbar.Net.AspNet.Mvc
 
 New useful types:
-  - `ExceptionContextPackageDecorator`
-  - `RollbarExceptionFilter`
+-   `ExceptionContextPackageDecorator`
+-  `RollbarExceptionFilter`
 
 #### Rollbar.Net.AspNet.WebApi
 
 New useful types:
-  - `RollbarExceptionFilterAttribute`
+-   `RollbarExceptionFilterAttribute`
 
 #### Rollbar.NetCore.AspNet
 
@@ -190,8 +187,8 @@ All the Rollbar middleware for Asp.Net Core is implemented in this module:
 Rollbar middleware, logger factory, logger provider, etc.
 
 New useful types:
-   - `HttpRequestPackageDecorator`
-   - `RollbarHttpContextPackageDecorator`
+-   `HttpRequestPackageDecorator`
+-   `RollbarHttpContextPackageDecorator`
 
 ### Third-party Logging Libraries/Frameworks' Integration Plug-ins
 
