@@ -158,7 +158,9 @@
                     var host = serverVariables.Get("HTTP_HOST");
 
                     if (string.IsNullOrEmpty(host))
+                    {
                         host = serverVariables.Get("SERVER_NAME");
+                    }
 
                     var root = serverVariables.Get("APPL_PHYSICAL_PATH");
 

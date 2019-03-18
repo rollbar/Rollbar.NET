@@ -48,6 +48,16 @@
             get { return this._logItemsCount; }
         }
 
+        public string Name
+        {
+            get { return this._name; }
+        }
+
+        public object State
+        {
+            get { return this._state; }
+        }
+
         public static IDisposable Push(RollbarScope scope)
         {
             Assumption.AssertNotNull(scope, nameof(scope));
