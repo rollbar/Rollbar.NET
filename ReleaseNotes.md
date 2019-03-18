@@ -45,10 +45,10 @@ Here are examples of currently available modules in each category:
 4.   Rollbar.NetCore.AspNet.
 
 -   Third-party Logging Libraries/Frameworks' Integration Plug-ins:
- 1.   Rollbar.PlugIns.Log4net,
- 2.   Rollbar.PlugIns.MSEnterpriseLibrary,
- 3.   Rollbar.PlugIns.NLog,
- 4.   Rollbar.PlugIns.Serilog.
+1.   Rollbar.PlugIns.Log4net,
+2.   Rollbar.PlugIns.MSEnterpriseLibrary,
+3.   Rollbar.PlugIns.NLog,
+4.   Rollbar.PlugIns.Serilog.
 
 Each of the modules is available via NuGet as stand-alone package. 
 
@@ -174,7 +174,7 @@ New useful types:
 
 New useful types:
 -   `ExceptionContextPackageDecorator`
--  `RollbarExceptionFilter`
+-   `RollbarExceptionFilter`
 
 #### Rollbar.Net.AspNet.WebApi
 
