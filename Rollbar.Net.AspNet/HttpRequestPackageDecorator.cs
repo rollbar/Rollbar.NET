@@ -1,9 +1,7 @@
 ﻿namespace Rollbar.Net.AspNet
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Web;
     using System.Web.Hosting;
     using Rollbar.Common;
@@ -158,7 +156,9 @@
                     var host = serverVariables.Get("HTTP_HOST");
 
                     if (string.IsNullOrEmpty(host))
+                    {
                         host = serverVariables.Get("SERVER_NAME");
+                    }
 
                     var root = serverVariables.Get("APPL_PHYSICAL_PATH");
 

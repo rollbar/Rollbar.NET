@@ -408,7 +408,7 @@ namespace Rollbar
             }
         }
 
-        private void OnRollbarEvent(RollbarEventArgs e)
+        internal void OnRollbarEvent(RollbarEventArgs e)
         {
             Assumption.AssertNotNull(e, nameof(e));
             Assumption.AssertNotNull(e.Logger, nameof(e.Logger));

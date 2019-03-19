@@ -147,7 +147,7 @@
             {
                 customProperties.Add("LogMessage", message);
             }
-            if (customProperties != null && customProperties.Count > 0)
+            if (customProperties.Count > 0)
             {
                 rollbarPackage = new CustomKeyValuePackageDecorator(rollbarPackage, customProperties);
             }
@@ -173,7 +173,7 @@
         /// </returns>
         public IDisposable BeginScope<TState>(TState state)
         {
-            Assumption.AssertTrue(state != null, nameof(state));
+            Assumption.AssertTrue(!object.Equals(state, default(TState)), nameof(state));
 
             var scope = new RollbarScope(_name, state);
             scope.HttpContext = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
