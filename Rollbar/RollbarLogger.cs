@@ -570,12 +570,12 @@ namespace Rollbar
                     rollbarPackage.PackageAsRollbarData();
                 }
                 payloadBundle =
-                    new PayloadBundle(this.Config, rollbarPackage, level, custom, timeoutAt, signal);
+                    new PayloadBundle(this, rollbarPackage, level, custom, timeoutAt, signal);
             }
             else
             {
                 payloadBundle =
-                    new PayloadBundle(this.Config, dataObject, level, custom, timeoutAt, signal);
+                    new PayloadBundle(this, dataObject, level, custom, timeoutAt, signal);
             }
 
             return payloadBundle;

@@ -35,8 +35,11 @@ namespace UnitTest.Rollbar
             //Assert.AreSame(rollbarData, package.RollbarData);
 
             RollbarConfig config = new RollbarConfig("ACCESS_TOKEN") { Environment = "ENV", };
-            PayloadBundle bundle = new PayloadBundle(config, package, ErrorLevel.Critical);
-            var payload = bundle.GetPayload();
+            using (IRollbar rollbarLogger = RollbarFactory.CreateNew(config))
+            {
+                PayloadBundle bundle = new PayloadBundle(rollbarLogger as RollbarLogger, package, ErrorLevel.Critical);
+                var payload = bundle.GetPayload();
+            }
         }
     }
 }
