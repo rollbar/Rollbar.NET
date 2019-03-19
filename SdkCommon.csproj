@@ -13,6 +13,8 @@
       - resolve #341: "Merge" v3 release notes content into Rollbar.NET docs on Rollbar.com.
       - ref #343: Fix latest Codacy issues.
       - ref #295: Improve granularity of internal error reporting when Json serialization of a payload fails.
+      - resolve #348: Rollbar.NetCore.AspNet.RollbarLogger: payload title changes
+      
     </PackageReleaseNotes>
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>

@@ -127,11 +127,11 @@
             IRollbarPackage rollbarPackage = null;
             if (exception != null)
             {
-                rollbarPackage = new ExceptionPackage(exception, "RollbarLogger.LogTState exception");
+                rollbarPackage = new ExceptionPackage(exception, exception.Message);
             }
             else if (!string.IsNullOrWhiteSpace(message))
             {
-                rollbarPackage = new MessagePackage(message, "RollbarLogger.LogTState message");
+                rollbarPackage = new MessagePackage(message, message);
             }
             else
             {
