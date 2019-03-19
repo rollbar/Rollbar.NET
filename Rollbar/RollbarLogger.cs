@@ -523,6 +523,37 @@ namespace Rollbar
                 return this;
             }
 
+            PayloadBundle payloadBundle;
+            try
+            {
+                payloadBundle = CreatePayloadBundle(dataObject, level, custom, timeout, signal);
+            }
+            catch (System.Exception exception)
+            {
+                RollbarErrorUtility.Report(this, dataObject, InternalRollbarError.BundlingError, null, exception);
+                return this;
+            }
+
+            try
+            {
+                this._payloadQueue.Enqueue(payloadBundle);
+            }
+            catch (System.Exception exception)
+            {
+                RollbarErrorUtility.Report(this, dataObject, InternalRollbarError.EnqueuingError, null, exception);
+            }
+
+            return this;
+        }
+
+        private PayloadBundle CreatePayloadBundle(
+            object dataObject,
+            ErrorLevel level,
+            IDictionary<string, object> custom,
+            TimeSpan? timeout = null,
+            SemaphoreSlim signal = null
+            )
+        {
             DateTime? timeoutAt = null;
             if (timeout.HasValue)
             {
@@ -547,15 +578,7 @@ namespace Rollbar
                     new PayloadBundle(this.Config, dataObject, level, custom, timeoutAt, signal);
             }
 
-            if (payloadBundle == null)
-            {
-                //TODO: we may want to report that there is some problem with packaging...
-                return this;
-            }
-
-            this._payloadQueue.Enqueue(payloadBundle);
-
-            return this;
+            return payloadBundle;
         }
 
         internal virtual void OnRollbarEvent(RollbarEventArgs e)

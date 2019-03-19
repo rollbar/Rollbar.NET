@@ -147,7 +147,7 @@
             {
                 customProperties.Add("LogMessage", message);
             }
-            if (customProperties != null && customProperties.Count > 0)
+            if (customProperties.Count > 0)
             {
                 rollbarPackage = new CustomKeyValuePackageDecorator(rollbarPackage, customProperties);
             }

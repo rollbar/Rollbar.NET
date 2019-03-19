@@ -36,19 +36,19 @@ like Serilog, log4net, etc. (because you are already relying on one of these) - 
 Here are examples of currently available modules in each category:
 
 -   Core Modules: 
-1.   Rollbar.
+1.    Rollbar.
 
 -   .NET Specific Technology/Application Integration Modules: 
-1.   Rollbar.Net.AspNet, 
-2.   Rollbar.Net.AspNet.Mvc, 
-3.   Rollbar.Net.AspNet.WebApi, 
-4.   Rollbar.NetCore.AspNet.
+1.    Rollbar.Net.AspNet, 
+2.    Rollbar.Net.AspNet.Mvc, 
+3.    Rollbar.Net.AspNet.WebApi, 
+4.    Rollbar.NetCore.AspNet.
 
 -   Third-party Logging Libraries/Frameworks' Integration Plug-ins:
-1.   Rollbar.PlugIns.Log4net,
-2.   Rollbar.PlugIns.MSEnterpriseLibrary,
-3.   Rollbar.PlugIns.NLog,
-4.   Rollbar.PlugIns.Serilog.
+1.    Rollbar.PlugIns.Log4net,
+2.    Rollbar.PlugIns.MSEnterpriseLibrary,
+3.    Rollbar.PlugIns.NLog,
+4.    Rollbar.PlugIns.Serilog.
 
 Each of the modules is available via NuGet as stand-alone package. 
 
