@@ -11,11 +11,9 @@ namespace Rollbar
 
     /// <summary>
     /// Implements disposable implementation of IRollbar.
-    /// 
     /// All the logging methods implemented in async "fire-and-forget" fashion.
     /// Hence, the payload is not yet delivered to the Rollbar API service when
     /// the methods return.
-    /// 
     /// </summary>
     /// <seealso cref="Rollbar.IRollbar" />
     /// <seealso cref="System.IDisposable" />
@@ -24,7 +22,13 @@ namespace Rollbar
         , IDisposable
     {
 
+        /// <summary>
+        /// The configuration
+        /// </summary>
         private readonly IRollbarConfig _config;
+        /// <summary>
+        /// The payload queue
+        /// </summary>
         private readonly PayloadQueue _payloadQueue;
 
         /// <summary>
@@ -33,7 +37,7 @@ namespace Rollbar
         public event EventHandler<RollbarEventArgs> InternalEvent;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarLogger"/> class.
+        /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
         /// </summary>
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         internal RollbarLogger(bool isSingleton)
@@ -42,7 +46,7 @@ namespace Rollbar
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarLogger"/> class.
+        /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
         /// </summary>
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
@@ -64,14 +68,7 @@ namespace Rollbar
                 this._config = new RollbarConfig(this);
             }
 
-            var rollbarClient = new RollbarClient(
-                this._config
-                , RollbarQueueController.Instance.ProvideHttpClient(
-                    this._config.ProxyAddress, 
-                    this._config.ProxyUsername, 
-                    this._config.ProxyPassword
-                    )
-                );
+            var rollbarClient = new RollbarClient(this);
 
             this._payloadQueue = new PayloadQueue(this, rollbarClient);
             RollbarQueueController.Instance.Register(this._payloadQueue);
@@ -497,6 +494,9 @@ namespace Rollbar
 
         #region IDisposable explicitly
 
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         void IDisposable.Dispose()
         {
             this.Dispose();
@@ -504,6 +504,15 @@ namespace Rollbar
 
         #endregion IDisposable explicitly
 
+        /// <summary>
+        /// Enqueues the specified data object.
+        /// </summary>
+        /// <param name="dataObject">The data object.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="custom">The custom.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="signal">The signal.</param>
+        /// <returns>ILogger.</returns>
         internal ILogger Enqueue(
             object dataObject,
             ErrorLevel level,
@@ -546,6 +555,15 @@ namespace Rollbar
             return this;
         }
 
+        /// <summary>
+        /// Creates the payload bundle.
+        /// </summary>
+        /// <param name="dataObject">The data object.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="custom">The custom.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="signal">The signal.</param>
+        /// <returns>PayloadBundle.</returns>
         private PayloadBundle CreatePayloadBundle(
             object dataObject,
             ErrorLevel level,
@@ -581,6 +599,10 @@ namespace Rollbar
             return payloadBundle;
         }
 
+        /// <summary>
+        /// Handles the <see cref="E:RollbarEvent" /> event.
+        /// </summary>
+        /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         internal virtual void OnRollbarEvent(RollbarEventArgs e)
         {
             EventHandler<RollbarEventArgs> handler = InternalEvent;
@@ -592,8 +614,15 @@ namespace Rollbar
 
         #region IDisposable Support
 
+        /// <summary>
+        /// The disposed value
+        /// </summary>
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -620,9 +649,7 @@ namespace Rollbar
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        /// <remarks>
-        /// This code added to correctly implement the disposable pattern.
-        /// </remarks>
+        /// <remarks>This code added to correctly implement the disposable pattern.</remarks>
         public void Dispose()
         {
             // RollbarLogger type supports both paradigms: singleton-like (via RollbarLocator) and

@@ -25,7 +25,9 @@ namespace Rollbar
     /// It is also responsible for async processing of queues on its own worker thread
     /// (including retries as necessary).
     /// It makes sure that Rollbar access token rate limits handled properly.
+    /// Implements the <see cref="System.IDisposable" />
     /// </summary>
+    /// <seealso cref="System.IDisposable" />
     public sealed class RollbarQueueController
         : IDisposable
 #if NETFX
@@ -37,9 +39,7 @@ namespace Rollbar
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>
-        /// The instance.
-        /// </value>
+        /// <value>The instance.</value>
         public static RollbarQueueController Instance
         {
             get
@@ -49,19 +49,28 @@ namespace Rollbar
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="RollbarQueueController"/> class from being created.
+        /// Prevents a default instance of the <see cref="RollbarQueueController" /> class from being created.
         /// </summary>
         private RollbarQueueController()
         {
             this.Start();
         }
 
+        /// <summary>
+        /// Class NestedSingleInstance. This class cannot be inherited.
+        /// </summary>
         private sealed class NestedSingleInstance
         {
+            /// <summary>
+            /// Prevents a default instance of the <see cref="NestedSingleInstance"/> class from being created.
+            /// </summary>
             private NestedSingleInstance()
             {
             }
 
+            /// <summary>
+            /// The instance
+            /// </summary>
             internal static readonly RollbarQueueController Instance =
                 new RollbarQueueController();
         }
@@ -69,12 +78,28 @@ namespace Rollbar
         #endregion singleton implementation
 
 
+        /// <summary>
+        /// The sleep interval
+        /// </summary>
         internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(500);
+        /// <summary>
+        /// The total retries
+        /// </summary>
         internal readonly int _totalRetries = 3;
 
+        /// <summary>
+        /// The HTTP clients by proxy settings
+        /// </summary>
         private readonly ConcurrentDictionary<string, HttpClient> _httpClientsByProxySettings = 
             new ConcurrentDictionary<string, HttpClient>();
 
+        /// <summary>
+        /// Provides the HTTP client.
+        /// </summary>
+        /// <param name="proxyAddress">The proxy address.</param>
+        /// <param name="proxyUsername">The proxy username.</param>
+        /// <param name="proxyPassword">The proxy password.</param>
+        /// <returns>HttpClient.</returns>
         internal HttpClient ProvideHttpClient(string proxyAddress = null, string proxyUsername = null, string proxyPassword = null)
         {
             string proxySettings = string.Empty;
@@ -157,7 +182,7 @@ namespace Rollbar
         /// Gets the queues count.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
-        /// <returns></returns>
+        /// <returns>System.Int32.</returns>
         internal int GetQueuesCount(string accessToken = null)
         {
             if (!string.IsNullOrWhiteSpace(accessToken))
@@ -177,16 +202,32 @@ namespace Rollbar
             return result;
         }
 
+        /// <summary>
+        /// The synchronize lock
+        /// </summary>
         private readonly object _syncLock = new object();
 
+        /// <summary>
+        /// The rollbar comm thread
+        /// </summary>
         private Thread _rollbarCommThread;
 
+        /// <summary>
+        /// All queues
+        /// </summary>
         private readonly HashSet<PayloadQueue> _allQueues =
             new HashSet<PayloadQueue>();
 
+        /// <summary>
+        /// The queues by access token
+        /// </summary>
         private readonly Dictionary<string, AccessTokenQueuesMetadata> _queuesByAccessToken = 
             new Dictionary<string, AccessTokenQueuesMetadata>();
 
+        /// <summary>
+        /// Keeps the processing all queues.
+        /// </summary>
+        /// <param name="data">The data.</param>
         private void KeepProcessingAllQueues(object data)
         {
             CancellationToken cancellationToken = (CancellationToken) data;
@@ -223,6 +264,9 @@ namespace Rollbar
             CompleteProcessing();
         }
 
+        /// <summary>
+        /// Processes all queues once.
+        /// </summary>
         private void ProcessAllQueuesOnce()
         {
             foreach(var token in this._queuesByAccessToken.Keys)
@@ -238,6 +282,10 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Processes the queues.
+        /// </summary>
+        /// <param name="tokenMetadata">The token metadata.</param>
         private void ProcessQueues(AccessTokenQueuesMetadata tokenMetadata)
         {
             foreach (var queue in tokenMetadata.Queues)
@@ -288,6 +336,11 @@ namespace Rollbar
 
         }
 
+        /// <summary>
+        /// Obeys the payload timeout.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <param name="queue">The queue.</param>
         private void ObeyPayloadTimeout(PayloadBundle payloadBundle, PayloadQueue queue)
         {
             if (payloadBundle.TimeoutAt.HasValue && (DateTime.Now.Add(this._sleepInterval) >= payloadBundle.TimeoutAt.Value))
@@ -296,6 +349,12 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Processes the specified queue.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        /// <param name="response">The response.</param>
+        /// <returns>PayloadBundle.</returns>
         private PayloadBundle Process(PayloadQueue queue, out RollbarResponse response)
         {
             response = null;
@@ -361,6 +420,11 @@ namespace Rollbar
             return payloadBundle;
         }
 
+        /// <summary>
+        /// Handles the Reconfigured event of the Config control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void Config_Reconfigured(object sender, EventArgs e)
         {
             lock (this._syncLock)
@@ -378,6 +442,10 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Indexes the by token.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
         private void IndexByToken(PayloadQueue queue)
         {
             string queueToken = queue.Logger.Config.AccessToken;
@@ -396,6 +464,10 @@ namespace Rollbar
             tokenMetadata.Queues.Add(queue);
         }
 
+        /// <summary>
+        /// Drops the index by token.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
         private void DropIndexByToken(PayloadQueue queue)
         {
             foreach (var tokenMetadata in this._queuesByAccessToken.Values)
@@ -408,6 +480,10 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Handles the <see cref="E:RollbarEvent" /> event.
+        /// </summary>
+        /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         internal void OnRollbarEvent(RollbarEventArgs e)
         {
             Assumption.AssertNotNull(e, nameof(e));
@@ -426,7 +502,7 @@ namespace Rollbar
         /// <summary>
         /// Gets the total payload count across all the queues.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>System.Int32.</returns>
         public int GetTotalPayloadCount()
         {
             lock (this._syncLock)
@@ -462,7 +538,9 @@ namespace Rollbar
             return counter;
         }
 
-        /// <summary>Gets the payload count.</summary>
+        /// <summary>
+        /// Gets the payload count.
+        /// </summary>
         /// <param name="rollbar">The rollbar.</param>
         /// <returns>System.Int32.</returns>
         public int GetPayloadCount(IRollbar rollbar)
@@ -470,7 +548,9 @@ namespace Rollbar
             return this.GetPayloadCount(rollbar.Config.AccessToken);
         }
 
-        /// <summary>Gets the recommended timeout.</summary>
+        /// <summary>
+        /// Gets the recommended timeout.
+        /// </summary>
         /// <param name="accessToken">The Rollbar access token.</param>
         /// <returns>TimeSpan.</returns>
         public TimeSpan GetRecommendedTimeout(string accessToken)
@@ -496,7 +576,9 @@ namespace Rollbar
             return TimeSpan.FromTicks((totalPayloads + 1) * payloadTimeout.Ticks);
         }
 
-        /// <summary>Gets the recommended timeout.</summary>
+        /// <summary>
+        /// Gets the recommended timeout.
+        /// </summary>
         /// <param name="rollbar">The rollbar.</param>
         /// <returns>TimeSpan.</returns>
         public TimeSpan GetRecommendedTimeout(IRollbar rollbar)
@@ -534,7 +616,7 @@ namespace Rollbar
         }
 
         /// <summary>
-        /// Flushes the queues. 
+        /// Flushes the queues.
         /// All current payloads in every queue get removed (without transmitting them to the Rollbar API).
         /// </summary>
         public void FlushQueues()
@@ -548,8 +630,14 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// The cancellation token source
+        /// </summary>
         private CancellationTokenSource _cancellationTokenSource;
 
+        /// <summary>
+        /// Starts this instance.
+        /// </summary>
         private void Start()
         {
             if (this._rollbarCommThread == null)
@@ -569,6 +657,9 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Completes the processing.
+        /// </summary>
         private void CompleteProcessing()
         {
             Debug.WriteLine("Entering " +this.GetType().FullName + "." + nameof(this.CompleteProcessing) + "() method...");
@@ -607,8 +698,15 @@ namespace Rollbar
 
         #region IDisposable Support
 
+        /// <summary>
+        /// The disposed value
+        /// </summary>
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         private void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -635,9 +733,7 @@ namespace Rollbar
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        /// <remarks>
-        /// This code added to correctly implement the disposable pattern.
-        /// </remarks>
+        /// <remarks>This code added to correctly implement the disposable pattern.</remarks>
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

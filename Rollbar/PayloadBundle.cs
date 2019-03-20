@@ -31,10 +31,10 @@
         /// </summary>
         private readonly ErrorLevel _level;
         /// <summary>
-        /// The rollbar configuration
+        /// The rollbar logger
         /// </summary>
-        //private readonly IRollbarConfig _rollbarConfig;
         private readonly RollbarLogger _rollbarLogger;
+
         /// <summary>
         /// The timeout at
         /// </summary>
@@ -62,6 +62,7 @@
         /// As HTTP content to send
         /// </summary>
         private StringContent _asHttpContentToSend;
+
         #endregion one-time calculated caches
 
         /// <summary>

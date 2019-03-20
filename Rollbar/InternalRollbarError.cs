@@ -48,5 +48,15 @@
         /// The payload validation error
         /// </summary>
         PayloadValidationError,
+
+        /// <summary>
+        /// The payload serialization error
+        /// </summary>
+        PayloadSerializationError,
+
+        /// <summary>
+        /// The payload scrubbing error
+        /// </summary>
+        PayloadScrubbingError,
     }
 }
