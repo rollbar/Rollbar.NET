@@ -44,8 +44,6 @@
         /// <param name="accessToken">The access token.</param>
         public RollbarConfig(string accessToken)
         {
-            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
-
             this.SetDefaults();
 
             if (!string.IsNullOrWhiteSpace(accessToken))

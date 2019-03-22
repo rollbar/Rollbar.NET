@@ -20,7 +20,7 @@
                 return true;
             }
 
-#if NETCOREAPP || NETSTANDARD
+#if NETCOREAPP || NETSTANDARD || NETFX_461nNewer
             // try appsettings.json file:
             if (NetCore.AppSettingsUtility.LoadAppSettings(config))
             {

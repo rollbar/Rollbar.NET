@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP || NETSTANDARD
+﻿#if NETCOREAPP || NETSTANDARD || NETFX_461nNewer
 
 namespace Rollbar.NetCore
 {
@@ -172,19 +172,34 @@ namespace Rollbar.NetCore
 
         #endregion TelemetryConfig
 
+        /// <summary>
+        /// Loads the application settings.
+        /// </summary>
+        /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
         private static IConfiguration LoadAppSettings()
         {
             return AppSettingsUtility.LoadAppSettings("appsettings.json");
         }
 
+        /// <summary>
+        /// Loads the application settings.
+        /// </summary>
+        /// <param name="appSettingsFileName">Name of the application settings file.</param>
+        /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
         private static IConfiguration LoadAppSettings(string appSettingsFileName)
         {
             return AppSettingsUtility.LoadAppSettings(
-                Directory.GetCurrentDirectory(), 
+                Directory.GetCurrentDirectory(),
                 appSettingsFileName
                 );
         }
 
+        /// <summary>
+        /// Loads the application settings.
+        /// </summary>
+        /// <param name="folderPath">The folder path.</param>
+        /// <param name="appSettingsFileName">Name of the application settings file.</param>
+        /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
         private static IConfiguration LoadAppSettings(string folderPath, string appSettingsFileName)
         {
             if (!Directory.Exists(folderPath))
@@ -208,6 +223,13 @@ namespace Rollbar.NetCore
             return appConfiguration;
         }
 
+        /// <summary>
+        /// Loads the application settings.
+        /// </summary>
+        /// <typeparam name="TSection">The type of the t section.</typeparam>
+        /// <param name="sectionName">Name of the section.</param>
+        /// <param name="appSettings">The application settings.</param>
+        /// <returns>TSection.</returns>
         private static TSection LoadAppSettings<TSection>(string sectionName, IConfiguration appSettings)
         {
             return appSettings.GetSection(sectionName).Get<TSection>();
