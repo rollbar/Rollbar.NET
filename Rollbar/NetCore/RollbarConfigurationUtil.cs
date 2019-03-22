@@ -1,4 +1,4 @@
-﻿#if NETCOREAPP || NETSTANDARD
+﻿#if NETCOREAPP || NETSTANDARD || NETFX_461nNewer
 
 namespace Rollbar.NetCore
 {
