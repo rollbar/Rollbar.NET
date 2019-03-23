@@ -16,6 +16,7 @@
       - resolve #349: Rollbar.RollbarLogger: improve granularity of internal error reporting during main phases of payload bundle handling.
       - resolve #295: Improve granularity of internal error reporting when Json serialization of a payload fails.
       - resolve #293: Please allow AppSettingsUtility to work for projects targeting .net full framework.
+      - reolve #278: Create unit tests for ExceptionUtility
     </PackageReleaseNotes>
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
