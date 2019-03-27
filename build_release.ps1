@@ -42,27 +42,45 @@ $LocalDotnet = "$InstallDir/dotnet"
 # Run the build process now. Implement your build script here:
 #=============================================================
 
-# restore all the dependencies:
+Write-Host "Deleting /obj and /bin folders of the SDK projects/modules..."
+Get-ChildItem -Path "." -Directory |
+Where-Object {$_.Name -match '^Rollbar*'} |
+ForEach-Object {
+    Write-Host "  SDK module: " $_.FullName
+    $path = $_.FullName + '/obj'
+    if (Test-Path $path) {
+    Remove-Item -Path $path -Recurse #-WhatIf
+    }
+    $path = $_.FullName + '/bin'
+    if (Test-Path $path) {
+        Remove-Item -Path $path -Recurse #-WhatIf
+    }
+}
+
+Write-Host "Restoring the SDK dependencies..."
 dotnet restore rollbar.sln
 
+Write-Host "Building all the SDK build configurations..."
 $buildConfigurations = @(
     "Instrumented",
     "Debug",
     "Release"
 )
-
 foreach($buildConfiguration in $buildConfigurations) {
-    # clear the ground:
+    Write-Host "  Building the SDK build configuration:" + $buildConfiguration + ...
+    # clean the configuration:
+    Write-Host "    - cleaning..."
     dotnet clean rollbar.sln --configuration $buildConfiguration
     # build the configurations:
+    Write-Host "    - building..."
     dotnet build rollbar.sln --configuration $buildConfiguration
-
     # unit-test the Release configuration: 
+    #Write-Host "    - unit-testing..."
     #dotnet test rollbar.sln --configuration $buildConfiguration
 }
 # unit-test the Release configuration: 
+Write-Host "    - unit-testing Debug build..."
 dotnet test rollbar.sln --configuration Debug
-
 
 # make sure all the samples are buildable:
 Get-ChildItem "./Samples" -Filter *.sln | 
