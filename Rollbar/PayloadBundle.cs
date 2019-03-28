@@ -31,9 +31,10 @@
         /// </summary>
         private readonly ErrorLevel _level;
         /// <summary>
-        /// The rollbar configuration
+        /// The rollbar logger
         /// </summary>
-        private readonly IRollbarConfig _rollbarConfig;
+        private readonly RollbarLogger _rollbarLogger;
+
         /// <summary>
         /// The timeout at
         /// </summary>
@@ -61,6 +62,7 @@
         /// As HTTP content to send
         /// </summary>
         private StringContent _asHttpContentToSend;
+
         #endregion one-time calculated caches
 
         /// <summary>
@@ -106,74 +108,74 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// Initializes a new instance of the <see cref="PayloadBundle" /> class.
         /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         /// <param name="payloadPackage">The payload package.</param>
         /// <param name="level">The level.</param>
         public PayloadBundle(
-            IRollbarConfig rollbarConfig,
+            RollbarLogger rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level
             )
-            : this(rollbarConfig, payloadPackage, level, null, null, null)
+            : this(rollbarLogger, payloadPackage, level, null, null, null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// Initializes a new instance of the <see cref="PayloadBundle" /> class.
         /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         /// <param name="payloadPackage">The payload package.</param>
         /// <param name="level">The level.</param>
         /// <param name="custom">The custom.</param>
         public PayloadBundle(
-            IRollbarConfig rollbarConfig,
+            RollbarLogger rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
             IDictionary<string, object> custom
             )
-            : this(rollbarConfig, payloadPackage, level, custom, null, null)
+            : this(rollbarLogger, payloadPackage, level, custom, null, null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// Initializes a new instance of the <see cref="PayloadBundle" /> class.
         /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         /// <param name="payloadPackage">The payload package.</param>
         /// <param name="level">The level.</param>
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            IRollbarConfig rollbarConfig,
+            RollbarLogger rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
             DateTime? timeoutAt,
             SemaphoreSlim signal
             )
-            : this(rollbarConfig, payloadPackage, level, null, timeoutAt, signal)
+            : this(rollbarLogger, payloadPackage, level, null, timeoutAt, signal)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// Initializes a new instance of the <see cref="PayloadBundle" /> class.
         /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         /// <param name="payloadPackage">The payload package.</param>
         /// <param name="level">The level.</param>
         /// <param name="custom">The custom.</param>
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            IRollbarConfig rollbarConfig,
+            RollbarLogger rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
             IDictionary<string, object> custom,
             DateTime? timeoutAt,
             SemaphoreSlim signal
             )
-            : this(rollbarConfig, payloadPackage as object, level, custom, timeoutAt, signal)
+            : this(rollbarLogger, payloadPackage as object, level, custom, timeoutAt, signal)
         {
             if (payloadPackage != null)
             {
@@ -183,67 +185,67 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// Initializes a new instance of the <see cref="PayloadBundle" /> class.
         /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         /// <param name="payloadObject">The payload object.</param>
         /// <param name="level">The level.</param>
         public PayloadBundle(
-            IRollbarConfig rollbarConfig,
+            RollbarLogger rollbarLogger,
             object payloadObject,
             ErrorLevel level
             )
-            : this(rollbarConfig, payloadObject, level, null, null, null)
+            : this(rollbarLogger, payloadObject, level, null, null, null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// Initializes a new instance of the <see cref="PayloadBundle" /> class.
         /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         /// <param name="payloadObject">The payload object.</param>
         /// <param name="level">The level.</param>
         /// <param name="custom">The custom.</param>
         public PayloadBundle(
-            IRollbarConfig rollbarConfig,
+            RollbarLogger rollbarLogger,
             object payloadObject,
             ErrorLevel level,
             IDictionary<string, object> custom
             )
-            : this(rollbarConfig, payloadObject, level, custom, null, null)
+            : this(rollbarLogger, payloadObject, level, custom, null, null)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// Initializes a new instance of the <see cref="PayloadBundle" /> class.
         /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         /// <param name="payloadObject">The payload object.</param>
         /// <param name="level">The level.</param>
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            IRollbarConfig rollbarConfig,
+            RollbarLogger rollbarLogger,
             object payloadObject,
             ErrorLevel level,
             DateTime? timeoutAt,
             SemaphoreSlim signal
             )
-            : this(rollbarConfig, payloadObject, level, null, timeoutAt, signal)
+            : this(rollbarLogger, payloadObject, level, null, timeoutAt, signal)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PayloadBundle"/> class.
+        /// Initializes a new instance of the <see cref="PayloadBundle" /> class.
         /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         /// <param name="payloadObject">The payload object.</param>
         /// <param name="level">The level.</param>
         /// <param name="custom">The custom.</param>
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            IRollbarConfig rollbarConfig,
+            RollbarLogger rollbarLogger,
             object payloadObject,
             ErrorLevel level,
             IDictionary<string, object> custom,
@@ -251,10 +253,10 @@
             SemaphoreSlim signal
             )
         {
-            Assumption.AssertNotNull(rollbarConfig, nameof(rollbarConfig));
+            Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
             Assumption.AssertNotNull(payloadObject, nameof(payloadObject));
 
-            this._rollbarConfig = rollbarConfig;
+            this._rollbarLogger = rollbarLogger;
             this._payloadObject = payloadObject;
             this._level = level;
             this._custom = custom;
@@ -294,47 +296,74 @@
                     //object-to-log capture timestamp:
                     data.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(this._timeStamp);
 
-                    this._payload = new Payload(this._rollbarConfig.AccessToken, data);
+                    this._payload = new Payload(this._rollbarLogger.Config.AccessToken, data);
 
                     try // payload check-ignore:
                     {
-                        if (this._rollbarConfig.CheckIgnore != null
-                            && this._rollbarConfig.CheckIgnore.Invoke(this._payload)
+                        if (this._rollbarLogger.Config.CheckIgnore != null
+                            && this._rollbarLogger.Config.CheckIgnore.Invoke(this._payload)
                             )
                         {
                             this._ignorable = true;
                             return this._payload;     //shortcut...
                         }
                     }
-                    catch (System.Exception ex)
+                    catch (System.Exception exception)
                     {
-                        //TODO: substitute following:
-                        //OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  check-ignoring a payload..."));
+                        RollbarErrorUtility.Report(
+                            this._rollbarLogger, 
+                            this._payload, 
+                            InternalRollbarError.PayloadCheckIgnoreError, 
+                            "While check-ignoring a payload...", 
+                            exception
+                            );
                     }
                     this._ignorable = false;
 
                     try // payload transformation:
                     {
-                        this._rollbarConfig.Transform?.Invoke(this._payload);
+                        this._rollbarLogger.Config.Transform?.Invoke(this._payload);
                     }
-                    catch (System.Exception ex)
+                    catch (System.Exception exception)
                     {
-                        //TODO: substitute following:
-                        //OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  transforming a payload..."));
+                        RollbarErrorUtility.Report(
+                            this._rollbarLogger,
+                            this._payload,
+                            InternalRollbarError.PayloadTransformError,
+                            "While transforming a payload...",
+                            exception
+                            );
                     }
 
                     try // payload truncation:
                     {
-                        this._rollbarConfig.Truncate?.Invoke(this._payload);
+                        this._rollbarLogger.Config.Truncate?.Invoke(this._payload);
                     }
-                    catch (System.Exception ex)
+                    catch (System.Exception exception)
                     {
-                        //TODO: substitute following:
-                        //OnRollbarEvent(new InternalErrorEventArgs(this, payload, ex, "While  truncating a payload..."));
+                        RollbarErrorUtility.Report(
+                            this._rollbarLogger,
+                            this._payload,
+                            InternalRollbarError.PayloadTruncationError,
+                            "While truncating a payload...",
+                            exception
+                            );
                     }
 
-                    this._payload.Validate();
-                    //TODO: we may want to handle/report nicely if the validation failed...
+                    try
+                    {
+                        this._payload.Validate();
+                    }
+                    catch (System.Exception exception)
+                    {
+                        RollbarErrorUtility.Report(
+                            this._rollbarLogger,
+                            this._payload,
+                            InternalRollbarError.PayloadValidationError,
+                            "While validating a payload...",
+                            exception
+                            );
+                    }
                 }
             }
             return this._payload;
@@ -390,7 +419,7 @@
                     this._rollbarPackage = ApplyCustomKeyValueDecorator(this._rollbarPackage);
                     return this._rollbarPackage;
                 case Body bodyObject:
-                    this._rollbarPackage = new BodyPackage(this._rollbarConfig, bodyObject, this._custom);
+                    this._rollbarPackage = new BodyPackage(this._rollbarLogger.Config, bodyObject, this._custom);
                     return this._rollbarPackage;
                 case System.Exception exceptionObject:
                     this._rollbarPackage = new ExceptionPackage(exceptionObject);
@@ -430,12 +459,12 @@
         /// <returns>IRollbarPackage.</returns>
         private IRollbarPackage ApplyConfigPackageDecorator(IRollbarPackage packageToDecorate)
         {
-            if (this._rollbarConfig == null)
+            if (this._rollbarLogger.Config == null)
             {
                 return packageToDecorate; // nothing to decorate with
             }
 
-            return new ConfigAttributesPackageDecorator(packageToDecorate, this._rollbarConfig);
+            return new ConfigAttributesPackageDecorator(packageToDecorate, this._rollbarLogger.Config);
 
         }
     }

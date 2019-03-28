@@ -63,6 +63,29 @@
     <DefineConstants>NETFX_47nOlder;NETFX</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="
+                 '$(TargetFramework)' == 'net472'
+                 Or '$(TargetFramework)' == 'net471'
+                 Or '$(TargetFramework)' == 'net47' 
+                 Or '$(TargetFramework)' == 'net462' 
+                 Or '$(TargetFramework)' == 'net461' 
+                 ">
+    <DefineConstants>NETFX_461nNewer</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup Condition="
+                 '$(TargetFramework)' == 'net472'
+                 Or '$(TargetFramework)' == 'net471'
+                 Or '$(TargetFramework)' == 'net47' 
+                 Or '$(TargetFramework)' == 'net462' 
+                 Or '$(TargetFramework)' == 'net461' 
+                 ">
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+  </ItemGroup>
+
+
   <ItemGroup Label="Required for netcoreapp2.1 and above..."
              Condition="
              '$(NetVariant)' == 'NET_CORE' 
@@ -73,19 +96,7 @@
 
   <ItemGroup Condition="
              '$(NetVariant)' == 'NET_CORE' 
-             ">
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="
+             Or
              '$(NetVariant)' == 'NET_STANDARD'
              ">
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
@@ -93,7 +104,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
@@ -108,5 +118,6 @@
     <Reference Include="System.Web" />
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
+
 
 </Project>

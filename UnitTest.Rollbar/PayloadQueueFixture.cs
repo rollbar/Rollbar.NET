@@ -4,7 +4,6 @@ namespace UnitTest.Rollbar
 {
     using global::Rollbar;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System.Net.Http;
     using System.Threading;
 
     [TestClass]
@@ -27,9 +26,8 @@ namespace UnitTest.Rollbar
         public void ConstructionTest()
         {
             using (var logger = new RollbarLogger(false))
-            using (var httpClient = new HttpClient())
             {
-                RollbarClient client = new RollbarClient(logger.Config, httpClient);
+                RollbarClient client = new RollbarClient(logger);
                 PayloadQueue pq = new PayloadQueue(logger, client);
                 Assert.IsNotNull(pq.Logger);
                 Assert.AreSame(logger, pq.Logger);

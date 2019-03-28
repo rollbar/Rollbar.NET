@@ -15,7 +15,8 @@ namespace Sample.Net.ConsoleApp
         static void Main(string[] args)
         {
             // NOTE: when the next line is commented out, 
-            // the Rollbar notifier will still be properly configured via app.config:
+            // the Rollbar notifier will still be properly configured 
+            // via either app.config or appsettings.json (in priority order):
             //ConfigureRollbarSingleton();
 
             // ConfigureRollbarSingleton() is called above,

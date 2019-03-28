@@ -44,8 +44,6 @@
         /// <param name="accessToken">The access token.</param>
         public RollbarConfig(string accessToken)
         {
-            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
-
             this.SetDefaults();
 
             if (!string.IsNullOrWhiteSpace(accessToken))
@@ -120,13 +118,9 @@
         {
             base.Reconfigure(likeMe);
 
-            var rollbarClient = new RollbarClient(
-                this
-                , RollbarQueueController.Instance.ProvideHttpClient(this.ProxyAddress, this.ProxyUsername, this.ProxyPassword)
-                );
-
             if (this.Logger != null && this.Logger.Queue != null)
             {
+                var rollbarClient = new RollbarClient(this.Logger);
                 // reset the queue to use the new RollbarClient:
                 this.Logger.Queue.Flush();
                 this.Logger.Queue.UpdateClient(rollbarClient);

@@ -278,3 +278,5 @@ __pycache__/
 /Sentry.Benchmarker
 /SentryBenchmarks.sln
 /Samples/Sample.PlugIns.MSEnterpriseLibrary.sln.GhostDoc.user.dic
+
+cli-tools/

@@ -1,10 +1,15 @@
-# .NET Core (.NET Framework)
-# Build and test .NET Core projects targeting the full .NET Framework.
+# .NET Standard/Framework/Core
+# Build and test .NET projects targeting the .NET Standard/Framework/Core.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- master
+    branches:
+        include:
+            - master
+    tags:
+        include:
+            - v*
 
 pool:
   vmImage: 'VS2017-Win2016'
