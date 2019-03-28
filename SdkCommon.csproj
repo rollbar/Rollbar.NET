@@ -9,6 +9,7 @@
 
   <SdkVersion>3.0.3</SdkVersion>
     <PackageReleaseNotes>
+      - resolve #352: Create automated release build script
       - resolve #340: Add v3 specifics info into "Blocking vs Non-Blocking Use" section of ReadMe.md.
       - resolve #341: "Merge" v3 release notes content into Rollbar.NET docs on Rollbar.com.
       - resolve #343: Fix latest Codacy issues.
