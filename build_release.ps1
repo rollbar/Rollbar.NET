@@ -89,8 +89,8 @@ foreach($buildConfiguration in $buildConfigurations) {
     #dotnet test rollbar.sln --configuration $buildConfiguration
 }
 # unit-test the Release configuration: 
-#!!! Write-Host "    - unit-testing Debug build..."
-#!!! dotnet test rollbar.sln --configuration Debug
+Write-Host "    - unit-testing Debug build..."
+dotnet test rollbar.sln --configuration Debug
 
 Write-Host "Consolidating SDK build results..."
 # define location for releases:
@@ -107,14 +107,15 @@ if(!(Test-Path $releasesArchivePath)) {
 }
 Write-Host "Releases Archive folder: "$releasesArchivePath
 # archive last release:
-Get-ChildItem -Path $releasesPath -Directory |
-Where-Object {$_.Name -match '^v*'} |
-Where-Object {!($_.Name -match '^ARCHIVE')} # we are not interested it this one...
-ForEach-Object {
-	if ($_ -ne $null) {
-		Write-Host "Moving "$_.FullName"..."
-		Move-Item -Path ($_.FullName) -Destination $releasesArchivePath -Force #-WhatIf
-	}
+$releasesToArchive = @(
+    Get-ChildItem -Path $releasesPath -Directory |
+    Where-Object {$_.Name -match '^v*'} |
+    Where-Object {!($_.Name -match '^ARCHIVE')} # we are not interested it this one...    
+)
+Write-Host "Archiving: "$releasesToArchive
+foreach($release in $releasesToArchive) {
+    Write-Host "  Moving "$release.FullName"..."
+    Move-Item -Path ($release.FullName) -Destination $releasesArchivePath -Force #-WhatIf
 }
 
 # collect current release:

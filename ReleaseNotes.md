@@ -1,4 +1,4 @@
-# v3.0.2 Rollbar.NET Notifier SDK Release Notes
+# v3.0.3 Rollbar.NET Notifier SDK Release Notes
 
 ## Upgrade Notes
 
@@ -56,6 +56,43 @@ We are also unifying versioning all of the modules to follow common SDK versioni
 
 ### Fixes and Improvements
 
+#### v3.0.3
+-	resolve #352: Create automated release build script
+-	resolve #340: Add v3 specifics info into "Blocking vs Non-Blocking Use" section of ReadMe.md.
+-	resolve #341: "Merge" v3 release notes content into Rollbar.NET docs on Rollbar.com.
+-	resolve #343: Fix latest Codacy issues.
+-	resolve #348: Rollbar.NetCore.AspNet.RollbarLogger: payload title changes
+-	resolve #349: Rollbar.RollbarLogger: improve granularity of internal error reporting during main phases of payload bundle handling.
+-	resolve #295: Improve granularity of internal error reporting when Json serialization of a payload fails.
+-	resolve #293: Please allow AppSettingsUtility to work for projects targeting .net full framework.
+-	resolve #278: Create unit tests for ExceptionUtility
+
+#### v3.0.2
+-   resolve #322: General codebase cleanup.
+-   resolve #321: Address latest Codacy review results.
+-   resolve #320: Update CI build scripts/environment.
+-   resolve #325: Extract integration with .NET Framework ASP.NET MVC into a separate module/Nuget-package Rollbar.Net.AspNet.Mvc.
+-   resolve #326: Extract integration with .NET Framework ASP.NET Web API into a separate module/Nuget-package Rollbar.Net.AspNet.WebApi.
+-   resolve #327: Extract integration with .NET Core ASP.NET (middleware) into a separate module/Nuget-package Rollbar.NetCore.AspNet.
+-   resolve #332: Complete cleanup of the Request DTO constructors that are based on specialized framework types
+-   resolve #330: Implement RollbarHttpModule as part of Rollbar.Net.AspNet integration module/Nuget-package.
+-   resolve #334: Fix Azure build pipeline
+-   resolve #329: ASP.NET code middleware not reporting request data.
+-   resolve #331: Verify and correct sample apps to adopt latest SDK changes related to multiple integration modules
+-   resolve #336: Extract SdkCommon.csproj and clean-up SDK projects' settings
+-   resolve #337: Unify/sync-up SDK components versioning
+-   resolve #318: Add explicit build target for .NET Core 2.2
+-   resolve #338: Fix all the build warnings across the SDK
+-   resolve #263: PostBody is always null
+-   resolve #335: Update documentation regarding v3 changes
+
+#### v3.0.1-preview
+-   resolve #322: General codebase cleanup.
+-   resolve #321: Address latest Codacy review results.
+-   resolve #320: Update CI build scripts/environment.
+-   resolve #325: Extract integration with .NET Framework ASP.NET MVC into separate project (Rollbar.Net.AspNet.Mvc).
+-   resolve #326: Extract integration with .NET Framework ASP.NET Web API into separate project (Rollbar.Net.AspNet.WebApi).
+
 #### v3.0.0-preview
 -   resolve #287: Add more seamless integration with ASP.NET (Full Framework) based applications.
 -   resolve #288: Add sample of Rollbar.NET within ASP.NET (Full Framework) based applications.
@@ -83,32 +120,6 @@ We are also unifying versioning all of the modules to follow common SDK versioni
 -   resolve #308: Implement automatic strategy/Data time-stamping.
 -   resolve #309: Complete integration of packaging strategies
 -   resolve #317: Consolidate dependencies versions.
-
-#### v3.0.1-preview
--   resolve #322: General codebase cleanup.
--   resolve #321: Address latest Codacy review results.
--   resolve #320: Update CI build scripts/environment.
--   resolve #325: Extract integration with .NET Framework ASP.NET MVC into separate project (Rollbar.Net.AspNet.Mvc).
--   resolve #326: Extract integration with .NET Framework ASP.NET Web API into separate project (Rollbar.Net.AspNet.WebApi).
-
-#### v3.0.2
--   resolve #322: General codebase cleanup.
--   resolve #321: Address latest Codacy review results.
--   resolve #320: Update CI build scripts/environment.
--   resolve #325: Extract integration with .NET Framework ASP.NET MVC into a separate module/Nuget-package Rollbar.Net.AspNet.Mvc.
--   resolve #326: Extract integration with .NET Framework ASP.NET Web API into a separate module/Nuget-package Rollbar.Net.AspNet.WebApi.
--   resolve #327: Extract integration with .NET Core ASP.NET (middleware) into a separate module/Nuget-package Rollbar.NetCore.AspNet.
--   resolve #332: Complete cleanup of the Request DTO constructors that are based on specialized framework types
--   resolve #330: Implement RollbarHttpModule as part of Rollbar.Net.AspNet integration module/Nuget-package.
--   resolve #334: Fix Azure build pipeline
--   resolve #329: ASP.NET code middleware not reporting request data.
--   resolve #331: Verify and correct sample apps to adopt latest SDK changes related to multiple integration modules
--   resolve #336: Extract SdkCommon.csproj and clean-up SDK projects' settings
--   resolve #337: Unify/sync-up SDK components versioning
--   resolve #318: Add explicit build target for .NET Core 2.2
--   resolve #338: Fix all the build warnings across the SDK
--   resolve #263: PostBody is always null
--   resolve #335: Update documentation regarding v3 changes
 
 ## Notes per SDK Module/Nuget-Package
 

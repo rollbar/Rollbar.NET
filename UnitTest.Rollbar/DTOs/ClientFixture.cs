@@ -32,11 +32,11 @@ namespace UnitTest.Rollbar.DTOs
         {
             string cpuValue = this._client.Cpu ?? "null";
 
-#if NETFX
-            string expected = "{\"cpu\":" + cpuValue + "}";
-#else
+//#if NETFX
+//            string expected = "{\"cpu\":" + cpuValue + "}";
+//#else
             string expected = "{\"cpu\":\"" + cpuValue + "\"}";
-#endif
+//#endif
 
             Assert.AreEqual(
                 expected,
