@@ -7,17 +7,9 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.0.3</SdkVersion>
+  <SdkVersion>3.0.4</SdkVersion>
     <PackageReleaseNotes>
-      - resolve #352: Create automated release build script
-      - resolve #340: Add v3 specifics info into "Blocking vs Non-Blocking Use" section of ReadMe.md.
-      - resolve #341: "Merge" v3 release notes content into Rollbar.NET docs on Rollbar.com.
-      - resolve #343: Fix latest Codacy issues.
-      - resolve #348: Rollbar.NetCore.AspNet.RollbarLogger: payload title changes
-      - resolve #349: Rollbar.RollbarLogger: improve granularity of internal error reporting during main phases of payload bundle handling.
-      - resolve #295: Improve granularity of internal error reporting when Json serialization of a payload fails.
-      - resolve #293: Please allow AppSettingsUtility to work for projects targeting .net full framework.
-      - resolve #278: Create unit tests for ExceptionUtility
+      - ref #352: Increase Core's unit test coverage around recovery from invalid payloads and failures
     </PackageReleaseNotes>
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
