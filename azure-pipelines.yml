@@ -22,7 +22,7 @@ variables:
 steps:
 
 # .NET Core SDK Installer
-# Acquires a specific version of the .NET Core SDK from the internet or the local cache and adds it to the PATH. 
+# Acquires a specific version of the .NET Core SDK from the Internet or the local cache and adds it to the PATH. 
 # Use this task to change the version of .NET Core used in subsequent tasks.
 # - task: DotNetCoreInstaller@0
 #   inputs:
@@ -46,8 +46,9 @@ steps:
 - script: dotnet --info
 
 # NuGet Tool Installer
-# Acquires a specific version of NuGet from the internet or the tools cache and adds it to the PATH. Use this task to change the version of NuGet used in the NuGet tasks.
+# Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. Use this task to change the version of NuGet used in the NuGet tasks.
 - task: NuGetToolInstaller@0
+  displayName: 'Installing NuGet...'
   #inputs:
     #versionSpec: '4.3.0' 
     #checkLatest: false # Optional
@@ -55,6 +56,7 @@ steps:
 # Visual Studio Test Platform Installer
 # Acquires the test platform from nuget.org or the tools cache. Satisfies the ‘vstest’ demand and can be used for running tests and collecting diagnostic data using the Visual Studio Test task.
 - task: VisualStudioTestPlatformInstaller@1
+  displayName: 'Installing VisualStudio Test Platform...'
   inputs:
     packageFeedSelector: 'nugetOrg' # Options: nugetOrg, customFeed, netShare
     versionSelector: 'latestStable' # Required when packageFeedSelector == NugetOrg || PackageFeedSelector == CustomFeed# Options: latestPreRelease, latestStable, specificVersion
@@ -65,12 +67,14 @@ steps:
     #netShare: # Required when packageFeedSelector == NetShare
 
 - task: NuGetCommand@2
+  displayName: 'Restoring solution packages...'
   inputs:
     restoreSolution: '$(solution)'
 
 - script: dotnet restore Rollbar.sln
 
 - task: VSBuild@1
+  displayName: 'Building the solution...'
   inputs:
     solution: '$(solution)'
     msbuildArgs: '/p:PackageAsSingleFile=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\RollbarNetSdkBin.zip"'
@@ -78,6 +82,7 @@ steps:
     configuration: '$(buildConfiguration)'
 
 - task: VSTest@2
+  displayName: 'Unit-testing build results...'
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
