@@ -31,16 +31,13 @@ namespace UnitTest.Rollbar.DTOs
         public void ClientRenderedWithCpuValue()
         {
             string cpuValue = this._client.Cpu ?? "null";
+            string expectedNetFx = "{\"cpu\":" + cpuValue + "}";
+            string expectedNetCore = "{\"cpu\":\"" + cpuValue + "\"}";
+            string actual = JsonConvert.SerializeObject(_client);
 
-//#if NETFX
-//            string expected = "{\"cpu\":" + cpuValue + "}";
-//#else
-            string expected = "{\"cpu\":\"" + cpuValue + "\"}";
-//#endif
-
-            Assert.AreEqual(
-                expected,
-                JsonConvert.SerializeObject(_client)
+            Assert.IsTrue(
+                actual.Equals(expectedNetFx) 
+                || actual.Equals(expectedNetCore)
                 );
         }
 

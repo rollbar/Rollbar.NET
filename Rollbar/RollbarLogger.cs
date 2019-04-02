@@ -61,7 +61,7 @@ namespace Rollbar
 
             if (rollbarConfig != null)
             {
-                this._config = rollbarConfig;
+                this._config = new RollbarConfig(this).Reconfigure(rollbarConfig);
             }
             else
             {

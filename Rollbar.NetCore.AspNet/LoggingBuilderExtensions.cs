@@ -1,6 +1,4 @@
-﻿#if NETCOREAPP
-
-namespace Microsoft.Extensions.Logging
+﻿namespace Microsoft.Extensions.Logging
 {
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -27,5 +25,3 @@ namespace Microsoft.Extensions.Logging
         }
     }
 }
-
-#endif

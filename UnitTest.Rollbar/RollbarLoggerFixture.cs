@@ -18,15 +18,11 @@ namespace UnitTest.Rollbar
     public class RollbarLoggerFixture
         : RollbarLiveFixtureBase
     {
-        RollbarConfig _loggerConfig;
 
         [TestInitialize]
         public override void SetupFixture()
         {
             base.SetupFixture();
-
-            this._loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
         }
 
         [TestCleanup]
@@ -38,11 +34,13 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void AllowsProxySettingsReconfiguration()
         {
-            using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
+            using (IRollbar logger = this.ProvideDisposableRollbar())
             {
-                Assert.AreNotSame(this._loggerConfig, logger.Config);
-                logger.Configure(this._loggerConfig);
-                Assert.AreNotSame(this._loggerConfig, logger.Config);
+                IRollbarConfig initialConfig = logger.Config;
+
+                Assert.AreSame(initialConfig, logger.Config);
+                logger.Configure(initialConfig);
+                Assert.AreSame(initialConfig, logger.Config);
 
                 int errorCount = 0;
                 logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("test 1");
@@ -50,8 +48,8 @@ namespace UnitTest.Rollbar
                 Assert.AreEqual(0, errorCount);
 
                 RollbarConfig newConfig = new RollbarConfig("seed");
-                newConfig.Reconfigure(this._loggerConfig);
-                Assert.AreNotSame(this._loggerConfig, newConfig);
+                newConfig.Reconfigure(initialConfig);
+                Assert.AreNotSame(initialConfig, newConfig);
                 logger.Configure(newConfig);
                 logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("test 2");
                 this.ExpectedCommunicationEventsTotal++;
@@ -100,7 +98,7 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ImplementsIDisposable()
         {
-            using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
+            using (IRollbar logger = this.ProvideDisposableRollbar())
             {
                 IDisposable disposable = logger as IDisposable;
                 Assert.IsNotNull(disposable);
@@ -144,7 +142,7 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ReportException()
         {
-            using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
+            using (IRollbar logger = this.ProvideDisposableRollbar())
             {
                 try
                 {
@@ -170,7 +168,7 @@ namespace UnitTest.Rollbar
             }
             catch (System.Exception ex)
             {
-                using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
+                using (IRollbar logger = this.ProvideDisposableRollbar())
                 {
                     try
                     {
@@ -189,7 +187,7 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ReportMessage()
         {
-            using (IRollbar logger = RollbarFactory.CreateNew().Configure(this._loggerConfig))
+            using (IRollbar logger = this.ProvideDisposableRollbar())
             {
                 try
                 {
@@ -260,7 +258,6 @@ namespace UnitTest.Rollbar
             awaitAsyncSend.Wait();
             Assert.AreEqual(expectedLogLevel, acctualLogLevel);
         }
-
 
         [TestMethod]
         public void LongReportIsAsync()
@@ -458,67 +455,6 @@ namespace UnitTest.Rollbar
 
             Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
         }
-
-        //private void PerformTheMultithreadedStressTest(ILogger[] loggers)
-        //{
-        //    //first let's make sure the controller queues are not populated by previous tests:
-        //    RollbarQueueController.Instance.FlushQueues();
-
-        //    RollbarQueueController.Instance.InternalEvent += RollbarStress_InternalEvent;
-
-        //    List<Task> tasks =
-        //        new List<Task>(MultithreadedStressTestParams.TotalThreads);
-        //    for (int t = 0; t < MultithreadedStressTestParams.TotalThreads; t++)
-        //    {
-        //        var task = new Task((state) =>
-        //        {
-        //            int taskIndex = (int)state;
-        //            TimeSpan sleepIntervalDelta =
-        //                TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
-        //            var logger = loggers[taskIndex];
-        //            int i = 0;
-        //            while (i < MultithreadedStressTestParams.LogsPerThread)
-        //            {
-        //                var customFields = new Dictionary<string, object>(Fields.FieldsCount)
-        //                {
-        //                    [Fields.ThreadID] = taskIndex + 1,
-        //                    [Fields.ThreadLogID] = i + 1,
-        //                    [Fields.Timestamp] = DateTimeOffset.UtcNow
-        //                };
-
-        //                logger.Info(
-        //                    //$"{customFields[Fields.Timestamp]} Stress test: thread #{customFields[Fields.ThreadID]}, log #{customFields[Fields.ThreadLogID]}"
-        //                    "Stress test"
-        //                    , customFields
-        //                    );
-
-        //                Thread.Sleep(MultithreadedStressTestParams.LogIntervalBase.Add(sleepIntervalDelta));
-        //                i++;
-        //            }
-        //        }
-        //        , t
-        //        );
-
-        //        tasks.Add(task);
-        //    }
-
-        //    tasks.ForEach(t => t.Start());
-
-        //    Task.WaitAll(tasks.ToArray());
-
-        //    int expectedCount = 2 * //we are subscribing to the internal events twice: on individual rollbar level and on the queue controller level
-        //        MultithreadedStressTestParams.TotalThreads * MultithreadedStressTestParams.LogsPerThread;
-
-        //    //we need this delay loop for async logs:
-        //    while (RollbarQueueController.Instance.GetTotalPayloadCount() > 0)
-        //    {
-        //        Thread.Sleep(TimeSpan.FromMilliseconds(50));
-        //    }
-
-        //    RollbarQueueController.Instance.InternalEvent -= RollbarStress_InternalEvent;
-
-        //    Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
-        //}
 
         private static int stressLogsCount = 0;
         private static void RollbarStress_InternalEvent(object sender, RollbarEventArgs e)
