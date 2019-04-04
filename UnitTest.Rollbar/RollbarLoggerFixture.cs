@@ -12,12 +12,14 @@ namespace UnitTest.Rollbar
     using global::Rollbar.DTOs;
     using Exception = System.Exception;
     using System.Diagnostics;
+    using UnitTest.Rollbar.Mocks;
 
     [TestClass]
     [TestCategory(nameof(RollbarLoggerFixture))]
     public class RollbarLoggerFixture
         : RollbarLiveFixtureBase
     {
+
 
         [TestInitialize]
         public override void SetupFixture()
@@ -30,6 +32,77 @@ namespace UnitTest.Rollbar
         {
             base.TearDownFixture();
         }
+
+        #region failure recovery tests
+        /// <summary>
+        /// Main purpose of these tests is to make sure that no Rollbar.NET usage scenario encountering an error
+        /// brings down or halts the RollbarLogger operation.
+        /// These tests are attempting to simulate various possible failure scenarios:
+        /// - corrupt/invalid data for a payload,
+        /// - an exception during payload transformation delegates execution,
+        /// - exception within a packager or package decorator,
+        /// - TBD...
+        /// </summary>
+        
+        public enum TrickyPackage
+        {
+            AsyncFaultyPackage,
+            SyncFaultyPackage,
+            AsyncNothingPackage,
+            SyncNothingPackage,
+        }
+
+        [DataTestMethod]
+        [DataRow(TrickyPackage.AsyncFaultyPackage)]
+        [DataRow(TrickyPackage.SyncFaultyPackage)]
+        [DataRow(TrickyPackage.AsyncNothingPackage)]
+        [DataRow(TrickyPackage.SyncNothingPackage)]
+        public void TrickyPackageTest(TrickyPackage trickyPackage)
+        {
+            this.Reset();
+
+            IRollbarPackage package = null;
+            switch (trickyPackage)
+            {
+                case TrickyPackage.AsyncFaultyPackage:
+                    package = new FaultyPackage(false);
+                    break;
+                case TrickyPackage.SyncFaultyPackage:
+                    package = new FaultyPackage(true);
+                    break;
+                case TrickyPackage.AsyncNothingPackage:
+                    package = new NothingPackage(false);
+                    break;
+                case TrickyPackage.SyncNothingPackage:
+                    package = new NothingPackage(true);
+                    break;
+                default:
+                    Assert.Fail($"Unexpected {nameof(trickyPackage)}: {trickyPackage}!");
+                    break;
+            }
+
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                try
+                {
+                    //this.ExpectedInternalSdkErrorsTotal++;
+                    rollbar.AsBlockingLogger(defaultRollbarTimeout).Critical(package);
+                }
+                catch (Exception ex)
+                {
+                    //whatever happens - we don't care, as long as next verification steps pass...
+                }
+
+                this.VerifyInstanceOperational(rollbar);
+                // one more extra sanity check:
+                Assert.AreEqual(0, RollbarQueueController.Instance.GetTotalPayloadCount());
+            }
+
+            this.Reset();
+        }
+
+
+        #endregion failure recovery tests
 
         [TestMethod]
         public void AllowsProxySettingsReconfiguration()

@@ -2,6 +2,7 @@
 {
     using Newtonsoft.Json;
     using System;
+    using System.Diagnostics;
     using System.Text;
 
     /// <summary>
@@ -36,7 +37,14 @@
             this._logger = logger;
             if (dataObject != null)
             {
-                this.Payload = JsonConvert.SerializeObject(dataObject);
+                try
+                {
+                    this.Payload = JsonConvert.SerializeObject(dataObject);
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex, $"{nameof(RollbarEventArgs)}.{nameof(this.Payload)}");
+                }
             }
         }
 

@@ -10,6 +10,7 @@
   <SdkVersion>3.0.4</SdkVersion>
     <PackageReleaseNotes>
       - resolve #355: AddRollbar() is missing in release 3.0.3
+      - resolve #367: Extra fail-safe guards when processing faulty payload bundles within the queues
       - ref #352: Increase Core's unit test coverage around recovery from invalid payloads and failures
     </PackageReleaseNotes>
     <Version>$(SdkVersion)</Version>

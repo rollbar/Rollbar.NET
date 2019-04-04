@@ -30,6 +30,9 @@ namespace UnitTest.Rollbar
 
         private readonly List<IRollbar> _disposableRollbarInstances = new List<IRollbar>();
 
+        protected static readonly TimeSpan defaultRollbarTimeout = TimeSpan.FromSeconds(3);
+
+
         protected RollbarLiveFixtureBase()
         {
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
@@ -64,7 +67,7 @@ namespace UnitTest.Rollbar
         private void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
             Console.WriteLine(e.TraceAsString());
-            Debug.WriteLine(e.TraceAsString());
+            Trace.WriteLine(e.TraceAsString());
 
             switch (e)
             {
@@ -110,6 +113,12 @@ namespace UnitTest.Rollbar
         /// <value>The expected internal SDK errors total.</value>
         protected int ExpectedInternalSdkErrorsTotal { get; set; }
 
+        protected void Reset()
+        {
+            this.ResetAllExpectedTotals();
+            this.ClearAllRollbarInternalEvents();
+        }
+
         /// <summary>
         /// Resets all expected totals.
         /// </summary>
@@ -125,6 +134,11 @@ namespace UnitTest.Rollbar
         private readonly List<CommunicationErrorEventArgs> CommunicationErrorEvents = new List<CommunicationErrorEventArgs>();
         private readonly List<RollbarApiErrorEventArgs> ApiErrorEvents = new List<RollbarApiErrorEventArgs>();
         private readonly List<InternalErrorEventArgs> InternalSdkErrorEvents = new List<InternalErrorEventArgs>();
+
+        protected int ActualComunicationEventsCount { get { return this.CommunicationEvents.Count; } }
+        protected int ActualComunicationErrorsCount { get { return this.CommunicationErrorEvents.Count; } }
+        protected int ActualApiErrorsCount { get { return this.ApiErrorEvents.Count; } }
+        protected int ActualInternalSdkErrorsCount { get { return this.InternalSdkErrorEvents.Count; } }
 
         /// <summary>
         /// Clears all rollbar internal events.
@@ -199,6 +213,30 @@ namespace UnitTest.Rollbar
             }
             return RollbarLocator.RollbarInstance;
         }
+
+        protected void VerifyInstanceOperational(IRollbar rollbar)
+        {
+            Thread.Sleep(RollbarQueueController.Instance.GetRecommendedTimeout());
+            //Assert.IsTrue(0 == RollbarQueueController.Instance.GetTotalPayloadCount(), "Making sure all the queues are clear...");
+            int initialCommunicationEventsCount = this.ActualComunicationEventsCount;
+            this.ExpectedCommunicationEventsTotal++;
+            rollbar.AsBlockingLogger(defaultRollbarTimeout).Critical("Making sure Rollbar.NET is operational...");
+            Assert.AreEqual(this.ActualComunicationEventsCount, initialCommunicationEventsCount + 1, "Confirming Rollbar.NET is operational...");
+        }
+
+        [TestMethod]
+        public void _VerifyInstanceOperationalTest()
+        {
+            // this test more about verifying if the test harness itself works well:
+
+            this.ClearAllRollbarInternalEvents();
+
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                this.VerifyInstanceOperational(rollbar);
+            }
+        }
+
 
         #region IDisposable Support
 

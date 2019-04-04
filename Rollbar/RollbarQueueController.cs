@@ -359,19 +359,46 @@ namespace Rollbar
         {
             response = null;
 
-            PayloadBundle payloadBundle = queue.Peek();
-            while(payloadBundle != null && (payloadBundle.Ignorable || payloadBundle.GetPayload() == null))
-            {
-                queue.Dequeue();              //throw away the useless one...
-                payloadBundle = queue.Peek(); //try next...
-            }
-            if (payloadBundle == null)
-            {
-                return null; //no bundles to process...
-            }
+            PayloadBundle payloadBundle;
+            Payload payload = null;
 
-            Payload payload = payloadBundle.GetPayload();
-            if (payload == null)
+            bool ignorableBundle = false;
+            do
+            {
+                payloadBundle = queue.Peek();
+                if (payloadBundle == null)
+                {
+                    return null; // the queue is already empty, nothing to process...
+                }
+
+                try
+                {
+                    ignorableBundle = (payloadBundle.Ignorable || payloadBundle.GetPayload() == null);
+                }
+                catch (System.Exception ex)
+                {
+                    RollbarErrorUtility.Report(
+                        null,
+                        payloadBundle,
+                        InternalRollbarError.DequeuingError,
+                        "While attempting to dequeue a payload bundle...",
+                        ex
+                        );
+                    ignorableBundle = true; // since something is not kosher about this bundle/payload, it is wise to ignore one...
+                }
+
+                if (ignorableBundle)
+                {
+                    queue.Dequeue(); //throw away the ignorable...
+                }
+                else
+                {
+                    payload = payloadBundle.GetPayload();
+                }
+            }
+            while (ignorableBundle);
+
+            if (payloadBundle == null || payload == null) // one more sanity check before proceeding further...
             {
                 return null;
             }
@@ -487,7 +514,6 @@ namespace Rollbar
         internal void OnRollbarEvent(RollbarEventArgs e)
         {
             Assumption.AssertNotNull(e, nameof(e));
-            Assumption.AssertNotNull(e.Logger, nameof(e.Logger));
 
             EventHandler<RollbarEventArgs> handler = InternalEvent;
 
@@ -496,7 +522,7 @@ namespace Rollbar
                 handler(this, e);
             }
 
-            e.Logger.OnRollbarEvent(e);
+            e.Logger?.OnRollbarEvent(e);
         }
 
         /// <summary>

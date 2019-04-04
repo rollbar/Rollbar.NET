@@ -30,6 +30,11 @@
         EnqueuingError,
 
         /// <summary>
+        /// The dequeuing error
+        /// </summary>
+        DequeuingError,
+
+        /// <summary>
         /// The payload check ignore error
         /// </summary>
         PayloadCheckIgnoreError,
