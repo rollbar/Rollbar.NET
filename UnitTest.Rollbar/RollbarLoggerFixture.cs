@@ -34,6 +34,7 @@ namespace UnitTest.Rollbar
         }
 
         #region failure recovery tests
+
         /// <summary>
         /// Main purpose of these tests is to make sure that no Rollbar.NET usage scenario encountering an error
         /// brings down or halts the RollbarLogger operation.
@@ -43,6 +44,17 @@ namespace UnitTest.Rollbar
         /// - exception within a packager or package decorator,
         /// - TBD...
         /// </summary>
+        /// 
+
+        public void InvalidPayloadDataTest()
+        {
+            //TODO:
+        }
+
+        public void FaultyPayloadTransformationTest()
+        {
+            //TODO:
+        }
         
         public enum TrickyPackage
         {
@@ -220,8 +232,7 @@ namespace UnitTest.Rollbar
                 try
                 {
                     this.ExpectedCommunicationEventsTotal++;
-                    //TODO: implement and add SynchronousPackage around the payload object!!!
-                    logger.Error(new System.Exception("test exception"));
+                    logger.AsBlockingLogger(defaultRollbarTimeout).Error(new System.Exception("test exception"));
                 }
                 catch
                 {
@@ -246,8 +257,7 @@ namespace UnitTest.Rollbar
                     try
                     {
                         this.ExpectedCommunicationEventsTotal++;
-                        //TODO: implement and add SynchronousPackage around the payload object!!!
-                        logger.Error(new System.Exception("outer exception", ex));
+                        logger.AsBlockingLogger(defaultRollbarTimeout).Error(new System.Exception("outer exception", ex));
                     }
                     catch
                     {
@@ -265,8 +275,7 @@ namespace UnitTest.Rollbar
                 try
                 {
                     this.ExpectedCommunicationEventsTotal++;
-                    //TODO: implement and add SynchronousPackage around the payload object!!!
-                    logger.Log(ErrorLevel.Error, "test message");
+                    logger.AsBlockingLogger(defaultRollbarTimeout).Log(ErrorLevel.Error, "test message");
                 }
                 catch
                 {

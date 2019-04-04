@@ -72,7 +72,7 @@
             // let's set some default values:
             this.Environment = "production";
             this.Enabled = true;
-            this.MaxReportsPerMinute = 60;
+            this.MaxReportsPerMinute = 5000;
             this.ReportingQueueDepth = 20;
             this.MaxItems = 0;
             this.CaptureUncaughtExceptions = true;

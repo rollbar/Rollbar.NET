@@ -81,7 +81,7 @@ namespace Rollbar
         /// <summary>
         /// The sleep interval
         /// </summary>
-        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(500);
+        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(25);
         /// <summary>
         /// The total retries
         /// </summary>
