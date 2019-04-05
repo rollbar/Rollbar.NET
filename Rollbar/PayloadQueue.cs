@@ -3,22 +3,47 @@
 namespace Rollbar
 {
     using Rollbar.Diagnostics;
-    using Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Class PayloadQueue.
+    /// </summary>
     internal class PayloadQueue
     {
+        /// <summary>
+        /// The synchronize lock
+        /// </summary>
         private readonly object _syncLock;
+        /// <summary>
+        /// The queue
+        /// </summary>
         private readonly Queue<PayloadBundle> _queue;
+        /// <summary>
+        /// The logger
+        /// </summary>
         private readonly RollbarLogger _logger;
+        /// <summary>
+        /// The client
+        /// </summary>
         private RollbarClient _client;
+        /// <summary>
+        /// The is released
+        /// </summary>
         private bool _isReleased;
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="PayloadQueue"/> class from being created.
+        /// </summary>
         private PayloadQueue()
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PayloadQueue"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="client">The client.</param>
         public PayloadQueue(RollbarLogger logger, RollbarClient client)
         {
             Assumption.AssertNotNull(logger, nameof(logger));
@@ -32,21 +57,40 @@ namespace Rollbar
             this._isReleased = false;
         }
 
+        /// <summary>
+        /// Releases this instance.
+        /// </summary>
         public void Release()
         {
             Assumption.AssertFalse(this._isReleased, nameof(this._isReleased));
             this._isReleased = true;
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is released.
+        /// </summary>
+        /// <value><c>true</c> if this instance is released; otherwise, <c>false</c>.</value>
         public bool IsReleased { get { return this._isReleased; } }
 
+        /// <summary>
+        /// Gets or sets the next dequeue time.
+        /// </summary>
+        /// <value>The next dequeue time.</value>
         public DateTimeOffset NextDequeueTime { get; internal set; }
 
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
         public RollbarLogger Logger
         {
             get { return this._logger; }
         }
 
+        /// <summary>
+        /// Updates the client.
+        /// </summary>
+        /// <param name="client">The client.</param>
         public void UpdateClient(RollbarClient client)
         {
             if (this._client == client)
@@ -60,14 +104,27 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Gets the client.
+        /// </summary>
+        /// <value>The client.</value>
         public RollbarClient Client
         {
             get { return this._client; }
         }
 
+        /// <summary>
+        /// Enqueues the specified payload.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
         public void Enqueue(PayloadBundle payload)
         {
             Assumption.AssertNotNull(payload, nameof(payload));
+
+            if (payload == null)
+            {
+                return; // no one needs to enqueue "nothing"... 
+            }
 
             lock (this._syncLock)
             {
@@ -79,6 +136,10 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Peeks this instance.
+        /// </summary>
+        /// <returns>PayloadBundle, if any, otherwise null.</returns>
         public PayloadBundle Peek()
         {
             lock(this._syncLock)
@@ -94,6 +155,10 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Dequeues this instance.
+        /// </summary>
+        /// <returns>PayloadBundle, if any, otherwise null.</returns>
         public PayloadBundle Dequeue()
         {
             lock (this._syncLock)
@@ -114,6 +179,10 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Gets the payload count.
+        /// </summary>
+        /// <returns>System.Int32.</returns>
         public int GetPayloadCount()
         {
             lock (this._syncLock)
@@ -122,6 +191,9 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Flushes this instance.
+        /// </summary>
         public void Flush()
         {
             lock (this._syncLock)
