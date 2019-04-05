@@ -51,9 +51,36 @@ namespace UnitTest.Rollbar
             //TODO:
         }
 
+        [TestMethod]
         public void FaultyPayloadTransformationTest()
         {
+            this.Reset();
+
             //TODO:
+            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+            config.Transform = delegate (Payload payload)
+            {
+                throw new Exception("Buggy transform delegate!");
+            };
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                rollbar.Configure(config);
+
+                try
+                {
+                    rollbar.AsBlockingLogger(defaultRollbarTimeout).Critical("This message's Transform will fail!");
+                }
+                catch (Exception ex)
+                {
+                    //whatever happens - we don't care, as long as next verification steps pass...
+                }
+
+                this.VerifyInstanceOperational(rollbar);
+                // one more extra sanity check:
+                Assert.AreEqual(0, RollbarQueueController.Instance.GetTotalPayloadCount());
+            }
+
+            this.Reset();
         }
         
         public enum TrickyPackage
@@ -97,7 +124,6 @@ namespace UnitTest.Rollbar
             {
                 try
                 {
-                    //this.ExpectedInternalSdkErrorsTotal++;
                     rollbar.AsBlockingLogger(defaultRollbarTimeout).Critical(package);
                 }
                 catch (Exception ex)
