@@ -66,6 +66,11 @@
         /// <param name="rollbarData">The rollbar data.</param>
         protected override void Decorate(Data rollbarData)
         {
+            if (rollbarData == null)
+            {
+                return; //nothing to decorate...
+            }
+
             // telemetry data is based on the configuration,
             // so let's include it if applicable:
             if (this._capturedTelemetryRecords != null)

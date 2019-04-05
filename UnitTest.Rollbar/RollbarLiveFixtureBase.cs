@@ -151,8 +151,15 @@ namespace UnitTest.Rollbar
             this.InternalSdkErrorEvents.Clear();
         }
 
+        private void MakeSureAllThePayloadsProcessed()
+        {
+            Thread.Sleep(RollbarQueueController.Instance.GetRecommendedTimeout().Add(TimeSpan.FromSeconds(1)));
+            Assert.AreEqual(0, RollbarQueueController.Instance.GetTotalPayloadCount(), "All the payloads are expected to be out of the queues...");
+        }
         private void VerifyActualEventsAgainstExpectedTotals()
         {
+            MakeSureAllThePayloadsProcessed();
+
             Assert.AreEqual(this.ExpectedCommunicationEventsTotal, this.CommunicationEvents.Count, "Actual CommunicationEvents count does not match expectation.");
             Assert.IsTrue(
                 // EITHER no errors expected:
@@ -216,7 +223,8 @@ namespace UnitTest.Rollbar
 
         protected void VerifyInstanceOperational(IRollbar rollbar)
         {
-            Thread.Sleep(RollbarQueueController.Instance.GetRecommendedTimeout());
+            MakeSureAllThePayloadsProcessed();
+
             //Assert.IsTrue(0 == RollbarQueueController.Instance.GetTotalPayloadCount(), "Making sure all the queues are clear...");
             int initialCommunicationEventsCount = this.ActualComunicationEventsCount;
             this.ExpectedCommunicationEventsTotal++;

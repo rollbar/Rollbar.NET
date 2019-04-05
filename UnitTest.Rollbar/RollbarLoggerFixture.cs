@@ -56,24 +56,17 @@ namespace UnitTest.Rollbar
         {
             this.Reset();
 
-            //TODO:
             RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
             config.Transform = delegate (Payload payload)
             {
                 throw new Exception("Buggy transform delegate!");
             };
+
             using (IRollbar rollbar = this.ProvideDisposableRollbar())
             {
                 rollbar.Configure(config);
 
-                try
-                {
-                    rollbar.AsBlockingLogger(defaultRollbarTimeout).Critical("This message's Transform will fail!");
-                }
-                catch (Exception ex)
-                {
-                    //whatever happens - we don't care, as long as next verification steps pass...
-                }
+                rollbar.Critical("This message's Transform will fail!");
 
                 this.VerifyInstanceOperational(rollbar);
                 // one more extra sanity check:
@@ -82,7 +75,57 @@ namespace UnitTest.Rollbar
 
             this.Reset();
         }
-        
+
+        [TestMethod]
+        public void FaultyCheckIgnoreTest()
+        {
+            this.Reset();
+
+            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+            config.CheckIgnore = delegate (Payload payload)
+            {
+                throw new Exception("Buggy check-ignore delegate!");
+            };
+
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                rollbar.Configure(config);
+
+                rollbar.Critical("This message's CheckIgnore will fail!");
+
+                this.VerifyInstanceOperational(rollbar);
+                // one more extra sanity check:
+                Assert.AreEqual(0, RollbarQueueController.Instance.GetTotalPayloadCount());
+            }
+
+            this.Reset();
+        }
+
+        [TestMethod]
+        public void FaultyTruncateTest()
+        {
+            this.Reset();
+
+            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+            config.Truncate = delegate (Payload payload)
+            {
+                throw new Exception("Buggy truncate delegate!");
+            };
+
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                rollbar.Configure(config);
+
+                rollbar.Critical("This message's Truncate will fail!");
+
+                this.VerifyInstanceOperational(rollbar);
+                // one more extra sanity check:
+                Assert.AreEqual(0, RollbarQueueController.Instance.GetTotalPayloadCount());
+            }
+
+            this.Reset();
+        }
+
         public enum TrickyPackage
         {
             AsyncFaultyPackage,
@@ -122,14 +165,7 @@ namespace UnitTest.Rollbar
 
             using (IRollbar rollbar = this.ProvideDisposableRollbar())
             {
-                try
-                {
-                    rollbar.AsBlockingLogger(defaultRollbarTimeout).Critical(package);
-                }
-                catch (Exception ex)
-                {
-                    //whatever happens - we don't care, as long as next verification steps pass...
-                }
+                rollbar.Critical(package);
 
                 this.VerifyInstanceOperational(rollbar);
                 // one more extra sanity check:

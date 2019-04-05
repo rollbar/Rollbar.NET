@@ -1,4 +1,4 @@
-# v3.0.3 Rollbar.NET Notifier SDK Release Notes
+# v3.0.4 Rollbar.NET Notifier SDK Release Notes
 
 ## Upgrade Notes
 
@@ -55,6 +55,12 @@ Each of the modules is available via NuGet as stand-alone package.
 We are also unifying versioning all of the modules to follow common SDK versioning. 
 
 ### Fixes and Improvements
+
+#### v3.0.4
+-   resolve #355: AddRollbar() is missing in release 3.0.3
+-   resolve #367: Extra fail-safe guards when processing faulty payload bundles within the queues
+-   resolve #369: Change default rate limit to 5K per minute
+-   ref #352: Increase Core's unit test coverage around recovery from invalid payloads and failures
 
 #### v3.0.3
 -	resolve #352: Create automated release build script
