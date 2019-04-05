@@ -89,8 +89,8 @@ foreach($buildConfiguration in $buildConfigurations) {
     #dotnet test rollbar.sln --configuration $buildConfiguration
 }
 # unit-test the Release configuration: 
-Write-Host "    - unit-testing Debug build..."
-dotnet test rollbar.sln --configuration Debug
+#!!! Write-Host "    - unit-testing Debug build..."
+#!!! dotnet test rollbar.sln --configuration Debug
 
 Write-Host "Consolidating SDK build results..."
 # define location for releases:
