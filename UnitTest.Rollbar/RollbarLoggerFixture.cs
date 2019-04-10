@@ -20,7 +20,6 @@ namespace UnitTest.Rollbar
         : RollbarLiveFixtureBase
     {
 
-
         [TestInitialize]
         public override void SetupFixture()
         {

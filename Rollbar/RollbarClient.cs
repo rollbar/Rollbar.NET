@@ -182,6 +182,11 @@ namespace Rollbar
 
             var postResponse = await this._httpClient.SendAsync(request);
 
+            //postResponse.Headers
+            //X - Rate - Limit - Limit: 5000
+            //X - Rate - Limit - Remaining: 4992
+            //X - Rate - Limit - Reset: 1554828920
+
             RollbarResponse response = null;
             if (postResponse.IsSuccessStatusCode)
             {
