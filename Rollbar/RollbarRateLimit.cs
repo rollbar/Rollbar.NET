@@ -14,7 +14,7 @@
         /// <summary>
         /// Class RollbarTateLimitHeaders.
         /// </summary>
-        private static class RollbarTateLimitHeaders
+        public static class RollbarRateLimitHeaders
         {
             /// <summary>
             /// The limit
@@ -48,22 +48,31 @@
         /// </summary>
         /// <param name="httpResponseHeaders">The HTTP response headers.</param>
         public RollbarRateLimit(HttpResponseHeaders httpResponseHeaders)
+            : this(httpResponseHeaders as HttpHeaders)
         {
-            this.WindowLimit = 
-                httpResponseHeaders.ParseHeaderValueSafelyOrDefault<int>(
-                    RollbarTateLimitHeaders.Limit, 
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarRateLimit"/> class.
+        /// </summary>
+        /// <param name="httpHeaders">The HTTP headers.</param>
+        internal RollbarRateLimit(HttpHeaders httpHeaders)
+        {
+            this.WindowLimit =
+                httpHeaders.ParseHeaderValueSafelyOrDefault<int>(
+                    RollbarRateLimitHeaders.Limit, 
                     int.TryParse, 
                     this.WindowLimit
                     );
-            this.WindowRemaining = 
-                httpResponseHeaders.ParseHeaderValueSafelyOrDefault<int>(
-                    RollbarTateLimitHeaders.Remaining, 
+            this.WindowRemaining =
+                httpHeaders.ParseHeaderValueSafelyOrDefault<int>(
+                    RollbarRateLimitHeaders.Remaining, 
                     int.TryParse, 
                     this.WindowRemaining
                     );
             this.WindowEnd =
-                httpResponseHeaders.ParseHeaderValueSafelyOrDefault<DateTimeOffset>(
-                    RollbarTateLimitHeaders.Reset, 
+                httpHeaders.ParseHeaderValueSafelyOrDefault<DateTimeOffset>(
+                    RollbarRateLimitHeaders.Reset, 
                     DateTimeUtil.TryParseFromUnixTimestampInSecondsString, 
                     this.WindowEnd
                     );
