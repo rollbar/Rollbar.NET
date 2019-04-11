@@ -58,6 +58,10 @@
         /// <param name="httpHeaders">The HTTP headers.</param>
         internal RollbarRateLimit(HttpHeaders httpHeaders)
         {
+            // here we are relying on the preset initial/default values
+            // of the rate limiting parameters in case any header we are
+            // looking for is missing:
+
             this.WindowLimit =
                 httpHeaders.ParseHeaderValueSafelyOrDefault<int>(
                     RollbarRateLimitHeaders.Limit, 

@@ -76,7 +76,7 @@ namespace Rollbar
         /// Gets or sets the next dequeue time.
         /// </summary>
         /// <value>The next dequeue time.</value>
-        public DateTimeOffset NextDequeueTime { get; internal set; }
+        public DateTimeOffset NextDequeueTime { get; internal set; } = DateTimeOffset.Now;
 
         /// <summary>
         /// Gets the logger.
@@ -169,9 +169,9 @@ namespace Rollbar
                 {
                     result = this._queue.Dequeue();
 
-                    TimeSpan delta = TimeSpan.FromTicks(
-                        TimeSpan.FromMinutes(1).Ticks / this.Logger.Config.MaxReportsPerMinute
-                        );
+                    TimeSpan delta = this.Logger.Config.MaxReportsPerMinute.HasValue ? 
+                        TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / this.Logger.Config.MaxReportsPerMinute.Value)
+                        : TimeSpan.Zero;
                     this.NextDequeueTime = DateTimeOffset.Now.Add(delta);
                 }
 
