@@ -97,7 +97,7 @@
                 encoding = Encoding.UTF8;
             }
 
-            using (StreamReader reader = new StreamReader(request.Body, encoding))
+            using (StreamReader reader = new StreamReader(request.Body, encoding, true, 1024, true))
             {
                 return reader.ReadToEnd();
             }
