@@ -57,6 +57,15 @@
         }
 
         /// <summary>
+        /// Gets the rollbar configuration.
+        /// </summary>
+        /// <value>The rollbar configuration.</value>
+        public IRollbarConfig RollbarConfig
+        {
+            get { return this._rollbarPlugIn.RollbarConfig; }
+        }
+
+        /// <summary>
         /// Raises the Close event.
         /// </summary>
         protected override void OnClose()
