@@ -7,7 +7,7 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.0.4</SdkVersion>
+  <SdkVersion>3.0.5</SdkVersion>
     <PackageReleaseNotes>
       - resolve #373: Rollbar.PlugIns.Log4net - Make IRollbarConfig API publicly available to the plug-in users
     </PackageReleaseNotes>
