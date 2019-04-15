@@ -7,12 +7,9 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.0.4</SdkVersion>
+  <SdkVersion>3.0.5</SdkVersion>
     <PackageReleaseNotes>
-      - resolve #355: AddRollbar() is missing in release 3.0.3
-      - resolve #367: Extra fail-safe guards when processing faulty payload bundles within the queues
-      - resolve #369: Change default rate limit to 5K per minute
-      - ref #352: Increase Core's unit test coverage around recovery from invalid payloads and failures
+      - resolve #373: Rollbar.PlugIns.Log4net - Make IRollbarConfig API publicly available to the plug-in users
     </PackageReleaseNotes>
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>

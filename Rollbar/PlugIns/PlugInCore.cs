@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.PlugIns
 {
-    using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
 
@@ -12,11 +11,12 @@
     public abstract class PlugInCoreBase
         : IDisposable
     {
+
         /// <summary>
-        /// The Rollbar configuration
+        /// The rollbar
         /// </summary>
-        protected readonly IRollbarConfig _rollbarConfig;
-        
+        protected readonly IRollbar _rollbar;
+
         /// <summary>
         /// The Rollbar logger
         /// </summary>
@@ -40,18 +40,24 @@
             TimeSpan? rollbarBlockingTimeout
             )
         {
-            this._rollbarConfig = rollbarConfig;
-
-            if (this._rollbarConfig == null)
+            if (rollbarConfig == null)
             {
-                IRollbarConfig config = 
+                IRollbarConfig config =
                     NetStandard.RollbarConfigUtility.LoadRollbarConfig();
 
-                this._rollbarConfig = config;
+                rollbarConfig = config;
             }
 
-            this._rollbarLogger = 
-                RollbarFactory.CreateProper(this._rollbarConfig, rollbarBlockingTimeout);
+            this._rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig);
+
+            if (rollbarBlockingTimeout.HasValue)
+            {
+                this._rollbarLogger = this._rollbar.AsBlockingLogger(rollbarBlockingTimeout.Value);
+            }
+            else
+            {
+                this._rollbarLogger = this._rollbar.Logger;
+            }
         }
 
         /// <summary>
@@ -68,6 +74,15 @@
         public static IRollbarConfig CreateConfig(string rollbarAccessToken, string rollbarEnvironment)
         {
             return new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment, };
+        }
+
+        /// <summary>
+        /// Gets the rollbar configuration.
+        /// </summary>
+        /// <value>The rollbar configuration.</value>
+        public IRollbarConfig RollbarConfig
+        {
+            get { return this._rollbar.Config; }
         }
 
         /// <summary>
@@ -216,7 +231,7 @@
             }
             catch(Exception ex)
             {
-                data = new DTOs.Data(this._rollbarConfig, new DTOs.Body(ex));
+                data = new DTOs.Data(this._rollbar.Config, new DTOs.Body(ex));
             }
             finally
             {
@@ -258,7 +273,7 @@
                 custom[this._customPrefix] = pluginEventProperties;
             }
 
-            DTOs.Data rollbarData = new DTOs.Data(this._rollbarConfig, rollbarBody, custom)
+            DTOs.Data rollbarData = new DTOs.Data(this._rollbar.Config, rollbarBody, custom)
             {
                 Level = errorLevel
             };
