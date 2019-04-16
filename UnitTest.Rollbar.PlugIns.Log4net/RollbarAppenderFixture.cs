@@ -19,7 +19,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
     public class RollbarAppenderFixture
     {
         /// <summary>
-        /// The rolbar comm events
+        /// The rollbar comm events
         /// </summary>
         private readonly List<CommunicationEventArgs> _rollbarCommEvents = new List<CommunicationEventArgs>();
 
@@ -56,10 +56,10 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         }
 
         /// <summary>
-        /// Defines the test method TestBasics.
+        /// Defines the test method TestAppenderReconfiguration.
         /// </summary>
         [TestMethod]
-        public void TestBasics()
+        public void TestAppenderReconfiguration()
         {
             Person[] expectedPersons = new Person[]
             {
