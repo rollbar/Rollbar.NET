@@ -10,6 +10,7 @@
   <SdkVersion>3.0.6</SdkVersion>
     <PackageReleaseNotes>
       - code cleanup, typo corrections, etc.
+      - ref #375: Scrub fields don't appear to be scrubbed
     </PackageReleaseNotes>
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>

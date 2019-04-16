@@ -94,6 +94,12 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             newConfig = new RollbarConfig();
             newConfig.Reconfigure(appender.RollbarConfig);
             newConfig.Person = expectedPersons[2];
+            newConfig.ScrubFields = new string[]
+            {
+                "log4net:UserName",
+                "log4net:HostName",
+                "log4net:Identity",
+            };
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
             Assert.AreEqual(3, this._rollbarCommEvents.Count);
