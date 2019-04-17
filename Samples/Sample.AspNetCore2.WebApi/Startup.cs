@@ -76,10 +76,19 @@
             const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
             const string rollbarEnvironment = "RollbarNetSamples";
 
+            RollbarConfig rollbarConfig = 
+                new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment };
+            rollbarConfig.ScrubFields = new string[] // data fields which values we want to mask as "***"
+            {
+                "url",
+                "method",
+            };
+
             RollbarLocator.RollbarInstance
                 // minimally required Rollbar configuration:
                 // if you remove line below the logger's configuration will be auto-loaded from appsettings.json
-                .Configure(new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment })
+                //.Configure(new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment })
+                .Configure(rollbarConfig)
                 // optional step if you would like to monitor Rollbar internal events within your application:
                 .InternalEvent += OnRollbarInternalEvent
                 ;
