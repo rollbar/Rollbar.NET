@@ -192,9 +192,9 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// body: the raw POST body
         /// </remarks>
-        public string PostBody
+        public object PostBody
         {
-            get { return this._keyedValues[ReservedProperties.PostBody] as string; }
+            get { return this._keyedValues[ReservedProperties.PostBody]; }
             set { this._keyedValues[ReservedProperties.PostBody] = value; }
         }
 

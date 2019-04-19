@@ -5,6 +5,7 @@
     using System.IO;
     using System.Text;
     using Microsoft.AspNetCore.Http;
+    using Newtonsoft.Json;
     using Rollbar.Common;
     using Rollbar.DTOs;
 
@@ -74,13 +75,41 @@
             switch (rollbarData.Request.Method.ToUpper())
             {
                 case "POST":
-                    this._httpRequest.Body.Seek(0, SeekOrigin.Begin);
-                    rollbarData.Request.PostBody = GetBodyAsString(this._httpRequest);
+                    AssignRequestBody(rollbarData);
                     break;
                 case "GET":
                 default:
                     // nothing to do...
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Assigns the request body.
+        /// </summary>
+        /// <param name="rollbarData">The rollbar data.</param>
+        private void AssignRequestBody(Data rollbarData)
+        {
+            string requestBodyString = GetBodyAsString(this._httpRequest);
+            object requesBodyObject = null;
+            try
+            {
+                requesBodyObject = JsonConvert.DeserializeObject(requestBodyString);
+            }
+            catch
+            {
+                // Nothing to do.
+                // We tried our best trying to interpret the body string as JSON
+                // but without success.
+                // Let's treat it as a string...
+            }
+            if (requesBodyObject != null)
+            {
+                rollbarData.Request.PostBody = requesBodyObject;
+            }
+            else
+            {
+                rollbarData.Request.PostBody = requestBodyString;
             }
         }
 
@@ -92,12 +121,24 @@
         /// <returns>System.String.</returns>
         private static string GetBodyAsString(HttpRequest request, Encoding encoding = null)
         {
+            if (request == null || request.Body == null)
+            {
+                return null;
+            }
+
+            request.Body.Seek(0, SeekOrigin.Begin);
+
             if (encoding == null)
             {
                 encoding = Encoding.UTF8;
             }
 
-            using (StreamReader reader = new StreamReader(request.Body, encoding))
+            using (StreamReader reader = new StreamReader(stream: request.Body,
+                                                          encoding: encoding,
+                                                          detectEncodingFromByteOrderMarks: true,
+                                                          bufferSize: Convert.ToInt32(request.Body.Length),
+                                                          leaveOpen: true)
+                                                          )
             {
                 return reader.ReadToEnd();
             }

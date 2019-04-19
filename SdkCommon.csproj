@@ -7,9 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.0.5</SdkVersion>
+  <SdkVersion>3.0.6</SdkVersion>
     <PackageReleaseNotes>
-      - resolve #373: Rollbar.PlugIns.Log4net - Make IRollbarConfig API publicly available to the plug-in users
+      - resolve #375: Scrub fields don't appear to be scrubbed within request body's JSON data 
+      - code cleanup, typo corrections, etc.
     </PackageReleaseNotes>
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
