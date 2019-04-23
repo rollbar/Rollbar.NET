@@ -10,6 +10,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
     using System.Collections.Generic;
     using log4net;
     using log4net.Config;
+    using System.Threading;
 
     /// <summary>
     /// Defines test class RollbarAppenderFixture.
@@ -86,6 +87,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
 
          
             log.Info("Via log4net");
+            Thread.Sleep(TimeSpan.FromSeconds(3));
             Assert.AreEqual(1, this._rollbarCommEvents.Count);
 
             RollbarConfig newConfig = new RollbarConfig();
@@ -93,6 +95,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             newConfig.Person = expectedPersons[1];
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
+            Thread.Sleep(TimeSpan.FromSeconds(3));
             Assert.AreEqual(2, this._rollbarCommEvents.Count);
 
             newConfig = new RollbarConfig();
@@ -106,6 +109,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             };
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
+            Thread.Sleep(TimeSpan.FromSeconds(3));
             Assert.AreEqual(3, this._rollbarCommEvents.Count);
 
             Assert.IsFalse(this._rollbarCommEvents[0].Payload.Contains("Person"));
