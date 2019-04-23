@@ -9,7 +9,8 @@
 
   <SdkVersion>3.0.7</SdkVersion>
     <PackageReleaseNotes>
-      - resolve #NNN: 
+      - resolve #370: Consider aggregation of errors during blocking logging and attaching them to the TimeoutException 
+      - ref #366: Better information regarding using Person object without ID
     </PackageReleaseNotes>
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>

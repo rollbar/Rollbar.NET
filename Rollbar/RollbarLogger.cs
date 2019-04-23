@@ -521,6 +521,27 @@ namespace Rollbar
             SemaphoreSlim signal = null
             )
         {
+            this.EnqueueData(dataObject, level, custom, timeout, signal);
+            return this;
+        }
+
+        /// <summary>
+        /// Enqueues the data.
+        /// </summary>
+        /// <param name="dataObject">The data object.</param>
+        /// <param name="level">The level.</param>
+        /// <param name="custom">The custom.</param>
+        /// <param name="timeout">The timeout.</param>
+        /// <param name="signal">The signal.</param>
+        /// <returns>PayloadBundle.</returns>
+        internal PayloadBundle EnqueueData(
+            object dataObject,
+            ErrorLevel level,
+            IDictionary<string, object> custom,
+            TimeSpan? timeout = null,
+            SemaphoreSlim signal = null
+            )
+        {
             // here is the last chance to decide if we need to actually send this payload
             // based on the current config settings:
             if (string.IsNullOrWhiteSpace(this._config.AccessToken)
@@ -529,18 +550,25 @@ namespace Rollbar
                 )
             {
                 // nice shortcut:
-                return this;
+                return null;
             }
 
-            PayloadBundle payloadBundle;
+            PayloadBundle payloadBundle = null;
             try
             {
                 payloadBundle = CreatePayloadBundle(dataObject, level, custom, timeout, signal);
             }
             catch (System.Exception exception)
             {
-                RollbarErrorUtility.Report(this, dataObject, InternalRollbarError.BundlingError, null, exception);
-                return this;
+                RollbarErrorUtility.Report(
+                    this, 
+                    dataObject, 
+                    InternalRollbarError.BundlingError, 
+                    null, 
+                    exception,
+                    payloadBundle
+                    );
+                return null;
             }
 
             try
@@ -549,10 +577,17 @@ namespace Rollbar
             }
             catch (System.Exception exception)
             {
-                RollbarErrorUtility.Report(this, dataObject, InternalRollbarError.EnqueuingError, null, exception);
+                RollbarErrorUtility.Report(
+                    this, 
+                    dataObject, 
+                    InternalRollbarError.EnqueuingError, 
+                    null, 
+                    exception,
+                    payloadBundle
+                    );
             }
 
-            return this;
+            return payloadBundle;
         }
 
         /// <summary>

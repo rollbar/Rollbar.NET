@@ -382,7 +382,8 @@ namespace Rollbar
                         payloadBundle,
                         InternalRollbarError.DequeuingError,
                         "While attempting to dequeue a payload bundle...",
-                        ex
+                        ex,
+                        payloadBundle
                         );
                     ignorableBundle = true; // since something is not kosher about this bundle/payload, it is wise to ignore one...
                 }
@@ -416,6 +417,7 @@ namespace Rollbar
                     this.OnRollbarEvent(
                         new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
                         );
+                    payloadBundle.Register(ex);
                     continue;
                 }
                 catch (ArgumentNullException ex)
@@ -424,6 +426,7 @@ namespace Rollbar
                     this.OnRollbarEvent(
                         new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
                         );
+                    payloadBundle.Register(ex);
                     continue;
                 }
                 catch (System.Exception ex)
@@ -432,6 +435,7 @@ namespace Rollbar
                     this.OnRollbarEvent(
                         new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
                         );
+                    payloadBundle.Register(ex);
                     continue;
                 }
                 retries = 0;

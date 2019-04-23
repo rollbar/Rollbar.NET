@@ -89,13 +89,34 @@ namespace UnitTest.Rollbar
             Assert.Fail("The timeout should be small enough for this test to trigger the TimeoutException!");
         }
 
+        [TestMethod]
+        public void TimeoutExceptionAggregatesMisconfigurationDetails()
+        {
+            RollbarConfig badConfig = new RollbarConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
+            badConfig.Person = new Person(); // this is an invalid Person instance since PersonID is required... 
+            using (IRollbar logger = RollbarFactory.CreateNew(badConfig))
+            {
+                try
+                {
+                    logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("MISCONFIGURED_TOKEN");
+                    Assert.Fail("No TimeoutException!");
+                }
+                catch (TimeoutException ex)
+                {
+                    Assert.IsNotNull(ex.InnerException);
+                    Assert.IsTrue(ex.InnerException is AggregateException);
+                    Assert.IsTrue((ex.InnerException as AggregateException).InnerExceptions.Count > 0);
+                }
+            }
+        }
+
         [DataTestMethod]
         [DataRow(ErrorLevel.Critical)]
         [DataRow(ErrorLevel.Error)]
         [DataRow(ErrorLevel.Warning)]
         [DataRow(ErrorLevel.Info)]
         [DataRow(ErrorLevel.Debug)]
-        public void ConvenienceMethodsUsesAppropriateErrorLevels(ErrorLevel expectedLogLevel)
+        public void ConvenienceMethodsUseAppropriateErrorLevels(ErrorLevel expectedLogLevel)
         {
             var acctualLogLevel = ErrorLevel.Info;
             void Transform(Payload payload)

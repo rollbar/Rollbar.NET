@@ -1,15 +1,21 @@
 ﻿namespace Rollbar
 {
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using System;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Class RollbarPackageBase.
     /// Implements the <see cref="Rollbar.IRollbarPackage" />
+    /// Implements the <see cref="Rollbar.Common.IErrorCollector" />
     /// </summary>
     /// <seealso cref="Rollbar.IRollbarPackage" />
+    /// <seealso cref="Rollbar.Common.IErrorCollector" />
     public abstract class RollbarPackageBase
         : IRollbarPackage
+        , IErrorCollector
 
     {
         /// <summary>
@@ -17,6 +23,9 @@
         /// </summary>
         protected readonly bool _mustApplySynchronously = false;
 
+        /// <summary>
+        /// The rollbar data resulted from this package instance.
+        /// </summary>
         private Data _rollbarData;
 
         /// <summary>
@@ -83,5 +92,29 @@
             return this._rollbarData;
         }
 
+        #region IErrorCollector
+
+        /// <summary>
+        /// The package-related exceptions (if any) that happened during the package lifetime.
+        /// </summary>
+        /// <value>The exceptions.</value>
+        public IReadOnlyCollection<System.Exception> Exceptions
+        {
+            get { return this._errorCollector.Exceptions; }
+        }
+
+        /// <summary>
+        /// Registers the specified exception.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void Register(System.Exception exception)
+        {
+            this._errorCollector.Register(exception);
+        }
+
+        private readonly IErrorCollector _errorCollector = new ErrorCollector();
+
+        #endregion IErrorCollctor
     }
 }

@@ -12,6 +12,7 @@
     /// Class PayloadBundle.
     /// </summary>
     internal class PayloadBundle
+        : IErrorCollector
     {
         /// <summary>
         /// The time stamp
@@ -22,14 +23,17 @@
         /// The payload object
         /// </summary>
         private readonly object _payloadObject;
+
         /// <summary>
         /// The custom
         /// </summary>
         private readonly IDictionary<string, object> _custom;
+
         /// <summary>
         /// The level
         /// </summary>
         private readonly ErrorLevel _level;
+
         /// <summary>
         /// The rollbar logger
         /// </summary>
@@ -39,6 +43,7 @@
         /// The timeout at
         /// </summary>
         private readonly DateTime? _timeoutAt;
+
         /// <summary>
         /// The signal
         /// </summary>
@@ -50,14 +55,17 @@
         /// The ignorable
         /// </summary>
         private bool? _ignorable;
+
         /// <summary>
         /// The rollbar package
         /// </summary>
         private IRollbarPackage _rollbarPackage;
+
         /// <summary>
         /// The payload
         /// </summary>
         private Payload _payload;
+
         /// <summary>
         /// As HTTP content to send
         /// </summary>
@@ -315,7 +323,8 @@
                             this._payload, 
                             InternalRollbarError.PayloadCheckIgnoreError, 
                             "While check-ignoring a payload...", 
-                            exception
+                            exception,
+                            GetPrimaryErrorCollector()
                             );
                     }
                     this._ignorable = false;
@@ -331,7 +340,8 @@
                             this._payload,
                             InternalRollbarError.PayloadTransformError,
                             "While transforming a payload...",
-                            exception
+                            exception,
+                            GetPrimaryErrorCollector()
                             );
                     }
 
@@ -346,7 +356,8 @@
                             this._payload,
                             InternalRollbarError.PayloadTruncationError,
                             "While truncating a payload...",
-                            exception
+                            exception,
+                            GetPrimaryErrorCollector()
                             );
                     }
 
@@ -361,7 +372,8 @@
                             this._payload,
                             InternalRollbarError.PayloadValidationError,
                             "While validating a payload...",
-                            exception
+                            exception,
+                            GetPrimaryErrorCollector()
                             );
                     }
                 }
@@ -392,48 +404,59 @@
         /// <returns>IRollbarPackage.</returns>
         private IRollbarPackage GetRollbarPackage()
         {
-            IRollbarPackage rollbarPackage = CreateRollbarPackage();
-            rollbarPackage = ApplyConfigPackageDecorator(rollbarPackage);
-            return rollbarPackage;
+            if (this._rollbarPackage == null)
+            {
+                this._rollbarPackage = CreateRollbarPackage(this._payloadObject);
+                if (this._rollbarPackage != null)
+                {
+                    IErrorCollector packageErrorCollector = this._rollbarPackage as IErrorCollector;
+                    if (packageErrorCollector != null)
+                    {
+                        foreach (var exception in this._bundleErrorCollector.Exceptions)
+                        {
+                            packageErrorCollector.Register(exception);
+                        }
+                    }
+                }
+            }
+            this._rollbarPackage = ApplyConfigPackageDecorator(this._rollbarPackage);
+            return this._rollbarPackage;
         }
 
         /// <summary>
         /// Creates the rollbar package.
         /// </summary>
         /// <returns>IRollbarPackage.</returns>
-        private IRollbarPackage CreateRollbarPackage()
+        private IRollbarPackage CreateRollbarPackage(object payloadObject)
         {
-            if (this._rollbarPackage != null)
-            {
-                return this._rollbarPackage;
-            }
+            IRollbarPackage package = null;
 
-            switch (this._payloadObject)
+            switch (payloadObject)
             {
                 case IRollbarPackage packageObject:
-                    this._rollbarPackage = packageObject;
-                    this._rollbarPackage = ApplyCustomKeyValueDecorator(this._rollbarPackage);
-                    return this._rollbarPackage;
+                    package = packageObject;
+                    package = ApplyCustomKeyValueDecorator(package);
+                    return package;
                 case Data dataObject:
-                    this._rollbarPackage = new DataPackage(dataObject);
-                    this._rollbarPackage = ApplyCustomKeyValueDecorator(this._rollbarPackage);
-                    return this._rollbarPackage;
+                    package = new DataPackage(dataObject);
+                    package = ApplyCustomKeyValueDecorator(package);
+                    return package;
                 case Body bodyObject:
-                    this._rollbarPackage = new BodyPackage(this._rollbarLogger.Config, bodyObject, this._custom);
-                    return this._rollbarPackage;
+                    package = new BodyPackage(this._rollbarLogger.Config, bodyObject, this._custom);
+                    return package;
                 case System.Exception exceptionObject:
-                    this._rollbarPackage = new ExceptionPackage(exceptionObject);
-                    this._rollbarPackage = ApplyCustomKeyValueDecorator(this._rollbarPackage);
-                    return this._rollbarPackage;
+                    package = new ExceptionPackage(exceptionObject);
+                    package = ApplyCustomKeyValueDecorator(package);
+                    return package;
                 case string messageObject:
-                    this._rollbarPackage = new MessagePackage(messageObject, this._custom);
-                    return this._rollbarPackage;
+                    package = new MessagePackage(messageObject, this._custom);
+                    return package;
                 case ITraceable traceable:
-                    this._rollbarPackage = new MessagePackage(traceable.TraceAsString(), this._custom);
-                    return this._rollbarPackage;
+                    package = new MessagePackage(traceable.TraceAsString(), this._custom);
+                    return package;
                 default:
-                    this._rollbarPackage = new MessagePackage(this._payloadObject.ToString(), this._custom);
-                    return this._rollbarPackage;
+                    package = new MessagePackage(payloadObject.ToString(), this._custom);
+                    return package;
             }
         }
 
@@ -465,7 +488,61 @@
             }
 
             return new ConfigAttributesPackageDecorator(packageToDecorate, this._rollbarLogger.Config);
-
         }
+
+        #region IErrorCollector
+
+        /// <summary>
+        /// The bundle's package-related exceptions (if any) that happened during the package lifetime.
+        /// </summary>
+        public IReadOnlyCollection<System.Exception> Exceptions
+        {
+            get
+            {
+                return GetPrimaryErrorCollector().Exceptions;
+            }
+        }
+
+        /// <summary>
+        /// Registers the specified exception.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void Register(System.Exception exception)
+        {
+            GetPrimaryErrorCollector().Register(exception);
+        }
+
+        private IErrorCollector GetPrimaryErrorCollector()
+        {
+            IErrorCollector primaryErrorCollector = GetPackageErrorCollectorIfAny();
+            if (primaryErrorCollector != null)
+            {
+                return primaryErrorCollector;
+            }
+
+            return this._bundleErrorCollector;
+        }
+
+        private IErrorCollector GetPackageErrorCollectorIfAny()
+        {
+            IErrorCollector package = null;
+            if (this._rollbarPackage != null)
+            {
+                package = this._rollbarPackage as IErrorCollector;
+            }
+
+            return package;
+        }
+
+        /// <summary>
+        /// The bundle error collector.
+        /// 
+        /// NOTE: it is intended to be referenced directly only by the following methods: 
+        /// GetRollbarPackage() and GetPrimaryErrorCollector() !!!
+        /// </summary>
+        private readonly IErrorCollector _bundleErrorCollector = new ErrorCollector();
+
+        #endregion IErrorCollector
     }
 }

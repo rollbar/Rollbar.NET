@@ -1,6 +1,7 @@
 ﻿namespace Rollbar
 {
     using Rollbar.DTOs;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Interface IRollbarPackage
