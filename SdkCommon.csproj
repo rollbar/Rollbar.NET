@@ -7,11 +7,11 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.0.6</SdkVersion>
+    <SdkVersion>3.0.7</SdkVersion>
     <PackageReleaseNotes>
-      - resolve #375: Scrub fields don't appear to be scrubbed within request body's JSON data 
-      - code cleanup, typo corrections, etc.
+      - resolve #381: Correct unit tests that are failing on the CI server. 
     </PackageReleaseNotes>
+    
     <Version>$(SdkVersion)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
     <FileVersion>$(SdkVersion)</FileVersion>
