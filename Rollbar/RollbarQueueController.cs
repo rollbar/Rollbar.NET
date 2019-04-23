@@ -447,6 +447,11 @@ namespace Rollbar
                     new CommunicationEventArgs(queue.Logger, payload, response)
                     );
             }
+            else
+            {
+                queue.Dequeue(); //we tried our best...
+                payloadBundle.Register(new RollbarException(InternalRollbarError.DequeuingError, "Payload dropped!"));
+            }
 
             return payloadBundle;
         }
