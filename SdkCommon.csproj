@@ -9,7 +9,7 @@
 
     <SdkVersion>3.0.7</SdkVersion>
     <PackageReleaseNotes>
-      - ref #381: Correct unit tests that are failing on the CI server. 
+      - resolve #381: Correct unit tests that are failing on the CI server. 
     </PackageReleaseNotes>
     
     <Version>$(SdkVersion)</Version>
