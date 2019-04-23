@@ -39,6 +39,10 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private void Instance_InternalEvent(object sender, RollbarEventArgs e)
         {
+            string eventTrace = $"##################{Environment.NewLine}{e.TraceAsString()}{Environment.NewLine}";
+            Console.WriteLine(eventTrace);
+            System.Diagnostics.Trace.WriteLine(eventTrace);
+
             CommunicationEventArgs communicationEventArgs = e as CommunicationEventArgs;
             if (e != null)
             {
