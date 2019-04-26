@@ -15,6 +15,7 @@
     [Preserve]
     public abstract class DtoBase
         : ITraceable
+        , IValidatable
     {
 
         #region strings truncation support
@@ -323,12 +324,32 @@
             return this.ToString();
         }
 
+        public virtual void ValidateIt()
+        {
+
+        }
+
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        public virtual void Validate()
+        /// <returns>IReadOnlyCollection&lt;Enum&gt; containing failed validation rules.</returns>
+        public IReadOnlyCollection<Enum> Validate()
         {
+            CollectorCollection<Enum> failedValidationRules = new CollectorCollection<Enum>();
+
+            //TODO: iterate over all the public properties that happen to be IValidatable and
+            //      collection like public properties that may contain IValidatable items,
+            //      validate them and add their validation results into the failedValidationRules
+            //      collection before the next code line.
+
+            this.AddFailedValidationRules(failedValidationRules);
+
+            return failedValidationRules;
         }
 
+        protected virtual void AddFailedValidationRules(ICollector<Enum> failedValidationRulesCollector)
+        {
+
+        }
     }
 }

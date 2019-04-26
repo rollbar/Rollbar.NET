@@ -59,7 +59,7 @@
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        public override void Validate()
+        public override void ValidateIt()
         {
             Assumption.AssertNotNullOrWhiteSpace(this.AccessToken, nameof(this.AccessToken));
             Assumption.AssertNotNull(this.Data, nameof(this.Data));

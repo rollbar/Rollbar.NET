@@ -151,7 +151,7 @@
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        public override void Validate()
+        public override void ValidateIt()
         {
             int bodyContentVariationsCount = 0;
 

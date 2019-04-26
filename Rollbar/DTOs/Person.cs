@@ -1,7 +1,11 @@
 ﻿namespace Rollbar.DTOs
 {
     using Newtonsoft.Json;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Models Rollbar Person DTO.
@@ -112,25 +116,41 @@
         }
         private string _email;
 
-        /// <summary>
-        /// Validates this instance.
-        /// </summary>
-        public override void Validate()
+        protected override void AddFailedValidationRules(ICollector<Enum> failedValidationRulesCollector)
         {
-            Assumption.AssertNotNullOrWhiteSpace(this.Id, nameof(this.Id));
-            Assumption.AssertLessThanOrEqual(this.Id.Length, Person.maxIdChars, nameof(this.Id));
+            List<PersonValidationRule> failedValidationRules =
+                new List<PersonValidationRule>(Enum.GetValues(typeof(PersonValidationRule)).Length);
 
-            if (this.UserName != null)
+            if (string.IsNullOrWhiteSpace(this.Id))
             {
-                Assumption.AssertLessThanOrEqual(this.UserName.Length, Person.maxUsernameChars, nameof(this.UserName));
+                failedValidationRules.Add(PersonValidationRule.ValidIdRequired);
             }
 
-            if (this.Email != null)
+            if (this.Id?.Length > Person.maxIdChars)
             {
-                Assumption.AssertLessThanOrEqual(this.Email.Length, Person.maxEmailChars, nameof(this.Email));
+                failedValidationRules.Add(PersonValidationRule.IdMaxLengthLimit);
             }
 
-            base.Validate();
+            if (this.UserName?.Length > Person.maxUsernameChars)
+            {
+                failedValidationRules.Add(PersonValidationRule.UserNameMaxLengthLimit);
+            }
+
+            if (this.Email?.Length > Person.maxEmailChars)
+            {
+                failedValidationRules.Add(PersonValidationRule.EmailMaxLengthLimit);
+            }
+
+            failedValidationRulesCollector.Add(failedValidationRules.Cast<Enum>());
         }
+
+        public enum PersonValidationRule
+        {
+            ValidIdRequired,
+            IdMaxLengthLimit,
+            UserNameMaxLengthLimit,
+            EmailMaxLengthLimit,
+        }
+
     }
 }

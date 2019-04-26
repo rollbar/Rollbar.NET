@@ -15,11 +15,18 @@
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
 #pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
-    /// Models Rollbar client/notifier configuration data.
+    /// Class RollbarConfig.
+    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarConfig, Rollbar.IRollbarConfig}" />
+    /// Implements the <see cref="Rollbar.ITraceable" />
+    /// Implements the <see cref="Rollbar.IRollbarConfig" />
+    /// Implements the <see cref="System.IEquatable{Rollbar.IRollbarConfig}" />
+    /// Implements the <see cref="Rollbar.Common.IValidatable" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
-    /// <seealso cref="Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
+    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarConfig, Rollbar.IRollbarConfig}" />
     /// <seealso cref="Rollbar.ITraceable" />
+    /// <seealso cref="Rollbar.IRollbarConfig" />
+    /// <seealso cref="System.IEquatable{Rollbar.IRollbarConfig}" />
+    /// <seealso cref="Rollbar.Common.IValidatable" />
     public class RollbarConfig
 #pragma warning restore CS1658 // Warning is overriding an error
 #pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
@@ -27,6 +34,7 @@
         , ITraceable
         , IRollbarConfig
         , IEquatable<IRollbarConfig>
+        , IValidatable
     {
         private readonly RollbarLogger _logger;
 
@@ -376,5 +384,40 @@
         {
             return this.Reconfigure(likeMe);
         }
+
+        /// <summary>
+        /// Validates this instance.
+        /// </summary>
+        /// <returns>IReadOnlyCollection&lt;Enum&gt; containing failed validation rules.</returns>
+        public IReadOnlyCollection<Enum> Validate()
+        {
+            List<Enum> failedValidationRules = new List<Enum>();
+
+            if (!string.IsNullOrWhiteSpace(this.EndPoint))
+            {
+                failedValidationRules.Add(RollbarConfigValidationRule.ValidAccessTokenRequired);
+            }
+            if (!string.IsNullOrWhiteSpace(this.AccessToken))
+            {
+                failedValidationRules.Add(RollbarConfigValidationRule.ValidAccessTokenRequired);
+            }
+            if (!string.IsNullOrWhiteSpace(this.Environment))
+            {
+                failedValidationRules.Add(RollbarConfigValidationRule.ValidEnvironmentRequired);
+            }
+
+            return failedValidationRules;
+        }
+
+        /// <summary>
+        /// Enum RollbarConfigValidationRule
+        /// </summary>
+        public enum RollbarConfigValidationRule
+        {
+            ValidEndPointRequired,
+            ValidAccessTokenRequired,
+            ValidEnvironmentRequired,
+        }
+
     }
 }
