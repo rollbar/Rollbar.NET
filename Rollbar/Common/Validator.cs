@@ -18,26 +18,44 @@
         /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
         public abstract IReadOnlyCollection<ValidationResult> Validate(object validationSubject);
 
+        /// <summary>
+        /// Enum ValidationRule
+        /// </summary>
         public enum ValidationRule
         {
+            /// <summary>
+            /// The validation subject instance required
+            /// </summary>
             [Description("A validation subject can not be a null-reference.")]
             ValidationSubjectInstanceRequired,
+
+            /// <summary>
+            /// The match validation subject type
+            /// </summary>
             [Description("A validation subject must match the expected type to be validated as such.")]
             MatchValidationSubjectType,
         }
 
     }
 
+    /// <summary>
+    /// Class Validator (with generic validation subject type).
+    /// Implements the <see cref="Rollbar.Common.Validator" />
+    /// </summary>
+    /// <typeparam name="TValidationSubject">The type of the t validation subject.</typeparam>
+    /// <seealso cref="Rollbar.Common.Validator" />
     public abstract class Validator<TValidationSubject>
         : Validator
     {
     }
 
     /// <summary>
-    /// Class Validator.
+    /// Class Validator (with generic validation subject type and generic validation rule Enum).
+    /// Implements the <see cref="Rollbar.Common.Validator{TValidationSubject}" />
     /// </summary>
     /// <typeparam name="TValidationSubject">The type of the t validation subject.</typeparam>
     /// <typeparam name="TValidationRule">The type of the t validation rule.</typeparam>
+    /// <seealso cref="Rollbar.Common.Validator{TValidationSubject}" />
     public class Validator<TValidationSubject, TValidationRule>
         : Validator<TValidationSubject>
         where TValidationRule : Enum
@@ -48,6 +66,9 @@
         private readonly IDictionary<TValidationRule, Func<TValidationSubject, bool>> _validationFunctionsByRule = 
             new Dictionary<TValidationRule, Func<TValidationSubject, bool>>(Validator<TValidationSubject, TValidationRule>.DefaultValidationRulesCapacity);
 
+        /// <summary>
+        /// The validators by rule
+        /// </summary>
         private readonly IDictionary<TValidationRule, Tuple<Validator, LambdaExpression>> _validatorsByRule =
             new Dictionary<TValidationRule, Tuple<Validator, LambdaExpression>>();
 
@@ -73,6 +94,14 @@
             return this;
         }
 
+        /// <summary>
+        /// Adds the validation.
+        /// </summary>
+        /// <typeparam name="TSubjectProperty">The type of the t subject property.</typeparam>
+        /// <param name="validationRule">The validation rule.</param>
+        /// <param name="subjectPropertyExpression">The subject property expression.</param>
+        /// <param name="subjectPropertyValidator">The subject property validator.</param>
+        /// <returns>Validator&lt;TValidationSubject, TValidationRule&gt;.</returns>
         public Validator<TValidationSubject, TValidationRule> AddValidation<TSubjectProperty>(
             TValidationRule validationRule,
             Expression<Func<TValidationSubject, TSubjectProperty>> subjectPropertyExpression,
