@@ -39,10 +39,6 @@
         [TestMethod]
         public void TestRollbarRateLimit()
         {
-            //X-Rate-Limit-Limit: 5000
-            //X-Rate-Limit-Remaining: 4992
-            //X-Rate-Limit-Reset: 1554828920
-
             var headersMock = new Mock<HttpHeaders>();
             HttpHeaders headers = headersMock.Object;
 
@@ -58,10 +54,14 @@
             var resetValue = 1554828920;
             headers.Add(resetHeader, resetValue.ToString());
 
+            var remainingSecondsHeader = RollbarRateLimit.RollbarRateLimitHeaders.RemainingSeconds;
+            var remainingSecondsValue = 60;
+            headers.Add(remainingSecondsHeader, remainingSecondsValue.ToString());
 
             RollbarRateLimit rollbarRateLimit = new RollbarRateLimit(headers);
-            Assert.AreEqual(limitValue, rollbarRateLimit.WindowLimit);
             Assert.AreEqual(remainingValue, rollbarRateLimit.WindowRemaining);
+            Assert.AreEqual(limitValue, rollbarRateLimit.WindowLimit);
+            Assert.AreEqual(TimeSpan.FromSeconds(remainingSecondsValue), rollbarRateLimit.WindowRemainingTimeSpan);
             Assert.AreEqual(DateTimeUtil.ConvertFromUnixTimestampInSeconds(resetValue), rollbarRateLimit.WindowEnd);
         }
     }

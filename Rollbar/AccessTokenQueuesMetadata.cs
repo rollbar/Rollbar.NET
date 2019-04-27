@@ -104,7 +104,7 @@ namespace Rollbar
             }
             else
             {
-                this.NextTimeTokenUsage = rollbarRateLimit.WindowEnd;
+                this.NextTimeTokenUsage = rollbarRateLimit.ClientSuspensionEnd;
             }
         }
     }
