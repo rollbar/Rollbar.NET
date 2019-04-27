@@ -60,7 +60,7 @@ namespace Rollbar
         /// This property, when has a value, places a restriction on the token usage 
         /// until or past the time specified by the property value.
         /// </remarks>
-        public DateTimeOffset? NextTimeTokenUsage { get; private set; }
+        public DateTimeOffset NextTimeTokenUsage { get; private set; } = DateTimeOffset.Now;
 
         /// <summary>
         /// Gets the token usage delay.
@@ -76,7 +76,11 @@ namespace Rollbar
         public void IncrementTokenUsageDelay()
         {
             this.TokenUsageDelay += AccessTokenQueuesMetadata.accessTokenInitialDelay;
-            this.NextTimeTokenUsage = DateTimeOffset.Now.Add(this.TokenUsageDelay);
+            DateTimeOffset nextTimeTokenUsageCandidate = DateTimeOffset.Now.Add(this.TokenUsageDelay);
+            if (nextTimeTokenUsageCandidate > this.NextTimeTokenUsage)
+            {
+                this.NextTimeTokenUsage = nextTimeTokenUsageCandidate;
+            }
         }
 
         /// <summary>
@@ -85,7 +89,23 @@ namespace Rollbar
         public void ResetTokenUsageDelay()
         {
             this.TokenUsageDelay = TimeSpan.Zero;
-            this.NextTimeTokenUsage = null;
+            //this.NextTimeTokenUsage = DateTimeOffset.Now;
+        }
+
+        /// <summary>
+        /// Updates the next time token usage.
+        /// </summary>
+        /// <param name="rollbarRateLimit">The rollbar rate limit.</param>
+        public void UpdateNextTimeTokenUsage(RollbarRateLimit rollbarRateLimit)
+        {
+            if (rollbarRateLimit.WindowRemaining > 0)
+            {
+                this.NextTimeTokenUsage = DateTimeOffset.Now;
+            }
+            else
+            {
+                this.NextTimeTokenUsage = rollbarRateLimit.ClientSuspensionEnd;
+            }
         }
     }
 }

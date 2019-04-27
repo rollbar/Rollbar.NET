@@ -176,7 +176,6 @@ namespace Rollbar.NetCore.AspNet
                         }
                         networkTelemetry.FinalizeEvent();
                     }
-
                 }
             }
         }

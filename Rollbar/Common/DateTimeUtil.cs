@@ -39,5 +39,23 @@
             timestamp = timestamp.AddSeconds(Convert.ToDouble(unixTimestampInSeconds));
             return timestamp;
         }
+
+        /// <summary>
+        /// Tries the parse from unix timestamp in seconds string.
+        /// </summary>
+        /// <param name="inputString">The input string.</param>
+        /// <param name="dateTimeOffset">The date time offset.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        public static bool TryParseFromUnixTimestampInSecondsString(string inputString, out DateTimeOffset dateTimeOffset)
+        {
+            if (long.TryParse(inputString, out long unixTimestamp))
+            {
+                dateTimeOffset = DateTimeUtil.ConvertFromUnixTimestampInSeconds(unixTimestamp);
+                return true;
+            }
+
+            dateTimeOffset = default;
+            return false;
+        }
     }
 }

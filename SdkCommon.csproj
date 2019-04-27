@@ -7,9 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.0.7</SdkVersion>
+  <SdkVersion>3.1.0</SdkVersion>
     <PackageReleaseNotes>
       - resolve #381: Correct unit tests that are failing on the CI server. 
+      - resolve #368: Make SDK to obey service-side enforced rate limits unless client-side RollbarConfig defines one
     </PackageReleaseNotes>
     
     <Version>$(SdkVersion)</Version>

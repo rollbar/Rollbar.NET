@@ -1,5 +1,3 @@
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
 namespace UnitTest.Rollbar
 {
     using global::Rollbar;
@@ -14,19 +12,29 @@ namespace UnitTest.Rollbar
     using System.Diagnostics;
     using UnitTest.Rollbar.Mocks;
 
+    /// <summary>
+    /// Defines test class RollbarLoggerFixture.
+    /// Implements the <see cref="UnitTest.Rollbar.RollbarLiveFixtureBase" />
+    /// </summary>
+    /// <seealso cref="UnitTest.Rollbar.RollbarLiveFixtureBase" />
     [TestClass]
     [TestCategory(nameof(RollbarLoggerFixture))]
     public class RollbarLoggerFixture
         : RollbarLiveFixtureBase
     {
 
-
+        /// <summary>
+        /// Sets the fixture up.
+        /// </summary>
         [TestInitialize]
         public override void SetupFixture()
         {
             base.SetupFixture();
         }
 
+        /// <summary>
+        /// Tears down this fixture.
+        /// </summary>
         [TestCleanup]
         public override void TearDownFixture()
         {
@@ -44,13 +52,15 @@ namespace UnitTest.Rollbar
         /// - exception within a packager or package decorator,
         /// - TBD...
         /// </summary>
-        /// 
 
         public void InvalidPayloadDataTest()
         {
             //TODO:
         }
 
+        /// <summary>
+        /// Defines the test method FaultyPayloadTransformationTest.
+        /// </summary>
         [TestMethod]
         public void FaultyPayloadTransformationTest()
         {
@@ -76,6 +86,9 @@ namespace UnitTest.Rollbar
             this.Reset();
         }
 
+        /// <summary>
+        /// Defines the test method FaultyCheckIgnoreTest.
+        /// </summary>
         [TestMethod]
         public void FaultyCheckIgnoreTest()
         {
@@ -101,6 +114,9 @@ namespace UnitTest.Rollbar
             this.Reset();
         }
 
+        /// <summary>
+        /// Defines the test method FaultyTruncateTest.
+        /// </summary>
         [TestMethod]
         public void FaultyTruncateTest()
         {
@@ -126,14 +142,33 @@ namespace UnitTest.Rollbar
             this.Reset();
         }
 
+        /// <summary>
+        /// Enum TrickyPackage
+        /// </summary>
         public enum TrickyPackage
         {
+            /// <summary>
+            /// The asynchronous faulty package
+            /// </summary>
             AsyncFaultyPackage,
+            /// <summary>
+            /// The synchronize faulty package
+            /// </summary>
             SyncFaultyPackage,
+            /// <summary>
+            /// The asynchronous nothing package
+            /// </summary>
             AsyncNothingPackage,
+            /// <summary>
+            /// The synchronize nothing package
+            /// </summary>
             SyncNothingPackage,
         }
 
+        /// <summary>
+        /// Trickies the package test.
+        /// </summary>
+        /// <param name="trickyPackage">The tricky package.</param>
         [DataTestMethod]
         [DataRow(TrickyPackage.AsyncFaultyPackage)]
         [DataRow(TrickyPackage.SyncFaultyPackage)]
@@ -178,6 +213,61 @@ namespace UnitTest.Rollbar
 
         #endregion failure recovery tests
 
+        #region rate limiting tests
+
+        /// <summary>
+        /// Defines the test method RateLimitConfigSettingOverridesServerHeadersBasedReportingRateTest.
+        /// </summary>
+        [TestMethod]
+        public void RateLimitConfigSettingOverridesServerHeadersBasedReportingRateTest()
+        {
+            const int totalTestPayloads = 10;
+            const int localReportingRate = 60;
+
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                // using Rollbar API service enforced reporting rate:
+                Stopwatch sw = Stopwatch.StartNew();
+                for (int i = 0; i < totalTestPayloads; i++)
+                {
+                    rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("RateLimitConfigSettingOverridesServerHeadersBasedReportingRateTest");
+                }
+                sw.Stop();
+                TimeSpan serverRateDuration = sw.Elapsed;
+
+                // reconfigure with locally defined reporting rate:
+                RollbarConfig rollbarConfig = new RollbarConfig();
+                rollbarConfig.Reconfigure(rollbar.Config);
+                Assert.IsFalse(rollbarConfig.MaxReportsPerMinute.HasValue);
+
+                rollbarConfig.MaxReportsPerMinute = localReportingRate;
+                Assert.IsTrue(rollbarConfig.MaxReportsPerMinute.HasValue);
+                Assert.AreEqual(localReportingRate, rollbarConfig.MaxReportsPerMinute.Value);
+
+                rollbar.Config.Reconfigure(rollbarConfig);
+                Assert.IsTrue(rollbar.Config.MaxReportsPerMinute.HasValue);
+                Assert.AreEqual(localReportingRate, rollbar.Config.MaxReportsPerMinute.Value);
+
+                // using local config defined reporting rate:
+                sw.Restart();
+                for (int i = 0; i < totalTestPayloads; i++)
+                {
+                    rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("RateLimitConfigSettingOverridesServerHeadersBasedReportingRateTest");
+                }
+                sw.Stop();
+                TimeSpan localRateDuration = sw.Elapsed;
+
+                Assert.IsTrue(5 < (localRateDuration.TotalMilliseconds / serverRateDuration.TotalMilliseconds), "This is good enough confirmation of locally defined rate in action...");
+            }
+
+            this.ExpectedCommunicationEventsTotal = (2 * totalTestPayloads);
+        }
+
+        #endregion rate limiting tests
+
+        /// <summary>
+        /// Defines the test method AllowsProxySettingsReconfiguration.
+        /// </summary>
         [TestMethod]
         public void AllowsProxySettingsReconfiguration()
         {
@@ -242,6 +332,9 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// Defines the test method ImplementsIDisposable.
+        /// </summary>
         [TestMethod]
         public void ImplementsIDisposable()
         {
@@ -252,7 +345,13 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// The maximum scoped instance test duration in millisec
+        /// </summary>
         private const int maxScopedInstanceTestDurationInMillisec = 50 * 1000;
+        /// <summary>
+        /// Defines the test method ScopedInstanceTest.
+        /// </summary>
         [TestMethod]
         [Timeout(maxScopedInstanceTestDurationInMillisec)]
         public void ScopedInstanceTest()
@@ -286,6 +385,9 @@ namespace UnitTest.Rollbar
 
         }
 
+        /// <summary>
+        /// Defines the test method ReportException.
+        /// </summary>
         [TestMethod]
         public void ReportException()
         {
@@ -303,6 +405,9 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// Defines the test method ReportFromCatch.
+        /// </summary>
         [TestMethod]
         public void ReportFromCatch()
         {
@@ -329,6 +434,9 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// Defines the test method ReportMessage.
+        /// </summary>
         [TestMethod]
         public void ReportMessage()
         {
@@ -346,6 +454,10 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// Conveniences the methods use appropriate error levels.
+        /// </summary>
+        /// <param name="expectedLogLevel">The expected log level.</param>
         [DataTestMethod]
         [DataRow(ErrorLevel.Critical)]
         [DataRow(ErrorLevel.Error)]
@@ -403,6 +515,9 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(expectedLogLevel, acctualLogLevel);
         }
 
+        /// <summary>
+        /// Defines the test method LongReportIsAsync.
+        /// </summary>
         [TestMethod]
         public void LongReportIsAsync()
         {
@@ -429,6 +544,9 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// Defines the test method ExceptionWhileTransformingPayloadAsync.
+        /// </summary>
         [TestMethod]
         [Timeout(5000)]
         public void ExceptionWhileTransformingPayloadAsync()
@@ -460,10 +578,21 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// The transform exception
+        /// </summary>
         private bool _transformException = false;
 
+        /// <summary>
+        /// The signal
+        /// </summary>
         private readonly SemaphoreSlim _signal = new SemaphoreSlim(0, 1);
 
+        /// <summary>
+        /// Handles the InternalEvent event of the Logger control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private void Logger_InternalEvent(object sender, RollbarEventArgs e)
         {
             this._transformException = true;
@@ -472,6 +601,9 @@ namespace UnitTest.Rollbar
 
         #region Stress test
 
+        /// <summary>
+        /// Defines the test method MultithreadedStressTest_BlockingLogs.
+        /// </summary>
         [TestMethod]
         [Timeout(60000)]
         public void MultithreadedStressTest_BlockingLogs()
@@ -508,6 +640,9 @@ namespace UnitTest.Rollbar
             });
         }
 
+        /// <summary>
+        /// Defines the test method MultithreadedStressTest.
+        /// </summary>
         [TestMethod]
         [Timeout(60000)]
         public void MultithreadedStressTest()
@@ -539,6 +674,10 @@ namespace UnitTest.Rollbar
             });
         }
 
+        /// <summary>
+        /// Performs the multithreaded stress test.
+        /// </summary>
+        /// <param name="loggers">The loggers.</param>
         private void PerformTheMultithreadedStressTest(ILogger[] loggers)
         {
             //first let's make sure the controller queues are not populated by previous tests:
@@ -600,27 +739,65 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount);
         }
 
+        /// <summary>
+        /// The stress logs count
+        /// </summary>
         private static int stressLogsCount = 0;
+        /// <summary>
+        /// Handles the InternalEvent event of the RollbarStress control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private static void RollbarStress_InternalEvent(object sender, RollbarEventArgs e)
         {
             Interlocked.Increment(ref RollbarLoggerFixture.stressLogsCount);
         }
 
+        /// <summary>
+        /// Class MultithreadedStressTestParams.
+        /// </summary>
         private static class MultithreadedStressTestParams
         {
+            /// <summary>
+            /// The total threads
+            /// </summary>
             public const int TotalThreads = 20;
+            /// <summary>
+            /// The logs per thread
+            /// </summary>
             public const int LogsPerThread = 10;
+            /// <summary>
+            /// The log interval delta
+            /// </summary>
             public static readonly TimeSpan LogIntervalDelta =
                 TimeSpan.FromMilliseconds(10);
+            /// <summary>
+            /// The log interval base
+            /// </summary>
             public static readonly TimeSpan LogIntervalBase =
                 TimeSpan.FromMilliseconds(20);
         }
 
+        /// <summary>
+        /// Class Fields.
+        /// </summary>
         private static class Fields
         {
+            /// <summary>
+            /// The fields count
+            /// </summary>
             public const int FieldsCount = 3;
+            /// <summary>
+            /// The timestamp
+            /// </summary>
             public const string Timestamp = "stress.timestamp";
+            /// <summary>
+            /// The thread identifier
+            /// </summary>
             public const string ThreadID = "stress.thread.id";
+            /// <summary>
+            /// The thread log identifier
+            /// </summary>
             public const string ThreadLogID = "stress.thread.log.id";
         }
 
