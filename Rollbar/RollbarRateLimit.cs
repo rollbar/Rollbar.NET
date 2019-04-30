@@ -56,7 +56,7 @@
         /// <summary>
         /// The window remaining time span
         /// </summary>
-        internal readonly TimeSpan WindowRemainingTimeSpan = 
+        public readonly TimeSpan WindowRemainingTimeSpan = 
             RollbarRateLimit.defaultClientSuspendTimeSpan;
 
         /// <summary>

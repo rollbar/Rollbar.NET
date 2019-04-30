@@ -89,7 +89,6 @@ namespace Rollbar
         public void ResetTokenUsageDelay()
         {
             this.TokenUsageDelay = TimeSpan.Zero;
-            //this.NextTimeTokenUsage = DateTimeOffset.Now;
         }
 
         /// <summary>

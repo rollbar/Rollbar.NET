@@ -324,6 +324,10 @@ namespace Rollbar
                     case (int)RollbarApiErrorEventArgs.RollbarError.TooManyRequests:
                         ObeyPayloadTimeout(payloadBundle, queue);
                         tokenMetadata.IncrementTokenUsageDelay();
+                        if (tokenMetadata.TokenUsageDelay > response.RollbarRateLimit.WindowRemainingTimeSpan)
+                        {
+                            tokenMetadata.ResetTokenUsageDelay();
+                        }
                         this.OnRollbarEvent(
                             new RollbarApiErrorEventArgs(queue.Logger, payloadBundle.GetPayload(), response)
                             );
