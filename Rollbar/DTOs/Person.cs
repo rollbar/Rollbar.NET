@@ -116,39 +116,58 @@
         }
         private string _email;
 
-        protected override void AddFailedValidationRules(ICollector<Enum> failedValidationRulesCollector)
+        /// <summary>
+        /// Gets the proper validator.
+        /// </summary>
+        /// <returns>Validator.</returns>
+        public override Validator GetValidator()
         {
-            List<PersonValidationRule> failedValidationRules =
-                new List<PersonValidationRule>(Enum.GetValues(typeof(PersonValidationRule)).Length);
+            Validator<Person, Person.PersonValidationRule> validator =
+                new Validator<Person, Person.PersonValidationRule>()
+                    .AddValidation(
+                        Person.PersonValidationRule.ValidIdRequired,
+                        (person) => { return !string.IsNullOrWhiteSpace(person.Id); }
+                        )
+                    .AddValidation(
+                        Person.PersonValidationRule.IdMaxLengthLimit,
+                        (person) => { return !(person.Id?.Length > Person.maxIdChars); }
+                        )
+                    .AddValidation(
+                        Person.PersonValidationRule.UserNameMaxLengthLimit,
+                        (person) => { return !(person.UserName?.Length > Person.maxUsernameChars); }
+                        )
+                    .AddValidation(
+                        Person.PersonValidationRule.EmailMaxLengthLimit,
+                        (person) => { return !(person.Email?.Length > Person.maxEmailChars); }
+                        )
+                    ;
 
-            if (string.IsNullOrWhiteSpace(this.Id))
-            {
-                failedValidationRules.Add(PersonValidationRule.ValidIdRequired);
-            }
-
-            if (this.Id?.Length > Person.maxIdChars)
-            {
-                failedValidationRules.Add(PersonValidationRule.IdMaxLengthLimit);
-            }
-
-            if (this.UserName?.Length > Person.maxUsernameChars)
-            {
-                failedValidationRules.Add(PersonValidationRule.UserNameMaxLengthLimit);
-            }
-
-            if (this.Email?.Length > Person.maxEmailChars)
-            {
-                failedValidationRules.Add(PersonValidationRule.EmailMaxLengthLimit);
-            }
-
-            failedValidationRulesCollector.Add(failedValidationRules.Cast<Enum>());
+            return validator;
         }
 
+        /// <summary>
+        /// Enum PersonValidationRule
+        /// </summary>
         public enum PersonValidationRule
         {
+            /// <summary>
+            /// The valid identifier required
+            /// </summary>
             ValidIdRequired,
+
+            /// <summary>
+            /// The identifier maximum length limit
+            /// </summary>
             IdMaxLengthLimit,
+
+            /// <summary>
+            /// The user name maximum length limit
+            /// </summary>
             UserNameMaxLengthLimit,
+
+            /// <summary>
+            /// The email maximum length limit
+            /// </summary>
             EmailMaxLengthLimit,
         }
 

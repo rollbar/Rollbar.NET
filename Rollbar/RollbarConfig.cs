@@ -388,25 +388,47 @@
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        /// <returns>IReadOnlyCollection&lt;Enum&gt; containing failed validation rules.</returns>
-        public IReadOnlyCollection<Enum> Validate()
+        /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>
+        public IReadOnlyCollection<ValidationResult> Validate()
         {
-            List<Enum> failedValidationRules = new List<Enum>();
+            var validator = this.GetValidator();
 
-            if (!string.IsNullOrWhiteSpace(this.EndPoint))
-            {
-                failedValidationRules.Add(RollbarConfigValidationRule.ValidAccessTokenRequired);
-            }
-            if (!string.IsNullOrWhiteSpace(this.AccessToken))
-            {
-                failedValidationRules.Add(RollbarConfigValidationRule.ValidAccessTokenRequired);
-            }
-            if (!string.IsNullOrWhiteSpace(this.Environment))
-            {
-                failedValidationRules.Add(RollbarConfigValidationRule.ValidEnvironmentRequired);
-            }
+            var failedValidations = validator.Validate(this);
 
-            return failedValidationRules;
+            return failedValidations;
+        }
+
+        /// <summary>
+        /// Gets the proper validator.
+        /// </summary>
+        /// <returns>Validator.</returns>
+        public Validator GetValidator()
+        {
+            Validator<RollbarConfig, RollbarConfig.RollbarConfigValidationRule> configValidator =
+                new Validator<RollbarConfig, RollbarConfig.RollbarConfigValidationRule>()
+                    .AddValidation(
+                        RollbarConfig.RollbarConfigValidationRule.ValidAccessTokenRequired,
+                        (config) => { return !string.IsNullOrWhiteSpace(config.AccessToken); }
+                        )
+                    .AddValidation(
+                        RollbarConfig.RollbarConfigValidationRule.ValidEndPointRequired,
+                        (config) => { return !string.IsNullOrWhiteSpace(config.EndPoint); }
+                        )
+                    .AddValidation(
+                        RollbarConfig.RollbarConfigValidationRule.ValidEnvironmentRequired,
+                        (config) => { return !string.IsNullOrWhiteSpace(config.Environment); }
+                        )
+                    //.AddValidation(
+                    //    ConfigMock.ConfigValidationRule.UserRequired,
+                    //    (config) => { return config.User != null; }
+                    .AddValidation(
+                        RollbarConfig.RollbarConfigValidationRule.ValidPersonIfAny,
+                        (config) => config.Person,
+                        this.Person?.GetValidator() as Validator<Person>
+                        )
+               ;
+
+            return configValidator;
         }
 
         /// <summary>
@@ -414,10 +436,25 @@
         /// </summary>
         public enum RollbarConfigValidationRule
         {
+            /// <summary>
+            /// The valid end point required
+            /// </summary>
             ValidEndPointRequired,
-            ValidAccessTokenRequired,
-            ValidEnvironmentRequired,
-        }
 
+            /// <summary>
+            /// The valid access token required
+            /// </summary>
+            ValidAccessTokenRequired,
+
+            /// <summary>
+            /// The valid environment required
+            /// </summary>
+            ValidEnvironmentRequired,
+
+            /// <summary>
+            /// The valid person (if any)
+            /// </summary>
+            ValidPersonIfAny,
+        }
     }
 }

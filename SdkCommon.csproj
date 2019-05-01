@@ -9,7 +9,7 @@
 
     <SdkVersion>3.0.7</SdkVersion>
     <PackageReleaseNotes>
-      - ref #379: Add Validate() method to IRollbarConfig.
+      - feat: resolve #379: Add Validate() method to IRollbarConfig.
       - resolve #381: Correct unit tests that are failing on the CI server. 
     </PackageReleaseNotes>
     

@@ -108,8 +108,11 @@
             Validator<TSubjectProperty> subjectPropertyValidator
             )
         {
-            this._validatorsByRule[validationRule] = 
-                new Tuple<Validator, LambdaExpression>(subjectPropertyValidator, subjectPropertyExpression);
+            if (subjectPropertyValidator != null)
+            {
+                this._validatorsByRule[validationRule] =
+                    new Tuple<Validator, LambdaExpression>(subjectPropertyValidator, subjectPropertyExpression);
+            }
 
             return this;
         }

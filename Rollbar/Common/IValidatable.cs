@@ -11,24 +11,13 @@
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        /// <returns>IReadOnlyCollection&lt;Enum&gt; containing failed validation rules.</returns>
-        IReadOnlyCollection<Enum> Validate();
-    }
+        /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>
+        IReadOnlyCollection<ValidationResult> Validate();
 
-    /// <summary>
-    /// Interface IValidatable
-    /// Implements the <see cref="Rollbar.Common.IValidatable" />
-    /// </summary>
-    /// <typeparam name="TValidationRule">The type of the t validation rule.</typeparam>
-    /// <seealso cref="Rollbar.Common.IValidatable" />
-    public interface IValidatable<out TValidationRule>
-        : IValidatable
-        where TValidationRule : Enum
-    {
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        /// <returns>IReadOnlyCollection&lt;TValidationRule&gt; containing failed validation rules.</returns>
-        new IReadOnlyCollection<TValidationRule> Validate();
+        /// <returns>Validator.</returns>
+        Validator GetValidator();
     }
 }

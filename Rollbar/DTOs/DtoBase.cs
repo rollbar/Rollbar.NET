@@ -332,24 +332,24 @@
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        /// <returns>IReadOnlyCollection&lt;Enum&gt; containing failed validation rules.</returns>
-        public IReadOnlyCollection<Enum> Validate()
+        /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>
+        public IReadOnlyCollection<ValidationResult> Validate()
         {
-            CollectorCollection<Enum> failedValidationRules = new CollectorCollection<Enum>();
+            var validator = this.GetValidator();
 
-            //TODO: iterate over all the public properties that happen to be IValidatable and
-            //      collection like public properties that may contain IValidatable items,
-            //      validate them and add their validation results into the failedValidationRules
-            //      collection before the next code line.
+            var failedValidations = validator.Validate(this);
 
-            this.AddFailedValidationRules(failedValidationRules);
-
-            return failedValidationRules;
+            return failedValidations;
         }
 
-        protected virtual void AddFailedValidationRules(ICollector<Enum> failedValidationRulesCollector)
+        /// <summary>
+        /// Gets the proper validator.
+        /// </summary>
+        /// <returns>Validator.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public virtual Validator GetValidator()
         {
-
+            return null;
         }
     }
 }
