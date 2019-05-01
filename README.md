@@ -23,7 +23,7 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 ## Install
 
-Using [Nuget Package Manager] (https://www.nuget.org/packages/Rollbar/):
+Using [https://www.nuget.org/packages/Rollbar/](Nuget Package Manager):
 
 ```
 Install-Package Rollbar
