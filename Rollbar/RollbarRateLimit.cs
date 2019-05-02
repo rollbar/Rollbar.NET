@@ -56,8 +56,7 @@
         /// <summary>
         /// The window remaining time span
         /// </summary>
-        public readonly TimeSpan WindowRemainingTimeSpan = 
-            RollbarRateLimit.defaultClientSuspendTimeSpan;
+        public readonly TimeSpan WindowRemainingTimeSpan = TimeSpan.Zero;
 
         /// <summary>
         /// The window remaining count until the limit is reached

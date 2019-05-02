@@ -801,10 +801,10 @@ namespace UnitTest.Rollbar
             public const string ThreadLogID = "stress.thread.log.id";
         }
 
-#endregion Stress test
+        #endregion Stress test
 
         //[TestMethod]
-        //public void RollbarRateLimitVerification()
+        //public void _RollbarRateLimitVerification()
         //{
         //    RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
 
@@ -814,7 +814,7 @@ namespace UnitTest.Rollbar
         //    {
         //        rollbar.Configure(config);
 
-        //        while(count++ < 300)
+        //        while (count++ < 300)
         //        {
         //            rollbar.Critical("RollbarRateLimitVerification test");
         //            Thread.Sleep(TimeSpan.FromSeconds(1));
