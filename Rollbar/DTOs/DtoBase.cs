@@ -324,6 +324,9 @@
             return this.ToString();
         }
 
+        /// <summary>
+        /// Validates it.
+        /// </summary>
         public virtual void ValidateIt()
         {
 
@@ -337,7 +340,13 @@
         {
             var validator = this.GetValidator();
 
-            var failedValidations = validator.Validate(this);
+            var failedValidations = validator?.Validate(this);
+
+            if (failedValidations == null)
+            {
+                // it is always better to return an empty collection instead of null:
+                failedValidations = new ValidationResult[0];
+            }
 
             return failedValidations;
         }
