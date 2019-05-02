@@ -32,7 +32,6 @@ namespace UnitTest.Rollbar
 
         protected static readonly TimeSpan defaultRollbarTimeout = TimeSpan.FromSeconds(3);
 
-
         protected RollbarLiveFixtureBase()
         {
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
@@ -66,6 +65,29 @@ namespace UnitTest.Rollbar
 
         private void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
+            //// for basic RollbarRateLimitVerification test:
+            //switch (e)
+            //{
+            //    case RollbarApiErrorEventArgs apiErrorEvent:
+            //        //this.ApiErrorEvents.Add(apiErrorEvent);
+            //        return;
+            //    case CommunicationEventArgs commEvent:
+            //        Console.WriteLine(commEvent.EventTimestamp + " SENT: ");
+            //        return;
+            //    case CommunicationErrorEventArgs commErrorEvent:
+            //        //this.CommunicationErrorEvents.Add(commErrorEvent);
+            //        return;
+            //    case InternalErrorEventArgs internalErrorEvent:
+            //        //this.InternalSdkErrorEvents.Add(internalErrorEvent);
+            //        return;
+            //    case PayloadDropEventArgs payloadDropEvent:
+            //        Console.WriteLine(payloadDropEvent.EventTimestamp + " DROP: " + payloadDropEvent.Reason);
+            //        return;
+            //    default:
+            //        //Assert.Fail("Unexpected RollbarEventArgs specialization type!");
+            //        return;
+            //}
+
             Console.WriteLine(e.TraceAsString());
             Trace.WriteLine(e.TraceAsString());
 

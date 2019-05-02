@@ -194,11 +194,17 @@ namespace Rollbar
         /// <summary>
         /// Flushes this instance.
         /// </summary>
-        public void Flush()
+        /// <returns>IEnumerable&lt;PayloadBundle&gt; flushed payload bundles.</returns>
+        public IEnumerable<PayloadBundle> Flush()
         {
             lock (this._syncLock)
             {
+                IEnumerable<PayloadBundle> flushedBundles = 
+                    new List<PayloadBundle>(this._queue.ToArray());
+
                 this._queue.Clear();
+
+                return flushedBundles;
             }
         }
     }

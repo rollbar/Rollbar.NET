@@ -39,49 +39,7 @@
             Assert.AreEqual(RollbarUnitTestSettings.AccessToken, metadata.AccessToken);
             Assert.IsNotNull(metadata.Queues);
             Assert.IsTrue(metadata.NextTimeTokenUsage < DateTimeOffset.Now);
-            Assert.AreEqual(TimeSpan.Zero, metadata.TokenUsageDelay);
         }
 
-        /// <summary>
-        /// Defines the test method DelayIncrementTest.
-        /// </summary>
-        [TestMethod]
-        public void DelayIncrementTest()
-        {
-            var metadata = new AccessTokenQueuesMetadata(RollbarUnitTestSettings.AccessToken);
-
-            Assert.IsTrue(metadata.NextTimeTokenUsage < DateTimeOffset.Now);
-            Assert.AreEqual(TimeSpan.Zero, metadata.TokenUsageDelay);
-
-            metadata.IncrementTokenUsageDelay();
-            Assert.IsTrue(metadata.NextTimeTokenUsage > DateTimeOffset.Now);
-            Assert.IsTrue(TimeSpan.Zero < metadata.TokenUsageDelay);
-
-            var nextTimeUsage = metadata.NextTimeTokenUsage;
-            var usageDelay = metadata.TokenUsageDelay;
-            metadata.IncrementTokenUsageDelay();
-            Assert.IsTrue(metadata.NextTimeTokenUsage > nextTimeUsage);
-            Assert.IsTrue(usageDelay < metadata.TokenUsageDelay);
-        }
-
-        /// <summary>
-        /// Defines the test method DelayResetTest.
-        /// </summary>
-        [TestMethod]
-        public void DelayResetTest()
-        {
-            var metadata = new AccessTokenQueuesMetadata(RollbarUnitTestSettings.AccessToken);
-
-            Assert.IsTrue(metadata.NextTimeTokenUsage < DateTimeOffset.Now);
-            Assert.AreEqual(TimeSpan.Zero, metadata.TokenUsageDelay);
-
-            metadata.IncrementTokenUsageDelay();
-            Assert.IsTrue(metadata.NextTimeTokenUsage > DateTimeOffset.Now);
-            Assert.IsTrue(TimeSpan.Zero < metadata.TokenUsageDelay);
-
-            metadata.ResetTokenUsageDelay();
-            //Assert.IsTrue(metadata.NextTimeTokenUsage <= DateTimeOffset.Now);
-            Assert.AreEqual(TimeSpan.Zero, metadata.TokenUsageDelay);
-        }
     }
 }

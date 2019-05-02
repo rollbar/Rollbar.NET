@@ -447,7 +447,7 @@ namespace UnitTest.Rollbar
                     this.ExpectedCommunicationEventsTotal++;
                     logger.AsBlockingLogger(defaultRollbarTimeout).Log(ErrorLevel.Error, "test message");
                 }
-                catch
+                catch(Exception ex)
                 {
                     Assert.Fail("should never reach here!");
                 }
@@ -802,6 +802,26 @@ namespace UnitTest.Rollbar
         }
 
 #endregion Stress test
+
+        //[TestMethod]
+        //public void RollbarRateLimitVerification()
+        //{
+        //    RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+
+        //    int count = 0;
+
+        //    using (IRollbar rollbar = this.ProvideDisposableRollbar())
+        //    {
+        //        rollbar.Configure(config);
+
+        //        while(count++ < 300)
+        //        {
+        //            rollbar.Critical("RollbarRateLimitVerification test");
+        //            Thread.Sleep(TimeSpan.FromSeconds(1));
+        //        }
+
+        //    }
+        //}
 
     }
 }

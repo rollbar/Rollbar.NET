@@ -63,35 +63,6 @@ namespace Rollbar
         public DateTimeOffset NextTimeTokenUsage { get; private set; } = DateTimeOffset.Now;
 
         /// <summary>
-        /// Gets the token usage delay.
-        /// </summary>
-        /// <value>
-        /// The token usage delay.
-        /// </value>
-        public TimeSpan TokenUsageDelay { get; private set; }
-
-        /// <summary>
-        /// Increments the token usage delay.
-        /// </summary>
-        public void IncrementTokenUsageDelay()
-        {
-            this.TokenUsageDelay += AccessTokenQueuesMetadata.accessTokenInitialDelay;
-            DateTimeOffset nextTimeTokenUsageCandidate = DateTimeOffset.Now.Add(this.TokenUsageDelay);
-            if (nextTimeTokenUsageCandidate > this.NextTimeTokenUsage)
-            {
-                this.NextTimeTokenUsage = nextTimeTokenUsageCandidate;
-            }
-        }
-
-        /// <summary>
-        /// Resets the token usage delay.
-        /// </summary>
-        public void ResetTokenUsageDelay()
-        {
-            this.TokenUsageDelay = TimeSpan.Zero;
-        }
-
-        /// <summary>
         /// Updates the next time token usage.
         /// </summary>
         /// <param name="rollbarRateLimit">The rollbar rate limit.</param>
@@ -99,12 +70,20 @@ namespace Rollbar
         {
             if (rollbarRateLimit.WindowRemaining > 0)
             {
+                this.IsTransmissionSuspended = false;
                 this.NextTimeTokenUsage = DateTimeOffset.Now;
             }
             else
             {
+                this.IsTransmissionSuspended = true;
                 this.NextTimeTokenUsage = rollbarRateLimit.ClientSuspensionEnd;
             }
         }
+
+        /// <summary>
+        /// Gets a value indicating whether this instance is transmission suspended.
+        /// </summary>
+        /// <value><c>true</c> if this instance is transmission suspended; otherwise, <c>false</c>.</value>
+        public bool IsTransmissionSuspended { get; private set; }
     }
 }
