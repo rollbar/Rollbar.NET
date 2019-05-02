@@ -37,6 +37,13 @@
         public string HttpDetails { get; set; }
 
         /// <summary>
+        /// Gets or sets the rollbar rate limit.
+        /// </summary>
+        /// <value>The rollbar rate limit.</value>
+        [JsonIgnore]
+        public RollbarRateLimit RollbarRateLimit { get; set; }
+
+        /// <summary>
         /// Traces as string.
         /// </summary>
         /// <returns>System.String.</returns>

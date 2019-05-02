@@ -60,32 +60,30 @@ namespace Rollbar
         /// This property, when has a value, places a restriction on the token usage 
         /// until or past the time specified by the property value.
         /// </remarks>
-        public DateTimeOffset? NextTimeTokenUsage { get; private set; }
+        public DateTimeOffset NextTimeTokenUsage { get; private set; } = DateTimeOffset.Now;
 
         /// <summary>
-        /// Gets the token usage delay.
+        /// Updates the next time token usage.
         /// </summary>
-        /// <value>
-        /// The token usage delay.
-        /// </value>
-        public TimeSpan TokenUsageDelay { get; private set; }
-
-        /// <summary>
-        /// Increments the token usage delay.
-        /// </summary>
-        public void IncrementTokenUsageDelay()
+        /// <param name="rollbarRateLimit">The rollbar rate limit.</param>
+        public void UpdateNextTimeTokenUsage(RollbarRateLimit rollbarRateLimit)
         {
-            this.TokenUsageDelay += AccessTokenQueuesMetadata.accessTokenInitialDelay;
-            this.NextTimeTokenUsage = DateTimeOffset.Now.Add(this.TokenUsageDelay);
+            if (rollbarRateLimit.WindowRemaining > 0)
+            {
+                this.IsTransmissionSuspended = false;
+                this.NextTimeTokenUsage = DateTimeOffset.Now;
+            }
+            else
+            {
+                this.IsTransmissionSuspended = true;
+                this.NextTimeTokenUsage = rollbarRateLimit.ClientSuspensionEnd;
+            }
         }
 
         /// <summary>
-        /// Resets the token usage delay.
+        /// Gets a value indicating whether this instance is transmission suspended.
         /// </summary>
-        public void ResetTokenUsageDelay()
-        {
-            this.TokenUsageDelay = TimeSpan.Zero;
-            this.NextTimeTokenUsage = null;
-        }
+        /// <value><c>true</c> if this instance is transmission suspended; otherwise, <c>false</c>.</value>
+        public bool IsTransmissionSuspended { get; private set; }
     }
 }

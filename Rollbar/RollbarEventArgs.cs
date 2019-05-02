@@ -16,6 +16,8 @@
     {
         private readonly RollbarLogger _logger;
 
+        private readonly DateTimeOffset _eventTimeStamp = DateTimeOffset.Now;
+
         internal RollbarLogger Logger
         {
             get { return this._logger; }
@@ -35,6 +37,9 @@
             )
         {
             this._logger = logger;
+
+            this.Payload = string.Empty;
+
             if (dataObject != null)
             {
                 try
@@ -65,6 +70,15 @@
         public string Payload { get; private set; }
 
         /// <summary>
+        /// Gets the event timestamp.
+        /// </summary>
+        /// <value>The event timestamp.</value>
+        public DateTimeOffset EventTimestamp
+        {
+            get { return this._eventTimeStamp; }
+        }
+
+        /// <summary>
         /// Traces as string.
         /// </summary>
         /// <returns>System.String.</returns>
@@ -83,7 +97,7 @@
         public virtual string TraceAsString(string indent)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(indent + this.GetType().Name + ":");
+            sb.AppendLine(indent + this._eventTimeStamp + " - " + this.GetType().Name + ":");
             sb.Append(indent + this.Config?.TraceAsString("  "));
             sb.AppendLine(indent + "  Payload: " + this.Payload);
             return sb.ToString();

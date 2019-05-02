@@ -51,7 +51,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Rollbar.RollbarApiErrorEventArgs">
-    <Position X="13" Y="9.25" Width="6.5" />
+    <Position X="26.75" Y="7.5" Width="6.5" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -73,29 +73,29 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.RollbarEventArgs">
-    <Position X="13" Y="0.75" Width="6.5" />
+    <Position X="18.75" Y="0.75" Width="6.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAgIAAAAAAAAQAAAAIAAAAAAQAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAgIAAAAAAAAQAAAAIAAAAAAQAAAQgAAAAAA=</HashCode>
       <FileName>RollbarEventArgs.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Rollbar.CommunicationEventArgs">
-    <Position X="13" Y="7" Width="6.5" />
+    <Position X="26.75" Y="5" Width="6.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>CommunicationEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.CommunicationErrorEventArgs">
-    <Position X="13" Y="4.5" Width="6.5" />
+    <Position X="13" Y="5" Width="6.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAQAAAAAACAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>CommunicationErrorEventArgs.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Rollbar.RollbarAssistant">
-    <Position X="13" Y="17.25" Width="7.5" />
+    <Position X="15" Y="10" Width="7.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>RollbarAssistant.cs</FileName>
@@ -112,10 +112,27 @@
   <Class Name="Rollbar.RollbarPackageDecoratorBase">
     <Position X="0.5" Y="22.5" Width="6.25" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAAAAAAAAgAAAAAAAAAAAAAAgAAAQAAwAAA=</HashCode>
+      <HashCode>AAAABAAAAAAAAAAAAgAAAAAAAAAAAAAAgAAAQACwAAA=</HashCode>
       <FileName>RollbarPackageDecoratorBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.PayloadDropEventArgs">
+    <Position X="19.75" Y="5" Width="6.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Rollbar.PayloadDropEventArgs.DropReason">
+        <TypeIdentifier>
+          <NewMemberFileName>PayloadDropEventArgs.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>PayloadDropEventArgs.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Interface Name="Rollbar.IRollbar">
     <Position X="0.5" Y="12.75" Width="5.5" />

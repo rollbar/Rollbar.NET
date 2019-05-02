@@ -271,13 +271,6 @@ namespace Rollbar
         {
             foreach(var token in this._queuesByAccessToken.Keys)
             {
-                if (this._queuesByAccessToken[token].NextTimeTokenUsage.HasValue
-                    && this._queuesByAccessToken[token].NextTimeTokenUsage.Value > DateTimeOffset.Now
-                    )
-                {
-                    //skip this token's queue for now, until past NextTimeTokenUsage:
-                    continue;
-                }
                 ProcessQueues(this._queuesByAccessToken[token]);
             }
         }
@@ -288,42 +281,6 @@ namespace Rollbar
         /// <param name="tokenMetadata">The token metadata.</param>
         private void ProcessQueues(AccessTokenQueuesMetadata tokenMetadata)
         {
-            foreach (var queue in tokenMetadata.Queues)
-            {
-                if (DateTimeOffset.Now >= queue.NextDequeueTime)
-                {
-                    RollbarResponse response = null;
-                    PayloadBundle payloadBundle = Process(queue, out response);
-                    if (payloadBundle == null || response == null)
-                    {
-                        continue;
-                    }
-
-                    switch (response.Error)
-                    {
-                        case (int)RollbarApiErrorEventArgs.RollbarError.None:
-                            payloadBundle.Signal?.Release();
-                            queue.Dequeue();
-                            tokenMetadata.ResetTokenUsageDelay();
-                            break;
-                        case (int)RollbarApiErrorEventArgs.RollbarError.TooManyRequests:
-                            ObeyPayloadTimeout(payloadBundle, queue);
-                            tokenMetadata.IncrementTokenUsageDelay();
-                            this.OnRollbarEvent(
-                                new RollbarApiErrorEventArgs(queue.Logger, payloadBundle.GetPayload(), response)
-                                );
-                            return;
-                        default:
-                            ObeyPayloadTimeout(payloadBundle, queue);
-                            this.OnRollbarEvent(
-                                new RollbarApiErrorEventArgs(queue.Logger, payloadBundle.GetPayload(), response)
-                                );
-                            break;
-                    }
-
-                }
-            }
-
             // let's see if we can unregister any recently released queues:
             var releasedQueuesToRemove = tokenMetadata.Queues.Where(q => q.IsReleased && (q.GetPayloadCount() == 0)).ToArray();
             if (releasedQueuesToRemove != null && releasedQueuesToRemove.LongLength > 0)
@@ -334,6 +291,75 @@ namespace Rollbar
                 }
             }
 
+            // process the access token's queues:
+            foreach (var queue in tokenMetadata.Queues)
+            {
+                if (DateTimeOffset.Now < queue.NextDequeueTime)
+                {
+                    // this means the queue overrides its reporting rate limit via its configuration settings
+                    // let's observe its settings and skip processing:
+                    continue;
+                }
+
+                if (tokenMetadata.IsTransmissionSuspended && DateTimeOffset.Now < tokenMetadata.NextTimeTokenUsage)
+                {
+                    // the token is suspended and the next usage time is not reached,
+                    // let's flush the token queues (we are not allowed to transmit anyway)
+                    // and quit processing this token's queues this time (until next processing iteration):
+                    foreach (var tokenQueue in tokenMetadata.Queues)
+                    {
+                        foreach (var flushedBundle in tokenQueue.Flush())
+                        {
+                            this.OnRollbarEvent(
+                                new PayloadDropEventArgs(
+                                    queue.Logger,
+                                    flushedBundle.GetPayload(),
+                                    PayloadDropEventArgs.DropReason.TokenSuspension
+                                    )
+                                );
+                        }
+                    }
+                    return;
+                }
+
+                RollbarResponse response = null;
+                PayloadBundle payloadBundle = Process(queue, out response);
+
+                if (payloadBundle != null && response == null)
+                {
+                    var bundle = queue.Dequeue();
+                    this.OnRollbarEvent(
+                        new PayloadDropEventArgs(queue.Logger, bundle.GetPayload(), PayloadDropEventArgs.DropReason.AllTransmissionRetriesFailed)
+                        );
+                }
+
+                if (payloadBundle == null || response == null)
+                {
+                    continue;
+                }
+
+                tokenMetadata.UpdateNextTimeTokenUsage(response.RollbarRateLimit);
+
+                switch (response.Error)
+                {
+                    case (int) RollbarApiErrorEventArgs.RollbarError.None:
+                        payloadBundle.Signal?.Release();
+                        queue.Dequeue();
+                        break;
+                    case (int) RollbarApiErrorEventArgs.RollbarError.TooManyRequests:
+                        ObeyPayloadTimeout(payloadBundle, queue);
+                        this.OnRollbarEvent(
+                            new RollbarApiErrorEventArgs(queue.Logger, payloadBundle.GetPayload(), response)
+                            );
+                        return;
+                    default:
+                        ObeyPayloadTimeout(payloadBundle, queue);
+                        this.OnRollbarEvent(
+                            new RollbarApiErrorEventArgs(queue.Logger, payloadBundle.GetPayload(), response)
+                            );
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -390,6 +416,9 @@ namespace Rollbar
                 if (ignorableBundle)
                 {
                     queue.Dequeue(); //throw away the ignorable...
+                    this.OnRollbarEvent(
+                        new PayloadDropEventArgs(queue.Logger, null, PayloadDropEventArgs.DropReason.IgnorablePayload)
+                        );
                 }
                 else
                 {
@@ -416,6 +445,7 @@ namespace Rollbar
                     this.OnRollbarEvent(
                         new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
                         );
+                    Thread.Sleep(this._sleepInterval); // wait a bit before we retry it...
                     continue;
                 }
                 catch (ArgumentNullException ex)
@@ -591,7 +621,10 @@ namespace Rollbar
                     foreach (var queue in tokenMetadata.Queues)
                     {
                         totalPayloads += queue.GetPayloadCount();
-                        TimeSpan queueTimeout = TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / queue.Logger.Config.MaxReportsPerMinute);
+                        TimeSpan queueTimeout = 
+                            queue.Logger.Config.MaxReportsPerMinute.HasValue ?
+                            TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / queue.Logger.Config.MaxReportsPerMinute.Value)
+                            : TimeSpan.Zero;
                         if (payloadTimeout < queueTimeout)
                         {
                             payloadTimeout = queueTimeout;
@@ -651,7 +684,16 @@ namespace Rollbar
             {
                 foreach(var queue in this._allQueues)
                 {
-                    queue.Flush();
+                    foreach (var flushedBundle in queue.Flush())
+                    {
+                        this.OnRollbarEvent(
+                            new PayloadDropEventArgs(
+                                queue.Logger, 
+                                flushedBundle.GetPayload(), 
+                                PayloadDropEventArgs.DropReason.RollbarQueueControllerFlushedQueues
+                                )
+                            );
+                    }
                 }
             }
         }
