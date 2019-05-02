@@ -471,7 +471,7 @@
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        public override void Validate()
+        public override void ValidateIt()
         {
             Assumption.AssertNotNullOrWhiteSpace(this.Environment, nameof(this.Environment));
             Assumption.AssertNotNull(this.Body, nameof(this.Body));

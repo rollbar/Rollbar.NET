@@ -79,7 +79,7 @@
         /// <value>
         /// The maximum reports per minute.
         /// </value>
-        int MaxReportsPerMinute { get; }
+        int? MaxReportsPerMinute { get; }
 
         /// <summary>
         /// Gets the reporting queue depth.

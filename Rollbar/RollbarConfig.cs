@@ -15,11 +15,18 @@
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
 #pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
-    /// Models Rollbar client/notifier configuration data.
+    /// Class RollbarConfig.
+    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarConfig, Rollbar.IRollbarConfig}" />
+    /// Implements the <see cref="Rollbar.ITraceable" />
+    /// Implements the <see cref="Rollbar.IRollbarConfig" />
+    /// Implements the <see cref="System.IEquatable{Rollbar.IRollbarConfig}" />
+    /// Implements the <see cref="Rollbar.Common.IValidatable" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
-    /// <seealso cref="Common.ReconfigurableBase{Rollbar.RollbarConfig}" />
+    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarConfig, Rollbar.IRollbarConfig}" />
     /// <seealso cref="Rollbar.ITraceable" />
+    /// <seealso cref="Rollbar.IRollbarConfig" />
+    /// <seealso cref="System.IEquatable{Rollbar.IRollbarConfig}" />
+    /// <seealso cref="Rollbar.Common.IValidatable" />
     public class RollbarConfig
 #pragma warning restore CS1658 // Warning is overriding an error
 #pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
@@ -27,6 +34,7 @@
         , ITraceable
         , IRollbarConfig
         , IEquatable<IRollbarConfig>
+        , IValidatable
     {
         private readonly RollbarLogger _logger;
 
@@ -72,7 +80,7 @@
             // let's set some default values:
             this.Environment = "production";
             this.Enabled = true;
-            this.MaxReportsPerMinute = 5000;
+            this.MaxReportsPerMinute = null; //5000;
             this.ReportingQueueDepth = 20;
             this.MaxItems = 0;
             this.CaptureUncaughtExceptions = true;
@@ -124,7 +132,6 @@
                 // reset the queue to use the new RollbarClient:
                 this.Logger.Queue.Flush();
                 this.Logger.Queue.UpdateClient(rollbarClient);
-                this.Logger.Queue.NextDequeueTime = DateTimeOffset.Now;
             }
 
             return this;
@@ -256,7 +263,7 @@
         /// <value>
         /// The maximum reports per minute.
         /// </value>
-        public int MaxReportsPerMinute { get; set; }
+        public int? MaxReportsPerMinute { get; set; }
 
         /// <summary>
         /// Gets or sets the reporting queue depth.
@@ -375,6 +382,78 @@
         IRollbarConfig IReconfigurable<IRollbarConfig, IRollbarConfig>.Reconfigure(IRollbarConfig likeMe)
         {
             return this.Reconfigure(likeMe);
+        }
+
+        /// <summary>
+        /// Validates this instance.
+        /// </summary>
+        /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>
+        public IReadOnlyCollection<ValidationResult> Validate()
+        {
+            var validator = this.GetValidator();
+
+            var failedValidations = validator.Validate(this);
+
+            return failedValidations;
+        }
+
+        /// <summary>
+        /// Gets the proper validator.
+        /// </summary>
+        /// <returns>Validator.</returns>
+        public Validator GetValidator()
+        {
+            Validator<RollbarConfig, RollbarConfig.RollbarConfigValidationRule> configValidator =
+                new Validator<RollbarConfig, RollbarConfig.RollbarConfigValidationRule>()
+                    .AddValidation(
+                        RollbarConfig.RollbarConfigValidationRule.ValidAccessTokenRequired,
+                        (config) => { return !string.IsNullOrWhiteSpace(config.AccessToken); }
+                        )
+                    .AddValidation(
+                        RollbarConfig.RollbarConfigValidationRule.ValidEndPointRequired,
+                        (config) => { return !string.IsNullOrWhiteSpace(config.EndPoint); }
+                        )
+                    .AddValidation(
+                        RollbarConfig.RollbarConfigValidationRule.ValidEnvironmentRequired,
+                        (config) => { return !string.IsNullOrWhiteSpace(config.Environment); }
+                        )
+                    //.AddValidation(
+                    //    ConfigMock.ConfigValidationRule.UserRequired,
+                    //    (config) => { return config.User != null; }
+                    .AddValidation(
+                        RollbarConfig.RollbarConfigValidationRule.ValidPersonIfAny,
+                        (config) => config.Person,
+                        this.Person?.GetValidator() as Validator<Person>
+                        )
+               ;
+
+            return configValidator;
+        }
+
+        /// <summary>
+        /// Enum RollbarConfigValidationRule
+        /// </summary>
+        public enum RollbarConfigValidationRule
+        {
+            /// <summary>
+            /// The valid end point required
+            /// </summary>
+            ValidEndPointRequired,
+
+            /// <summary>
+            /// The valid access token required
+            /// </summary>
+            ValidAccessTokenRequired,
+
+            /// <summary>
+            /// The valid environment required
+            /// </summary>
+            ValidEnvironmentRequired,
+
+            /// <summary>
+            /// The valid person (if any)
+            /// </summary>
+            ValidPersonIfAny,
         }
     }
 }

@@ -188,8 +188,12 @@ namespace Rollbar
             RollbarResponse response = null;
             if (postResponse.IsSuccessStatusCode)
             {
-                string reply = await postResponse.Content.ReadAsStringAsync();
-                response = JsonConvert.DeserializeObject<RollbarResponse>(reply);
+                string reply = 
+                    await postResponse.Content.ReadAsStringAsync();
+                response = 
+                    JsonConvert.DeserializeObject<RollbarResponse>(reply);
+                response.RollbarRateLimit = 
+                    new RollbarRateLimit(postResponse.Headers);
                 response.HttpDetails =
                     $"Response: {postResponse}"
                     + Environment.NewLine

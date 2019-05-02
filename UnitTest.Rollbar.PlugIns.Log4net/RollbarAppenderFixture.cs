@@ -29,6 +29,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         [TestInitialize]
         public void SetupFixture()
         {
+            RollbarQueueController.Instance.FlushQueues();
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
         }
 
@@ -39,6 +40,10 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private void Instance_InternalEvent(object sender, RollbarEventArgs e)
         {
+            //string eventTrace = $"##################{Environment.NewLine}{e.TraceAsString()}{Environment.NewLine}";
+            //Console.WriteLine(eventTrace);
+            //System.Diagnostics.Trace.WriteLine(eventTrace);
+
             CommunicationEventArgs communicationEventArgs = e as CommunicationEventArgs;
             if (e != null)
             {
@@ -82,14 +87,12 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
 
          
             log.Info("Via log4net");
-            Assert.AreEqual(1, this._rollbarCommEvents.Count);
 
             RollbarConfig newConfig = new RollbarConfig();
             newConfig.Reconfigure(appender.RollbarConfig);
             newConfig.Person = expectedPersons[1];
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
-            Assert.AreEqual(2, this._rollbarCommEvents.Count);
 
             newConfig = new RollbarConfig();
             newConfig.Reconfigure(appender.RollbarConfig);
@@ -102,7 +105,6 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             };
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
-            Assert.AreEqual(3, this._rollbarCommEvents.Count);
 
             Assert.IsFalse(this._rollbarCommEvents[0].Payload.Contains("Person"));
             Assert.IsTrue(this._rollbarCommEvents[1].Payload.Contains(expectedPersons[1].Id));

@@ -1,17 +1,66 @@
 ﻿namespace Rollbar.Common
 {
     using Rollbar.Diagnostics;
-    using System;
+    using System.Diagnostics;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Text;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A utility type aiding in string manipulations.
     /// </summary>
     public static class StringUtility
     {
+        /// <summary>
+        /// Delegate TryParseHandler
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">The value.</param>
+        /// <param name="result">The result.</param>
+        /// <returns><c>true</c> if value string is valid, <c>false</c> otherwise.</returns>
+        public delegate bool TryParseHandler<T>(string value, out T result);
+
+        /// <summary>
+        /// Either successfully parses the provided string value or returns null.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">The string value to parse.</param>
+        /// <param name="tryParseHandler">The try parse handler.</param>
+        /// <returns>System.Nullable&lt;T&gt;.</returns>
+        public static T? Parse<T>(string value, TryParseHandler<T> tryParseHandler) where T : struct
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return null;
+            }
+
+            if (tryParseHandler(value, out T result))
+            {
+                return result;
+            }
+
+            Trace.TraceWarning("Invalid value '{0}'", value);
+            return null;
+        }
+
+        /// <summary>
+        /// Either successfully parses the provided string value or returns specified default value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">The string value to parse.</param>
+        /// <param name="tryParseHandler">The try parse handler.</param>
+        /// <param name="defaultValue">The default value.</param>
+        /// <returns>T.</returns>
+        public static T ParseOrDefault<T>(string value, TryParseHandler<T> tryParseHandler, T defaultValue) where T : struct
+        {
+            T? result = StringUtility.Parse<T>(value, tryParseHandler);
+            if (result.HasValue)
+            {
+                return result.Value;
+            }
+
+            return defaultValue;
+        }
+
         /// <summary>
         /// Combines the specified substrings using the specified separator.
         /// </summary>
