@@ -1,4 +1,4 @@
-# v3.0.4 Rollbar.NET Notifier SDK Release Notes
+# v3.0.7 Rollbar.NET Notifier SDK Release Notes
 
 ## Upgrade Notes
 
@@ -24,7 +24,7 @@ These components can be logically grouped into the following categories:
 Core Modules implement the very basic stand-alone core functionality of the Rollbar.NET Notifier. 
 They have least possible amount of dependencies and only rely on functionality provided by most basic .NET implementation types 
 that are common across all of the supported .NET Standard implementations. So, if you only care about using core SDK concepts like:
-IRollbar, ILogger, IRollbarConfig, RollbarFactory, RollbarLocator,IRollbarPackage, Rollbar.DTOs, RollbarQueueController, ITelemetryCollector, ITelemetryConfig, some basic Rollbar utility classes
+IRollbar, ILogger, IRollbarConfig, RollbarFactory, RollbarLocator, IRollbarPackage, Rollbar.DTOs, RollbarQueueController, ITelemetryCollector, ITelemetryConfig, some basic Rollbar utility classes
 and you are planning to implement all the integration of these classes into your application on your own - use the Core Modules only.
 
 If you care about functionality that we implemented to simplify integration of the Notifier core functionality into a specific .NET application technology/framework, like 
@@ -52,9 +52,21 @@ Here are examples of currently available modules in each category:
 
 Each of the modules is available via NuGet as stand-alone package. 
 
-We are also unifying versioning all of the modules to follow common SDK versioning. 
+We are also unifying versioning for all of the modules to follow common SDK version. 
 
 ### Fixes and Improvements
+
+#### v3.0.7
+-   resolve #380: Misconfigured payloads can be dequeued much sooner.
+-   resolve #370: Consider aggregation of errors during blocking logging and attaching them to the TimeoutException.
+-   ref #366: Better information regarding using Person object without ID.
+
+#### v3.0.6
+-   resolve #375: Scrub fields don't appear to be scrubbed within request body's JSON data 
+-   code cleanup, typo corrections, etc.
+
+#### v3.0.5
+-   resolve #373: Rollbar.PlugIns.Log4net - Make IRollbarConfig API publicly available to the plug-in users
 
 #### v3.0.4
 -   resolve #355: AddRollbar() is missing in release 3.0.3

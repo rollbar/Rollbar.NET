@@ -1,5 +1,6 @@
 ﻿namespace Rollbar
 {
+    using Rollbar.Common;
     using System;
 
     /// <summary>
@@ -15,15 +16,19 @@
         /// <param name="rollbarError">The rollbar error.</param>
         /// <param name="message">The message.</param>
         /// <param name="exception">The exception.</param>
+        /// <param name="errorCollector">The error collector.</param>
         public static void Report(
             RollbarLogger rollbarLogger, 
             object dataObject, 
             InternalRollbarError rollbarError, 
             string message, 
-            Exception exception
+            Exception exception,
+            IErrorCollector errorCollector
             )
         {
             var rollbarException = new RollbarException(rollbarError, message ?? rollbarError.ToString(), exception);
+            errorCollector?.Register(rollbarException);
+
             var rollbarEvent = new InternalErrorEventArgs(rollbarLogger, dataObject, rollbarException, rollbarException.Message);
 
             if (rollbarLogger != null)

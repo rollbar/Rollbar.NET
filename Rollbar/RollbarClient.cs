@@ -129,7 +129,8 @@ namespace Rollbar
                         payload,
                         InternalRollbarError.PayloadTruncationError,
                         "While truncating a payload...",
-                        exception
+                        exception,
+                        payloadBundle
                         );
                 }
 
@@ -145,7 +146,8 @@ namespace Rollbar
                         payload,
                         InternalRollbarError.PayloadSerializationError,
                         "While serializing a payload...",
-                        exception
+                        exception,
+                        payloadBundle
                         );
 
                     return null;
@@ -162,7 +164,8 @@ namespace Rollbar
                         payload,
                         InternalRollbarError.PayloadScrubbingError,
                         "While scrubbing a payload...",
-                        exception
+                        exception,
+                        payloadBundle
                         );
 
                     return null;

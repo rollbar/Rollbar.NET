@@ -28,9 +28,9 @@ namespace Rollbar
         {
             using (var signal = CreateSignalObject())
             {
-                this._asyncLogger.Enqueue(dataObject, level, custom, this._timeout, signal);
+                PayloadBundle payloadBundle = this._asyncLogger.EnqueueData(dataObject, level, custom, this._timeout, signal);
 
-                WaitAndCompleteReport(signal);
+                WaitAndCompleteReport(payloadBundle, signal);
             }
         }
 
@@ -42,11 +42,19 @@ namespace Rollbar
             return signal;
         }
 
-        private void WaitAndCompleteReport(SemaphoreSlim signal)
+        private void WaitAndCompleteReport(PayloadBundle payloadBundle, SemaphoreSlim signal)
         {
             if (!signal.Wait(this._timeout))
             {
-                throw new TimeoutException("Posting a payload to the Rollbar API Service timed-out");
+                const string exceptionMessage = "Posting a payload to the Rollbar API Service timed-out";
+                if (payloadBundle?.Exceptions.Count > 0)
+                {
+                    throw new TimeoutException(exceptionMessage, new AggregateException(payloadBundle.Exceptions));
+                }
+                else
+                {
+                    throw new TimeoutException(exceptionMessage);
+                }
             }
         }
 
