@@ -37,7 +37,7 @@
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        public override void Validate()
+        public override void ValidateIt()
         {
             Assumption.AssertNotNullOrWhiteSpace(this.Raw, nameof(this.Raw));
         }

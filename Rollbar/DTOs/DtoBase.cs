@@ -15,6 +15,7 @@
     [Preserve]
     public abstract class DtoBase
         : ITraceable
+        , IValidatable
     {
 
         #region strings truncation support
@@ -323,12 +324,32 @@
             return this.ToString();
         }
 
+        public virtual void ValidateIt()
+        {
+
+        }
+
         /// <summary>
         /// Validates this instance.
         /// </summary>
-        public virtual void Validate()
+        /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>
+        public IReadOnlyCollection<ValidationResult> Validate()
         {
+            var validator = this.GetValidator();
+
+            var failedValidations = validator.Validate(this);
+
+            return failedValidations;
         }
 
+        /// <summary>
+        /// Gets the proper validator.
+        /// </summary>
+        /// <returns>Validator.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public virtual Validator GetValidator()
+        {
+            return null;
+        }
     }
 }

@@ -1,7 +1,11 @@
 ﻿namespace Rollbar.DTOs
 {
     using Newtonsoft.Json;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Models Rollbar Person DTO.
@@ -113,24 +117,59 @@
         private string _email;
 
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        public override void Validate()
+        /// <returns>Validator.</returns>
+        public override Validator GetValidator()
         {
-            Assumption.AssertNotNullOrWhiteSpace(this.Id, nameof(this.Id));
-            Assumption.AssertLessThanOrEqual(this.Id.Length, Person.maxIdChars, nameof(this.Id));
+            Validator<Person, Person.PersonValidationRule> validator =
+                new Validator<Person, Person.PersonValidationRule>()
+                    .AddValidation(
+                        Person.PersonValidationRule.ValidIdRequired,
+                        (person) => { return !string.IsNullOrWhiteSpace(person.Id); }
+                        )
+                    .AddValidation(
+                        Person.PersonValidationRule.IdMaxLengthLimit,
+                        (person) => { return !(person.Id?.Length > Person.maxIdChars); }
+                        )
+                    .AddValidation(
+                        Person.PersonValidationRule.UserNameMaxLengthLimit,
+                        (person) => { return !(person.UserName?.Length > Person.maxUsernameChars); }
+                        )
+                    .AddValidation(
+                        Person.PersonValidationRule.EmailMaxLengthLimit,
+                        (person) => { return !(person.Email?.Length > Person.maxEmailChars); }
+                        )
+                    ;
 
-            if (this.UserName != null)
-            {
-                Assumption.AssertLessThanOrEqual(this.UserName.Length, Person.maxUsernameChars, nameof(this.UserName));
-            }
-
-            if (this.Email != null)
-            {
-                Assumption.AssertLessThanOrEqual(this.Email.Length, Person.maxEmailChars, nameof(this.Email));
-            }
-
-            base.Validate();
+            return validator;
         }
+
+        /// <summary>
+        /// Enum PersonValidationRule
+        /// </summary>
+        public enum PersonValidationRule
+        {
+            /// <summary>
+            /// The valid identifier required
+            /// </summary>
+            ValidIdRequired,
+
+            /// <summary>
+            /// The identifier maximum length limit
+            /// </summary>
+            IdMaxLengthLimit,
+
+            /// <summary>
+            /// The user name maximum length limit
+            /// </summary>
+            UserNameMaxLengthLimit,
+
+            /// <summary>
+            /// The email maximum length limit
+            /// </summary>
+            EmailMaxLengthLimit,
+        }
+
     }
 }

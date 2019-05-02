@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
-namespace UnitTest.Rollbar
+﻿namespace UnitTest.Rollbar
 {
     using global::Rollbar;
     using global::Rollbar.Deploys;
@@ -10,21 +8,33 @@ namespace UnitTest.Rollbar
     using System.Linq;
     using System.Threading;
 
+    /// <summary>
+    /// Defines test class RollbarConfigFixture.
+    /// </summary>
     [TestClass]
     [TestCategory(nameof(RollbarConfigFixture))]
     public class RollbarConfigFixture
     {
+        /// <summary>
+        /// Setups the fixture.
+        /// </summary>
         [TestInitialize]
         public void SetupFixture()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
 
+        /// <summary>
+        /// Tears down fixture.
+        /// </summary>
         [TestCleanup]
         public void TearDownFixture()
         {
         }
 
+        /// <summary>
+        /// Defines the test method TestInstanceCreation.
+        /// </summary>
         [TestMethod]
         public void TestInstanceCreation()
         {
@@ -39,6 +49,9 @@ namespace UnitTest.Rollbar
 
         }
 
+        /// <summary>
+        /// Defines the test method TestGetSafeScrubFields.
+        /// </summary>
         [TestMethod]
         public void TestGetSafeScrubFields()
         {
@@ -63,6 +76,9 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// Defines the test method TestRollbarConfigEqualityMethod.
+        /// </summary>
         [TestMethod]
         public void TestRollbarConfigEqualityMethod()
         {
@@ -100,6 +116,32 @@ namespace UnitTest.Rollbar
             Assert.IsFalse(rConfig.Equals(rConfigSimilar), "Structured properties: One different property value makes unequal.");
             rConfigSimilar.Person = personOneNull;
             Assert.IsFalse(rConfig.Equals(rConfigSimilar), "Structured properties: Nullified property of one config instance makes unequal.");
+        }
+
+        /// <summary>
+        /// Tests the basic validation.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <param name="personId">The person identifier.</param>
+        /// <param name="expectedTotalFailedRules">The expected total failed rules.</param>
+        [DataTestMethod]
+        [DataRow("Token1", null, 0)]
+        [DataRow(null, null, 1)]
+        [DataRow("Token1", "", 1)]
+        [DataRow(null, "", 2)]
+        [DataRow("Token1", "PersonID", 0)]
+        public void TestBasicValidation(string token, string personId, int expectedTotalFailedRules)
+        {
+            Person person = null;
+            if (personId != null)
+            {
+                person = new Person() { Id = personId };
+            }
+
+            RollbarConfig config = new RollbarConfig() { AccessToken = token, Person = person, };
+
+            var failedValidationRules = config.Validate();
+            Assert.AreEqual(expectedTotalFailedRules, failedValidationRules.Count);
         }
     }
 }
