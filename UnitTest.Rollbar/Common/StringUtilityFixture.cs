@@ -1,30 +1,38 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
-namespace UnitTest.Rollbar.Common
+﻿namespace UnitTest.Rollbar.Common
 {
     using global::Rollbar;
     using global::Rollbar.Common;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Diagnostics;
-    using System.Linq;
     using System.Text;
-    using System.Threading;
 
+    /// <summary>
+    /// Defines test class StringUtilityFixture.
+    /// </summary>
     [TestClass]
     [TestCategory(nameof(StringUtilityFixture))]
     public class StringUtilityFixture
     {
+        /// <summary>
+        /// Setups the fixture.
+        /// </summary>
         [TestInitialize]
         public void SetupFixture()
         {
         }
 
+        /// <summary>
+        /// Tears down fixture.
+        /// </summary>
         [TestCleanup]
         public void TearDownFixture()
         {
         }
 
+        /// <summary>
+        /// Defines the test method TestEncodingBytesCountCalculation.
+        /// </summary>
         [TestMethod]
         public void TestEncodingBytesCountCalculation()
         {
@@ -55,6 +63,9 @@ namespace UnitTest.Rollbar.Common
             }
         }
 
+        /// <summary>
+        /// Defines the test method TestTruncation.
+        /// </summary>
         [TestMethod]
         public void TestTruncation()
         {
@@ -78,5 +89,66 @@ namespace UnitTest.Rollbar.Common
             }
         }
 
+        /// <summary>
+        /// Defines the test method TestIntParsing.
+        /// </summary>
+        [TestMethod]
+        public void TestIntParsing()
+        {
+            Assert.IsFalse(StringUtility.Parse<int>("WRONG", int.TryParse).HasValue);
+
+            Assert.IsTrue(StringUtility.Parse<int>("123", int.TryParse).HasValue);
+            Assert.IsTrue(StringUtility.Parse<int>("-123", int.TryParse).HasValue);
+
+            Assert.AreEqual(123, StringUtility.Parse<int>("123", int.TryParse).Value);
+            Assert.AreEqual(-123, StringUtility.Parse<int>("-123", int.TryParse).Value);
+        }
+
+        /// <summary>
+        /// Defines the test method TestIntParsingWithDefault.
+        /// </summary>
+        [TestMethod]
+        public void TestIntParsingWithDefault()
+        {
+            const int defaultValue = int.MaxValue;
+            Assert.AreEqual(defaultValue, StringUtility.ParseOrDefault<int>("WRONG", int.TryParse, defaultValue));
+
+            Assert.AreEqual(123, StringUtility.ParseOrDefault<int>("123", int.TryParse, defaultValue));
+            Assert.AreEqual(-123, StringUtility.ParseOrDefault<int>("-123", int.TryParse, defaultValue));
+        }
+
+        /// <summary>
+        /// Defines the test method TestDateTimeOffsetParsing.
+        /// </summary>
+        [TestMethod]
+        public void TestDateTimeOffsetParsing()
+        {
+            Assert.IsFalse(StringUtility.Parse<DateTimeOffset>("WRONG", DateTimeOffset.TryParse).HasValue);
+
+            DateTimeOffset testDate = DateTimeOffset.Now;
+            testDate = new DateTimeOffset(
+                testDate.Date.Year, testDate.Date.Month, testDate.Date.Day, 
+                testDate.DateTime.Hour, testDate.DateTime.Minute, testDate.DateTime.Second, 
+                testDate.Offset);
+            Assert.IsTrue(StringUtility.Parse<DateTimeOffset>(testDate.ToString(), DateTimeOffset.TryParse).HasValue);
+            Assert.AreEqual(testDate, StringUtility.Parse<DateTimeOffset>(testDate.ToString(), DateTimeOffset.TryParse).Value);
+        }
+
+        /// <summary>
+        /// Defines the test method TestDateTimeOffsetParsingWithDefault.
+        /// </summary>
+        [TestMethod]
+        public void TestDateTimeOffsetParsingWithDefault()
+        {
+            DateTimeOffset defaultValue = DateTimeOffset.MaxValue;
+            Assert.AreEqual(defaultValue, StringUtility.ParseOrDefault<DateTimeOffset>("WRONG", DateTimeOffset.TryParse, defaultValue));
+
+            DateTimeOffset testDate = DateTimeOffset.Now;
+            testDate = new DateTimeOffset(
+                testDate.Date.Year, testDate.Date.Month, testDate.Date.Day,
+                testDate.DateTime.Hour, testDate.DateTime.Minute, testDate.DateTime.Second,
+                testDate.Offset);
+            Assert.AreEqual(testDate, StringUtility.ParseOrDefault<DateTimeOffset>(testDate.ToString(), DateTimeOffset.TryParse, defaultValue));
+        }
     }
 }

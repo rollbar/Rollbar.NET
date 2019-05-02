@@ -581,12 +581,14 @@ namespace Rollbar
             PayloadBundle payloadBundle = null;
 
             IRollbarPackage rollbarPackage = dataObject as IRollbarPackage;
+
             if (rollbarPackage != null)
             {
                 if (rollbarPackage.MustApplySynchronously)
                 {
                     rollbarPackage.PackageAsRollbarData();
                 }
+
                 payloadBundle =
                     new PayloadBundle(this, rollbarPackage, level, custom, timeoutAt, signal);
             }

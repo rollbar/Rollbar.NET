@@ -80,7 +80,7 @@
             // let's set some default values:
             this.Environment = "production";
             this.Enabled = true;
-            this.MaxReportsPerMinute = 5000;
+            this.MaxReportsPerMinute = null; //5000;
             this.ReportingQueueDepth = 20;
             this.MaxItems = 0;
             this.CaptureUncaughtExceptions = true;
@@ -132,7 +132,6 @@
                 // reset the queue to use the new RollbarClient:
                 this.Logger.Queue.Flush();
                 this.Logger.Queue.UpdateClient(rollbarClient);
-                this.Logger.Queue.NextDequeueTime = DateTimeOffset.Now;
             }
 
             return this;
@@ -264,7 +263,7 @@
         /// <value>
         /// The maximum reports per minute.
         /// </value>
-        public int MaxReportsPerMinute { get; set; }
+        public int? MaxReportsPerMinute { get; set; }
 
         /// <summary>
         /// Gets or sets the reporting queue depth.
