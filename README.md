@@ -50,7 +50,7 @@ the way IAsyncLogger used to when you had to block-wait on its Task to complete.
 
 However, in some specific situations (such as while logging right before exiting an application), you may want to use a logger fully synchronously so that the application does not quit before the logging completes (including subsequent delivery of the corresponding payload to the Rollbar API).
 
-That is why every instance of the Rollbar asynchronous logger (implementing `IAsyncLogger` interface) defines the `AsBlockingLogger(TimeSpan timeout)` method that returns a fully synchronous implementation of the `ILogger` interface that defines signatures of its logging methods that are very similar to the `IAsyncLogger`'s logging methods but returning the same `ILogger` instance instead os a `Task`. This approach allows for easier code refactoring when switching between asynchronous and synchronous uses of the logger.
+That is why every instance of the Rollbar logger (implementing `ILogger` interface) defines the `AsBlockingLogger(TimeSpan timeout)` method that returns a fully synchronous implementation of the `ILogger` interface. This approach allows for easier code refactoring when switching between asynchronous and synchronous uses of the logger.
 
 Therefore, this call will perform the quickest possible asynchronous logging (true "fire-and-forget" logging):
 
