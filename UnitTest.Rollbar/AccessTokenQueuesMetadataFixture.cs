@@ -38,7 +38,7 @@
 
             Assert.AreEqual(RollbarUnitTestSettings.AccessToken, metadata.AccessToken);
             Assert.IsNotNull(metadata.Queues);
-            Assert.IsTrue(metadata.NextTimeTokenUsage < DateTimeOffset.Now);
+            Assert.IsTrue(metadata.NextTimeTokenUsage <= DateTimeOffset.Now);
         }
 
     }
