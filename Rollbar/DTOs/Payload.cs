@@ -1,6 +1,7 @@
 ﻿namespace Rollbar.DTOs
 {
     using Newtonsoft.Json;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
     using System;
 
@@ -57,16 +58,49 @@
         public Data Data { get; private set; }
 
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        public override void ValidateIt()
+        /// <returns>Validator.</returns>
+        public override Validator GetValidator()
         {
-            Assumption.AssertNotNullOrWhiteSpace(this.AccessToken, nameof(this.AccessToken));
-            Assumption.AssertNotNull(this.Data, nameof(this.Data));
+            var validator = new Validator<Payload, Payload.PayloadValidationRule>()
+                    .AddValidation(
+                        Payload.PayloadValidationRule.AccessTokenRequired,
+                        (payload) => { return !string.IsNullOrWhiteSpace(payload.AccessToken); }
+                        )
+                    .AddValidation(
+                        Payload.PayloadValidationRule.DataRequired,
+                        (payload) => { return (payload.Data != null); }
+                        )
+                    .AddValidation(
+                        Payload.PayloadValidationRule.ValidDataExpected,
+                        (payload) => payload.Data,
+                        this.Data?.GetValidator() as Validator<Data>
+                        )
+               ;
 
-            this.Data.Validate();
+            return validator;
+        }
 
-            base.Validate();
+        /// <summary>
+        /// Enum PayloadValidationRule
+        /// </summary>
+        public enum PayloadValidationRule
+        {
+            /// <summary>
+            /// The access token required
+            /// </summary>
+            AccessTokenRequired,
+
+            /// <summary>
+            /// The data required
+            /// </summary>
+            DataRequired,
+
+            /// <summary>
+            /// The valid data expected
+            /// </summary>
+            ValidDataExpected,
         }
     }
 }

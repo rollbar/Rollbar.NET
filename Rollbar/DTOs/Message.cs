@@ -1,6 +1,7 @@
 ﻿namespace Rollbar.DTOs
 {
     using System.Collections.Generic;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -60,11 +61,30 @@
         }
 
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        public override void ValidateIt()
+        /// <returns>Validator.</returns>
+        public override Validator GetValidator()
         {
-            Assumption.AssertNotNullOrWhiteSpace(this.Body, nameof(this.Body));
+            var validator = new Validator<Message, Message.MessageValidationRule>()
+                    .AddValidation(
+                        Message.MessageValidationRule.BodyRequired,
+                        (message) => { return !string.IsNullOrWhiteSpace(message.Body); }
+                        )
+               ;
+
+            return validator;
+        }
+
+        /// <summary>
+        /// Enum MessageValidationRule
+        /// </summary>
+        public enum MessageValidationRule
+        {
+            /// <summary>
+            /// The body required
+            /// </summary>
+            BodyRequired,
         }
 
     }
