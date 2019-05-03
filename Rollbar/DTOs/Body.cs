@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Newtonsoft.Json;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -149,32 +150,100 @@
         #endregion These are mutually exclusive properties - only one of them can be not null
 
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        public override void ValidateIt()
+        /// <returns>Validator.</returns>
+        public override Validator GetValidator()
         {
-            int bodyContentVariationsCount = 0;
+            var validator = new Validator<Body, Body.BodyValidationRule>()
+                    .AddValidation(
+                        Body.BodyValidationRule.OnlyOneBodyContentRequired,
+                        (body) => {
+                            const int expectedBodyContentVariationsCount = 1;
+                            int bodyContentVariationsCount = 0;
 
-            if (this.Trace != null)
-            {
-                this.Trace.Validate();
-                bodyContentVariationsCount++;
-            }
-            if (this.TraceChain != null)
-            {
-                bodyContentVariationsCount++;
-            }
-            if (this.Message != null)
-            {
-                this.Message.Validate();
-                bodyContentVariationsCount++;
-            }
-            if (this.CrashReport != null)
-            {
-                bodyContentVariationsCount++;
-            }
+                            if (this.Trace != null)
+                            {
+                                this.Trace.Validate();
+                                bodyContentVariationsCount++;
+                            }
+                            if (this.TraceChain != null)
+                            {
+                                bodyContentVariationsCount++;
+                            }
+                            if (this.Message != null)
+                            {
+                                this.Message.Validate();
+                                bodyContentVariationsCount++;
+                            }
+                            if (this.CrashReport != null)
+                            {
+                                bodyContentVariationsCount++;
+                            }
 
-            Assumption.AssertEqual(bodyContentVariationsCount, 1, nameof(bodyContentVariationsCount));
+                            return (bodyContentVariationsCount == expectedBodyContentVariationsCount);
+                        }
+                        )
+                    .AddValidation(
+                        Body.BodyValidationRule.ValidCrashReportIfAny,
+                        (body) => body.CrashReport,
+                        this.CrashReport?.GetValidator() as Validator<CrashReport>
+                        )
+                    .AddValidation(
+                        Body.BodyValidationRule.ValidMessageIfAny,
+                        (body) => body.Message,
+                        this.Message?.GetValidator() as Validator<Message>
+                        )
+                    .AddValidation(
+                        Body.BodyValidationRule.ValidTraceIfAny,
+                        (body) => body.Trace,
+                        this.Trace?.GetValidator() as Validator<Trace>
+                        )
+                    .AddValidation(
+                        Body.BodyValidationRule.ValidTraceChainIfAny,
+                        (body) => {
+                            if (body.TraceChain == null)
+                            {
+                                return true; // it is OK not to have one....
+                            }
+                            const int minExpectedTraceChainLength = 1;
+                            return (body.TraceChain.Length > minExpectedTraceChainLength);
+                        }
+                        )
+                    ;
+
+            return validator;
+        }
+
+        /// <summary>
+        /// Enum BodyValidationRule
+        /// </summary>
+        public enum BodyValidationRule
+        {
+            /// <summary>
+            /// The only one body content required
+            /// </summary>
+            OnlyOneBodyContentRequired,
+
+            /// <summary>
+            /// The valid crash report if any
+            /// </summary>
+            ValidCrashReportIfAny,
+
+            /// <summary>
+            /// The valid message if any
+            /// </summary>
+            ValidMessageIfAny,
+
+            /// <summary>
+            /// The valid trace if any
+            /// </summary>
+            ValidTraceIfAny,
+
+            /// <summary>
+            /// The valid trace chain if any
+            /// </summary>
+            ValidTraceChainIfAny,
         }
     }
 }

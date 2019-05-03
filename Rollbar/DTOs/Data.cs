@@ -469,21 +469,89 @@
         }
 
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        public override void ValidateIt()
+        /// <returns>Validator.</returns>
+        public override Validator GetValidator()
         {
-            Assumption.AssertNotNullOrWhiteSpace(this.Environment, nameof(this.Environment));
-            Assumption.AssertNotNull(this.Body, nameof(this.Body));
+            var validator = new Validator<Data, Data.DataValidationRule>()
+                    .AddValidation(
+                        Data.DataValidationRule.EnvironmentRequired,
+                        (data) => { return !string.IsNullOrWhiteSpace(data.Environment); }
+                        )
+                    .AddValidation(
+                        Data.DataValidationRule.BodyRequired,
+                        (data) => { return (data.Body != null); }
+                        )
+                    .AddValidation(
+                        Data.DataValidationRule.ValidBody,
+                        (data) => data.Body,
+                        this.Body?.GetValidator() as Validator<Body>
+                        )
+                    .AddValidation(
+                        Data.DataValidationRule.ValidClientIfAny,
+                        (data) => data.Client,
+                        this.Client?.GetValidator() as Validator<Client>
+                        )
+                    .AddValidation(
+                        Data.DataValidationRule.ValidPersonIfAny,
+                        (data) => data.Person,
+                        this.Person?.GetValidator() as Validator<Person>
+                        )
+                    .AddValidation(
+                        Data.DataValidationRule.ValidRequestIfAny,
+                        (data) => data.Request,
+                        this.Request?.GetValidator() as Validator<Request>
+                        )
+                    .AddValidation(
+                        Data.DataValidationRule.ValidServerIfAny,
+                        (data) => data.Server,
+                        this.Server?.GetValidator() as Validator<Server>
+                        )
+               ;
 
-            this.Body.Validate();
+            return validator;
+        }
 
-            this.Server?.Validate();
-            this.Request?.Validate();
-            this.Person?.Validate();
-            this.Client?.Validate();
+        /// <summary>
+        /// Enum DataValidationRule
+        /// </summary>
+        public enum DataValidationRule
+        {
+            /// <summary>
+            /// The environment required
+            /// </summary>
+            EnvironmentRequired,
 
-            base.Validate();
+            /// <summary>
+            /// The body required
+            /// </summary>
+            BodyRequired,
+
+            /// <summary>
+            /// The valid body
+            /// </summary>
+            ValidBody,
+
+            /// <summary>
+            /// The valid server if any
+            /// </summary>
+            ValidServerIfAny,
+
+            /// <summary>
+            /// The valid request if any
+            /// </summary>
+            ValidRequestIfAny,
+
+            /// <summary>
+            /// The valid person if any
+            /// </summary>
+            ValidPersonIfAny,
+
+            /// <summary>
+            /// The valid client if any
+            /// </summary>
+            ValidClientIfAny,
         }
     }
 }

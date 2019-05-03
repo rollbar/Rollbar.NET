@@ -325,14 +325,6 @@
         }
 
         /// <summary>
-        /// Validates it.
-        /// </summary>
-        public virtual void ValidateIt()
-        {
-
-        }
-
-        /// <summary>
         /// Validates this instance.
         /// </summary>
         /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>

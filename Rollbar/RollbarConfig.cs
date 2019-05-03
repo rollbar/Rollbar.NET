@@ -403,8 +403,7 @@
         /// <returns>Validator.</returns>
         public Validator GetValidator()
         {
-            Validator<RollbarConfig, RollbarConfig.RollbarConfigValidationRule> configValidator =
-                new Validator<RollbarConfig, RollbarConfig.RollbarConfigValidationRule>()
+            var validator = new Validator<RollbarConfig, RollbarConfig.RollbarConfigValidationRule>()
                     .AddValidation(
                         RollbarConfig.RollbarConfigValidationRule.ValidAccessTokenRequired,
                         (config) => { return !string.IsNullOrWhiteSpace(config.AccessToken); }
@@ -417,9 +416,6 @@
                         RollbarConfig.RollbarConfigValidationRule.ValidEnvironmentRequired,
                         (config) => { return !string.IsNullOrWhiteSpace(config.Environment); }
                         )
-                    //.AddValidation(
-                    //    ConfigMock.ConfigValidationRule.UserRequired,
-                    //    (config) => { return config.User != null; }
                     .AddValidation(
                         RollbarConfig.RollbarConfigValidationRule.ValidPersonIfAny,
                         (config) => config.Person,
@@ -427,7 +423,7 @@
                         )
                ;
 
-            return configValidator;
+            return validator;
         }
 
         /// <summary>

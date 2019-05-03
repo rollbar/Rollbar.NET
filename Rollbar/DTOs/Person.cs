@@ -122,8 +122,7 @@
         /// <returns>Validator.</returns>
         public override Validator GetValidator()
         {
-            Validator<Person, Person.PersonValidationRule> validator =
-                new Validator<Person, Person.PersonValidationRule>()
+            var validator = new Validator<Person, Person.PersonValidationRule>()
                     .AddValidation(
                         Person.PersonValidationRule.ValidIdRequired,
                         (person) => { return !string.IsNullOrWhiteSpace(person.Id); }

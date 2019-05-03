@@ -1,6 +1,7 @@
 ﻿namespace Rollbar.DTOs
 {
     using Newtonsoft.Json;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -35,11 +36,30 @@
         public string Raw { get; private set; }
 
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        public override void ValidateIt()
+        /// <returns>Validator.</returns>
+        public override Validator GetValidator()
         {
-            Assumption.AssertNotNullOrWhiteSpace(this.Raw, nameof(this.Raw));
+            var validator = new Validator<CrashReport, CrashReport.CrashReportValidationRule>()
+                    .AddValidation(
+                        CrashReport.CrashReportValidationRule.ValidRaw,
+                        (crashReport) => { return !string.IsNullOrWhiteSpace(crashReport.Raw); }
+                        )
+               ;
+
+            return validator;
+        }
+
+        /// <summary>
+        /// Enum CrashReportValidationRule
+        /// </summary>
+        public enum CrashReportValidationRule
+        {
+            /// <summary>
+            /// The valid raw
+            /// </summary>
+            ValidRaw,
         }
     }
 }

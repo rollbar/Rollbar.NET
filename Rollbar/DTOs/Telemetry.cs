@@ -142,14 +142,40 @@
         }
 
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        public override void ValidateIt()
+        /// <returns>Validator.</returns>
+        public Validator GetValidator()
         {
-            base.Validate();
+            var validator = new Validator<Telemetry, Telemetry.TelemetryValidationRule>()
+                    .AddValidation(
+                        Telemetry.TelemetryValidationRule.BodyRequired,
+                        (telemetry) => { return (telemetry.Body != null); }
+                        )
+                    .AddValidation(
+                        Telemetry.TelemetryValidationRule.ValidBodyExpected,
+                        (config) => { return this.Body.GetType().Name.Contains(this.Type.ToString()); }
+                        )
+               ;
 
-            Assumption.AssertNotNull(this.Body, nameof(this.Body));
-            Assumption.AssertTrue(this.Body.GetType().Name.Contains(this.Type.ToString()), nameof(this.Body));
+            return validator;
+        }
+
+
+        /// <summary>
+        /// Enum TelemetryValidationRule
+        /// </summary>
+        public enum TelemetryValidationRule
+        {
+            /// <summary>
+            /// The body required
+            /// </summary>
+            BodyRequired,
+
+            /// <summary>
+            /// The valid body expected
+            /// </summary>
+            ValidBodyExpected,
         }
     }
 }
