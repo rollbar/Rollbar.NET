@@ -449,6 +449,7 @@ namespace UnitTest.Rollbar
                 }
                 catch(Exception ex)
                 {
+                    Console.WriteLine(ex);
                     Assert.Fail("should never reach here!");
                 }
             }
