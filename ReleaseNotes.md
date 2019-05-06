@@ -1,4 +1,4 @@
-# v3.0.7 Rollbar.NET Notifier SDK Release Notes
+# v3.1.0 Rollbar.NET Notifier SDK Release Notes
 
 ## Upgrade Notes
 
