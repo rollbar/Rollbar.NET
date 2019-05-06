@@ -56,10 +56,16 @@ We are also unifying versioning for all of the modules to follow common SDK vers
 
 ### Fixes and Improvements
 
-#### v3.0.7
--   resolve #380: Misconfigured payloads can be dequeued much sooner.
+#### v3.1.0
+-   resolve #379: Add Validate() method to IRollbarConfig.
+-   resolve #368: Make SDK to obey service-side enforced rate limits unless client-side RollbarConfig defines one
+-   resolve #384: Make sure relevant queues are flushed on rate-limit suspension
 -   resolve #370: Consider aggregation of errors during blocking logging and attaching them to the TimeoutException.
--   ref #366: Better information regarding using Person object without ID.
+-   ref     #366: Better information regarding using Person object without ID.
+-   resolve #380: Misconfigured payloads can be dequeued much sooner.
+-   resolve #388: Remove ValidateIt() from DtoBase type and replace its overrides based on IValidatable
+-   resolve #389: Fix failing unit-tests (after recent PR merges)
+-   resolve #381: Correct unit tests that are failing on the CI server.
 
 #### v3.0.6
 -   resolve #375: Scrub fields don't appear to be scrubbed within request body's JSON data 
