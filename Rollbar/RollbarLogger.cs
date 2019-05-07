@@ -2,6 +2,7 @@
 
 namespace Rollbar
 {
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using Rollbar.Telemetry;
@@ -61,6 +62,7 @@ namespace Rollbar
 
             if (rollbarConfig != null)
             {
+                ValidateConfiguration(rollbarConfig);
                 this._config = new RollbarConfig(this).Reconfigure(rollbarConfig);
             }
             else
@@ -113,6 +115,8 @@ namespace Rollbar
         /// <returns>IRollbar.</returns>
         public IRollbar Configure(IRollbarConfig settings)
         {
+            ValidateConfiguration(settings);
+
             this._config.Reconfigure(settings);
 
             return this;
@@ -647,6 +651,31 @@ namespace Rollbar
             {
                 handler(this, e);
             }
+        }
+
+        /// <summary>
+        /// Validates the configuration.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        private void ValidateConfiguration(IRollbarConfig rollbarConfig)
+        {
+            IValidatable validatableConfig = rollbarConfig as IValidatable;
+            if (validatableConfig != null)
+            {
+                var failedValidationRules = validatableConfig.Validate();
+                if (failedValidationRules.Count > 0)
+                {
+                    var exception =
+                        new RollbarException(
+                            InternalRollbarError.ConfigurationError,
+                            "Failed to configure using invalid configuration prototype!"
+                            );
+                    exception.Data[nameof(failedValidationRules)] = failedValidationRules;
+
+                    throw exception;
+                }
+            }
+
         }
 
         #region IDisposable Support

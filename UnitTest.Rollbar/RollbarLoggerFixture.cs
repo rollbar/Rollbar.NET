@@ -265,6 +265,60 @@ namespace UnitTest.Rollbar
 
         #endregion rate limiting tests
 
+        [TestMethod]
+        public void ThrowsExceptionWhenInitializedWithInvalidConfigInstance()
+        {
+            RollbarConfig invalidConfig = new RollbarConfig(string.Empty) {
+                Person = new Person(),
+            };
+
+            try
+            {
+                using (var rollbar = RollbarFactory.CreateNew(false, invalidConfig))
+                {
+
+                }
+            }
+            catch (RollbarException ex)
+            {
+                Assert.IsTrue(ex.Data.Count > 0, "Expected to contain failed validation rules!");
+                return;
+            }
+            catch
+            {
+                Assert.Fail("Should never reach here due to exception above!");
+            }
+
+            Assert.Fail("Should never reach here due to exception above!");
+        }
+
+        [TestMethod]
+        public void ThrowsExceptionWhenConfiguredWithInvalidConfigInstance()
+        {
+            RollbarConfig invalidConfig = new RollbarConfig(string.Empty)
+            {
+                Person = new Person(),
+            };
+
+            var rollbar = RollbarFactory.CreateNew();
+
+            try
+            {
+                rollbar.Configure(invalidConfig);
+            }
+            catch (RollbarException ex)
+            {
+                Assert.IsTrue(ex.Data.Count > 0, "Expected to contain failed validation rules!");
+                return;
+            }
+            catch
+            {
+                Assert.Fail("Should never reach here due to exception above!");
+            }
+
+            Assert.Fail("Should never reach here due to exception above!");
+        }
+
         /// <summary>
         /// Defines the test method AllowsProxySettingsReconfiguration.
         /// </summary>
