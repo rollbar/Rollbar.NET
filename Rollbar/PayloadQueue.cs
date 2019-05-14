@@ -15,22 +15,31 @@ namespace Rollbar
         /// The synchronize lock
         /// </summary>
         private readonly object _syncLock;
+
         /// <summary>
         /// The queue
         /// </summary>
         private readonly Queue<PayloadBundle> _queue;
+
         /// <summary>
         /// The logger
         /// </summary>
         private readonly RollbarLogger _logger;
+
         /// <summary>
         /// The client
         /// </summary>
         private RollbarClient _client;
+
         /// <summary>
         /// The is released
         /// </summary>
         private bool _isReleased;
+
+        /// <summary>
+        /// The access token queues metadata
+        /// </summary>
+        private AccessTokenQueuesMetadata _accessTokenQueuesMetadata;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PayloadQueue"/> class from being created.
@@ -206,6 +215,16 @@ namespace Rollbar
 
                 return flushedBundles;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the access token queues metadata.
+        /// </summary>
+        /// <value>The access token queues metadata.</value>
+        internal AccessTokenQueuesMetadata AccessTokenQueuesMetadata
+        {
+            get { return this._accessTokenQueuesMetadata; }
+            set { this._accessTokenQueuesMetadata = value; }
         }
     }
 }

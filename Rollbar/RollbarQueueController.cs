@@ -82,6 +82,7 @@ namespace Rollbar
         /// The sleep interval
         /// </summary>
         internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(25);
+
         /// <summary>
         /// The total retries
         /// </summary>
@@ -528,6 +529,7 @@ namespace Rollbar
                 this._queuesByAccessToken.Add(queueToken, tokenMetadata);
             }
             tokenMetadata.Queues.Add(queue);
+            queue.AccessTokenQueuesMetadata = tokenMetadata;
         }
 
         /// <summary>
@@ -541,6 +543,7 @@ namespace Rollbar
                 if (tokenMetadata.Queues.Contains(queue))
                 {
                     tokenMetadata.Queues.Remove(queue);
+                    queue.AccessTokenQueuesMetadata = null;
                     break;
                 }
             }

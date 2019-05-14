@@ -11,8 +11,10 @@ namespace Rollbar
     /// </summary>
     internal class AccessTokenQueuesMetadata
     {
-        internal static readonly TimeSpan accessTokenInitialDelay = TimeSpan.FromSeconds(30);
 
+        /// <summary>
+        /// The queues
+        /// </summary>
         private readonly HashSet<PayloadQueue> _queues = new HashSet<PayloadQueue>();
 
         /// <summary>

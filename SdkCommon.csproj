@@ -7,8 +7,9 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.1.1</SdkVersion>
+  <SdkVersion>3.2.1</SdkVersion>
     <PackageReleaseNotes>
+      - perf:     resolve #383: Make sure loggers do not queue new payloads during rate-limit suspension.
       - feat:     resolve #378: Implement config validation on every logger re/configuration.
       - refactor: resolve #393: Eliminate all current build warnings.
     </PackageReleaseNotes>

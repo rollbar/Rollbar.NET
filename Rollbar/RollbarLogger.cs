@@ -547,10 +547,11 @@ namespace Rollbar
             )
         {
             // here is the last chance to decide if we need to actually send this payload
-            // based on the current config settings:
+            // based on the current config settings and rate-limit conditions:
             if (string.IsNullOrWhiteSpace(this._config.AccessToken)
                 || this._config.Enabled == false
                 || (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+                || ((this._payloadQueue.AccessTokenQueuesMetadata != null) && this._payloadQueue.AccessTokenQueuesMetadata.IsTransmissionSuspended)
                 )
             {
                 // nice shortcut:
