@@ -70,6 +70,14 @@ namespace Rollbar
         /// <param name="rollbarRateLimit">The rollbar rate limit.</param>
         public void UpdateNextTimeTokenUsage(RollbarRateLimit rollbarRateLimit)
         {
+            if (rollbarRateLimit == null)
+            {
+                //this is a special case when the payload transmission was configured to be omitted:
+                this.IsTransmissionSuspended = false;
+                this.NextTimeTokenUsage = DateTimeOffset.Now;
+                return;
+            }
+
             if (rollbarRateLimit.WindowRemaining > 0)
             {
                 this.IsTransmissionSuspended = false;

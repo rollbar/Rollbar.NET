@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿using System.Collections.Concurrent;
+
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace UnitTest.Rollbar
 {
@@ -14,24 +16,34 @@ namespace UnitTest.Rollbar
     /// Implements the <see cref="System.IDisposable" />
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    /// <remarks>
-    /// This is a base abstraction for creating live Rollbar unit tests 
+    /// <remarks>This is a base abstraction for creating live Rollbar unit tests
     /// (ones that actually expected to communicate with the Rollbar API).
-    /// It allows to set expectations for internal Rollbar events 
+    /// It allows to set expectations for internal Rollbar events
     /// (as payload delivery to Rollbar API or any communication or internal errors).
-    /// It has built-in verification of actual event counts against the expected ones per type of the events.
-    /// </remarks>
+    /// It has built-in verification of actual event counts against the expected ones per type of the events.</remarks>
     [TestClass]
     [TestCategory(nameof(RollbarLiveFixtureBase))]
     public abstract class RollbarLiveFixtureBase
         : IDisposable
     {
+        /// <summary>
+        /// The logger configuration
+        /// </summary>
         private RollbarConfig _loggerConfig;
 
+        /// <summary>
+        /// The disposable rollbar instances
+        /// </summary>
         private readonly List<IRollbar> _disposableRollbarInstances = new List<IRollbar>();
 
+        /// <summary>
+        /// The default rollbar timeout
+        /// </summary>
         protected static readonly TimeSpan defaultRollbarTimeout = TimeSpan.FromSeconds(3);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarLiveFixtureBase"/> class.
+        /// </summary>
         protected RollbarLiveFixtureBase()
         {
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
@@ -48,8 +60,7 @@ namespace UnitTest.Rollbar
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-            this.ResetAllExpectedTotals();
-            this.ClearAllRollbarInternalEvents();
+            this.Reset();
         }
 
         /// <summary>
@@ -63,6 +74,11 @@ namespace UnitTest.Rollbar
             this.VerifyActualEventsAgainstExpectedTotals();
         }
 
+        /// <summary>
+        /// Handles the <see cref="E:RollbarInternalEvent" /> event.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
             //// for basic RollbarRateLimitVerification test:
@@ -91,108 +107,186 @@ namespace UnitTest.Rollbar
             Console.WriteLine(e.TraceAsString());
             Trace.WriteLine(e.TraceAsString());
 
-            switch (e)
-            {
-                case RollbarApiErrorEventArgs apiErrorEvent:
-                    this.ApiErrorEvents.Add(apiErrorEvent);
-                    return;
-                case CommunicationEventArgs commEvent:
-                    this.CommunicationEvents.Add(commEvent);
-                    return;
-                case CommunicationErrorEventArgs commErrorEvent:
-                    this.CommunicationErrorEvents.Add(commErrorEvent);
-                    return;
-                case InternalErrorEventArgs internalErrorEvent:
-                    this.InternalSdkErrorEvents.Add(internalErrorEvent);
-                    return;
-                default:
-                    Assert.Fail("Unexpected RollbarEventArgs specialization type!");
-                    return;
-            }
+            this.Register(e);
         }
 
         /// <summary>
-        /// Gets or sets the expected communication events total.
+        /// Resets this instance.
         /// </summary>
-        /// <value>The expected communication events total.</value>
-        protected int ExpectedCommunicationEventsTotal { get; set; }
-
-        /// <summary>
-        /// Gets or sets the expected communication errors total.
-        /// </summary>
-        /// <value>The expected communication errors total.</value>
-        protected int ExpectedCommunicationErrorsTotal { get; set; }
-
-        /// <summary>
-        /// Gets or sets the expected API errors total.
-        /// </summary>
-        /// <value>The expected API errors total.</value>
-        protected int ExpectedApiErrorsTotal { get; set; }
-
-        /// <summary>
-        /// Gets or sets the expected internal SDK errors total.
-        /// </summary>
-        /// <value>The expected internal SDK errors total.</value>
-        protected int ExpectedInternalSdkErrorsTotal { get; set; }
-
         protected void Reset()
         {
-            this.ResetAllExpectedTotals();
-            this.ClearAllRollbarInternalEvents();
+            this.ClearAllExpectedEventCounts();
+            this.ClearAllRollbarEvents();
         }
+
+
 
         /// <summary>
-        /// Resets all expected totals.
+        /// Makes the sure all the payloads processed.
         /// </summary>
-        protected void ResetAllExpectedTotals()
-        {
-            this.ExpectedApiErrorsTotal = 0;
-            this.ExpectedCommunicationErrorsTotal = 0;
-            this.ExpectedCommunicationEventsTotal = 0;
-            this.ExpectedInternalSdkErrorsTotal = 0;
-        }
-
-        private readonly List<CommunicationEventArgs> CommunicationEvents = new List<CommunicationEventArgs>();
-        private readonly List<CommunicationErrorEventArgs> CommunicationErrorEvents = new List<CommunicationErrorEventArgs>();
-        private readonly List<RollbarApiErrorEventArgs> ApiErrorEvents = new List<RollbarApiErrorEventArgs>();
-        private readonly List<InternalErrorEventArgs> InternalSdkErrorEvents = new List<InternalErrorEventArgs>();
-
-        protected int ActualComunicationEventsCount { get { return this.CommunicationEvents.Count; } }
-        protected int ActualComunicationErrorsCount { get { return this.CommunicationErrorEvents.Count; } }
-        protected int ActualApiErrorsCount { get { return this.ApiErrorEvents.Count; } }
-        protected int ActualInternalSdkErrorsCount { get { return this.InternalSdkErrorEvents.Count; } }
-
-        /// <summary>
-        /// Clears all rollbar internal events.
-        /// </summary>
-        protected void ClearAllRollbarInternalEvents()
-        {
-            this.CommunicationEvents.Clear();
-            this.CommunicationErrorEvents.Clear();
-            this.ApiErrorEvents.Clear();
-            this.InternalSdkErrorEvents.Clear();
-        }
-
         private void MakeSureAllThePayloadsProcessed()
         {
             Thread.Sleep(RollbarQueueController.Instance.GetRecommendedTimeout().Add(TimeSpan.FromSeconds(1)));
             Assert.AreEqual(0, RollbarQueueController.Instance.GetTotalPayloadCount(), "All the payloads are expected to be out of the queues...");
         }
+        /// <summary>
+        /// Verifies the actual events against expected totals.
+        /// </summary>
         private void VerifyActualEventsAgainstExpectedTotals()
         {
             MakeSureAllThePayloadsProcessed();
 
-            Assert.AreEqual(this.ExpectedCommunicationEventsTotal, this.CommunicationEvents.Count, "Actual CommunicationEvents count does not match expectation.");
-            Assert.IsTrue(
-                // EITHER no errors expected:
-                (this.ExpectedCommunicationErrorsTotal == 0 && this.CommunicationErrorEvents.Count == 0)
-                // OR at least as many errors as expected (but most likely multiples of that):
-                || (this.ExpectedCommunicationErrorsTotal > 0 && this.CommunicationErrorEvents.Count >= this.ExpectedCommunicationErrorsTotal) 
-                , "Actual CommunicationErrors count does not match expectation."
-                );
-            Assert.AreEqual(this.ExpectedApiErrorsTotal, this.ApiErrorEvents.Count, "Actual ApiErrors count does not match expectation.");
-            Assert.AreEqual(this.ExpectedInternalSdkErrorsTotal, this.InternalSdkErrorEvents.Count, "Actual InternalSdkErrors count does not match expectation.");
+            foreach (var eventType in this._expectedEventCountByType.Keys)
+            {
+                string message = $"Matching count of {eventType.Name} events...";
+                Console.WriteLine(message);
+                Trace.WriteLine(message);
+                Assert.AreEqual(this._expectedEventCountByType[eventType], this._rollbarEventsByType[eventType].Count, message);
+            }
         }
+
+        #region Actual Rollbar events
+
+        /// <summary>
+        /// The rollbar events by type
+        /// </summary>
+        private readonly IDictionary<Type, List<RollbarEventArgs>> _rollbarEventsByType = new ConcurrentDictionary<Type, List<RollbarEventArgs>>();
+
+        /// <summary>
+        /// Registers the specified rollbar event.
+        /// </summary>
+        /// <param name="rollbarEvent">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
+        private void Register(RollbarEventArgs rollbarEvent)
+        {
+            if (rollbarEvent == null)
+            {
+                return;
+            }
+
+            var eventType = rollbarEvent.GetType();
+            if (this._rollbarEventsByType.TryGetValue(eventType, out var rollbarEvents))
+            {
+                rollbarEvents.Add(rollbarEvent);
+            }
+            else
+            {
+                this._rollbarEventsByType.Add(
+                    eventType, 
+                    new List<RollbarEventArgs>(new[] {rollbarEvent})
+                    );
+            }
+        }
+
+        /// <summary>
+        /// Gets the count.
+        /// </summary>
+        /// <typeparam name="TRollbarEvent">The type of the t rollbar event.</typeparam>
+        /// <returns>System.Int32.</returns>
+        protected int GetCount<TRollbarEvent>()
+            where TRollbarEvent : RollbarEventArgs
+        {
+            if (this._rollbarEventsByType.TryGetValue(typeof(TRollbarEvent), out var rollbarEvents))
+            {
+                return rollbarEvents.Count;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Clears all rollbar events.
+        /// </summary>
+        protected void ClearAllRollbarEvents()
+        {
+            foreach (var eventType in this._rollbarEventsByType.Keys)
+            {
+                this._rollbarEventsByType[eventType].Clear();
+            }
+        }
+
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
+        /// <typeparam name="TRollbarEvent">The type of the t rollbar event.</typeparam>
+        protected void Clear<TRollbarEvent>() 
+            where TRollbarEvent : RollbarEventArgs
+        {
+            if (this._rollbarEventsByType.TryGetValue(typeof(TRollbarEvent), out var rollbarEvents))
+            {
+                rollbarEvents.Clear();
+            }
+        }
+
+        #endregion Actual Rollbar events
+
+        #region Expected Rollbar events
+
+        /// <summary>
+        /// The expected event count by type
+        /// </summary>
+        private readonly IDictionary<Type, int> _expectedEventCountByType = new ConcurrentDictionary<Type, int>();
+
+        /// <summary>
+        /// Increments the count.
+        /// </summary>
+        /// <typeparam name="TRollbarEvent">The type of the t rollbar event.</typeparam>
+        protected void IncrementCount<TRollbarEvent>()
+            where TRollbarEvent : RollbarEventArgs
+        {
+            const int countIncrement = 1;
+            this.IncrementCount<TRollbarEvent>(countIncrement);
+        }
+
+        /// <summary>
+        /// Increments the count.
+        /// </summary>
+        /// <typeparam name="TRollbarEvent">The type of the t rollbar event.</typeparam>
+        /// <param name="countIncrement">The count increment.</param>
+        protected void IncrementCount<TRollbarEvent>(int countIncrement)
+            where TRollbarEvent : RollbarEventArgs
+        {
+            var eventType = typeof(TRollbarEvent);
+            if (this._expectedEventCountByType.TryGetValue(eventType, out var eventsCount))
+            {
+                this._expectedEventCountByType[eventType] += countIncrement;
+            }
+            else
+            {
+                this._expectedEventCountByType.Add(
+                    eventType,
+                    countIncrement
+                );
+            }
+        }
+
+        /// <summary>
+        /// Clears all expected event counts.
+        /// </summary>
+        protected void ClearAllExpectedEventCounts()
+        {
+            foreach (var eventType in this._expectedEventCountByType.Keys)
+            {
+                this._expectedEventCountByType[eventType] = 0;
+            }
+        }
+
+        /// <summary>
+        /// Clears the expected count.
+        /// </summary>
+        /// <typeparam name="TRollbarEvent">The type of the t rollbar event.</typeparam>
+        protected void ClearExpectedCount<TRollbarEvent>()
+            where TRollbarEvent : RollbarEventArgs
+        {
+            var eventType = typeof(TRollbarEvent);
+            if (this._expectedEventCountByType.TryGetValue(eventType, out var eventCount))
+            {
+                this._expectedEventCountByType[eventType] = 0;
+            }
+        }
+
+        #endregion Actual Rollbar events
 
         /// <summary>
         /// Provides the live rollbar configuration.
@@ -243,23 +337,30 @@ namespace UnitTest.Rollbar
             return RollbarLocator.RollbarInstance;
         }
 
+        /// <summary>
+        /// Verifies the instance operational.
+        /// </summary>
+        /// <param name="rollbar">The rollbar.</param>
         protected void VerifyInstanceOperational(IRollbar rollbar)
         {
             MakeSureAllThePayloadsProcessed();
 
             //Assert.IsTrue(0 == RollbarQueueController.Instance.GetTotalPayloadCount(), "Making sure all the queues are clear...");
-            int initialCommunicationEventsCount = this.ActualComunicationEventsCount;
-            this.ExpectedCommunicationEventsTotal++;
+            int initialCommunicationEventsCount = this.GetCount<CommunicationEventArgs>();
+            this.IncrementCount<CommunicationEventArgs>();
             rollbar.AsBlockingLogger(defaultRollbarTimeout).Critical("Making sure Rollbar.NET is operational...");
-            Assert.AreEqual(this.ActualComunicationEventsCount, initialCommunicationEventsCount + 1, "Confirming Rollbar.NET is operational...");
+            Assert.AreEqual(this.GetCount<CommunicationEventArgs>(), initialCommunicationEventsCount + 1, "Confirming Rollbar.NET is operational...");
         }
 
+        /// <summary>
+        /// Defines the test method _VerifyInstanceOperationalTest.
+        /// </summary>
         [TestMethod]
         public void _VerifyInstanceOperationalTest()
         {
             // this test more about verifying if the test harness itself works well:
 
-            this.ClearAllRollbarInternalEvents();
+            this.ClearAllRollbarEvents();
 
             using (IRollbar rollbar = this.ProvideDisposableRollbar())
             {
@@ -270,8 +371,15 @@ namespace UnitTest.Rollbar
 
         #region IDisposable Support
 
+        /// <summary>
+        /// The disposed value
+        /// </summary>
         private bool disposedValue = false; // To detect redundant calls
 
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -302,6 +410,9 @@ namespace UnitTest.Rollbar
         // }
 
         // This code added to correctly implement the disposable pattern.
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
         void IDisposable.Dispose()
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

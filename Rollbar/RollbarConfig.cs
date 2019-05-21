@@ -80,6 +80,8 @@
             // let's set some default values:
             this.Environment = "production";
             this.Enabled = true;
+            this.Transmit = true;
+            this.RethrowExceptionsAfterReporting = false;
             this.MaxReportsPerMinute = null; //5000;
             this.ReportingQueueDepth = 20;
             this.MaxItems = 0;
@@ -110,6 +112,10 @@
             this.IpAddressCollectionPolicy = IpAddressCollectionPolicy.Collect;
         }
 
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        /// <value>The logger.</value>
         internal RollbarLogger Logger
         {
             get { return this._logger; }
@@ -187,7 +193,22 @@
         /// <value>
         /// The enabled.
         /// </value>
-        public bool? Enabled { get; set; }
+        public bool Enabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Rollbar logger will actually transmit the payloads to the Rollbar API server.
+        /// </summary>
+        /// <value><c>null</c> if contains no value, <c>true</c> if transmit; otherwise, <c>false</c>.</value>
+        /// <remarks>Should the SDK actually perform HTTP requests to Rollbar API. This is useful if you are trying to run Rollbar in dry run mode for development or tests.
+        /// If this is false then we do all of the report processing except making the post request at the end of the pipeline.
+        /// Default: true</remarks>
+        public bool Transmit { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to rethrow exceptions after reporting them to Rollbar API.
+        /// </summary>
+        /// <value><c>true</c> if to rethrow exceptions after reporting them to Rollbar API; otherwise, <c>false</c>.</value>
+        public bool RethrowExceptionsAfterReporting { get; set; }
 
         /// <summary>
         /// Gets or sets the environment.

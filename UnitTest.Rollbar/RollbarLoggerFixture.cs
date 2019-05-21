@@ -59,6 +59,40 @@ namespace UnitTest.Rollbar
         }
 
         /// <summary>
+        /// Defines the test method TransmitConfigOptionWorks.
+        /// </summary>
+        [TestMethod]
+        public void TransmitConfigOptionWorks()
+        {
+            this.Reset();
+
+            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                rollbar.Configure(config);
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.Critical("Transmission is expected to happen!");
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
+
+                config.Transmit = false;
+                rollbar.Configure(config);
+                this.IncrementCount<TransmissionOmittedEventArgs>();
+                rollbar.Critical("Transmission is expected to be omitted!");
+                this.IncrementCount<TransmissionOmittedEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to be omitted!");
+
+                config.Transmit = true;
+                rollbar.Configure(config);
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.Critical("Transmission is expected to happen!");
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
+            }
+        }
+
+        /// <summary>
         /// Defines the test method FaultyPayloadTransformationTest.
         /// </summary>
         [TestMethod]
@@ -260,7 +294,7 @@ namespace UnitTest.Rollbar
                 Assert.IsTrue(5 < (localRateDuration.TotalMilliseconds / serverRateDuration.TotalMilliseconds), "This is good enough confirmation of locally defined rate in action...");
             }
 
-            this.ExpectedCommunicationEventsTotal = (2 * totalTestPayloads);
+            this.IncrementCount<CommunicationEventArgs>(2 * totalTestPayloads);
         }
 
         #endregion rate limiting tests
@@ -325,6 +359,8 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void AllowsProxySettingsReconfiguration()
         {
+            this.Reset();
+
             using (IRollbar logger = this.ProvideDisposableRollbar())
             {
                 IRollbarConfig initialConfig = logger.Config;
@@ -335,7 +371,7 @@ namespace UnitTest.Rollbar
 
                 int errorCount = 0;
                 logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("test 1");
-                this.ExpectedCommunicationEventsTotal++;
+                this.IncrementCount<CommunicationEventArgs>();
                 Assert.AreEqual(0, errorCount);
 
                 RollbarConfig newConfig = new RollbarConfig("seed");
@@ -343,7 +379,7 @@ namespace UnitTest.Rollbar
                 Assert.AreNotSame(initialConfig, newConfig);
                 logger.Configure(newConfig);
                 logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("test 2");
-                this.ExpectedCommunicationEventsTotal++;
+                this.IncrementCount<CommunicationEventArgs>();
                 Assert.AreEqual(0, errorCount);
 
                 newConfig.ProxyAddress = "www.fakeproxy.com";
@@ -356,7 +392,7 @@ namespace UnitTest.Rollbar
                 try
                 {
                     // the fake proxy settings will cause a timeout exception here:
-                    this.ExpectedCommunicationErrorsTotal++;
+                    this.IncrementCount<CommunicationErrorEventArgs>();
                     logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("test 3 with fake proxy");
                 }
                 catch
@@ -375,7 +411,7 @@ namespace UnitTest.Rollbar
                 try
                 {
                     // the fake proxy settings are gone, so, next call is expected to succeed:
-                    this.ExpectedCommunicationEventsTotal++;
+                    this.IncrementCount<CommunicationEventArgs>();
                     logger.AsBlockingLogger(TimeSpan.FromSeconds(15)).Info("test 4");
                 }
                 catch
@@ -425,7 +461,7 @@ namespace UnitTest.Rollbar
             using (var logger = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
                 Assert.AreEqual(totalInitialQueues + 1, RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken));
-                this.ExpectedCommunicationEventsTotal++;
+                this.IncrementCount<CommunicationEventArgs>();
                 logger.Log(ErrorLevel.Error, "test message");
             }
             // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles: 
@@ -449,7 +485,7 @@ namespace UnitTest.Rollbar
             {
                 try
                 {
-                    this.ExpectedCommunicationEventsTotal++;
+                    this.IncrementCount<CommunicationEventArgs>();
                     logger.AsBlockingLogger(defaultRollbarTimeout).Error(new System.Exception("test exception"));
                 }
                 catch
@@ -477,7 +513,7 @@ namespace UnitTest.Rollbar
                 {
                     try
                     {
-                        this.ExpectedCommunicationEventsTotal++;
+                        this.IncrementCount<CommunicationEventArgs>();
                         logger.AsBlockingLogger(defaultRollbarTimeout).Error(new System.Exception("outer exception", ex));
                     }
                     catch
@@ -498,7 +534,7 @@ namespace UnitTest.Rollbar
             {
                 try
                 {
-                    this.ExpectedCommunicationEventsTotal++;
+                    this.IncrementCount<CommunicationEventArgs>();
                     logger.AsBlockingLogger(defaultRollbarTimeout).Log(ErrorLevel.Error, "test message");
                 }
                 catch(Exception ex)
@@ -534,7 +570,7 @@ namespace UnitTest.Rollbar
                 Environment = RollbarUnitTestSettings.Environment,
                 Transform = Transform,
             };
-            this.ExpectedCommunicationEventsTotal++;
+            this.IncrementCount<CommunicationEventArgs>();
             using (var logger = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
                 try
@@ -585,7 +621,7 @@ namespace UnitTest.Rollbar
             {
                 try
                 {
-                    this.ExpectedCommunicationEventsTotal++;
+                    this.IncrementCount<CommunicationEventArgs>();
                     Stopwatch sw = Stopwatch.StartNew();
                     logger.Log(ErrorLevel.Error, "test message");
                     sw.Stop();
@@ -617,7 +653,7 @@ namespace UnitTest.Rollbar
 
                 try
                 {
-                    this.ExpectedCommunicationEventsTotal++;
+                    this.IncrementCount<CommunicationEventArgs>();
                     logger.Log(ErrorLevel.Error, "test message");
                 }
                 catch
@@ -671,7 +707,7 @@ namespace UnitTest.Rollbar
                 ReportingQueueDepth = 200,
             };
 
-            this.ExpectedCommunicationEventsTotal = loggerConfig.ReportingQueueDepth;
+            this.IncrementCount<CommunicationEventArgs>(loggerConfig.ReportingQueueDepth);
 
             TimeSpan rollbarBlockingTimeout = TimeSpan.FromMilliseconds(55000);
 
@@ -710,7 +746,7 @@ namespace UnitTest.Rollbar
                 ReportingQueueDepth = 200,
             };
 
-            this.ExpectedCommunicationEventsTotal = loggerConfig.ReportingQueueDepth;
+            this.IncrementCount<CommunicationEventArgs>(loggerConfig.ReportingQueueDepth);
 
             List<IRollbar> rollbars = 
                 new List<IRollbar>(MultithreadedStressTestParams.TotalThreads);

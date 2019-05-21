@@ -38,12 +38,66 @@
         string EndPoint { get; }
 
         /// <summary>
-        /// Gets or sets the enabled flag.
+        /// Gets or sets a value indicating whether the Rollbar logger, configured with this <see cref="IRollbarConfig"/>, is enabled.
         /// </summary>
-        /// <value>
-        /// The enabled.
-        /// </value>
-        bool? Enabled { get; set; }
+        /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
+        /// <remarks>
+        /// Default: true
+        /// </remarks>
+        bool Enabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Rollbar logger will actually transmit the payloads to the Rollbar API server.
+        /// </summary>
+        /// <value><c>true</c> if transmit; otherwise, <c>false</c>.</value>
+        /// <remarks>
+        /// Should the SDK actually perform HTTP requests to Rollbar API. This is useful if you are trying to run Rollbar in dry run mode for development or tests.
+        /// If this is false then we do all of the report processing except making the post request at the end of the pipeline.
+        /// Default: true
+        /// </remarks>
+        bool Transmit { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to rethrow exceptions after reporting them to Rollbar API.
+        /// </summary>
+        /// <value><c>true</c> if to rethrow exceptions after reporting them to Rollbar API; otherwise, <c>false</c>.</value>
+        bool RethrowExceptionsAfterReporting { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to log processed payload.
+        /// </summary>
+        /// <value><c>null</c> if contains no value, <c>true</c> if to log payloads; otherwise, <c>false</c>.</value>
+        /// <remarks>
+        /// Log the payload body to the configured log_payload_logger.
+        /// If this is true then we output the payload to standard out or a configured logger right before transmitting.
+        /// Default: false
+        /// </remarks>
+        //bool? LogPayload { get; set; }
+
+        /// <summary>
+        /// Gets or sets the log payload file.
+        /// </summary>
+        /// <value>The log payload file.</value>
+        /// <remarks>
+        /// Logs the payload body to the configured log payload file.
+        /// If empty (not specified) the payload bodies will be logged to the Console and the Trace output only.
+        /// Default: empty
+        /// </remarks>
+        //string LogPayloadFile { get; set; }
+
+        /// <summary>
+        /// Gets or sets the log verbosity.
+        /// </summary>
+        /// <value>The log verbosity.</value>
+        /// <remarks>
+        /// This configuration option controls the verbosity of the internal logs of the SDK.
+        /// </remarks>
+        //TraceVerbosity? TraceVerbosity { get; set; }
+
+
+
+
+
 
         /// <summary>
         /// Gets or sets the log level.

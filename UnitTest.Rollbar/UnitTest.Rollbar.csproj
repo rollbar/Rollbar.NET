@@ -41,11 +41,11 @@
   </ItemGroup>  
 
   <ItemGroup>
-    <Content Include="TestData\appsettings.json" Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'">
+    <Content Include="TestData\appsettings.json">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestData\appTest.config" Condition="'$(NetVariant)' == 'NET_FX'">
+    <Content Include="TestData\appTest.config">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

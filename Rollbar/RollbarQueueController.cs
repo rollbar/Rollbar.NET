@@ -434,6 +434,15 @@ namespace Rollbar
                 return null;
             }
 
+            if (queue.Logger?.Config != null && !queue.Logger.Config.Transmit)
+            {
+                response = new RollbarResponse();
+                this.OnRollbarEvent(
+                    new TransmissionOmittedEventArgs(queue.Logger, payload)
+                );
+                return payloadBundle;
+            }
+
             int retries = this._totalRetries;
             while (retries > 0)
             {
