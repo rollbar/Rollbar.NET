@@ -59,6 +59,58 @@ namespace UnitTest.Rollbar
         }
 
         /// <summary>
+        /// Defines the test method RethrowConfigOptionWorks.
+        /// </summary>
+        [TestMethod]
+        public void RethrowConfigOptionWorks()
+        {
+            this.Reset();
+
+            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                rollbar.Configure(config);
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async!"));
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync!"));
+
+                int rethrowCount = 0;
+                config.RethrowExceptionsAfterReporting = true;
+                rollbar.Configure(config);
+                try
+                {
+                    this.IncrementCount<CommunicationEventArgs>();
+                    rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async with rethrow!"));
+                }
+                catch (Exception e)
+                {
+                    rethrowCount++;
+                }
+
+                try
+                {
+                    this.IncrementCount<CommunicationEventArgs>();
+                    rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync with rethrow!"));
+                }
+                catch (Exception e)
+                {
+                    rethrowCount++;
+                }
+
+                config.RethrowExceptionsAfterReporting = false;
+                rollbar.Configure(config);
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async!"));
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync!"));
+
+                Assert.AreEqual(2, rethrowCount, "matching total of rethrows...");
+            }
+        }
+
+        /// <summary>
         /// Defines the test method TransmitConfigOptionWorks.
         /// </summary>
         [TestMethod]

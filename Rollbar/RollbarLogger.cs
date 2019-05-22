@@ -1,4 +1,6 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿using System.Runtime.ExceptionServices;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
@@ -558,6 +560,59 @@ namespace Rollbar
                 return null;
             }
 
+            if (this._config.RethrowExceptionsAfterReporting)
+            {
+                System.Exception exception = dataObject as System.Exception;
+                if (exception == null)
+                {
+                    if (dataObject is Data data && data.Body != null)
+                    {
+                        exception = data.Body.OriginalException;
+                    }
+                }
+
+                if (exception != null)
+                {
+                    try
+                    {
+                        // Here we need to create another logger instance with similar config but configured not to re-throw.
+                        // This would prevent infinite recursive calls (in case if we used this instance or any re-throwing instance).
+                        // Because we will be re-throwing the exception after reporting, let's report it fully-synchronously.
+                        // This logic is on a heavy side. But, fortunately, RethrowExceptionsAfterReporting is intended to be
+                        // a development time option:
+                        var config = new RollbarConfig();
+                        config.Reconfigure(this._config);
+                        config.RethrowExceptionsAfterReporting = false;
+                        using (var rollbar = RollbarFactory.CreateNew(config))
+                        {
+                            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level, dataObject, custom);
+                        }
+                    }
+                    catch (System.Exception e)
+                    {
+                        // In case there was a TimeoutException (or any un-expected exception),
+                        // there is nothing we can do here.
+                        // We tried our best...
+                    }
+                    finally
+                    {
+                        if (exception is AggregateException aggregateException)
+                        {
+                            exception = aggregateException.Flatten();
+                            ExceptionDispatchInfo.Capture(
+                                exception.InnerException).Throw();
+                        }
+                        else
+                        {
+                            ExceptionDispatchInfo.Capture(exception).Throw();
+                        }
+                    }
+
+                    return null;
+                }
+            }
+
+
             PayloadBundle payloadBundle = null;
             try
             {
@@ -684,7 +739,7 @@ namespace Rollbar
         /// <summary>
         /// The disposed value
         /// </summary>
-        private bool disposedValue = false; // To detect redundant calls
+        private bool _disposedValue = false; // To detect redundant calls
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
@@ -692,7 +747,7 @@ namespace Rollbar
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
@@ -703,7 +758,7 @@ namespace Rollbar
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // TODO: set large fields to null.
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 
