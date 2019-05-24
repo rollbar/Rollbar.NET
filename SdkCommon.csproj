@@ -12,6 +12,7 @@
       - feat:     ref     #394: Implement the standardized Development Configuration Options.
       - feat:     resolve #395: Implement IRollbarConfig's Transmit option.
       - feat:     resolve #396: Implement RethrowExceptionsAfterReporting IRollbarConfig option.
+      - feat:     resolve #397: Implement local SDK logging via TraceSource and supporting verbosity control.
       - perf:     resolve #383: Make sure loggers do not queue new payloads during rate-limit suspension.
       - feat:     resolve #378: Implement config validation on every logger re/configuration.
       - refactor: resolve #393: Eliminate all current build warnings.

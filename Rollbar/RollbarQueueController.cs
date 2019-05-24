@@ -1,4 +1,5 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿#define TRACE
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
@@ -77,6 +78,10 @@ namespace Rollbar
 
         #endregion singleton implementation
 
+        /// <summary>
+        /// The trace source
+        /// </summary>
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName);
 
         /// <summary>
         /// The sleep interval
@@ -574,6 +579,28 @@ namespace Rollbar
             }
 
             e.Logger?.OnRollbarEvent(e);
+
+            const string category = nameof(this.OnRollbarEvent);// "OnRollbarEvent(...)";
+            const int id = 0;
+            switch (e)
+            {
+                case InternalErrorEventArgs internalErrorEvent:
+                    traceSource.TraceData(TraceEventType.Critical, id, category, e.TraceAsString());
+                    break;
+                case CommunicationErrorEventArgs commErrorEvent:
+                case RollbarApiErrorEventArgs apiErrorEvent:
+                    traceSource.TraceData(TraceEventType.Error, id, category, e.TraceAsString());
+                    break;
+                case CommunicationEventArgs commEvent:
+                    traceSource.TraceData(TraceEventType.Information, id, category, e.TraceAsString());
+                    break;
+                case PayloadDropEventArgs payloadDropEvent:
+                case TransmissionOmittedEventArgs transmissionOmittedEvent:
+                default:
+                    traceSource.TraceData(TraceEventType.Warning, id, category, e.TraceAsString());
+                    break;
+            }
+            traceSource.Flush();
         }
 
         /// <summary>
