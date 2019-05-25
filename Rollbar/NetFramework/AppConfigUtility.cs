@@ -54,7 +54,7 @@
             }
             if (rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
             {
-                rollbarConfig.Transmit = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
+                rollbarConfig.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
             }
             if (rollbarConfigSection.MaxReportsPerMinute.HasValue)
             {

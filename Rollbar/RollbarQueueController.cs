@@ -1,4 +1,5 @@
 ﻿#define TRACE
+
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
@@ -82,6 +83,15 @@ namespace Rollbar
         /// The trace source
         /// </summary>
         private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName);
+
+        public enum PayloadTraceSources
+        {
+            RollbarTransmittedPayloads,
+            RollbarOmittedPayloads,
+        }
+
+        private static readonly TraceSource transmittedPayloadsTraceSource = new TraceSource(PayloadTraceSources.RollbarTransmittedPayloads.ToString());
+        private static readonly TraceSource omittedPayloadsTraceSource = new TraceSource(PayloadTraceSources.RollbarOmittedPayloads.ToString());
 
         /// <summary>
         /// The sleep interval
@@ -592,10 +602,14 @@ namespace Rollbar
                     traceSource.TraceData(TraceEventType.Error, id, category, e.TraceAsString());
                     break;
                 case CommunicationEventArgs commEvent:
+                    transmittedPayloadsTraceSource.TraceData(TraceEventType.Information, id, e.Payload);
                     traceSource.TraceData(TraceEventType.Information, id, category, e.TraceAsString());
                     break;
-                case PayloadDropEventArgs payloadDropEvent:
                 case TransmissionOmittedEventArgs transmissionOmittedEvent:
+                    omittedPayloadsTraceSource.TraceData(TraceEventType.Information, id, e.Payload);
+                    traceSource.TraceData(TraceEventType.Warning, id, category, e.TraceAsString());
+                    break;
+                case PayloadDropEventArgs payloadDropEvent:
                 default:
                     traceSource.TraceData(TraceEventType.Warning, id, category, e.TraceAsString());
                     break;

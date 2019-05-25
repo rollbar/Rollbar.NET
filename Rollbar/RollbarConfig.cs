@@ -202,7 +202,11 @@
         /// <remarks>Should the SDK actually perform HTTP requests to Rollbar API. This is useful if you are trying to run Rollbar in dry run mode for development or tests.
         /// If this is false then we do all of the report processing except making the post request at the end of the pipeline.
         /// Default: true</remarks>
-        public bool Transmit { get; set; }
+        public bool Transmit
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether to rethrow exceptions after reporting them to Rollbar API.
