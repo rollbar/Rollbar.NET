@@ -48,6 +48,14 @@
             {
                 rollbarConfig.Enabled = rollbarConfigSection.Enabled.Value;
             }
+            if (rollbarConfigSection.Transmit.HasValue)
+            {
+                rollbarConfig.Transmit = rollbarConfigSection.Transmit.Value;
+            }
+            if (rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
+            {
+                rollbarConfig.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
+            }
             if (rollbarConfigSection.MaxReportsPerMinute.HasValue)
             {
                 rollbarConfig.MaxReportsPerMinute = rollbarConfigSection.MaxReportsPerMinute.Value;

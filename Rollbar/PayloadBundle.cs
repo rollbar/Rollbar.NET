@@ -305,6 +305,7 @@
                     data.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(this._timeStamp);
 
                     this._payload = new Payload(this._rollbarLogger.Config.AccessToken, data);
+                    this._payload.PayloadBundle = this;
 
                     try // payload check-ignore:
                     {

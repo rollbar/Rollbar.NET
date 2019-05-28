@@ -14,6 +14,11 @@
     {
 
         /// <summary>
+        /// The payload bundle
+        /// </summary>
+        private PayloadBundle _payloadBundle;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Payload" /> class.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
@@ -56,6 +61,27 @@
         /// </remarks>
         [JsonProperty("data", Required = Required.Always)]
         public Data Data { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the payload bundle.
+        /// </summary>
+        /// <value>The payload bundle.</value>
+        [JsonIgnore]
+        internal PayloadBundle PayloadBundle
+        {
+            get { return this._payloadBundle; }
+            set
+            {
+                if (this._payloadBundle != null)
+                {
+                    Assumption.FailValidation("The payload bundle can not be reassigned!", nameof(this.PayloadBundle));
+                }
+                else
+                {
+                    this._payloadBundle = value;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the proper validator.

@@ -145,7 +145,7 @@
         /// Gets the proper validator.
         /// </summary>
         /// <returns>Validator.</returns>
-        public Validator GetValidator()
+        public override Validator GetValidator()
         {
             var validator = new Validator<Telemetry, Telemetry.TelemetryValidationRule>()
                     .AddValidation(

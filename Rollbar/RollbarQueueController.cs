@@ -1,4 +1,6 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿#define TRACE
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
@@ -77,11 +79,35 @@ namespace Rollbar
 
         #endregion singleton implementation
 
+        /// <summary>
+        /// The trace source
+        /// </summary>
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName);
+
+        /// <summary>
+        /// Enum PayloadTraceSources
+        /// </summary>
+        public enum PayloadTraceSources
+        {
+            /// <summary>
+            /// The rollbar transmitted payloads
+            /// </summary>
+            RollbarTransmittedPayloads,
+
+            /// <summary>
+            /// The rollbar omitted payloads
+            /// </summary>
+            RollbarOmittedPayloads,
+        }
+
+        private static readonly TraceSource transmittedPayloadsTraceSource = new TraceSource(PayloadTraceSources.RollbarTransmittedPayloads.ToString());
+        private static readonly TraceSource omittedPayloadsTraceSource = new TraceSource(PayloadTraceSources.RollbarOmittedPayloads.ToString());
 
         /// <summary>
         /// The sleep interval
         /// </summary>
         internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(25);
+
         /// <summary>
         /// The total retries
         /// </summary>
@@ -433,6 +459,15 @@ namespace Rollbar
                 return null;
             }
 
+            if (queue.Logger?.Config != null && !queue.Logger.Config.Transmit)
+            {
+                response = new RollbarResponse();
+                this.OnRollbarEvent(
+                    new TransmissionOmittedEventArgs(queue.Logger, payload)
+                );
+                return payloadBundle;
+            }
+
             int retries = this._totalRetries;
             while (retries > 0)
             {
@@ -528,6 +563,7 @@ namespace Rollbar
                 this._queuesByAccessToken.Add(queueToken, tokenMetadata);
             }
             tokenMetadata.Queues.Add(queue);
+            queue.AccessTokenQueuesMetadata = tokenMetadata;
         }
 
         /// <summary>
@@ -541,6 +577,7 @@ namespace Rollbar
                 if (tokenMetadata.Queues.Contains(queue))
                 {
                     tokenMetadata.Queues.Remove(queue);
+                    queue.AccessTokenQueuesMetadata = null;
                     break;
                 }
             }
@@ -562,6 +599,32 @@ namespace Rollbar
             }
 
             e.Logger?.OnRollbarEvent(e);
+
+            const string category = nameof(this.OnRollbarEvent);// "OnRollbarEvent(...)";
+            const int id = 0;
+            switch (e)
+            {
+                case InternalErrorEventArgs internalErrorEvent:
+                    traceSource.TraceData(TraceEventType.Critical, id, category, e.TraceAsString());
+                    break;
+                case CommunicationErrorEventArgs commErrorEvent:
+                case RollbarApiErrorEventArgs apiErrorEvent:
+                    traceSource.TraceData(TraceEventType.Error, id, category, e.TraceAsString());
+                    break;
+                case CommunicationEventArgs commEvent:
+                    transmittedPayloadsTraceSource.TraceData(TraceEventType.Information, id, e.Payload);
+                    traceSource.TraceData(TraceEventType.Information, id, category, e.TraceAsString());
+                    break;
+                case TransmissionOmittedEventArgs transmissionOmittedEvent:
+                    omittedPayloadsTraceSource.TraceData(TraceEventType.Information, id, e.Payload);
+                    traceSource.TraceData(TraceEventType.Warning, id, category, e.TraceAsString());
+                    break;
+                case PayloadDropEventArgs payloadDropEvent:
+                default:
+                    traceSource.TraceData(TraceEventType.Warning, id, category, e.TraceAsString());
+                    break;
+            }
+            traceSource.Flush();
         }
 
         /// <summary>

@@ -35,6 +35,15 @@
         {
             Assumption.AssertNotNullOrEmpty(exceptions, nameof(exceptions));
 
+            if (exceptions.Count() > 1)
+            {
+                this.OriginalException = new AggregateException(exceptions);
+            }
+            else
+            {
+                this.OriginalException = exceptions.FirstOrDefault();
+            }
+
             var allExceptions = exceptions as System.Exception[] ?? exceptions.ToArray();
             TraceChain = allExceptions.Select(e => new Trace(e)).ToArray();
 
@@ -48,6 +57,8 @@
         public Body(System.Exception exception)
         {
             Assumption.AssertNotNull(exception, nameof(exception));
+
+            this.OriginalException = exception;
 
             AggregateException aggregateException = exception as AggregateException;
             if (aggregateException != null)
@@ -96,6 +107,9 @@
             this.CrashReport = new CrashReport(crashReport);
             Validate();
         }
+
+        [JsonIgnore]
+        internal readonly System.Exception OriginalException = null;
 
         #region These are mutually exclusive properties - only one of them can be not null
 

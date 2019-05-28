@@ -111,7 +111,11 @@ namespace Rollbar.NetCore.AspNet
                         TelemetryCollector.Instance.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
                     }
 
-                    RollbarScope.Current.HttpContext.HttpAttributes = new RollbarHttpAttributes(context);
+                    if (RollbarScope.Current != null && RollbarScope.Current.HttpContext != null)
+                    {
+                        RollbarScope.Current.HttpContext.HttpAttributes = new RollbarHttpAttributes(context);
+                    }
+
                     await this._nextRequestProcessor(context);
 
 

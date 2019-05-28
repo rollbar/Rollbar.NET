@@ -93,12 +93,13 @@ namespace UnitTest.Rollbar
         public void TimeoutExceptionAggregatesMisconfigurationDetails()
         {
             RollbarConfig badConfig = new RollbarConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
-            badConfig.Person = new Person(); // this is an invalid Person instance since PersonID is required... 
             using (IRollbar logger = RollbarFactory.CreateNew(badConfig))
             {
                 try
                 {
-                    logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("MISCONFIGURED_TOKEN");
+                    var badData = new Data(new Body("Misconfigured Person data"));
+                    badData.Person = new Person();
+                    logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Log(badData);
                     Assert.Fail("No TimeoutException!");
                 }
                 catch (TimeoutException ex)

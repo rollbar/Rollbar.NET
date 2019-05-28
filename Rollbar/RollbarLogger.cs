@@ -1,7 +1,11 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿using System.Linq;
+using System.Runtime.ExceptionServices;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using Rollbar.Telemetry;
@@ -61,6 +65,7 @@ namespace Rollbar
 
             if (rollbarConfig != null)
             {
+                ValidateConfiguration(rollbarConfig);
                 this._config = new RollbarConfig(this).Reconfigure(rollbarConfig);
             }
             else
@@ -113,6 +118,8 @@ namespace Rollbar
         /// <returns>IRollbar.</returns>
         public IRollbar Configure(IRollbarConfig settings)
         {
+            ValidateConfiguration(settings);
+
             this._config.Reconfigure(settings);
 
             return this;
@@ -543,15 +550,69 @@ namespace Rollbar
             )
         {
             // here is the last chance to decide if we need to actually send this payload
-            // based on the current config settings:
+            // based on the current config settings and rate-limit conditions:
             if (string.IsNullOrWhiteSpace(this._config.AccessToken)
                 || this._config.Enabled == false
                 || (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+                || ((this._payloadQueue.AccessTokenQueuesMetadata != null) && this._payloadQueue.AccessTokenQueuesMetadata.IsTransmissionSuspended)
                 )
             {
                 // nice shortcut:
                 return null;
             }
+
+            if (this._config.RethrowExceptionsAfterReporting)
+            {
+                System.Exception exception = dataObject as System.Exception;
+                if (exception == null)
+                {
+                    if (dataObject is Data data && data.Body != null)
+                    {
+                        exception = data.Body.OriginalException;
+                    }
+                }
+
+                if (exception != null)
+                {
+                    try
+                    {
+                        // Here we need to create another logger instance with similar config but configured not to re-throw.
+                        // This would prevent infinite recursive calls (in case if we used this instance or any re-throwing instance).
+                        // Because we will be re-throwing the exception after reporting, let's report it fully-synchronously.
+                        // This logic is on a heavy side. But, fortunately, RethrowExceptionsAfterReporting is intended to be
+                        // a development time option:
+                        var config = new RollbarConfig();
+                        config.Reconfigure(this._config);
+                        config.RethrowExceptionsAfterReporting = false;
+                        using (var rollbar = RollbarFactory.CreateNew(config))
+                        {
+                            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level, dataObject, custom);
+                        }
+                    }
+                    catch
+                    {
+                        // In case there was a TimeoutException (or any un-expected exception),
+                        // there is nothing we can do here.
+                        // We tried our best...
+                    }
+                    finally
+                    {
+                        if (exception is AggregateException aggregateException)
+                        {
+                            exception = aggregateException.Flatten();
+                            ExceptionDispatchInfo.Capture(
+                                exception.InnerException).Throw();
+                        }
+                        else
+                        {
+                            ExceptionDispatchInfo.Capture(exception).Throw();
+                        }
+                    }
+
+                    return null;
+                }
+            }
+
 
             PayloadBundle payloadBundle = null;
             try
@@ -649,12 +710,37 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Validates the configuration.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        private void ValidateConfiguration(IRollbarConfig rollbarConfig)
+        {
+            IValidatable validatableConfig = rollbarConfig as IValidatable;
+            if (validatableConfig != null)
+            {
+                var failedValidationRules = validatableConfig.Validate();
+                if (failedValidationRules.Count > 0)
+                {
+                    var exception =
+                        new RollbarException(
+                            InternalRollbarError.ConfigurationError,
+                            "Failed to configure using invalid configuration prototype!"
+                            );
+                    exception.Data[nameof(failedValidationRules)] = failedValidationRules.ToArray();
+
+                    throw exception;
+                }
+            }
+
+        }
+
         #region IDisposable Support
 
         /// <summary>
         /// The disposed value
         /// </summary>
-        private bool disposedValue = false; // To detect redundant calls
+        private bool _disposedValue = false; // To detect redundant calls
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
@@ -662,7 +748,7 @@ namespace Rollbar
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
@@ -673,7 +759,7 @@ namespace Rollbar
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
                 // TODO: set large fields to null.
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 

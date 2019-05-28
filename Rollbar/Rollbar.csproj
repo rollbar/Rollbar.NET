@@ -9,10 +9,7 @@
 
   <Import Project="..\SdkCommon.csproj" />
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'
-                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'
-                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU'
-                 ">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU'&#xD;&#xA;                 ">
     <DefineConstants>NETCOREAPP;INSTRUMENT</DefineConstants>
   </PropertyGroup>
 
@@ -20,85 +17,41 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
-  <PropertyGroup Condition="
-                 '$(TargetFramework)' == 'netstandard2.0'
-                 ">
+  <PropertyGroup Condition="&#xD;&#xA;                 '$(TargetFramework)' == 'netstandard2.0'&#xD;&#xA;                 ">
     <NetVariant>NET_STANDARD</NetVariant>
-    <DefineConstants>NETSTANDARD</DefineConstants>
+    <DefineConstants>TRACE;NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="
-                 '$(TargetFramework)' == 'netcoreapp2.2'
-                 Or '$(TargetFramework)' == 'netcoreapp2.1'
-                 Or '$(TargetFramework)' == 'netcoreapp2.0'
-                 ">
+  <PropertyGroup Condition="&#xD;&#xA;                 '$(TargetFramework)' == 'netcoreapp2.2'&#xD;&#xA;                 Or '$(TargetFramework)' == 'netcoreapp2.1'&#xD;&#xA;                 Or '$(TargetFramework)' == 'netcoreapp2.0'&#xD;&#xA;                 ">
     <NetVariant>NET_CORE</NetVariant>
-    <DefineConstants>NETCOREAPP</DefineConstants>
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="
-                 '$(TargetFramework)' == 'net472'
-                 Or '$(TargetFramework)' == 'net471'
-                 Or '$(TargetFramework)' == 'net47' 
-                 Or '$(TargetFramework)' == 'net462' 
-                 Or '$(TargetFramework)' == 'net461' 
-                 Or '$(TargetFramework)' == 'net46'
-                 Or '$(TargetFramework)' == 'net452'
-                 Or '$(TargetFramework)' == 'net451'
-                 Or '$(TargetFramework)' == 'net45'
-                 ">
+  <PropertyGroup Condition="&#xD;&#xA;                 '$(TargetFramework)' == 'net472'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net471'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net47' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net462' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net461' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net46'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net452'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net451'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net45'&#xD;&#xA;                 ">
     <NetVariant>NET_FX</NetVariant>
-    <DefineConstants>NETFX</DefineConstants>
+    <DefineConstants>TRACE;NETFX</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="
-                 '$(TargetFramework)' == 'net47'
-                 Or '$(TargetFramework)' == 'net462'
-                 Or '$(TargetFramework)' == 'net461'
-                 Or '$(TargetFramework)' == 'net46'
-                 Or '$(TargetFramework)' == 'net452'
-                 Or '$(TargetFramework)' == 'net451'
-                 Or '$(TargetFramework)' == 'net45'
-                 ">
+  <PropertyGroup Condition="&#xD;&#xA;                 '$(TargetFramework)' == 'net47'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net462'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net461'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net46'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net452'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net451'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net45'&#xD;&#xA;                 ">
     <DefineConstants>NETFX_47nOlder;NETFX</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="
-                 '$(TargetFramework)' == 'net472'
-                 Or '$(TargetFramework)' == 'net471'
-                 Or '$(TargetFramework)' == 'net47' 
-                 Or '$(TargetFramework)' == 'net462' 
-                 Or '$(TargetFramework)' == 'net461' 
-                 ">
+  <PropertyGroup Condition="&#xD;&#xA;                 '$(TargetFramework)' == 'net472'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net471'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net47' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net462' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net461' &#xD;&#xA;                 ">
     <DefineConstants>NETFX_461nNewer</DefineConstants>
   </PropertyGroup>
 
-  <ItemGroup Condition="
-                 '$(TargetFramework)' == 'net472'
-                 Or '$(TargetFramework)' == 'net471'
-                 Or '$(TargetFramework)' == 'net47' 
-                 Or '$(TargetFramework)' == 'net462' 
-                 Or '$(TargetFramework)' == 'net461' 
-                 ">
+  <ItemGroup Condition="&#xD;&#xA;                 '$(TargetFramework)' == 'net472'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net471'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net47' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net462' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net461' &#xD;&#xA;                 ">
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
   </ItemGroup>
 
 
-  <ItemGroup Label="Required for netcoreapp2.1 and above..."
-             Condition="
-             '$(NetVariant)' == 'NET_CORE' 
-             And ('TargetFramework' == 'netcoreapp2.1' Or 'TargetFramework' == 'netcoreapp2.2')
-             ">
-    <PackageReference Include="Microsoft.NetCore.App"  />
+  <ItemGroup Label="Required for netcoreapp2.1 and above..." Condition="&#xD;&#xA;             '$(NetVariant)' == 'NET_CORE' &#xD;&#xA;             And ('TargetFramework' == 'netcoreapp2.1' Or 'TargetFramework' == 'netcoreapp2.2')&#xD;&#xA;             ">
+    <PackageReference Include="Microsoft.NetCore.App" />
   </ItemGroup>
 
-  <ItemGroup Condition="
-             '$(NetVariant)' == 'NET_CORE' 
-             Or
-             '$(NetVariant)' == 'NET_STANDARD'
-             ">
+  <ItemGroup Condition="&#xD;&#xA;             '$(NetVariant)' == 'NET_CORE' &#xD;&#xA;             Or&#xD;&#xA;             '$(NetVariant)' == 'NET_STANDARD'&#xD;&#xA;             ">
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
@@ -109,9 +62,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="
-             '$(NetVariant)' == 'NET_FX'
-             ">
+  <ItemGroup Condition="&#xD;&#xA;             '$(NetVariant)' == 'NET_FX'&#xD;&#xA;             ">
     <Reference Include="System.Configuration" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />

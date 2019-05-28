@@ -46,10 +46,8 @@
         /// The access token.
         /// </value>
         [ConfigurationProperty("accessToken", IsRequired = false)]
-        public string AccessToken
-        {
-            get { return this["accessToken"] as string; }
-        }
+        public string AccessToken 
+            => this["accessToken"] as string;
 
         /// <summary>
         /// Gets or sets the end point.
@@ -58,10 +56,8 @@
         /// The end point.
         /// </value>
         [ConfigurationProperty("endPoint", IsRequired = false)]
-        public string EndPoint
-        {
-            get { return this["endPoint"] as string; }
-        }
+        public string EndPoint 
+            => this["endPoint"] as string;
 
         /// <summary>
         /// Gets or sets the scrub fields.
@@ -70,13 +66,8 @@
         /// The scrub fields.
         /// </value>
         [ConfigurationProperty("scrubFields", IsRequired = false)]
-        public string ScrubFields
-        {
-            get
-            {
-                return this["scrubFields"] as string;
-            }
-        }
+        public string ScrubFields 
+            => this["scrubFields"] as string;
 
         /// <summary>
         /// Gets or sets the scrub fields.
@@ -85,13 +76,8 @@
         /// The scrub fields.
         /// </value>
         [ConfigurationProperty("scrubWhitelistFields", IsRequired = false)]
-        public string ScrubWhitelistFields
-        {
-            get
-            {
-                return this["scrubWhitelistFields"] as string;
-            }
-        }
+        public string ScrubWhitelistFields 
+            => this["scrubWhitelistFields"] as string;
 
         /// <summary>
         /// Gets or sets the log level.
@@ -100,13 +86,8 @@
         /// The log level.
         /// </value>
         [ConfigurationProperty("logLevel", IsRequired = false)]
-        public ErrorLevel? LogLevel
-        {
-            get
-            {
-                return this["logLevel"] as ErrorLevel?;
-            }
-        }
+        public ErrorLevel? LogLevel 
+            => this["logLevel"] as ErrorLevel?;
 
         /// <summary>
         /// Gets or sets the enabled.
@@ -114,14 +95,25 @@
         /// <value>
         /// The enabled.
         /// </value>
-        [ConfigurationProperty("enabled", IsRequired = false)]
-        public bool? Enabled
-        {
-            get
-            {
-                return this["enabled"] as bool?;
-            }
-        }
+        [ConfigurationProperty("enabled", IsRequired = false, DefaultValue = true)]
+        public bool? Enabled 
+            => this["enabled"] as bool?;
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="RollbarConfigSection"/> is transmit.
+        /// </summary>
+        /// <value><c>null</c> if contains no value, <c>true</c> if [transmit]; otherwise, <c>false</c>.</value>
+        [ConfigurationProperty("transmit", IsRequired = false, DefaultValue = true)]
+        public bool? Transmit 
+            => this["transmit"] as bool?;
+
+        /// <summary>
+        /// Gets a value indicating whether to rethrow exceptions after reporting.
+        /// </summary>
+        /// <value><c>null</c> if contains no value, <c>true</c> if to rethrow exceptions after reporting; otherwise, <c>false</c>.</value>
+        [ConfigurationProperty("rethrowExceptionsAfterReporting", IsRequired = false, DefaultValue = false)]
+        public bool? RethrowExceptionsAfterReporting 
+            => this["rethrowExceptionsAfterReporting"] as bool?;
 
         /// <summary>
         /// Gets or sets the environment.
@@ -130,10 +122,8 @@
         /// The environment.
         /// </value>
         [ConfigurationProperty("environment", IsRequired = false)]
-        public string Environment
-        {
-            get { return this["environment"] as string; }
-        }
+        public string Environment 
+            => this["environment"] as string;
 
         /// <summary>
         /// Gets or sets the proxy address.
@@ -142,30 +132,24 @@
         /// The proxy address.
         /// </value>
         [ConfigurationProperty("proxyAddress", IsRequired = false)]
-        public string ProxyAddress
-        {
-            get { return this["proxyAddress"] as string; }
-        }
+        public string ProxyAddress 
+            => this["proxyAddress"] as string;
 
         /// <summary>
         /// Gets the proxy username.
         /// </summary>
         /// <value>The proxy username.</value>
         [ConfigurationProperty("proxyUsername", IsRequired = false)]
-        public string ProxyUsername
-        {
-            get { return this["proxyUsername"] as string; }
-        }
+        public string ProxyUsername 
+            => this["proxyUsername"] as string;
 
         /// <summary>
         /// Gets the proxy password.
         /// </summary>
         /// <value>The proxy password.</value>
         [ConfigurationProperty("proxyPassword", IsRequired = false)]
-        public string ProxyPassword
-        {
-            get { return this["proxyPassword"] as string; }
-        }
+        public string ProxyPassword 
+            => this["proxyPassword"] as string;
 
         /// <summary>
         /// Gets or sets the maximum reports per minute.
@@ -174,13 +158,8 @@
         /// The maximum reports per minute.
         /// </value>
         [ConfigurationProperty("maxReportsPerMinute", IsRequired = false)]
-        public int? MaxReportsPerMinute
-        {
-            get
-            {
-                return this["maxReportsPerMinute"] as int?;
-            }
-        }
+        public int? MaxReportsPerMinute 
+            => this["maxReportsPerMinute"] as int?;
 
         /// <summary>
         /// Gets or sets the reporting queue depth.
@@ -189,13 +168,8 @@
         /// The reporting queue depth.
         /// </value>
         [ConfigurationProperty("reportingQueueDepth", IsRequired = false)]
-        public int? ReportingQueueDepth
-        {
-            get
-            {
-                return this["reportingQueueDepth"] as int?;
-            }
-        }
+        public int? ReportingQueueDepth 
+            => this["reportingQueueDepth"] as int?;
 
         /// <summary>
         /// Gets the maximum items limit.
@@ -211,12 +185,7 @@
         /// </remarks>
         [ConfigurationProperty("maxItems", IsRequired = false)]
         public int? MaxItems 
-        {
-            get
-            {
-                return this["maxItems"] as int?;
-            }
-        }
+            => this["maxItems"] as int?;
 
         /// <summary>
         /// Gets a value indicating whether to auto-capture uncaught exceptions.
@@ -226,12 +195,7 @@
         /// </value>
         [ConfigurationProperty("captureUncaughtExceptions", IsRequired = false)]
         public bool? CaptureUncaughtExceptions 
-        {
-            get
-            {
-                return this["captureUncaughtExceptions"] as bool?;
-            }
-        }
+            => this["captureUncaughtExceptions"] as bool?;
 
         /// <summary>
         /// Gets the person data collection policies.
@@ -240,13 +204,8 @@
         /// The person data collection policies.
         /// </value>
         [ConfigurationProperty("personDataCollectionPolicies", IsRequired = false)]
-        public PersonDataCollectionPolicies? PersonDataCollectionPolicies
-        {
-            get
-            {
-                return this["personDataCollectionPolicies"] as PersonDataCollectionPolicies?;
-            }
-        }
+        public PersonDataCollectionPolicies? PersonDataCollectionPolicies 
+            => this["personDataCollectionPolicies"] as PersonDataCollectionPolicies?;
 
         /// <summary>
         /// Gets the IP address collection policy.
@@ -255,13 +214,8 @@
         /// The IP address collection policy.
         /// </value>
         [ConfigurationProperty("ipAddressCollectionPolicy", IsRequired = false)]
-        public IpAddressCollectionPolicy? IpAddressCollectionPolicy
-        {
-            get
-            {
-                return this["ipAddressCollectionPolicy"] as IpAddressCollectionPolicy?;
-            }
-        }
+        public IpAddressCollectionPolicy? IpAddressCollectionPolicy 
+            => this["ipAddressCollectionPolicy"] as IpAddressCollectionPolicy?;
     }
 
 }

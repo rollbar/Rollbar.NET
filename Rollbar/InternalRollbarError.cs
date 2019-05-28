@@ -15,6 +15,11 @@
         GeneralError,
 
         /// <summary>
+        /// The configuration error
+        /// </summary>
+        ConfigurationError,
+
+        /// <summary>
         /// The packaging error
         /// </summary>
         PackagingError,
