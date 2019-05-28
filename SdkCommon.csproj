@@ -7,17 +7,8 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.2.0</SdkVersion>
+  <SdkVersion>3.2.1</SdkVersion>
     <PackageReleaseNotes>
-      - feat:     resolve #394: Implement the standardized Development Configuration Options.
-      - feat:     resolve #395: Implement IRollbarConfig's Transmit option.
-      - feat:     resolve #396: Implement RethrowExceptionsAfterReporting IRollbarConfig option.
-      - feat:     resolve #397: Implement local SDK logging via TraceSource and supporting verbosity control.
-      - feat:     resolve #398: Implement dedicated local logging of payloads coming through the RollbarLogger.
-      - perf:     resolve #383: Make sure loggers do not queue new payloads during rate-limit suspension.
-      - feat:     resolve #378: Implement config validation on every logger re/configuration.
-      - refactor: resolve #393: Eliminate all current build warnings.
-      - test:     resolve #401: Fix failing CI unit tests (on some of the build targets)
     </PackageReleaseNotes>
     
     <!--
