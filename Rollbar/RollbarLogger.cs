@@ -1,4 +1,5 @@
-﻿using System.Runtime.ExceptionServices;
+﻿using System.Linq;
+using System.Runtime.ExceptionServices;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
@@ -726,7 +727,7 @@ namespace Rollbar
                             InternalRollbarError.ConfigurationError,
                             "Failed to configure using invalid configuration prototype!"
                             );
-                    exception.Data[nameof(failedValidationRules)] = failedValidationRules;
+                    exception.Data[nameof(failedValidationRules)] = failedValidationRules.ToArray();
 
                     throw exception;
                 }
