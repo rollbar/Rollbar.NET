@@ -56,6 +56,17 @@ We are also unifying versioning for all of the modules to follow common SDK vers
 
 ### Fixes and Improvements
 
+#### v3.2.0
+-   resolve #394: Implement the standardized Development Configuration Options.
+-   resolve #395: Implement IRollbarConfig's Transmit option.
+-   resolve #396: Implement RethrowExceptionsAfterReporting IRollbarConfig option.
+-   resolve #397: Implement local SDK logging via TraceSource and supporting verbosity control.
+-   resolve #398: Implement dedicated local logging of payloads coming through the RollbarLogger.
+-   resolve #383: Make sure loggers do not queue new payloads during rate-limit suspension.
+-   resolve #378: Implement config validation on every logger re/configuration.
+-   resolve #393: Eliminate all current build warnings.
+-   resolve #401: Fix failing CI unit tests (on some of the build targets)
+    
 #### v3.1.0
 -   resolve #379: Add Validate() method to IRollbarConfig.
 -   resolve #368: Make SDK to obey service-side enforced rate limits unless client-side RollbarConfig defines one
