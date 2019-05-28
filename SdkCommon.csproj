@@ -17,6 +17,7 @@
       - perf:     resolve #383: Make sure loggers do not queue new payloads during rate-limit suspension.
       - feat:     resolve #378: Implement config validation on every logger re/configuration.
       - refactor: resolve #393: Eliminate all current build warnings.
+      - test:     ref     #401: Fix failing CI unit tests (on some of the build targets)
     </PackageReleaseNotes>
     
     <!--
