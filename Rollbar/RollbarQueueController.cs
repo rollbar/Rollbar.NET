@@ -84,9 +84,19 @@ namespace Rollbar
         /// </summary>
         private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName);
 
+        /// <summary>
+        /// Enum PayloadTraceSources
+        /// </summary>
         public enum PayloadTraceSources
         {
+            /// <summary>
+            /// The rollbar transmitted payloads
+            /// </summary>
             RollbarTransmittedPayloads,
+
+            /// <summary>
+            /// The rollbar omitted payloads
+            /// </summary>
             RollbarOmittedPayloads,
         }
 

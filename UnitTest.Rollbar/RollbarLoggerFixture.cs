@@ -84,7 +84,7 @@ namespace UnitTest.Rollbar
                     this.IncrementCount<CommunicationEventArgs>();
                     rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async with rethrow!"));
                 }
-                catch (Exception e)
+                catch
                 {
                     rethrowCount++;
                 }
@@ -94,7 +94,7 @@ namespace UnitTest.Rollbar
                     this.IncrementCount<CommunicationEventArgs>();
                     rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync with rethrow!"));
                 }
-                catch (Exception e)
+                catch
                 {
                     rethrowCount++;
                 }

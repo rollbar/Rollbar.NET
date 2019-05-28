@@ -7,7 +7,7 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.2.1</SdkVersion>
+  <SdkVersion>3.2.0</SdkVersion>
     <PackageReleaseNotes>
       - feat:     resolve #394: Implement the standardized Development Configuration Options.
       - feat:     resolve #395: Implement IRollbarConfig's Transmit option.

@@ -588,7 +588,7 @@ namespace Rollbar
                             rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level, dataObject, custom);
                         }
                     }
-                    catch (System.Exception e)
+                    catch
                     {
                         // In case there was a TimeoutException (or any un-expected exception),
                         // there is nothing we can do here.

@@ -64,42 +64,6 @@
         bool RethrowExceptionsAfterReporting { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to log processed payload.
-        /// </summary>
-        /// <value><c>null</c> if contains no value, <c>true</c> if to log payloads; otherwise, <c>false</c>.</value>
-        /// <remarks>
-        /// Log the payload body to the configured log_payload_logger.
-        /// If this is true then we output the payload to standard out or a configured logger right before transmitting.
-        /// Default: false
-        /// </remarks>
-        //bool? LogPayload { get; set; }
-
-        /// <summary>
-        /// Gets or sets the log payload file.
-        /// </summary>
-        /// <value>The log payload file.</value>
-        /// <remarks>
-        /// Logs the payload body to the configured log payload file.
-        /// If empty (not specified) the payload bodies will be logged to the Console and the Trace output only.
-        /// Default: empty
-        /// </remarks>
-        //string LogPayloadFile { get; set; }
-
-        /// <summary>
-        /// Gets or sets the log verbosity.
-        /// </summary>
-        /// <value>The log verbosity.</value>
-        /// <remarks>
-        /// This configuration option controls the verbosity of the internal logs of the SDK.
-        /// </remarks>
-        //TraceVerbosity? TraceVerbosity { get; set; }
-
-
-
-
-
-
-        /// <summary>
         /// Gets or sets the log level.
         /// </summary>
         /// <value>
