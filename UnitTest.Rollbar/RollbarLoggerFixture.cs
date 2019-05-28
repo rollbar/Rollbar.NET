@@ -367,15 +367,15 @@ namespace UnitTest.Rollbar
             }
             catch (RollbarException ex)
             {
-                global::System.Diagnostics.Trace.WriteLine(ex.Message);
-                global::System.Diagnostics.Trace.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
                 Assert.IsTrue(ex.Data.Count > 0, "Expected to contain failed validation rules!");
                 return;
             }
             catch (Exception ex)
             {
-                global::System.Diagnostics.Trace.WriteLine(ex.Message);
-                global::System.Diagnostics.Trace.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
                 Assert.Fail("Should never reach here due to exception above!");
             }
 
@@ -398,15 +398,15 @@ namespace UnitTest.Rollbar
             }
             catch (RollbarException ex)
             {
-                global::System.Diagnostics.Trace.WriteLine(ex.Message);
-                global::System.Diagnostics.Trace.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
                 Assert.IsTrue(ex.Data.Count > 0, "Expected to contain failed validation rules!");
                 return;
             }
             catch (Exception ex)
             {
-                global::System.Diagnostics.Trace.WriteLine(ex.Message);
-                global::System.Diagnostics.Trace.WriteLine(ex.ToString());
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
                 Assert.Fail("Should never reach here due to exception above!");
             }
 
