@@ -3,7 +3,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net46;net45</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net46;net45</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
 
@@ -11,7 +11,12 @@
   </PropertyGroup>
 
   <!-- We only want to run performance evaluation unit tests under .NET Core -->
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU'&#xD;&#xA;                 ">
+  <PropertyGroup Condition="
+                 '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp3.0|AnyCPU'
+                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'
+                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'
+                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU'
+                 ">
     <DefineConstants>INSTRUMENT</DefineConstants>
   </PropertyGroup>
   
@@ -21,12 +26,28 @@
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp2.0'">
+  <PropertyGroup Condition="
+                 '$(TargetFramework)' == 'netcoreapp3.0' 
+                 Or '$(TargetFramework)' == 'netcoreapp2.2' 
+                 Or '$(TargetFramework)' == 'netcoreapp2.1' 
+                 Or '$(TargetFramework)' == 'netcoreapp2.0'
+                 ">
     <NetVariant>NET_CORE</NetVariant>
     <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net472' &#xD;&#xA;                 Or '$(TargetFramework)' == 'net471'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net47'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net462'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net461'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net46'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net452'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net451'&#xD;&#xA;                 Or '$(TargetFramework)' == 'net45'&#xD;&#xA;                 ">
+  <PropertyGroup Condition="
+                 '$(TargetFramework)' == 'net48' 
+                 Or '$(TargetFramework)' == 'net472' 
+                 Or '$(TargetFramework)' == 'net471' 
+                 Or '$(TargetFramework)' == 'net47' 
+                 Or '$(TargetFramework)' == 'net462' 
+                 Or '$(TargetFramework)' == 'net461' 
+                 Or '$(TargetFramework)' == 'net46' 
+                 Or '$(TargetFramework)' == 'net452' 
+                 Or '$(TargetFramework)' == 'net451' 
+                 Or '$(TargetFramework)' == 'net45'
+                 ">
     <NetVariant>NET_FX</NetVariant>
     <DefineConstants>NETFX</DefineConstants>
   </PropertyGroup>
@@ -80,7 +101,14 @@
   </ItemGroup>
 
   <!--For older .NET Framework versions ONLY!-->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451' Or '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition="
+             '$(TargetFramework)' == 'net462' 
+             Or '$(TargetFramework)' == 'net461' 
+             Or '$(TargetFramework)' == 'net46' 
+             Or '$(TargetFramework)' == 'net452' 
+             Or '$(TargetFramework)' == 'net451' 
+             Or '$(TargetFramework)' == 'net45' 
+             ">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 

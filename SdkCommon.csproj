@@ -7,8 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.2.1</SdkVersion>
+  <SdkVersion>3.3.0</SdkVersion>
     <PackageReleaseNotes>
+      feat:      resolve #403: Add explicit netcoreapp3.0 TargetFramework.
+      feat:      resolve #404: Add explicit net48 TargetFramework.
     </PackageReleaseNotes>
     
     <!--
