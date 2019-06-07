@@ -12,11 +12,13 @@
       feat:      resolve #403: Add explicit netcoreapp3.0 TargetFramework.
       feat:      resolve #404: Add explicit net48 TargetFramework.
       feat:      resolve #405: Upgrade bench-marking and unit-testing dependencies.
+      feat:      ref #407: Expand ScrubFields defaults to match rollbar.js SDK.
     </PackageReleaseNotes>
     
     <!--
     Release Notes Tagging Conventions:
     ==================================
+    
     1.  Every entry within the PackageReleaseNotes element is expected to be started with
         at least one of the tags listed:
         

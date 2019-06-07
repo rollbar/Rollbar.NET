@@ -280,3 +280,5 @@ __pycache__/
 /Samples/Sample.PlugIns.MSEnterpriseLibrary.sln.GhostDoc.user.dic
 
 cli-tools/
+
+Rollbar/comments\.xml
