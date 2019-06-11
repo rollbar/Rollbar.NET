@@ -87,13 +87,8 @@
             this.MaxItems = 0;
             this.CaptureUncaughtExceptions = true;
             this.LogLevel = ErrorLevel.Debug;
-            this.ScrubFields = new []
+            this.ScrubFields = new string[]
             {
-                "passwd",
-                "password",
-                "secret",
-                "confirm_password",
-                "password_confirmation",
             };
             this.ScrubWhitelistFields = new string[]
             {
