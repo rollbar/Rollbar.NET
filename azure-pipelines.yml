@@ -44,6 +44,13 @@ steps:
 - task: UseDotNet@2
   displayName: 'Use .NET Core sdk'
   inputs:
+    packageType: runtime
+    version: 3.x
+    includePreviewVersions: true
+
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
     packageType: sdk
     version: 3.x
     includePreviewVersions: true
