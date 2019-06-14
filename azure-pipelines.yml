@@ -42,7 +42,7 @@ steps:
 #     version: '2.2.104' # replace this value with the version that you need for your project
 
 - task: UseDotNet@2
-  displayName: 'Use .NET Core sdk'
+  displayName: 'Use .NET Core runtime'
   inputs:
     packageType: runtime
     version: 3.x
