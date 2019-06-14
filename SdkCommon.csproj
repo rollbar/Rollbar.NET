@@ -13,6 +13,7 @@
       feat:      resolve #404: Add explicit net48 TargetFramework.
       feat:      resolve #405: Upgrade bench-marking and unit-testing dependencies.
       feat:      resolve #407: Refactor ScrubFields defaults implementation.
+      feat:      ref #363: Explore possibility of integration with Logary.
     </PackageReleaseNotes>
     
     <!--
