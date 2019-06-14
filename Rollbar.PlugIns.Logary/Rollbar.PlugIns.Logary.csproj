@@ -1,0 +1,31 @@
+﻿<Project ToolsVersion="15.0">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Rollbar.PlugIns.Logary</AssemblyName>
+    <RootNamespace>Rollbar.PlugIns.Logary</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="Appned or Override SDK Common NuGet Packaging Info">
+    <Title>$(Title) plug-in for Logary.</Title>
+    <Description>Rollbar.NET Notifier as a Logary Target. $(Description)</Description>
+    <PackageTags>$(PackageTags);loagary;target</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Label=".NET Global References">
+    <!--ADD here-->
+  </ItemGroup>
+
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Logary" Version="5.0.0-rc.10" />
+    <PackageReference Include="Logary.CSharp" Version="5.0.0-rc.10" />
+  </ItemGroup>
+
+
+</Project>
