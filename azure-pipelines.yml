@@ -42,13 +42,6 @@ steps:
 #     version: '2.2.104' # replace this value with the version that you need for your project
 
 - task: UseDotNet@2
-  displayName: 'Use .NET Core runtime'
-  inputs:
-    packageType: runtime
-    version: 3.0.100-preview4-011223
-    includePreviewVersions: true
-
-- task: UseDotNet@2
   displayName: 'Use .NET Core sdk'
   inputs:
     packageType: sdk
@@ -75,7 +68,7 @@ steps:
   inputs:
     packageFeedSelector: 'nugetOrg' # Options: nugetOrg, customFeed, netShare
     versionSelector: 'latestStable' # Required when packageFeedSelector == NugetOrg || PackageFeedSelector == CustomFeed# Options: latestPreRelease, latestStable, specificVersion
-    testPlatformVersion: '15.9.0' # Required when versionSelector == SpecificVersion
+    #testPlatformVersion: '15.9.0' # Required when versionSelector == SpecificVersion
     #customFeed: # Required when packageFeedSelector == CustomFeed
     #username: # Optional
     #password: # Optional
@@ -101,3 +94,6 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+
+
