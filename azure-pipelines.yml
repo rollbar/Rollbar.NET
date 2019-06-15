@@ -40,6 +40,14 @@ steps:
 #   inputs:
 #     packageType: 'sdk' # 'sdk' or 'runtime'
 #     version: '2.2.104' # replace this value with the version that you need for your project
+
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 3.x
+    includePreviewVersions: true
+    #installationPath: $(Agent.ToolsDirectory)/dotnet
     
 - script: dotnet --version
 
@@ -60,7 +68,7 @@ steps:
   inputs:
     packageFeedSelector: 'nugetOrg' # Options: nugetOrg, customFeed, netShare
     versionSelector: 'latestStable' # Required when packageFeedSelector == NugetOrg || PackageFeedSelector == CustomFeed# Options: latestPreRelease, latestStable, specificVersion
-    testPlatformVersion: '15.9.0' # Required when versionSelector == SpecificVersion
+    #testPlatformVersion: '15.9.0' # Required when versionSelector == SpecificVersion
     #customFeed: # Required when packageFeedSelector == CustomFeed
     #username: # Optional
     #password: # Optional
@@ -86,3 +94,6 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+
+
