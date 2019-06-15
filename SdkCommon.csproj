@@ -9,10 +9,10 @@
 
   <SdkVersion>3.3.0</SdkVersion>
     <PackageReleaseNotes>
-      feat:      resolve #403: Add explicit netcoreapp3.0 TargetFramework.
       feat:      resolve #404: Add explicit net48 TargetFramework.
       feat:      resolve #405: Upgrade bench-marking and unit-testing dependencies.
       feat:      resolve #407: Refactor ScrubFields defaults implementation.
+      chore:     ref #411: Fix CI build .net core 3.0 dependency issue.
     </PackageReleaseNotes>
     
     <!--

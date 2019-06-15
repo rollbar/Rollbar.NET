@@ -3,7 +3,7 @@
 
   <PropertyGroup>
 
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net46;net45</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net46;net45</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
 
@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <!-- We only want to run performance evaluation unit tests under .NET Core -->
-  <PropertyGroup Condition="&#xD;&#xA;                 '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp3.0|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU'&#xD;&#xA;                 ">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'&#xD;&#xA;                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU'&#xD;&#xA;                 ">
     <DefineConstants>INSTRUMENT</DefineConstants>
   </PropertyGroup>
   
@@ -21,7 +21,7 @@
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="&#xD;&#xA;                 '$(TargetFramework)' == 'netcoreapp3.0' &#xD;&#xA;                 Or '$(TargetFramework)' == 'netcoreapp2.2' &#xD;&#xA;                 Or '$(TargetFramework)' == 'netcoreapp2.1' &#xD;&#xA;                 Or '$(TargetFramework)' == 'netcoreapp2.0'&#xD;&#xA;                 ">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2' &#xD;&#xA;                 Or '$(TargetFramework)' == 'netcoreapp2.1' &#xD;&#xA;                 Or '$(TargetFramework)' == 'netcoreapp2.0'&#xD;&#xA;                 ">
     <NetVariant>NET_CORE</NetVariant>
     <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>

@@ -1,7 +1,7 @@
 ﻿<Project ToolsVersion="15.0">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;net45;netstandard2.0</TargetFrameworks>
     <AssemblyName>Rollbar</AssemblyName>
     <RootNamespace>Rollbar</RootNamespace>
     <Configurations>Debug;Release;Instrumented</Configurations>
@@ -10,8 +10,7 @@
   <Import Project="..\SdkCommon.csproj" />
 
   <PropertyGroup Condition="
-                 '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp3.0|AnyCPU'
-                 Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'
+                 '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'
                  Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU'
                  Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU'
                  ">
@@ -94,7 +93,7 @@
 
   <ItemGroup Label="Required for netcoreapp2.1 and above..." Condition="
              '$(NetVariant)' == 'NET_CORE'
-             And ('TargetFramework' == 'netcoreapp2.1' Or 'TargetFramework' == 'netcoreapp2.2' Or 'TargetFramework' == 'netcoreapp3.0')
+             And ('TargetFramework' == 'netcoreapp2.1' Or 'TargetFramework' == 'netcoreapp2.2')
              ">
     <PackageReference Include="Microsoft.NetCore.App" />
   </ItemGroup>
