@@ -12,7 +12,9 @@
       feat:      resolve #404: Add explicit net48 TargetFramework.
       feat:      resolve #405: Upgrade bench-marking and unit-testing dependencies.
       feat:      resolve #407: Refactor ScrubFields defaults implementation.
+      feat:      ref #415: Rollbar.NetCore.AspNet: Add auto-capture of the current HTTP response by the RollbarMiddleware.
       chore:     ref #411: Fix CI build .net core 3.0 dependency issue.
+      chore:     ref #412: Fix CI build .net 4.8 target build issue.
     </PackageReleaseNotes>
     
     <!--
