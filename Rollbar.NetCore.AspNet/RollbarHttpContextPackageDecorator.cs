@@ -60,9 +60,9 @@
                 if (this._rollbarHttpContext.HttpAttributes != null)
                 {
                     customRequestFields.Add("httpRequestID", this._rollbarHttpContext.HttpAttributes.RequestID);
-                    customRequestFields.Add("statusCode", this._rollbarHttpContext.HttpAttributes.StatusCode);
-                    customRequestFields.Add("scheme", this._rollbarHttpContext.HttpAttributes.Scheme);
-                    customRequestFields.Add("protocol", this._rollbarHttpContext.HttpAttributes.Protocol);
+                    customRequestFields.Add("scheme", this._rollbarHttpContext.HttpAttributes.RequestScheme);
+                    customRequestFields.Add("protocol", this._rollbarHttpContext.HttpAttributes.RequestProtocol);
+                    customRequestFields.Add("statusCode", this._rollbarHttpContext.HttpAttributes.ResponseStatusCode);
                 }
             }
 
@@ -87,26 +87,46 @@
                 {
                     rollbarData.Request = new Request();
                 }
-
                 rollbarData.Request.Url = 
-                    this._rollbarHttpContext.HttpAttributes.Host.Value + this._rollbarHttpContext.HttpAttributes.Path;
+                    this._rollbarHttpContext.HttpAttributes.RequestHost.Value + this._rollbarHttpContext.HttpAttributes.RequestPath;
                 rollbarData.Request.QueryString = 
-                    this._rollbarHttpContext.HttpAttributes.Query.Value;
+                    this._rollbarHttpContext.HttpAttributes.RequestQuery.Value;
                 rollbarData.Request.Params = null;
-
-                rollbarData.Request.Headers = 
-                    new Dictionary<string, string>(this._rollbarHttpContext.HttpAttributes.Headers.Count);
-                foreach (var header in this._rollbarHttpContext.HttpAttributes.Headers)
+                rollbarData.Request.Method = this._rollbarHttpContext.HttpAttributes.RequestMethod;
+                if (this._rollbarHttpContext.HttpAttributes.RequestHeaders?.Count > 0)
                 {
-                    if (header.Value.Count == 0)
+                    rollbarData.Request.Headers =
+                        new Dictionary<string, string>(this._rollbarHttpContext.HttpAttributes.RequestHeaders.Count);
+                    foreach (var header in this._rollbarHttpContext.HttpAttributes.RequestHeaders)
                     {
-                        continue;
-                    }
+                        if (header.Value.Count == 0)
+                        {
+                            continue;
+                        }
 
-                    rollbarData.Request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                        rollbarData.Request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                    }
                 }
 
-                rollbarData.Request.Method = this._rollbarHttpContext.HttpAttributes.Method;
+                if (rollbarData.Response == null)
+                {
+                    rollbarData.Response = new Response();
+                }
+                rollbarData.Response.StatusCode = this._rollbarHttpContext.HttpAttributes.ResponseStatusCode;
+                if (this._rollbarHttpContext.HttpAttributes.ResponseHeaders?.Count > 0)
+                {
+                    rollbarData.Response.Headers =
+                        new Dictionary<string, string>(this._rollbarHttpContext.HttpAttributes.ResponseHeaders.Count);
+                    foreach (var header in this._rollbarHttpContext.HttpAttributes.ResponseHeaders)
+                    {
+                        if (header.Value.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        rollbarData.Response.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                    }
+                }
             }
         }
 

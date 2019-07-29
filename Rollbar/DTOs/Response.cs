@@ -23,6 +23,11 @@
             /// The headers
             /// </summary>
             public static readonly string Headers = "headers";
+
+            /// <summary>
+            /// The body
+            /// </summary>
+            public static readonly string Body = "body";
         }
 
         /// <summary>
@@ -71,6 +76,16 @@
         {
             get { return this._keyedValues[ReservedProperties.Headers] as IDictionary<string, string>; }
             set { this._keyedValues[ReservedProperties.Headers] = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the body.
+        /// </summary>
+        /// <value>The body.</value>
+        public object Body
+        {
+            get { return this._keyedValues[ReservedProperties.Body]; }
+            set { this._keyedValues[ReservedProperties.Body] = value; }
         }
 
     }

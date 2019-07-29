@@ -18,7 +18,7 @@
         /// <returns>System.String.</returns>
         public static string ConvertToString(Stream stream, Encoding encoding = null)
         {
-            if (stream == null)
+            if (stream == null || !stream.CanSeek || !stream.CanRead)
             {
                 return null;
             }

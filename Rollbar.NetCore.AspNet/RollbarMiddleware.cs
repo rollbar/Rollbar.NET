@@ -155,6 +155,7 @@ namespace Rollbar.NetCore.AspNet
                     {
                         IRollbarPackage rollbarPackage = new ExceptionPackage(ex, $"{nameof(RollbarMiddleware)} processed uncaught exception.");
                         rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
+                        rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
                         RollbarLocator.RollbarInstance.Critical(rollbarPackage);
                     }
 
@@ -169,7 +170,7 @@ namespace Rollbar.NetCore.AspNet
                         && RollbarScope.Current.HttpContext.HttpAttributes != null
                         )
                     {
-                        RollbarScope.Current.HttpContext.HttpAttributes.StatusCode = context.Response.StatusCode;
+                        RollbarScope.Current.HttpContext.HttpAttributes.ResponseStatusCode = context.Response.StatusCode;
                     }
 
                     if (networkTelemetry != null )

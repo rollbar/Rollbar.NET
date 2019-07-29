@@ -10,7 +10,6 @@
     using Rollbar.DTOs;
     using Rollbar.Serialization.Json;
 
-
     /// <summary>
     /// Class HttpRequestPackageDecorator.
     /// Implements the <see cref="Rollbar.RollbarPackageDecoratorBase" />
@@ -66,10 +65,13 @@
             rollbarData.Request.QueryString = this._httpRequest.QueryString.Value;
             rollbarData.Request.Params = null;
 
-            rollbarData.Request.Headers = new Dictionary<string, string>(this._httpRequest.Headers.Count);
-            foreach (var header in this._httpRequest.Headers)
+            if (this._httpRequest.Headers?.Count > 0)
             {
-                rollbarData.Request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                rollbarData.Request.Headers = new Dictionary<string, string>(this._httpRequest.Headers.Count);
+                foreach (var header in this._httpRequest.Headers)
+                {
+                    rollbarData.Request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                }
             }
 
             rollbarData.Request.Method = this._httpRequest.Method;
