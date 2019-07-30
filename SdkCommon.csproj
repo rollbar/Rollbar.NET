@@ -7,13 +7,20 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.2.1</SdkVersion>
+  <SdkVersion>3.3.0</SdkVersion>
     <PackageReleaseNotes>
+      feat:      resolve #404: Add explicit net48 TargetFramework.
+      feat:      resolve #405: Upgrade bench-marking and unit-testing dependencies.
+      feat:      resolve #407: Refactor ScrubFields defaults implementation.
+      feat:      resolve #415: Rollbar.NetCore.AspNet: Add auto-capture of the current HTTP response by the RollbarMiddleware.
+      chore:     ref #411: Fix CI build .net core 3.0 dependency issue.
+      chore:     ref #412: Fix CI build .net 4.8 target build issue.
     </PackageReleaseNotes>
     
     <!--
     Release Notes Tagging Conventions:
     ==================================
+    
     1.  Every entry within the PackageReleaseNotes element is expected to be started with
         at least one of the tags listed:
         

@@ -1,30 +1,35 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
-namespace UnitTest.Rollbar.Common
+﻿namespace UnitTest.Rollbar.Common
 {
     using global::Rollbar;
     using global::Rollbar.Common;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Text;
-    using System.Threading;
 
+    /// <summary>
+    /// Defines test class ExceptionUtilityFixture.
+    /// </summary>
     [TestClass]
     [TestCategory(nameof(ExceptionUtilityFixture))]
     public class ExceptionUtilityFixture
     {
+        /// <summary>
+        /// Setups the fixture.
+        /// </summary>
         [TestInitialize]
         public void SetupFixture()
         {
         }
 
+        /// <summary>
+        /// Tears down fixture.
+        /// </summary>
         [TestCleanup]
         public void TearDownFixture()
         {
         }
 
+        /// <summary>
+        /// Defines the test method BasicTest.
+        /// </summary>
         [TestMethod]
         public void BasicTest()
         {

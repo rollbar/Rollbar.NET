@@ -8,6 +8,7 @@
     using Newtonsoft.Json;
     using Rollbar.Common;
     using Rollbar.DTOs;
+    using Rollbar.Serialization.Json;
 
     /// <summary>
     /// Class HttpRequestPackageDecorator.
@@ -38,7 +39,7 @@
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="httpRequest">The HTTP request.</param>
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
-        public HttpRequestPackageDecorator(IRollbarPackage packageToDecorate, HttpRequest httpRequest, bool mustApplySynchronously) 
+        public HttpRequestPackageDecorator(IRollbarPackage packageToDecorate, HttpRequest httpRequest, bool mustApplySynchronously)
             : base(packageToDecorate, mustApplySynchronously)
         {
             this._httpRequest = httpRequest;
@@ -64,10 +65,13 @@
             rollbarData.Request.QueryString = this._httpRequest.QueryString.Value;
             rollbarData.Request.Params = null;
 
-            rollbarData.Request.Headers = new Dictionary<string, string>(this._httpRequest.Headers.Count);
-            foreach (var header in this._httpRequest.Headers)
+            if (this._httpRequest.Headers?.Count > 0)
             {
-                rollbarData.Request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                rollbarData.Request.Headers = new Dictionary<string, string>(this._httpRequest.Headers.Count);
+                foreach (var header in this._httpRequest.Headers)
+                {
+                    rollbarData.Request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                }
             }
 
             rollbarData.Request.Method = this._httpRequest.Method;
@@ -90,59 +94,23 @@
         /// <param name="rollbarData">The rollbar data.</param>
         private void AssignRequestBody(Data rollbarData)
         {
-            string requestBodyString = GetBodyAsString(this._httpRequest);
-            object requesBodyObject = null;
-            try
+            if (this._httpRequest == null || this._httpRequest.Body == null)
             {
-                requesBodyObject = JsonConvert.DeserializeObject(requestBodyString);
+                return; // nothing to do...
             }
-            catch
+
+            string jsonString = StreamUtil.ConvertToString(this._httpRequest.Body);
+            if (string.IsNullOrWhiteSpace(jsonString))
             {
-                // Nothing to do.
-                // We tried our best trying to interpret the body string as JSON
-                // but without success.
-                // Let's treat it as a string...
+                return;
             }
+            rollbarData.Request.PostBody = jsonString;
+
+            object requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
             if (requesBodyObject != null)
             {
                 rollbarData.Request.PostBody = requesBodyObject;
             }
-            else
-            {
-                rollbarData.Request.PostBody = requestBodyString;
-            }
         }
-
-        /// <summary>
-        /// Gets the body as string.
-        /// </summary>
-        /// <param name="request">The request.</param>
-        /// <param name="encoding">The encoding.</param>
-        /// <returns>System.String.</returns>
-        private static string GetBodyAsString(HttpRequest request, Encoding encoding = null)
-        {
-            if (request == null || request.Body == null)
-            {
-                return null;
-            }
-
-            request.Body.Seek(0, SeekOrigin.Begin);
-
-            if (encoding == null)
-            {
-                encoding = Encoding.UTF8;
-            }
-
-            using (StreamReader reader = new StreamReader(stream: request.Body,
-                                                          encoding: encoding,
-                                                          detectEncodingFromByteOrderMarks: true,
-                                                          bufferSize: Convert.ToInt32(request.Body.Length),
-                                                          leaveOpen: true)
-                                                          )
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
     }
 }

@@ -323,6 +323,17 @@
         public Request Request { get; set; }
 
         /// <summary>
+        /// Gets or sets the response.
+        /// </summary>
+        /// <value>The response.</value>
+        /// <remarks>
+        /// Optional: response
+        /// Data about the relevant HTTP response (if any).
+        /// </remarks>
+        [JsonProperty("response", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public Response Response { get; set; }
+
+        /// <summary>
         /// Gets or sets the person (OPTIONAL).
         /// </summary>
         /// <value>

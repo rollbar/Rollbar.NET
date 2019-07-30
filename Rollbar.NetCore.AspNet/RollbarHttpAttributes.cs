@@ -33,17 +33,18 @@
                 .TraceIdentifier;
             if (context.Request !=  null)
             {
-                this.Host = context.Request.Host;
-                this.Path = context.Request.Path;
-                this.Headers = context.Request.Headers;
-                this.Method = context.Request.Method;
-                this.Query = context.Request.QueryString;
-                this.Protocol = context.Request.Protocol;
-                this.Scheme = context.Request.Scheme;
+                this.RequestHost = context.Request.Host;
+                this.RequestPath = context.Request.Path;
+                this.RequestHeaders = context.Request.Headers;
+                this.RequestMethod = context.Request.Method;
+                this.RequestQuery = context.Request.QueryString;
+                this.RequestProtocol = context.Request.Protocol;
+                this.RequestScheme = context.Request.Scheme;
             }
             if (context.Response != null)
             {
-                this.StatusCode = context.Response.StatusCode;
+                this.ResponseStatusCode = context.Response.StatusCode;
+                this.ResponseHeaders = context.Response.Headers;
             }
         }
 
@@ -58,66 +59,55 @@
         /// <summary>
         /// Gets the host.
         /// </summary>
-        /// <value>
-        /// The host.
-        /// </value>
-        public HostString Host { get; }
+        /// <value>The host.</value>
+        public HostString RequestHost { get; }
 
         /// <summary>
-        /// Gets the path.
+        /// Gets the request path.
         /// </summary>
-        /// <value>
-        /// The path.
-        /// </value>
-        public PathString Path { get; }
+        /// <value>The request path.</value>
+        public PathString RequestPath { get; }
 
         /// <summary>
-        /// Gets the method.
+        /// Gets the request method.
         /// </summary>
-        /// <value>
-        /// The method.
-        /// </value>
-        public string Method { get; }
+        /// <value>The request method.</value>
+        public string RequestMethod { get; }
 
         /// <summary>
-        /// Gets the headers.
+        /// Gets the request headers.
         /// </summary>
-        /// <value>
-        /// The headers.
-        /// </value>
-        public IHeaderDictionary Headers { get; }
+        /// <value>The request headers.</value>
+        public IHeaderDictionary RequestHeaders { get; }
 
         /// <summary>
-        /// Gets the query.
+        /// Gets the request query.
         /// </summary>
-        /// <value>
-        /// The query.
-        /// </value>
-        public QueryString Query { get; }
+        /// <value>The request query.</value>
+        public QueryString RequestQuery { get; }
 
         /// <summary>
-        /// Gets the protocol.
+        /// Gets the request protocol.
         /// </summary>
-        /// <value>
-        /// The protocol.
-        /// </value>
-        public string Protocol { get; }
+        /// <value>The request protocol.</value>
+        public string RequestProtocol { get; }
 
         /// <summary>
-        /// Gets the scheme.
+        /// Gets the request scheme.
         /// </summary>
-        /// <value>
-        /// The scheme.
-        /// </value>
-        public string Scheme { get; }
+        /// <value>The request scheme.</value>
+        public string RequestScheme { get; }
 
         /// <summary>
         /// Gets or sets the status code.
         /// </summary>
-        /// <value>
-        /// The status code.
-        /// </value>
-        public int StatusCode { get; set; }
+        /// <value>The status code.</value>
+        public int ResponseStatusCode { get; set; }
 
+        /// <summary>
+        /// Gets the response headers.
+        /// </summary>
+        /// <value>The response headers.</value>
+        public IHeaderDictionary ResponseHeaders { get; }
     }
 }
