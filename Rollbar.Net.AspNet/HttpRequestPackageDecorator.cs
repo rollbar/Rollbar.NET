@@ -1,4 +1,6 @@
-﻿namespace Rollbar.Net.AspNet
+﻿using System.Collections.Generic;
+
+namespace Rollbar.Net.AspNet
 {
     using System;
     using System.Linq;
@@ -27,17 +29,39 @@
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="httpRequest">The HTTP request.</param>
         public HttpRequestPackageDecorator(IRollbarPackage packageToDecorate, HttpRequest httpRequest)
-                    : this(packageToDecorate, new HttpRequestWrapper(httpRequest))
+            : this(packageToDecorate, new HttpRequestWrapper(httpRequest), false)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpRequestPackageDecorator" /> class.
+        /// Initializes a new instance of the <see cref="HttpRequestPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="httpRequest">The HTTP request.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
+        public HttpRequestPackageDecorator(IRollbarPackage packageToDecorate, HttpRequest httpRequest, bool mustApplySynchronously)
+                    : this(packageToDecorate, new HttpRequestWrapper(httpRequest), mustApplySynchronously)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpRequestPackageDecorator"/> class.
         /// </summary>
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="httpRequest">The HTTP request.</param>
         public HttpRequestPackageDecorator(IRollbarPackage packageToDecorate, HttpRequestBase httpRequest)
-                    : base(packageToDecorate, false)
+            : this(packageToDecorate, httpRequest, false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpRequestPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="httpRequest">The HTTP request.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
+        public HttpRequestPackageDecorator(IRollbarPackage packageToDecorate, HttpRequestBase httpRequest, bool mustApplySynchronously)
+                    : base(packageToDecorate, mustApplySynchronously)
         {
             Assumption.AssertNotNull(httpRequest, nameof(httpRequest));
 
@@ -50,28 +74,39 @@
         /// <param name="rollbarData">The rollbar data.</param>
         protected override void Decorate(Data rollbarData)
         {
+            if (this._httpRequest == null || rollbarData == null)
+            {
+                return; //nothing to do...
+            }
+
             // try harvesting Request DTO info:
             ///////////////////////////////////
 
-            var request = new Request();
-
-            request.Url = this._httpRequest.Url.ToString();
-            request.Method = this._httpRequest.HttpMethod;
-            request.Headers = this._httpRequest.Headers?.ToStringDictionary();
-            request.GetParams = this._httpRequest.QueryString?.ToObjectDictionary();
-            request.PostParams = this._httpRequest.Unvalidated?.Form.ToObjectDictionary();
+            var request = new Request
+            {
+                Url = this._httpRequest.Url?.ToString(),
+                Method = this._httpRequest.HttpMethod,
+                Headers = this._httpRequest.Headers?.ToStringDictionary(),
+                GetParams = this._httpRequest.QueryString?.ToObjectDictionary(),
+                PostParams = this._httpRequest.Unvalidated?.Form.ToObjectDictionary()
+            };
 
             // add posted files to the post collection
             try
             {
                 if (this._httpRequest.Files?.Count > 0)
                 {
-                    foreach (var file in this._httpRequest.Files.AllKeys.ToDictionary(k => k, k => this._httpRequest.Files[k].RenderAsString()))
+                    var files = 
+                        this._httpRequest.Files.AllKeys.ToDictionary(k => k, k => this._httpRequest.Files[k].RenderAsString());
+                    if (request.PostParams == null)
+                    {
+                        request.PostParams = new Dictionary<string, object>(files.Count);
+                    }
+                    foreach (var file in files)
                     {
                         request.PostParams.Add(file.Key, "FILE: " + file.Value);
                     }
                 }
-
             }
             catch (HttpException)
             {
@@ -81,7 +116,7 @@
 
             // if the X-Forwarded-For header exists, use that as the user's IP.
             // that will be the true remote IP of a user behind a proxy server or load balancer
-            var forwardedFor = this._httpRequest.Headers["X-Forwarded-For"];
+            var forwardedFor = this._httpRequest.Headers?["X-Forwarded-For"];
             if (!string.IsNullOrEmpty(forwardedFor) && forwardedFor.Contains(","))
             {
                 forwardedFor = forwardedFor.Split(',').Last().Trim();
@@ -95,7 +130,6 @@
             catch
             {
                 // calls in try-block may throw an exception. we are just trying our best...
-
             }
 
             try
@@ -107,7 +141,6 @@
             catch
             {
                 // calls in try-block may throw an exception. we are just trying our best...
-
             }
 
             // try harvesting custom HTTP session info:

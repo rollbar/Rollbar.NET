@@ -41,14 +41,29 @@
         /// <param name="rollbarData">The rollbar data.</param>
         protected override void Decorate(Data rollbarData)
         {
+            IRollbarPackage package = this._packageToDecorate;
+
             if (this._httpContext?.Request != null)
             {
                 // here we essentially piggy-back on capabilities of 
                 // already implemented HttpRequestPackageDecorator 
                 // instead of this decorator:
-                HttpRequestPackageDecorator strategy =
-                    new HttpRequestPackageDecorator(this._packageToDecorate, new HttpRequestWrapper(this._httpContext.Request));
-                strategy.PackageAsRollbarData();
+                package =
+                    new HttpRequestPackageDecorator(package, this._httpContext.Request);
+            }
+
+            if (this._httpContext?.Response != null)
+            {
+                // here we essentially piggy-back on capabilities of 
+                // already implemented HttpResponsePackageDecorator 
+                // instead of this decorator:
+                package =
+                    new HttpResponsePackageDecorator(package, this._httpContext.Response);
+            }
+
+            if (package != this._packageToDecorate)
+            {
+                package.PackageAsRollbarData();
             }
         }
     }

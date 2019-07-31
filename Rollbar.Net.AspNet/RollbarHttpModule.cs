@@ -54,7 +54,9 @@
         /// <summary>
         /// Initializes a module and prepares it to handle requests.
         /// </summary>
-        /// <param name="context">An <see cref="T:System.Web.HttpApplication" /> that provides access to the methods, properties, and events common to all application objects within an ASP.NET application</param>
+        /// <param name="context">An <see cref="T:System.Web.HttpApplication" />
+        /// that provides access to the methods, properties, and events common to all application objects within an ASP.NET application
+        /// </param>
         public void Init(HttpApplication context)
         {
             context.Error += Context_Error;
@@ -121,10 +123,12 @@
 
             IRollbarPackage package = 
                 new ExceptionPackage(exception, "HttpApplication.Context.AllErrors", true);
-            package = new HttpContextPackageDecorator(package, httpApplication.Context);
-            // The HttpContext decorator already takes care of the HttpRequest internally:
-            //package = new HttpRequestPackageDecorator(package, httpApplication.Context.Request);
-            if (httpApplication.User != null && httpApplication.User.Identity != null && !string.IsNullOrWhiteSpace(httpApplication.User.Identity.Name))
+            
+            // The HttpContext decorator already takes care of the HttpRequest and HttpResponse internally:
+            package = 
+                new HttpContextPackageDecorator(package, httpApplication.Context);
+
+            if (httpApplication.User?.Identity != null && !string.IsNullOrWhiteSpace(httpApplication.User.Identity.Name))
             {
                 package = new PersonPackageDecorator(package, httpApplication.User.Identity.Name, httpApplication.User.Identity.Name, null);
             }
