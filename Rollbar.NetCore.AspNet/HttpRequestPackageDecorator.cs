@@ -1,4 +1,6 @@
-﻿namespace Rollbar.NetCore.AspNet
+﻿using System.Linq;
+
+namespace Rollbar.NetCore.AspNet
 {
     using System;
     using System.Collections.Generic;
@@ -63,7 +65,11 @@
 
             rollbarData.Request.Url = this._httpRequest.Host.Value + this._httpRequest.Path;
             rollbarData.Request.QueryString = this._httpRequest.QueryString.Value;
-            rollbarData.Request.Params = null;
+            if (!string.IsNullOrWhiteSpace(this._httpRequest.Path))
+            {
+                rollbarData.Request.Params = new Dictionary<string, object>();
+                rollbarData.Request.Params["path"] = this._httpRequest.Path;
+            }
 
             if (this._httpRequest.Headers?.Count > 0)
             {
@@ -82,6 +88,16 @@
                     AssignRequestBody(rollbarData);
                     break;
                 case "GET":
+                    if (this._httpRequest.Query?.Count > 0)
+                    {
+                        rollbarData.Request.GetParams = 
+                            new Dictionary<string, object>(this._httpRequest.Query.Count);
+                        foreach (var kv in this._httpRequest.Query)
+                        {
+                            rollbarData.Request.GetParams[kv.Key] = kv.Value;
+                        }
+                    }
+                    break;
                 default:
                     // nothing to do...
                     break;
