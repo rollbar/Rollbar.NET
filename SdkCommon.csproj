@@ -13,6 +13,7 @@
       feat:      resolve #405: Upgrade bench-marking and unit-testing dependencies.
       feat:      resolve #407: Refactor ScrubFields defaults implementation.
       feat:      resolve #415: Rollbar.NetCore.AspNet: Add auto-capture of the current HTTP response by the RollbarMiddleware.
+      feat:      resolve #417: Rollbar.Net.AspNet.Mvc: add auto-capture of the current HTTP response to RollbarExceptionFilter.
       feat:      resolve #418: Rollbar.Net.AspNet: add auto-capture of the current HTTP request/response to RollbarHttpModule.
       chore:     ref #411: Fix CI build .net core 3.0 dependency issue.
       chore:     ref #412: Fix CI build .net 4.8 target build issue.

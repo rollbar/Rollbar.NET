@@ -82,14 +82,26 @@ namespace Rollbar.Net.AspNet
             // try harvesting Request DTO info:
             ///////////////////////////////////
 
-            var request = new Request
+            var request = new Request();
+            request.Url = this._httpRequest.Url?.ToString();
+            request.Method = this._httpRequest.HttpMethod;
+            request.Headers = this._httpRequest.Headers?.ToStringDictionary();
+            try
             {
-                Url = this._httpRequest.Url?.ToString(),
-                Method = this._httpRequest.HttpMethod,
-                Headers = this._httpRequest.Headers?.ToStringDictionary(),
-                GetParams = this._httpRequest.QueryString?.ToObjectDictionary(),
-                PostParams = this._httpRequest.Unvalidated?.Form.ToObjectDictionary()
-            };
+                request.GetParams = this._httpRequest.QueryString?.ToObjectDictionary();
+            }
+            catch
+            {
+                // calls in try-block may throw an exception. we are just trying our best...
+            }
+            try
+            {
+                request.PostParams = this._httpRequest.Unvalidated?.Form?.ToObjectDictionary();
+            }
+            catch
+            {
+                // calls in try-block may throw an exception. we are just trying our best...
+            }
 
             // add posted files to the post collection
             try
@@ -172,10 +184,28 @@ namespace Rollbar.Net.AspNet
                 {
                     // try harvesting Person DTO info:
                     //////////////////////////////////
-                    string username =
-                        serverVariables["AUTH_USER"] ??
-                        serverVariables["LOGON_USER"] ??
-                        serverVariables["REMOTE_USER"];
+                    string[] serverVarsOfInterest = new[]
+                    {
+                        "AUTH_USER",
+                        "LOGON_USER",
+                        "REMOTE_USER",
+                    };
+                    string username = null;
+                    foreach (var serverVar in serverVarsOfInterest)
+                    {
+                        try
+                        {
+                            username = serverVariables[serverVar];
+                        }
+                        catch
+                        {
+                            // calls in try-block may throw an exception. we are just trying our best...
+                        }
+                        if (!string.IsNullOrWhiteSpace(username))
+                        {
+                            break;
+                        }
+                    }
                     if (!string.IsNullOrWhiteSpace(username))
                     {
                         rollbarData.Person = new Person(username)

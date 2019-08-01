@@ -62,13 +62,24 @@
 
             IRollbarPackage packagingStrategy = new ExceptionPackage(this._exceptionContext.Exception, this._message);
 
-            var httpRequest = this._exceptionContext?.RequestContext?.HttpContext?.Request;
-            if (httpRequest != null)
+            if (this._exceptionContext?.RequestContext?.HttpContext != null)
             {
-                packagingStrategy = new HttpRequestPackageDecorator(packagingStrategy, httpRequest);
+                packagingStrategy = new HttpContextPackageDecorator(packagingStrategy, this._exceptionContext.RequestContext.HttpContext);
             }
 
+            //var httpRequest = this._exceptionContext?.RequestContext?.HttpContext?.Request;
+            //if (httpRequest != null)
+            //{
+            //    packagingStrategy = new HttpRequestPackageDecorator(packagingStrategy, httpRequest);
+            //}
+            //var httpResponse = this._exceptionContext?.RequestContext?.HttpContext?.Response;
+            //if (httpResponse != null)
+            //{
+            //    packagingStrategy = new HttpResponsePackageDecorator(packagingStrategy, httpResponse);
+            //}
+
             Data rollbarData = packagingStrategy.PackageAsRollbarData();
+
             return rollbarData;
         }
     }

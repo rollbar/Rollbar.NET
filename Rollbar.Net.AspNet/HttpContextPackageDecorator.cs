@@ -18,15 +18,47 @@
         /// <summary>
         /// The HTTP context
         /// </summary>
-        private readonly HttpContext _httpContext;
+        private readonly HttpContextBase _httpContext;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HttpContextPackageDecorator" /> class.
+        /// Initializes a new instance of the <see cref="HttpContextPackageDecorator"/> class.
         /// </summary>
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="httpContext">The HTTP context.</param>
         public HttpContextPackageDecorator(IRollbarPackage packageToDecorate, HttpContext httpContext)
-                    : base(packageToDecorate, false)
+            : this(packageToDecorate, new HttpContextWrapper(httpContext), false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpContextPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="httpContext">The HTTP context.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
+        public HttpContextPackageDecorator(IRollbarPackage packageToDecorate, HttpContext httpContext, bool mustApplySynchronously)
+            : this(packageToDecorate, new HttpContextWrapper(httpContext), mustApplySynchronously)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpContextPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="httpContext">The HTTP context.</param>
+        public HttpContextPackageDecorator(IRollbarPackage packageToDecorate, HttpContextBase httpContext)
+            : this(packageToDecorate,  httpContext, false)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HttpContextPackageDecorator"/> class.
+        /// </summary>
+        /// <param name="packageToDecorate">The package to decorate.</param>
+        /// <param name="httpContext">The HTTP context.</param>
+        /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
+        public HttpContextPackageDecorator(IRollbarPackage packageToDecorate, HttpContextBase httpContext, bool mustApplySynchronously)
+                    : base(packageToDecorate, mustApplySynchronously)
         {
             Assumption.AssertNotNull(httpContext, nameof(httpContext));
 
