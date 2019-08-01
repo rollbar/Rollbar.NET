@@ -1,15 +1,6 @@
 ﻿namespace Rollbar.Net.AspNet.Mvc
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Web;
-    using System.Web.Hosting;
     using System.Web.Mvc;
-    using Rollbar.Common;
-    using Rollbar.Diagnostics;
     using Rollbar.DTOs;
 
     /// <summary>
@@ -66,17 +57,6 @@
             {
                 packagingStrategy = new HttpContextPackageDecorator(packagingStrategy, this._exceptionContext.RequestContext.HttpContext);
             }
-
-            //var httpRequest = this._exceptionContext?.RequestContext?.HttpContext?.Request;
-            //if (httpRequest != null)
-            //{
-            //    packagingStrategy = new HttpRequestPackageDecorator(packagingStrategy, httpRequest);
-            //}
-            //var httpResponse = this._exceptionContext?.RequestContext?.HttpContext?.Response;
-            //if (httpResponse != null)
-            //{
-            //    packagingStrategy = new HttpResponsePackageDecorator(packagingStrategy, httpResponse);
-            //}
 
             Data rollbarData = packagingStrategy.PackageAsRollbarData();
 
