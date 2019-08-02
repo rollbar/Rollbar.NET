@@ -1,10 +1,5 @@
 ﻿namespace Rollbar.Net.AspNet.WebApi
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
     using System.Web.Http.Filters;
 
     /// <summary>
@@ -25,6 +20,8 @@
         {
             IRollbarPackage rollbarPackage = 
                 new ExceptionPackage(actionExecutedContext.Exception, nameof(this.OnException));
+            rollbarPackage = 
+                new HttpActionContextPackageDecorator(rollbarPackage, actionExecutedContext.ActionContext);
 
             RollbarLocator.RollbarInstance.Critical(rollbarPackage);
 
