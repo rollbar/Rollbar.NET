@@ -1,7 +1,7 @@
 # Rollbar.NET Notifier SDK
 
 A .NET Rollbar Client/Notifier that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, .NET Full Framework 4.5+, Mono, Xamarin, and, in general, any implementation of the .NET Standard 2.0+.
-It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the Rollbar API for remote monitoring and analysis of the hosting application's behavior.'
+It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the [Rollbar API](https://www.rollbar.com) for remote monitoring and analysis of the hosting application's behavior.'
 
 It also includes a collection of Rollbar.NET plug-ins into most popular .NET logging and exception handling libraries/frameworks, like:
 *   Serilog
