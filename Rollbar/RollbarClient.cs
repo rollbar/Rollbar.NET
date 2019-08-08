@@ -1,4 +1,6 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿using System.Linq;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
@@ -219,7 +221,23 @@ namespace Rollbar
         {
             var jObj = JsonScrubber.CreateJsonObject(payload);
             var dataProperty = JsonScrubber.GetChildPropertyByName(jObj, "data");
-            JsonScrubber.ScrubJson(dataProperty, scrubFields);
+
+            const string fieldPathRoot = @"data.";
+            string[] fieldPaths = scrubFields.Where(n => n.StartsWith(fieldPathRoot)).ToArray();
+            string[] fieldNames = scrubFields.Where(n => !n.Contains('.')).ToArray();
+
+            if (fieldPaths != null && fieldPaths.LongLength > 0)
+            {
+                JsonScrubber.ScrubJsonFieldsByPaths(dataProperty, fieldPaths);
+            }
+
+            if (fieldNames != null && fieldNames.LongLength > 0)
+            {
+                JsonScrubber.ScrubJsonFieldsByName(dataProperty, fieldNames);
+            }
+
+            //JsonScrubber.ScrubJson(dataProperty, scrubFields);
+
             var scrubbedPayload = jObj.ToString();
             return scrubbedPayload;
         }

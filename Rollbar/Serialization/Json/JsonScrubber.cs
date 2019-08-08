@@ -84,7 +84,7 @@ namespace Rollbar.Serialization.Json
         /// <param name="jsonData">The json data.</param>
         /// <param name="scrubFields">The scrub fields.</param>
         /// <returns>scrubbed Json string.</returns>
-        public static string ScrubJson(string jsonData, IEnumerable<string> scrubFields = null)
+        public static string ScrubJsonFieldsByName(string jsonData, IEnumerable<string> scrubFields = null)
         {
             if (scrubFields == null || !scrubFields.Any())
             {
@@ -93,23 +93,23 @@ namespace Rollbar.Serialization.Json
 
             JObject json = JObject.Parse(jsonData);
 
-            ScrubJson(json, scrubFields);
+            ScrubJsonFieldsByName(json, scrubFields);
 
             return json.ToString();
         }
 
-        private static void ScrubJson(JToken json, IEnumerable<string> scrubFields)
+        public static void ScrubJsonFieldsByName(JToken json, IEnumerable<string> scrubFields)
         {
             JProperty property = json as JProperty;
             if (property != null)
             {
-                ScrubJson(property, scrubFields);
+                ScrubJsonFieldsByName(property, scrubFields);
                 return;
             }
 
             foreach (var child in json.Children())
             {
-                ScrubJson(child, scrubFields);
+                ScrubJsonFieldsByName(child, scrubFields);
             }
         }
 
@@ -118,9 +118,24 @@ namespace Rollbar.Serialization.Json
         /// </summary>
         /// <param name="json">The json.</param>
         /// <param name="scrubFields">The scrub fields.</param>
-        public static void ScrubJson(JProperty json, IEnumerable<string> scrubFields)
+        public static void ScrubJsonFieldsByName(JProperty json, IEnumerable<string> scrubFields)
         {
-            if (scrubFields.Contains(json.Name))
+            //const string fieldPathRoot = @"data.";
+            //string[] fieldPaths = scrubFields.Where(n => n.StartsWith(fieldPathRoot)).ToArray();
+            //string[] fieldNames = scrubFields.Where(n => !n.Contains('.')).ToArray();
+
+            //if (fieldPaths != null && fieldPaths.LongLength > 0)
+            //{
+            //    JsonScrubber.ScrubJsonUsingFieldPaths(json, fieldPaths);
+            //}
+
+            //if (fieldNames != null && fieldNames.LongLength > 0)
+            //{
+            //    JsonScrubber.ScrubJsonUsingFieldNames(json, fieldNames);
+            //}
+
+            var fields = scrubFields as string[] ?? scrubFields.ToArray();
+            if (fields.Contains(json.Name))
             {
                 json.Value = defaultScrubMask;
                 return;
@@ -129,11 +144,89 @@ namespace Rollbar.Serialization.Json
             JContainer propertyValue = json.Value as JContainer;
             if (propertyValue != null)
             {
-                foreach(var child in propertyValue)
+                foreach (var child in propertyValue)
                 {
-                    ScrubJson(child, scrubFields);
+                    ScrubJsonFieldsByName(child, fields);
                 }
             }
+
+
+            //if (scrubFields.Contains(json.Name))
+            //{
+            //    json.Value = defaultScrubMask;
+            //    return;
+            //}
+
+            //JContainer propertyValue = json.Value as JContainer;
+            //if (propertyValue != null)
+            //{
+            //    foreach(var child in propertyValue)
+            //    {
+            //        ScrubJson(child, scrubFields);
+            //    }
+            //}
+        }
+
+        public static string ScrubJsonFieldsByPaths(string jsonData, IEnumerable<string> scrubFieldsPaths = null)
+        {
+            var fieldsPaths = scrubFieldsPaths as string[] ?? scrubFieldsPaths.ToArray();
+
+            if (fieldsPaths.LongLength == 0)
+            {
+                return jsonData;
+            }
+
+            JObject json = JObject.Parse(jsonData);
+
+            foreach (var path in fieldsPaths)
+            {
+                JsonScrubber.ScrubJsonPath(json, path);
+            }
+
+            return json.ToString();
+        }
+
+        public static void ScrubJsonFieldsByPaths(JProperty jsonData, IEnumerable<string> scrubFieldsPaths = null)
+        {
+            if (jsonData == null)
+            {
+                return;
+            }
+
+            var fieldsPaths = scrubFieldsPaths as string[] ?? scrubFieldsPaths.ToArray();
+
+            if (fieldsPaths.LongLength == 0)
+            {
+                return;
+            }
+
+            foreach (var path in fieldsPaths)
+            {
+                JsonScrubber.ScrubJsonPath(jsonData, path);
+            }
+        }
+
+        public static void ScrubJsonPath(JProperty jsonProperty, string scrubPath = null)
+        {
+            if (jsonProperty == null)
+            {
+                return;
+            }
+
+            var jProperty = jsonProperty.SelectToken(scrubPath) as JProperty;
+            jProperty.Replace(new JProperty(jProperty.Name, defaultScrubMask));
+        }
+
+        public static void ScrubJsonPath(JObject jsonData, string scrubPath = null)
+        {
+            if (jsonData == null)
+            {
+                return;
+            }
+
+            object obj = jsonData.SelectToken(scrubPath);
+            var jProperty = jsonData.SelectToken(scrubPath)?.Parent as JProperty;
+            jProperty?.Replace(new JProperty(jProperty.Name, defaultScrubMask));
         }
 
     }
