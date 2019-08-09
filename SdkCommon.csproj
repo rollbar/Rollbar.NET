@@ -9,7 +9,7 @@
 
   <SdkVersion>3.3.1</SdkVersion>
     <PackageReleaseNotes>
-      feat:        ref #426: Add an ability to scrub fields by the absolute paths.
+      feat:        resolve #426: Add an ability to scrub fields by the absolute paths.
         
     </PackageReleaseNotes>
     

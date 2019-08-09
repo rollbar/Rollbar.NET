@@ -228,15 +228,13 @@ namespace Rollbar
 
             if (fieldPaths != null && fieldPaths.LongLength > 0)
             {
-                JsonScrubber.ScrubJsonFieldsByPaths(dataProperty, fieldPaths);
+                JsonScrubber.ScrubJsonFieldsByPaths(jObj, fieldPaths);
             }
 
             if (fieldNames != null && fieldNames.LongLength > 0)
             {
                 JsonScrubber.ScrubJsonFieldsByName(dataProperty, fieldNames);
             }
-
-            //JsonScrubber.ScrubJson(dataProperty, scrubFields);
 
             var scrubbedPayload = jObj.ToString();
             return scrubbedPayload;
