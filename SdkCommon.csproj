@@ -7,10 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.3.1</SdkVersion>
+  <SdkVersion>3.4.0</SdkVersion>
     <PackageReleaseNotes>
-      feat:        resolve #426: Add an ability to scrub fields by the absolute paths.
-        
+      feat: resolve #426: Add an ability to scrub fields by the absolute paths.
+      feat: ref #427: Add an ability to scrub HTTP request/response body.
     </PackageReleaseNotes>
     
     <!--

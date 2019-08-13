@@ -1,10 +1,9 @@
-﻿using System.Linq;
-
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
     using System;
+    using System.Linq;
     using System.Text;
     using System.Collections.Generic;
     using System.Threading.Tasks;
