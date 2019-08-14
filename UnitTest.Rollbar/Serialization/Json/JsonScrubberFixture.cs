@@ -63,7 +63,7 @@ namespace UnitTest.Rollbar.Serialization.Json
                 "southwest",
             };
 
-            string scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields);
+            string scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields, "***");
 
             var expectedResult = @"{'results' : [
               {
@@ -98,7 +98,7 @@ namespace UnitTest.Rollbar.Serialization.Json
                 "southwest",
             };
 
-            scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields);
+            scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields, "***");
 
             Assert.AreNotEqual(JObject.Parse(expectedResult).ToString(), JObject.Parse(scrubbedJsonString).ToString());
         }
@@ -142,7 +142,7 @@ namespace UnitTest.Rollbar.Serialization.Json
                 "results[0].geometry.bounds.southwest",
             };
 
-            string scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByPaths(jsonString, scrubFields);
+            string scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByPaths(jsonString, scrubFields, "***");
 
             var expectedResult = @"{'results' : [
               {
@@ -212,46 +212,9 @@ namespace UnitTest.Rollbar.Serialization.Json
                 ]
             }";
 
-            scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields);
+            scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields, "***");
 
             Assert.AreEqual(JObject.Parse(expectedResult).ToString(), JObject.Parse(scrubbedJsonString).ToString());
-        }
-
-        [TestMethod]
-        public void DataFieldFilteringTest()
-        {
-            string[] criticalDataFields = new string[]
-            {
-                "access_token",
-                "headers",
-            };
-
-            string[] scrubFields = new string[]
-            {
-                "one",
-                "Access_token",
-                "access_token",
-                "headers",
-                "two",
-            };
-
-            string[] expectedFields = new string[]
-            {
-                "one",
-                "Access_token",
-                "two",
-            };
-
-            var result = JsonScrubber.FilterOutCriticalFields(scrubFields, criticalDataFields);
-
-            Assert.AreEqual(expectedFields.Count(), result.Count());
-
-            int i = 0;
-            while(i < expectedFields.Count())
-            {
-                Assert.AreEqual(expectedFields[i], result.ElementAt(i));
-                i++;
-            }
         }
 
     }

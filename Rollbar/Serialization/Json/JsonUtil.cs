@@ -47,7 +47,9 @@ namespace Rollbar.Serialization.Json
         /// <returns><c>true</c> if the string value is valid JSON; otherwise, <c>false</c>.</returns>
         public static bool IsValidJson(string stringValue)
         {
+#pragma warning disable IDE0059 // Variable is declared but never used
             return JsonUtil.TryAsValidJson(stringValue, out JToken token);
+#pragma warning restore IDE0059 // Variable is declared but never used
         }
 
         /// <summary>

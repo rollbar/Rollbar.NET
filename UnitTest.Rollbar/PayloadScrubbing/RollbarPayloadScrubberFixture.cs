@@ -32,12 +32,49 @@ namespace UnitTest.Rollbar.PayloadScrubbing
         }
 
         [TestMethod]
+        public void DataFieldFilteringTest()
+        {
+            string[] criticalDataFields = new string[]
+            {
+                "access_token",
+                "headers",
+            };
+
+            string[] scrubFields = new string[]
+            {
+                "one",
+                "Access_token",
+                "access_token",
+                "headers",
+                "two",
+            };
+
+            string[] expectedFields = new string[]
+            {
+                "one",
+                "Access_token",
+                "two",
+            };
+
+            var result = RollbarPayloadScrubber.FilterOutCriticalFields(scrubFields, criticalDataFields);
+
+            Assert.AreEqual(expectedFields.Count(), result.Count());
+
+            int i = 0;
+            while (i < expectedFields.Count())
+            {
+                Assert.AreEqual(expectedFields[i], result.ElementAt(i));
+                i++;
+            }
+        }
+
+        [TestMethod]
         public void TestBasicPayloadScrubbing()
         {
             string initialPayload =
                 "{\"access_token\":\"17965fa5041749b6bf7095a190001ded\",\"data\":{\"environment\":\"_Rollbar - unit - tests\",\"body\":{\"message\":{\"body\":\"Via log4net\"}},\"level\":\"info\",\"timestamp\":1555443532,\"platform\":\"Microsoft Windows 10.0.17763 \",\"language\":\"c#\",\"framework\":\".NETCoreApp,Version=v2.1\",\"custom\":{\"log4net\":{\"LoggerName\":\"RollbarAppenderFixture\",\"Level\":{\"Name\":\"INFO\",\"Value\":40000,\"DisplayName\":\"INFO\"},\"Message\":\"Via log4net\",\"ThreadName\":\"3\",\"TimeStamp\":\"2019-04-16T12:38:49.0503367-07:00\",\"LocationInfo\":null,\"UserName\":\"NOT AVAILABLE\",\"Identity\":\"NOT AVAILABLE\",\"ExceptionString\":\"\",\"Domain\":\"NOT AVAILABLE\",\"Properties\":{\"log4net:UserName\":\"NOT AVAILABLE\",\"log4net:HostName\":\"wscdellwin\",\"log4net:Identity\":\"NOT AVAILABLE\"},\"TimeStampUtc\":\"2019-04-16T19:38:49.0503367Z\"}},\"uuid\":\"25f57cce37654291a1ea517fb5dfb255\",\"notifier\":{\"name\":\"Rollbar.NET\",\"version\":\"3.0.6\"}}}";
 
-            RollbarPayloadScrubber scrubber = null;
+            RollbarPayloadScrubber scrubber;
 
             // scrubbing by names only:
             string[] scrubFields = new string[]
@@ -123,8 +160,7 @@ namespace UnitTest.Rollbar.PayloadScrubbing
             foreach (var bodyPath in bodyPaths)
             {
                 JToken jToken = jsonData.SelectToken(bodyPath);
-                JProperty jProperty = jToken?.Parent as JProperty;
-                if (jProperty != null)
+                if (jToken?.Parent is JProperty jProperty)
                 {
                     string newBodyValue = string.Empty;
                     if (bodyPath.Contains("request"))

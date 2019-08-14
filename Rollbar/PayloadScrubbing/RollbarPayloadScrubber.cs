@@ -1,12 +1,11 @@
-﻿using System.Diagnostics;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar.PayloadScrubbing
 {
     using System;
+    using System.Diagnostics;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using System.Linq;
     using System.Collections.Generic;
     using System.Text;
@@ -14,6 +13,7 @@ namespace Rollbar.PayloadScrubbing
 
     internal class RollbarPayloadScrubber
     {
+        private const string scrubMask = "***";
         private const string fieldPathRoot = @"data.";
         private const string httpRequestBodyPath = "data.body.request.body.";
         private const string httpResponseBodyPath = "data.body.response.body.";
@@ -52,6 +52,36 @@ namespace Rollbar.PayloadScrubbing
 
         }
 
+        /// <summary>
+        /// Filters out the critical fields (using case sensitive string comparing).
+        /// </summary>
+        /// <param name="inputFields">The input fields.</param>
+        /// <param name="criticalDataFields">The critical data fields.</param>
+        /// <returns>Filtered input fields without the critical ones.</returns>
+        public static IEnumerable<string> FilterOutCriticalFields(string[] inputFields, string[] criticalDataFields)
+        {
+            if (criticalDataFields == null)
+            {
+                return inputFields;
+            }
+
+            List<string> safeScrubFields = null;
+
+            if (inputFields != null)
+            {
+                safeScrubFields = new List<string>(inputFields.Length);
+                foreach (var field in inputFields)
+                {
+                    if (!criticalDataFields.Contains(field))
+                    {
+                        safeScrubFields.Add(field);
+                    }
+                }
+            }
+
+            return safeScrubFields;
+        }
+
         public string ScrubPayload(string payload)
         {
             var jObj = JsonScrubber.CreateJsonObject(payload);
@@ -69,12 +99,12 @@ namespace Rollbar.PayloadScrubbing
 
             if (this._payloadFieldPaths != null && this._payloadFieldPaths.LongLength > 0)
             {
-                JsonScrubber.ScrubJsonFieldsByPaths(jObj, this._payloadFieldPaths);
+                JsonScrubber.ScrubJsonFieldsByPaths(jObj, this._payloadFieldPaths, scrubMask);
             }
 
             if (this._payloadFieldNames != null && this._payloadFieldNames.LongLength > 0)
             {
-                JsonScrubber.ScrubJsonFieldsByName(dataProperty, this._payloadFieldNames);
+                JsonScrubber.ScrubJsonFieldsByName(dataProperty, this._payloadFieldNames, scrubMask);
             }
 
             var scrubbedPayload = jObj.ToString();
@@ -91,10 +121,9 @@ namespace Rollbar.PayloadScrubbing
             foreach (var bodyFieldPath in bodyFieldPaths)
             {
                 JToken jToken = payloadJson.SelectToken(bodyFieldPath);
-                JProperty jProperty = jToken?.Parent as JProperty;
-                if (jProperty != null)
+                if (jToken?.Parent is JProperty jProperty)
                 {
-                    jProperty.Replace(new JProperty(jProperty.Name, "***"));
+                    jProperty.Replace(new JProperty(jProperty.Name, scrubMask));
                     bodyIsNativeJson = true;
                 }
             }
@@ -130,13 +159,11 @@ namespace Rollbar.PayloadScrubbing
             // Let's try scrubbing as a JSON string:
             if (JsonUtil.TryAsValidJson(bodyString, out JToken jsonToken))
             {
-                JObject jsonObj = jsonToken as JObject;
-                if (jsonObj != null)
+                if (jsonToken is JObject jsonObj)
                 {
-                    JsonScrubber.ScrubJsonFieldsByPaths(jsonObj, bodyFieldPaths);
+                    JsonScrubber.ScrubJsonFieldsByPaths(jsonObj, bodyFieldPaths, scrubMask);
                     string scrubbedJsonString = JsonConvert.SerializeObject(jsonObj);
-                    JProperty jProperty = httpBodyToken.Parent as JProperty;
-                    if (jProperty != null)
+                    if (httpBodyToken.Parent is JProperty jProperty)
                     {
                         jProperty.Replace(new JProperty(jProperty.Name, scrubbedJsonString));
                     }

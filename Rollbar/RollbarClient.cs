@@ -72,8 +72,10 @@ namespace Rollbar
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
             }
 #pragma warning disable CS0168 // Variable is declared but never used
+#pragma warning disable IDE0059 // Variable is declared but never used
             catch (NotImplementedException ex)
 #pragma warning restore CS0168 // Variable is declared but never used
+#pragma warning restore IDE0059 // Variable is declared but never used
             {
                 // just a crash prevention.
                 // this is a work around the unimplemented property within Mono runtime...
@@ -135,7 +137,7 @@ namespace Rollbar
                         );
                 }
 
-                string jsonData = null;
+                string jsonData;
                 try
                 {
                     jsonData = JsonConvert.SerializeObject(payload);
@@ -227,12 +229,12 @@ namespace Rollbar
 
             if (fieldPaths != null && fieldPaths.LongLength > 0)
             {
-                JsonScrubber.ScrubJsonFieldsByPaths(jObj, fieldPaths);
+                JsonScrubber.ScrubJsonFieldsByPaths(jObj, fieldPaths, "***");
             }
 
             if (fieldNames != null && fieldNames.LongLength > 0)
             {
-                JsonScrubber.ScrubJsonFieldsByName(dataProperty, fieldNames);
+                JsonScrubber.ScrubJsonFieldsByName(dataProperty, fieldNames, "***");
             }
 
             var scrubbedPayload = jObj.ToString();
