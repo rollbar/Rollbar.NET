@@ -115,77 +115,19 @@ namespace Rollbar
         {
             Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
-            Payload payload = payloadBundle.GetPayload();
-            Assumption.AssertNotNull(payload, nameof(payload));
-
-            if (payloadBundle.AsHttpContentToSend == null)
+            // make sure there anything meaningful to send:
+            if (!EnsureHttpContentToSend(payloadBundle))
             {
-                if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
-                {
-                    var exception = new ArgumentOutOfRangeException(
-                        paramName: nameof(payload),
-                        message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
-                        );
-
-                    RollbarErrorUtility.Report(
-                        this._rollbarLogger,
-                        payload,
-                        InternalRollbarError.PayloadTruncationError,
-                        "While truncating a payload...",
-                        exception,
-                        payloadBundle
-                        );
-                }
-
-                string jsonData;
-                try
-                {
-                    jsonData = JsonConvert.SerializeObject(payload);
-                }
-                catch (System.Exception exception)
-                {
-                    RollbarErrorUtility.Report(
-                        this._rollbarLogger,
-                        payload,
-                        InternalRollbarError.PayloadSerializationError,
-                        "While serializing a payload...",
-                        exception,
-                        payloadBundle
-                        );
-
-                    return null;
-                }
-
-                try
-                {
-                    jsonData = ScrubPayload(jsonData, this._rollbarLogger.Config.GetFieldsToScrub());
-                }
-                catch (System.Exception exception)
-                {
-                    RollbarErrorUtility.Report(
-                        this._rollbarLogger,
-                        payload,
-                        InternalRollbarError.PayloadScrubbingError,
-                        "While scrubbing a payload...",
-                        exception,
-                        payloadBundle
-                        );
-
-                    return null;
-                }
-
-                payloadBundle.AsHttpContentToSend =
-                    new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
+                return null;
             }
 
-            Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
-            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.AccessToken), nameof(payload.AccessToken));
-
+            // build an HTTP request:
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
             const string accessTokenHeader = "X-Rollbar-Access-Token";
             request.Headers.Add(accessTokenHeader, this._rollbarLogger.Config.AccessToken);
             request.Content = payloadBundle.AsHttpContentToSend;
 
+            // send the request:
             var postResponse = await this._httpClient.SendAsync(request);
 
             RollbarResponse response = null;
@@ -210,6 +152,130 @@ namespace Rollbar
             }
 
             return response;
+        }
+
+        private bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
+        {
+            if (payloadBundle.AsHttpContentToSend != null)
+            {
+                return true;
+            }
+
+            Payload payload = payloadBundle.GetPayload();
+            Assumption.AssertNotNull(payload, nameof(payload));
+
+            if (!TruncatePayload(payloadBundle))
+            {
+                return false;
+            }
+
+            if (!ScrubHttpMessages(payloadBundle))
+            {
+                return false;
+            }
+
+            string jsonData = SerializePayloadAsJsonString(payloadBundle);
+            if (string.IsNullOrWhiteSpace(jsonData))
+            {
+                return false;
+            }
+
+            try
+            {
+                jsonData = ScrubPayload(jsonData, this._rollbarLogger.Config.GetFieldsToScrub());
+            }
+            catch (System.Exception exception)
+            {
+                RollbarErrorUtility.Report(
+                    this._rollbarLogger,
+                    payload,
+                    InternalRollbarError.PayloadScrubbingError,
+                    "While scrubbing a payload...",
+                    exception,
+                    payloadBundle
+                    );
+
+                return false;
+            }
+
+            payloadBundle.AsHttpContentToSend =
+                new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
+
+            Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
+            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.AccessToken), nameof(payload.AccessToken));
+
+            return true;
+        }
+
+        private bool ScrubHttpMessages(PayloadBundle payloadBundle)
+        {
+            Payload payload = payloadBundle.GetPayload();
+
+            DTOs.Request request = payload.Data.Request;
+            if (request?.PostBody != null)
+            {
+                //TODO: scrub request...
+            }
+
+            DTOs.Response response = payload.Data.Response;
+            if (response?.Body != null)
+            {
+                //TODO: scrub response...
+            }
+
+            return true;
+        }
+
+        private string SerializePayloadAsJsonString(PayloadBundle payloadBundle)
+        {
+            Payload payload = payloadBundle.GetPayload();
+
+            string jsonData;
+            try
+            {
+                jsonData = JsonConvert.SerializeObject(payload);
+            }
+            catch (System.Exception exception)
+            {
+                RollbarErrorUtility.Report(
+                    this._rollbarLogger,
+                    payload,
+                    InternalRollbarError.PayloadSerializationError,
+                    "While serializing a payload...",
+                    exception,
+                    payloadBundle
+                );
+
+                return null;
+            }
+
+            return jsonData;
+        }
+
+        private bool TruncatePayload(PayloadBundle payloadBundle)
+        {
+            Payload payload = payloadBundle.GetPayload();
+
+            if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
+            {
+                var exception = new ArgumentOutOfRangeException(
+                    paramName: nameof(payload),
+                    message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
+                );
+
+                RollbarErrorUtility.Report(
+                    this._rollbarLogger,
+                    payload,
+                    InternalRollbarError.PayloadTruncationError,
+                    "While truncating a payload...",
+                    exception,
+                    payloadBundle
+                );
+
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>

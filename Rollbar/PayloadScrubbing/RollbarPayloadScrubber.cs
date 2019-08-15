@@ -25,7 +25,6 @@ namespace Rollbar.PayloadScrubbing
 
         private RollbarPayloadScrubber()
         {
-
         }
 
         public RollbarPayloadScrubber(IEnumerable<string> scrubFields)
@@ -49,7 +48,6 @@ namespace Rollbar.PayloadScrubbing
                 this._httpRequestBodyPaths.Length + 
                 this._httpResponseBodyPaths.Length
                 );
-
         }
 
         /// <summary>
