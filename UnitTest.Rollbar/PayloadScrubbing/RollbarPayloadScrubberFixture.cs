@@ -1,12 +1,11 @@
-﻿using Rollbar.Serialization.Json;
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace UnitTest.Rollbar.PayloadScrubbing
 {
     using global::Rollbar;
     using global::Rollbar.DTOs;
     using global::Rollbar.PayloadScrubbing;
+    using global::Rollbar.Serialization.Json;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
@@ -16,6 +15,8 @@ namespace UnitTest.Rollbar.PayloadScrubbing
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+
+
 
     [TestClass]
     [TestCategory(nameof(RollbarPayloadScrubberFixture))]

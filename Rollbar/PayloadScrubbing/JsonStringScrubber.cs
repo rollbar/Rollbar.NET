@@ -29,7 +29,7 @@ namespace Rollbar.PayloadScrubbing
         protected override string DoScrub(string inputString)
         {
             string scrubbedString = JsonScrubber.ScrubJsonFieldsByName(inputString, this._scrubFields, this._scrubMask);
-            scrubbedString = JsonScrubber.ScrubJsonFieldsByPaths(scrubbedString, this._scrubFields, this._scrubMask);
+            scrubbedString = JsonScrubber.ScrubJsonFieldsByPaths(scrubbedString, this._scrubPaths, this._scrubMask);
             return scrubbedString;
         }
     }

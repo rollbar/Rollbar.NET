@@ -1,4 +1,6 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿using Rollbar.PayloadScrubbing;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
@@ -27,18 +29,26 @@ namespace Rollbar
         /// The rollbar logger
         /// </summary>
         private readonly RollbarLogger _rollbarLogger;
+
         /// <summary>
         /// The HTTP client
         /// </summary>
         private readonly HttpClient _httpClient;
+
         /// <summary>
         /// The payload post URI
         /// </summary>
         private readonly Uri _payloadPostUri;
+
         /// <summary>
         /// The payload truncation strategy
         /// </summary>
         private readonly IterativeTruncationStrategy _payloadTruncationStrategy;
+
+        /// <summary>
+        /// The payload scrubber
+        /// </summary>
+        private readonly RollbarPayloadScrubber _payloadScrubber;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarClient"/> class.
@@ -82,6 +92,7 @@ namespace Rollbar
             }
 
             this._payloadTruncationStrategy = new IterativeTruncationStrategy();
+            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.GetFieldsToScrub());
         }
 
         /// <summary>
@@ -151,6 +162,8 @@ namespace Rollbar
                 postResponse.EnsureSuccessStatusCode();
             }
 
+            postResponse.Dispose();
+
             return response;
         }
 
@@ -212,18 +225,53 @@ namespace Rollbar
             Payload payload = payloadBundle.GetPayload();
 
             DTOs.Request request = payload.Data.Request;
-            if (request?.PostBody != null)
+            if (request?.PostBody is string requestBody)
             {
-                //TODO: scrub request...
+                if (request.Headers.TryGetValue("Content-Type", out string contentTypeHeader))
+                {
+                    request.PostBody = 
+                        this.ScrubHttpMessageBodyContentString(
+                            requestBody, 
+                            contentTypeHeader,
+                            this._payloadScrubber.ScrubMask, 
+                            this._payloadScrubber.PayloadFieldNames,
+                            this._payloadScrubber.HttpRequestBodyPaths);
+                }
             }
 
             DTOs.Response response = payload.Data.Response;
-            if (response?.Body != null)
+            if (response?.Body is string responseBody)
             {
-                //TODO: scrub response...
+                if (response.Headers.TryGetValue("Content-Type", out string contentTypeHeader))
+                {
+                    response.Body =
+                        this.ScrubHttpMessageBodyContentString(
+                            responseBody,
+                            contentTypeHeader,
+                            this._payloadScrubber.ScrubMask,
+                            this._payloadScrubber.PayloadFieldNames,
+                            this._payloadScrubber.HttpResponseBodyPaths);
+                }
             }
 
             return true;
+        }
+
+        private string ScrubHttpMessageBodyContentString(string body, string contentTypeHeaderValue, string scrubMask, string[] scrubFields, string[] scrubPaths)
+        {
+            string contentType = contentTypeHeaderValue.ToLower();
+            if (contentType.Contains("json"))
+            {
+                return new JsonStringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
+            }
+            else if (contentType.Contains("xml"))
+            {
+                return new XmlStringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
+            }
+            else
+            {
+                return new StringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
+            }
         }
 
         private string SerializePayloadAsJsonString(PayloadBundle payloadBundle)

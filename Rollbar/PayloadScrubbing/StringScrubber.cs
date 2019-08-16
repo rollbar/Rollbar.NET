@@ -25,7 +25,7 @@
         {
         }
 
-        protected StringScrubber(string scrubMask, IEnumerable<string> scrubFields)
+        public StringScrubber(string scrubMask, IEnumerable<string> scrubFields)
             : this(scrubMask, scrubFields.Where(n => !n.Contains('.')), scrubFields.Where(n => n.Contains('.')))
         {
             Debug.Assert(scrubFields.Count() ==
@@ -33,12 +33,12 @@
                          this._scrubPaths.Length
             );
         }
-        protected StringScrubber(string scrubMask, IEnumerable<string> scrubFields, IEnumerable<string> scrubPaths)
+        public StringScrubber(string scrubMask, IEnumerable<string> scrubFields, IEnumerable<string> scrubPaths)
             : this(scrubMask, scrubFields.ToArray(), scrubPaths.ToArray())
         {
         }
 
-        protected StringScrubber(string scrubMask, string[] scrubFields, string[] scrubPaths)
+        public StringScrubber(string scrubMask, string[] scrubFields, string[] scrubPaths)
         {
             this._scrubMask = scrubMask;
             this._scrubFields = scrubFields;
@@ -47,6 +47,17 @@
 
         public string Scrub(string inputString)
         {
+            if (((this._scrubFields == null || this._scrubFields.Length == 0)
+                 && (this._scrubPaths == null || this._scrubPaths.Length == 0)
+                )
+                || (this._scrubFields.All(i => string.IsNullOrWhiteSpace(i))
+                    && this._scrubPaths.All(i => string.IsNullOrWhiteSpace(i))
+                )
+            )
+            {
+                return inputString; //no data needs to be scrubbed...
+            }
+
             try
             {
                 return DoScrub(inputString);

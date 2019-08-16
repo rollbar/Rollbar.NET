@@ -176,5 +176,31 @@ namespace Rollbar.PayloadScrubbing
             //TODO: implement...
 
         }
+
+        public string ScrubMask
+        {
+            get { return scrubMask; }
+        }
+
+        public string[] PayloadFieldNames
+        {
+            get { return this._payloadFieldNames; }
+        }
+
+        public string[] PayloadFieldPaths
+        {
+            get { return this._payloadFieldPaths; }
+        }
+
+        public string[] HttpRequestBodyPaths
+        {
+            get { return this._httpRequestBodyPaths; }
+        }
+
+        public string[] HttpResponseBodyPaths
+        {
+            get { return this._httpResponseBodyPaths; }
+        }
+
     }
 }
