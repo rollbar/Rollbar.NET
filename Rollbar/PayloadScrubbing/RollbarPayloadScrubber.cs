@@ -124,16 +124,6 @@ namespace Rollbar.PayloadScrubbing
             var jObj = JsonScrubber.CreateJsonObject(payload);
             var dataProperty = JsonScrubber.GetChildPropertyByName(jObj, "data");
 
-            //if (this._httpRequestBodyPaths != null && this._httpRequestBodyPaths.LongLength > 0)
-            //{
-            //    this.ScrubHttpMessageBody(jObj, httpRequestBodyPath, this._httpRequestBodyPaths);
-            //}
-
-            //if (this._httpResponseBodyPaths != null && this._httpResponseBodyPaths.LongLength > 0)
-            //{
-            //    this.ScrubHttpMessageBody(jObj, httpResponseBodyPath, this._httpResponseBodyPaths);
-            //}
-
             if (this._payloadFieldPaths != null && this._payloadFieldPaths.LongLength > 0)
             {
                 JsonScrubber.ScrubJsonFieldsByPaths(jObj, this._payloadFieldPaths, scrubMask);
@@ -147,74 +137,6 @@ namespace Rollbar.PayloadScrubbing
             var scrubbedPayload = jObj.ToString();
             return scrubbedPayload;
         }
-
-        //private void ScrubHttpMessageBody(JObject payloadJson, string pathToBody, IEnumerable<string> bodyFieldPaths)
-        //{
-        //    // Let's try treating http message bodies as "native JSON" sub-structure, first:
-        //    //==============================================================================
-
-        //    bool bodyIsNativeJson = false;
-
-        //    foreach (var bodyFieldPath in bodyFieldPaths)
-        //    {
-        //        JToken jToken = payloadJson.SelectToken(bodyFieldPath);
-        //        if (jToken?.Parent is JProperty jProperty)
-        //        {
-        //            jProperty.Replace(new JProperty(jProperty.Name, scrubMask));
-        //            bodyIsNativeJson = true;
-        //        }
-        //    }
-
-        //    if (bodyIsNativeJson)
-        //    {
-        //        return;
-        //    }
-
-
-        //    // Let's try treating http message bodies as a string:
-        //    //====================================================
-
-        //    string[] bodyPathsToScrub = 
-        //        bodyFieldPaths.Select(i => i.Replace(pathToBody, string.Empty)).ToArray();
-
-        //    this.ScrubHttpMessageBody(payloadJson.SelectToken(pathToBody.TrimEnd('.')), bodyPathsToScrub);
-        //}
-
-        //private void ScrubHttpMessageBody(JToken httpBodyToken, IEnumerable<string> bodyFieldPaths)
-        //{
-        //    if (httpBodyToken == null || bodyFieldPaths == null)
-        //    {
-        //        return;
-        //    }
-
-        //    string bodyString = httpBodyToken.Value<string>();
-        //    if (string.IsNullOrWhiteSpace(bodyString))
-        //    {
-        //        return;
-        //    }
-
-        //    // Let's try scrubbing as a JSON string:
-        //    if (JsonUtil.TryAsValidJson(bodyString, out JToken jsonToken))
-        //    {
-        //        if (jsonToken is JObject jsonObj)
-        //        {
-        //            JsonScrubber.ScrubJsonFieldsByPaths(jsonObj, bodyFieldPaths, scrubMask);
-        //            string scrubbedJsonString = JsonConvert.SerializeObject(jsonObj);
-        //            if (httpBodyToken.Parent is JProperty jProperty)
-        //            {
-        //                jProperty.Replace(new JProperty(jProperty.Name, scrubbedJsonString));
-        //            }
-        //            return;
-        //        }
-        //    }
-
-        //    // Let's try scrubbing as an XML string:
-        //    //TODO: implement...
-
-        //    // Let's try scrubbing as a "key=value" pairs string:
-        //    //TODO: implement...
-
-        //}
 
         /// <summary>
         /// Gets the scrub mask.
