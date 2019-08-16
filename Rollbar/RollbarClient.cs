@@ -1,6 +1,4 @@
-﻿using Rollbar.PayloadScrubbing;
-
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
@@ -19,6 +17,7 @@ namespace Rollbar
     using Rollbar.Diagnostics;
     using Rollbar.Serialization.Json;
     using Rollbar.PayloadTruncation;
+    using Rollbar.PayloadScrubbing;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -51,7 +50,7 @@ namespace Rollbar
         private readonly RollbarPayloadScrubber _payloadScrubber;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarClient"/> class.
+        /// Initializes a new instance of the <see cref="RollbarClient" /> class.
         /// </summary>
         /// <param name="rollbarLogger">The rollbar logger.</param>
         public RollbarClient(RollbarLogger rollbarLogger)
@@ -167,6 +166,11 @@ namespace Rollbar
             return response;
         }
 
+        /// <summary>
+        /// Ensures the HTTP content to send.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
         {
             if (payloadBundle.AsHttpContentToSend != null)
@@ -195,7 +199,8 @@ namespace Rollbar
 
             try
             {
-                jsonData = ScrubPayload(jsonData, this._rollbarLogger.Config.GetFieldsToScrub());
+                //jsonData = ScrubPayload(jsonData, this._rollbarLogger.Config.GetFieldsToScrub());
+                jsonData = ScrubPayload(jsonData);
             }
             catch (System.Exception exception)
             {
@@ -220,6 +225,11 @@ namespace Rollbar
             return true;
         }
 
+        /// <summary>
+        /// Scrubs the HTTP messages.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool ScrubHttpMessages(PayloadBundle payloadBundle)
         {
             Payload payload = payloadBundle.GetPayload();
@@ -257,7 +267,22 @@ namespace Rollbar
             return true;
         }
 
-        private string ScrubHttpMessageBodyContentString(string body, string contentTypeHeaderValue, string scrubMask, string[] scrubFields, string[] scrubPaths)
+        /// <summary>
+        /// Scrubs the HTTP message body content string.
+        /// </summary>
+        /// <param name="body">The body.</param>
+        /// <param name="contentTypeHeaderValue">The content type header value.</param>
+        /// <param name="scrubMask">The scrub mask.</param>
+        /// <param name="scrubFields">The scrub fields.</param>
+        /// <param name="scrubPaths">The scrub paths.</param>
+        /// <returns>System.String.</returns>
+        private string ScrubHttpMessageBodyContentString(
+            string body, 
+            string contentTypeHeaderValue, 
+            string scrubMask, 
+            string[] scrubFields, 
+            string[] scrubPaths
+            )
         {
             string contentType = contentTypeHeaderValue.ToLower();
             if (contentType.Contains("json"))
@@ -274,6 +299,11 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Serializes the payload as json string.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns>System.String.</returns>
         private string SerializePayloadAsJsonString(PayloadBundle payloadBundle)
         {
             Payload payload = payloadBundle.GetPayload();
@@ -300,6 +330,11 @@ namespace Rollbar
             return jsonData;
         }
 
+        /// <summary>
+        /// Truncates the payload.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool TruncatePayload(PayloadBundle payloadBundle)
         {
             Payload payload = payloadBundle.GetPayload();
@@ -330,28 +365,31 @@ namespace Rollbar
         /// Scrubs the payload.
         /// </summary>
         /// <param name="payload">The payload.</param>
-        /// <param name="scrubFields">The scrub fields.</param>
         /// <returns>System.String.</returns>
-        internal static string ScrubPayload(string payload, IEnumerable<string> scrubFields)
+        internal string ScrubPayload(string payload)
+        //internal static string ScrubPayload(string payload, IEnumerable<string> scrubFields)
         {
-            var jObj = JsonScrubber.CreateJsonObject(payload);
-            var dataProperty = JsonScrubber.GetChildPropertyByName(jObj, "data");
+            //var jObj = JsonScrubber.CreateJsonObject(payload);
+            //var dataProperty = JsonScrubber.GetChildPropertyByName(jObj, "data");
 
-            const string fieldPathRoot = @"data.";
-            string[] fieldPaths = scrubFields.Where(n => n.StartsWith(fieldPathRoot)).ToArray();
-            string[] fieldNames = scrubFields.Where(n => !n.Contains('.')).ToArray();
+            //const string fieldPathRoot = @"data.";
+            //string[] fieldPaths = scrubFields.Where(n => n.StartsWith(fieldPathRoot)).ToArray();
+            //string[] fieldNames = scrubFields.Where(n => !n.Contains('.')).ToArray();
 
-            if (fieldPaths != null && fieldPaths.LongLength > 0)
-            {
-                JsonScrubber.ScrubJsonFieldsByPaths(jObj, fieldPaths, "***");
-            }
+            //if (fieldPaths != null && fieldPaths.LongLength > 0)
+            //{
+            //    JsonScrubber.ScrubJsonFieldsByPaths(jObj, fieldPaths, "***");
+            //}
 
-            if (fieldNames != null && fieldNames.LongLength > 0)
-            {
-                JsonScrubber.ScrubJsonFieldsByName(dataProperty, fieldNames, "***");
-            }
+            //if (fieldNames != null && fieldNames.LongLength > 0)
+            //{
+            //    JsonScrubber.ScrubJsonFieldsByName(dataProperty, fieldNames, "***");
+            //}
 
-            var scrubbedPayload = jObj.ToString();
+            //var scrubbedPayload = jObj.ToString();
+            //return scrubbedPayload;
+
+            var scrubbedPayload = this._payloadScrubber.ScrubPayload(payload);
             return scrubbedPayload;
         }
     }
