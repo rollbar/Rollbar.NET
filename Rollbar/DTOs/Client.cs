@@ -5,7 +5,7 @@
     /// <summary>
     /// Models Rollbar Client DTO.
     /// </summary>
-    /// <seealso cref="Rollbar.DTOs.ExtendableDtoBase" />
+    /// <seealso cref="Rollbar.DTOs.HostBase" />
     /// <remarks>
     ///  Optional: client
     /// Data about the client device this event occurred on.

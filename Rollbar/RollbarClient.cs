@@ -367,28 +367,7 @@ namespace Rollbar
         /// <param name="payload">The payload.</param>
         /// <returns>System.String.</returns>
         internal string ScrubPayload(string payload)
-        //internal static string ScrubPayload(string payload, IEnumerable<string> scrubFields)
         {
-            //var jObj = JsonScrubber.CreateJsonObject(payload);
-            //var dataProperty = JsonScrubber.GetChildPropertyByName(jObj, "data");
-
-            //const string fieldPathRoot = @"data.";
-            //string[] fieldPaths = scrubFields.Where(n => n.StartsWith(fieldPathRoot)).ToArray();
-            //string[] fieldNames = scrubFields.Where(n => !n.Contains('.')).ToArray();
-
-            //if (fieldPaths != null && fieldPaths.LongLength > 0)
-            //{
-            //    JsonScrubber.ScrubJsonFieldsByPaths(jObj, fieldPaths, "***");
-            //}
-
-            //if (fieldNames != null && fieldNames.LongLength > 0)
-            //{
-            //    JsonScrubber.ScrubJsonFieldsByName(dataProperty, fieldNames, "***");
-            //}
-
-            //var scrubbedPayload = jObj.ToString();
-            //return scrubbedPayload;
-
             var scrubbedPayload = this._payloadScrubber.ScrubPayload(payload);
             return scrubbedPayload;
         }

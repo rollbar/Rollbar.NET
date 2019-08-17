@@ -13,14 +13,7 @@
     public class Data
         : DtoBase
     {
-        private static readonly string NotifierAssemblyVersion;
-
         private static readonly string DefaultFrameworkValue;
-
-        private static string DetectNotifierAssemblyVersion()
-        {
-            return RuntimeEnvironmentUtility.GetTypeAssemblyVersion(typeof(Data));
-        }
 
         private static string DetectTargetFrameworks()
         {
@@ -33,7 +26,6 @@
         /// </summary>
         static Data()
         {
-            Data.NotifierAssemblyVersion = Data.DetectNotifierAssemblyVersion();
             Data.DefaultFrameworkValue = Data.DetectTargetFrameworks();
             Data.DefaultPlatform = RuntimeEnvironmentUtility.GetOSDescription();
         }
@@ -160,11 +152,7 @@
             this.Platform = Data.DefaultPlatform;
             this.Framework = Data.DefaultFrameworkValue;
             this.Language = Data.DefaultLanguage;
-            this.Notifier = new Dictionary<string, string>
-                {
-                    { "name", "Rollbar.NET" },
-                    { "version", Data.NotifierAssemblyVersion },
-                };
+            this.Notifier = new Notifier();
             this.GuidUuid = Guid.NewGuid();
             this.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(DateTime.UtcNow);
         }
@@ -473,7 +461,7 @@
         /// Describes the library used to send this event.
         /// </remarks>
         [JsonProperty("notifier", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public IDictionary<string, string> Notifier
+        public Notifier Notifier
         {
             get;
             private set;
@@ -519,6 +507,10 @@
                         (data) => data.Server,
                         this.Server?.GetValidator() as Validator<Server>
                         )
+                    .AddValidation(
+                        Data.DataValidationRule.NotifierRequired,
+                        (data) => { return (data.Notifier != null); }
+                    )
                ;
 
             return validator;
@@ -563,6 +555,11 @@
             /// The valid client if any
             /// </summary>
             ValidClientIfAny,
+
+            /// <summary>
+            /// The notifier required
+            /// </summary>
+            NotifierRequired,
         }
     }
 }

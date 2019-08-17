@@ -11,6 +11,7 @@
     <PackageReleaseNotes>
       feat: resolve #426: Add an ability to scrub fields by the absolute paths.
       feat: resolve #427: Add an ability to scrub HTTP request/response body.
+      feat: resolve #428: Capture relevant notifier config with every payload.
     </PackageReleaseNotes>
     
     <!--

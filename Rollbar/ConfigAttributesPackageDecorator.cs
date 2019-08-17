@@ -71,6 +71,8 @@
                 return; //nothing to decorate...
             }
 
+            rollbarData.Notifier.Configuration = new RollbarConfig().Reconfigure(this._rollbarConfig);
+
             // telemetry data is based on the configuration,
             // so let's include it if applicable:
             if (this._capturedTelemetryRecords != null)
