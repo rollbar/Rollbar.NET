@@ -223,6 +223,7 @@
         /// <value>
         /// The check ignore.
         /// </value>
+        [JsonIgnore]
         public Func<Payload, bool> CheckIgnore { get; set; }
 
         /// <summary>
@@ -231,6 +232,7 @@
         /// <value>
         /// The transform.
         /// </value>
+        [JsonIgnore]
         public Action<Payload> Transform { get; set; }
 
         /// <summary>
@@ -239,6 +241,7 @@
         /// <value>
         /// The truncate.
         /// </value>
+        [JsonIgnore]
         public Action<Payload> Truncate { get; set; }
 
         /// <summary>

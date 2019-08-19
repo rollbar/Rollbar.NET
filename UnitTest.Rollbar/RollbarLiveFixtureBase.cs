@@ -49,7 +49,7 @@ namespace UnitTest.Rollbar
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
 
             this._loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
+                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, ScrubFields = new string[] { "secret", "super_secret", } };
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace UnitTest.Rollbar
             if (this._loggerConfig == null)
             {
                 this._loggerConfig =
-                    new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment, };
+                    new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment, ScrubFields = new string[] {"secret", "super_secret", } };
             }
             return this._loggerConfig;
         }

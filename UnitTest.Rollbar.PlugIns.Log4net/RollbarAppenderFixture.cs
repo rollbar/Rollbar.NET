@@ -106,7 +106,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
 
-            Assert.IsFalse(this._rollbarCommEvents[0].Payload.Contains("Person"));
+            Assert.IsFalse(this._rollbarCommEvents[0].Payload.Contains("\"person\":{\"id\":"));
             Assert.IsTrue(this._rollbarCommEvents[1].Payload.Contains(expectedPersons[1].Id));
             Assert.IsTrue(this._rollbarCommEvents[2].Payload.Contains(expectedPersons[2].Id));
         }

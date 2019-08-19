@@ -25,7 +25,7 @@ namespace UnitTest.Rollbar.Serialization.Json
         }
 
         [TestMethod]
-        public void BasicScrubbingTest()
+        public void BasicScrubByNameTest()
         {
             var jsonString = @"{'results' : [
               {
@@ -63,7 +63,7 @@ namespace UnitTest.Rollbar.Serialization.Json
                 "southwest",
             };
 
-            string scrubbedJsonString = JsonScrubber.ScrubJson(jsonString, scrubFields);
+            string scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields, "***");
 
             var expectedResult = @"{'results' : [
               {
@@ -98,46 +98,123 @@ namespace UnitTest.Rollbar.Serialization.Json
                 "southwest",
             };
 
-            scrubbedJsonString = JsonScrubber.ScrubJson(jsonString, scrubFields);
+            scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields, "***");
 
             Assert.AreNotEqual(JObject.Parse(expectedResult).ToString(), JObject.Parse(scrubbedJsonString).ToString());
         }
 
         [TestMethod]
-        public void DataFieldFilteringTest()
+        public void BasicScrubByPathTest()
         {
-            string[] criticalDataFields = new string[]
-            {
-                "access_token",
-                "headers",
+            var jsonString = @"{'results' : [
+              {
+                 'address_components' : 'abc' ,
+                 'formatted_address' : 'eedfdfdfdfdfdfdf',
+                 'geometry' : {
+                    'bounds' : {
+                       'northeast' : {
+                          'lat' : 56.88225340,
+                          'lng' : 7.34169940
+                       },
+                       'southwest' : {
+                          'lat' : 2.4792219750,
+                          'lng' : 6.85382840
+                       }}}},
+              {
+                 'address_components' : 'abc1' ,
+                 'formatted_address' : 'ffdfdfdfdfdfdfdf',
+                 'geometry' : {
+                    'bounds' : {
+                       'northeast' : {
+                          'lat' : 6.88225340,
+                          'lng' : 17.34169940
+                       },
+                       'southwest' : {
+                          'lat' : 22.4792219750,
+                          'lng' : 16.85382840
+                       }}}}
+
+               ]}";
+
+            string[] scrubFields = new string[] {
+                //"lng",
+                "results[0].geometry.bounds.northeast.lat",
+                "results[0].geometry.bounds.southwest",
             };
 
-            string[] scrubFields = new string[]
-            {
-                "one",
-                "Access_token",
-                "access_token",
-                "headers",
-                "two",
+            string scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByPaths(jsonString, scrubFields, "***");
+
+            var expectedResult = @"{'results' : [
+              {
+                 'address_components' : 'abc' ,
+                 'formatted_address' : 'eedfdfdfdfdfdfdf',
+                 'geometry' : {
+                    'bounds' : {
+                       'northeast' : {
+                          'lat' : '***',
+                          'lng' : 7.34169940
+                       },
+                       'southwest' : '***'
+              }}},
+              {
+                 'address_components' : 'abc1' ,
+                 'formatted_address' : 'ffdfdfdfdfdfdfdf',
+                 'geometry' : {
+                    'bounds' : {
+                       'northeast' : {
+                          'lat' : 6.88225340,
+                          'lng' : 17.34169940
+                       },
+                       'southwest' : {
+                          'lat' : 22.4792219750,
+                          'lng' : 16.85382840
+                       }}}}
+
+               ]}";
+
+            Assert.AreEqual(JObject.Parse(expectedResult).ToString(), JObject.Parse(scrubbedJsonString).ToString());
+
+            scrubFields = new string[] {
+                "lng",
+                "lat",
+                "southwest",
             };
 
-            string[] expectedFields = new string[]
+            expectedResult = @"
             {
-                "one",
-                "Access_token",
-                "two",
-            };
+                'results': [
+                {
+                    'address_components': 'abc',
+                    'formatted_address': 'eedfdfdfdfdfdfdf',
+                    'geometry': {
+                        'bounds': {
+                            'northeast': {
+                                'lat': '***',
+                                'lng': '***'
+                            },
+                            'southwest': '***'
+                        }
+                    }
+                },
+                {
+                    'address_components': 'abc1',
+                    'formatted_address': 'ffdfdfdfdfdfdfdf',
+                    'geometry': {
+                        'bounds': {
+                            'northeast': {
+                                'lat': '***',
+                                'lng': '***'
+                            },
+                            'southwest': '***'
+                        }
+                    }
+                }
+                ]
+            }";
 
-            var result = JsonScrubber.FilterOutCriticalFields(scrubFields, criticalDataFields);
+            scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields, "***");
 
-            Assert.AreEqual(expectedFields.Count(), result.Count());
-
-            int i = 0;
-            while(i < expectedFields.Count())
-            {
-                Assert.AreEqual(expectedFields[i], result.ElementAt(i));
-                i++;
-            }
+            Assert.AreEqual(JObject.Parse(expectedResult).ToString(), JObject.Parse(scrubbedJsonString).ToString());
         }
 
     }
