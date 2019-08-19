@@ -56,6 +56,22 @@ We are also unifying versioning for all of the modules to follow common SDK vers
 
 ### Fixes and Improvements
 
+#### v3.4.0
+-	feat: resolve #426: Add an ability to scrub fields by the absolute paths.
+-	feat: resolve #427: Add an ability to scrub HTTP request/response body.
+-	feat: resolve #428: Capture relevant notifier config with every payload.
+
+#### v3.3.0
+-	feat:  resolve #404: Add explicit net48 TargetFramework.
+-	feat:  resolve #405: Upgrade bench-marking and unit-testing dependencies.
+-	feat:  resolve #407: Refactor ScrubFields defaults implementation.
+-	feat:  resolve #415: Rollbar.NetCore.AspNet: Add auto-capture of the current HTTP response by the RollbarMiddleware.
+-	feat:  resolve #416: Rollbar.Net.AspNet.WebApi: add auto-capture of the current HTTP request/response to RollbarExceptionFilterAttribute.OnException(...) handler.
+-	feat:  resolve #417: Rollbar.Net.AspNet.Mvc: add auto-capture of the current HTTP response to RollbarExceptionFilter.
+-	feat:  resolve #418: Rollbar.Net.AspNet: add auto-capture of the current HTTP request/response to RollbarHttpModule.
+-	chore: ref #411: Fix CI build .net core 3.0 dependency issue.
+-	chore: resolve #412: Fix CI build .net 4.8 target build issue.
+
 #### v3.2.0
 -   resolve #394: Implement the standardized Development Configuration Options.
 -   resolve #395: Implement IRollbarConfig's Transmit option.
