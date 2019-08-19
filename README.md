@@ -22,7 +22,7 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9adf26abd5694ebb8fecf6d4925f1da7)](https://www.codacy.com/app/WideSpectrumComputing/WideSpectrumComputing-Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WideSpectrumComputing/Rollbar.NET&amp;utm_campaign=Badge_Grade)[![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
 
 ## Available as NuGet packages
-[![NuGet version](https://github.com/rollbar/Rollbar.NET/blob/master/rollbar-logo.png)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](https://github.com/rollbar/Rollbar.NET/blob/master/rollbar-logo.png)](http://www.nuget.org/packages/Rollbar/)
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
 
 ## Install
 
