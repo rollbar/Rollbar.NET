@@ -1,12 +1,12 @@
-﻿using Rollbar.Serialization.Json;
-
-namespace Rollbar.PayloadScrubbing
+﻿namespace Rollbar.PayloadScrubbing
 {
     using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Diagnostics;
     using System.Linq;
+    using Rollbar.Serialization.Json;
+
 
     /// <summary>
     /// Class JsonStringScrubber.

@@ -7,11 +7,9 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.4.0</SdkVersion>
+  <SdkVersion>3.5.0</SdkVersion>
     <PackageReleaseNotes>
-      feat: resolve #426: Add an ability to scrub fields by the absolute paths.
-      feat: resolve #427: Add an ability to scrub HTTP request/response body.
-      feat: resolve #428: Capture relevant notifier config with every payload.
+      feat: ref #432: Add ability to scrub form data like HTTP request/response body.
     </PackageReleaseNotes>
     
     <!--

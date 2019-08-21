@@ -293,6 +293,10 @@ namespace Rollbar
             {
                 return new XmlStringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
             }
+            else if (contentType.Contains("form-data"))
+            {
+                return new FormDataStringScrubber(contentTypeHeaderValue, scrubMask, scrubFields, scrubPaths).Scrub(body);
+            }
             else
             {
                 return new StringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
