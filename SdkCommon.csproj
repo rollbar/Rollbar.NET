@@ -9,7 +9,7 @@
 
   <SdkVersion>3.5.0</SdkVersion>
     <PackageReleaseNotes>
-      feat: ref #432: Add ability to scrub form data like HTTP request/response body.
+      feat: resolve #432: Add ability to scrub form data like HTTP request/response body.
     </PackageReleaseNotes>
     
     <!--
