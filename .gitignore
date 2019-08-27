@@ -282,3 +282,5 @@ __pycache__/
 cli-tools/
 
 Rollbar/comments\.xml
+
+.editorconfig

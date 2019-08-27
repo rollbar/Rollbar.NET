@@ -7,11 +7,11 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.5.0</SdkVersion>
+  <SdkVersion>3.6.0</SdkVersion>
     <PackageReleaseNotes>
-      feat: resolve #432: Add ability to scrub form data like HTTP request/response body.
+      feat: ref #424: Enable Persistence to Maintain Logs while Offline.
     </PackageReleaseNotes>
-    
+
     <!--
     Release Notes Tagging Conventions:
     ==================================

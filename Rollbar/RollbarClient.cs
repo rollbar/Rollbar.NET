@@ -131,11 +131,51 @@ namespace Rollbar
                 return null;
             }
 
+            return await PostAsJsonAsync(
+                this._payloadPostUri, 
+                this._rollbarLogger.Config.AccessToken,
+                payloadBundle.AsHttpContentToSend
+                );
+        }
+
+        /// <summary>
+        /// post as json as an asynchronous operation.
+        /// </summary>
+        /// <param name="destinationUri">The destination URI.</param>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <returns>Task&lt;RollbarResponse&gt;.</returns>
+        public async Task<RollbarResponse> PostAsJsonAsync(string destinationUri, string accessToken, string jsonContent)
+        {
+            Assumption.AssertNotNullOrWhiteSpace(destinationUri, nameof(destinationUri));
+            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
+            Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
+
+            return await PostAsJsonAsync(
+                new Uri(destinationUri), 
+                accessToken, 
+                new StringContent(jsonContent)
+                );
+        }
+
+        /// <summary>
+        /// post as json as an asynchronous operation.
+        /// </summary>
+        /// <param name="destinationUri">The destination URI.</param>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <returns>Task&lt;RollbarResponse&gt;.</returns>
+        private async Task<RollbarResponse> PostAsJsonAsync(Uri destinationUri, string accessToken, StringContent jsonContent)
+        {
+            Assumption.AssertNotNull(destinationUri, nameof(destinationUri));
+            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
+            Assumption.AssertNotNull(jsonContent, nameof(jsonContent));
+
             // build an HTTP request:
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
             const string accessTokenHeader = "X-Rollbar-Access-Token";
             request.Headers.Add(accessTokenHeader, this._rollbarLogger.Config.AccessToken);
-            request.Content = payloadBundle.AsHttpContentToSend;
+            request.Content = jsonContent;
 
             // send the request:
             var postResponse = await this._httpClient.SendAsync(request);

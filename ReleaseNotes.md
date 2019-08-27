@@ -56,6 +56,9 @@ We are also unifying versioning for all of the modules to follow common SDK vers
 
 ### Fixes and Improvements
 
+#### v3.5.0
+-   feat: resolve #432: Add ability to scrub form data like HTTP request/response body.
+
 #### v3.4.0
 -	feat: resolve #426: Add an ability to scrub fields by the absolute paths.
 -	feat: resolve #427: Add an ability to scrub HTTP request/response body.
