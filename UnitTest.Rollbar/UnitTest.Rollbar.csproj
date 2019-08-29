@@ -2,12 +2,10 @@
 
 
   <PropertyGroup>
-
-    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net46;net45</TargetFrameworks>
-
+    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net46</TargetFrameworks>
     <IsPackable>false</IsPackable>
-
     <Configurations>Debug;Release;Instrumented</Configurations>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
   <!-- We only want to run performance evaluation unit tests under .NET Core -->
