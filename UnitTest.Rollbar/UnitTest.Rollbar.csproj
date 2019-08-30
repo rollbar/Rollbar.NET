@@ -60,13 +60,21 @@
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'">
+  <ItemGroup Condition="('$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE') And !('$(TargetFramework)' == 'netcoreapp2.2')">
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="EF Core realatively recent tools" Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(NetVariant)' == 'NET_FX'">
