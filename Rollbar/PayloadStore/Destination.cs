@@ -7,10 +7,10 @@
 
     public class Destination 
     {
-        public Guid ID { get; set; }
-        public string Endpoint { get; }
-        public string AccessToken { get; }
+        public Guid ID { get; set; } = Guid.NewGuid();
+        public string Endpoint { get; set; }
+        public string AccessToken { get; set; }
 
-        private ICollection<PayloadRecord> PayloadRecords { get; }
+        public ICollection<PayloadRecord> PayloadRecords { get; }
     }
 }

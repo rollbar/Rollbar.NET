@@ -132,7 +132,18 @@
         public static Type[] GetSubClassesOf(Type baseType)
         {
             var assembly = baseType.Assembly;
-            List<Type> types = assembly.GetTypes()
+            return GetSubClassesOf(baseType, assembly);
+        }
+
+        /// <summary>
+        /// Gets the sub classes of.
+        /// </summary>
+        /// <param name="baseType">Type of the base.</param>
+        /// <param name="searchAssembly">The search assembly.</param>
+        /// <returns>Type[].</returns>
+        public static Type[] GetSubClassesOf(Type baseType, Assembly searchAssembly)
+        {
+            List<Type> types = searchAssembly.GetTypes()
                 .Where(t => t.IsSubclassOf(baseType))
                 .ToList();
             if (!types.Any())
@@ -141,5 +152,6 @@
             }
             return types.ToArray();
         }
+
     }
 }

@@ -16,6 +16,7 @@ namespace Rollbar
     using System.Net;
     using System.Net.Http;
     using System.Threading;
+    using PayloadStore;
 
 #if NETFX
     using System.Web.Hosting;
@@ -112,6 +113,11 @@ namespace Rollbar
         /// The total retries
         /// </summary>
         internal readonly int _totalRetries = 3;
+
+        /// <summary>
+        /// The store context (the payload persistence infrastructure)
+        /// </summary>
+        private StoreContext _storeContext = null;
 
         /// <summary>
         /// The HTTP clients by proxy settings
@@ -780,6 +786,12 @@ namespace Rollbar
         /// </summary>
         private void Start()
         {
+            if (this._storeContext == null)
+            {
+                this._storeContext = new StoreContext();
+                this._storeContext.MakeSureDatabaseExistsAndReady();
+            }
+
             if (this._rollbarCommThread == null)
             {
 #if NETFX
@@ -809,6 +821,14 @@ namespace Rollbar
             this._cancellationTokenSource.Dispose();
             this._cancellationTokenSource = null;
             this._rollbarCommThread = null;
+
+            if (this._storeContext != null)
+            {
+                this._storeContext.SaveChanges();
+                this._storeContext.Dispose();
+                this._storeContext = null;
+            }
+
         }
 
 #if NETFX
