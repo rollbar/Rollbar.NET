@@ -226,5 +226,22 @@ namespace Rollbar
             get { return this._accessTokenQueuesMetadata; }
             set { this._accessTokenQueuesMetadata = value; }
         }
+
+        /// <summary>
+        /// Gets the items to persist.
+        /// </summary>
+        /// <returns>PayloadBundle[].</returns>
+        public PayloadBundle[] GetItemsToPersist()
+        {
+            PayloadBundle[] queueItems;
+
+            lock (this._syncLock)
+            {
+                queueItems = this._queue.ToArray();
+                this._queue.Clear();
+            }
+
+            return queueItems;
+        }
     }
 }

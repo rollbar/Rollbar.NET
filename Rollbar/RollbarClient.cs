@@ -211,7 +211,7 @@ namespace Rollbar
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        private bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
+        public bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
         {
             if (payloadBundle.AsHttpContentToSend != null)
             {

@@ -11,8 +11,8 @@
     {
         private const string sqliteConnectionString = @"Data Source=RollbarPayloadsStore.db;";
 
-        public DbSet<Destination> Destinations { get; }
-        public DbSet<PayloadRecord> PayloadRecords { get; }
+        public DbSet<Destination> Destinations { get; set; }
+        public DbSet<PayloadRecord> PayloadRecords { get; set; }
 
         public void MakeSureDatabaseExistsAndReady()
         {

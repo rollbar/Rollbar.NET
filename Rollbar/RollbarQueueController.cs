@@ -11,11 +11,13 @@ namespace Rollbar
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Diagnostics;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading;
+    using System.Threading.Tasks;
     using PayloadStore;
 
 #if NETFX
@@ -101,8 +103,17 @@ namespace Rollbar
             RollbarOmittedPayloads,
         }
 
-        private static readonly TraceSource transmittedPayloadsTraceSource = new TraceSource(PayloadTraceSources.RollbarTransmittedPayloads.ToString());
-        private static readonly TraceSource omittedPayloadsTraceSource = new TraceSource(PayloadTraceSources.RollbarOmittedPayloads.ToString());
+        /// <summary>
+        /// The transmitted payloads trace source
+        /// </summary>
+        private static readonly TraceSource transmittedPayloadsTraceSource = 
+            new TraceSource(PayloadTraceSources.RollbarTransmittedPayloads.ToString());
+
+        /// <summary>
+        /// The omitted payloads trace source
+        /// </summary>
+        private static readonly TraceSource omittedPayloadsTraceSource = 
+            new TraceSource(PayloadTraceSources.RollbarOmittedPayloads.ToString());
 
         /// <summary>
         /// The sleep interval
@@ -354,8 +365,17 @@ namespace Rollbar
                     return;
                 }
 
+                PayloadBundle payloadBundle = null;
                 RollbarResponse response = null;
-                PayloadBundle payloadBundle = Process(queue, out response);
+                try
+                {
+                    payloadBundle = Process(queue, out response);
+                }
+                catch (System.Exception ex)
+                {
+                    this.Persist(queue);
+                    continue;
+                }
 
                 if (payloadBundle != null && response == null)
                 {
@@ -392,6 +412,92 @@ namespace Rollbar
                         break;
                 }
             }
+        }
+
+        private void Persist(PayloadQueue payloadQueue) 
+        {
+            var items = payloadQueue.GetItemsToPersist();
+            if (items == null || items.Length == 0)
+            {
+                return;
+            }
+
+            string endPoint = payloadQueue.Logger.Config.EndPoint;
+            string accessToken = payloadQueue.AccessTokenQueuesMetadata.AccessToken;
+
+            Destination destination = this._storeContext.Destinations.SingleOrDefault(d =>
+                d.Endpoint == endPoint &&
+                d.AccessToken == accessToken
+                );
+            if (destination == null)
+            {
+                destination = new Destination() {Endpoint = endPoint, AccessToken = accessToken,};
+                this._storeContext.Destinations.Add(destination);
+            }
+
+            foreach (var item in items)
+            {
+                PayloadRecord payloadRecord = 
+                    this.BuildPayloadRecord(item, payloadQueue, destination);
+                if (payloadRecord != null)
+                {
+                    this._storeContext.PayloadRecords.Add(payloadRecord);
+                }
+            }
+
+            try {
+                this._storeContext.SaveChanges();
+            } catch(System.Exception ex) {
+                RollbarErrorUtility.Report(
+                        payloadQueue.Logger, 
+                        items.Select(i=>i.GetPayload()), 
+                        InternalRollbarError.PersistentStoreContextError, 
+                        "While attempting to save persistent store context...", 
+                        ex,
+                        null
+                    );
+            }
+
+            foreach (var item in items)
+            {
+                item.Signal?.Release();
+            }
+        }
+
+        private PayloadRecord BuildPayloadRecord(PayloadBundle payloadBundle, PayloadQueue payloadQueue, Destination destination) 
+        {
+            try 
+            {
+                if (payloadBundle.Ignorable 
+                    || payloadBundle.GetPayload() == null 
+                    || !payloadQueue.Client.EnsureHttpContentToSend(payloadBundle)
+                )
+                {
+                    return null;
+                }
+
+                Task<string> task = payloadBundle.AsHttpContentToSend.ReadAsStringAsync();
+                task.Wait();
+                return new PayloadRecord()
+                {
+                    Destination = destination, 
+                    Timestamp = payloadBundle.GetPayload().Data.Timestamp.Value, 
+                    PayloadJson = task.Result,
+                };
+            } 
+            catch(System.Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    payloadQueue.Logger, 
+                    payloadBundle.GetPayload(), 
+                    InternalRollbarError.PersistentPayloadRecordError, 
+                    "While attempting to build persistent payload record...", 
+                    ex,
+                    null
+                );
+                return null;
+            }
+
         }
 
         /// <summary>
@@ -474,42 +580,71 @@ namespace Rollbar
                 return payloadBundle;
             }
 
-            int retries = this._totalRetries;
-            while (retries > 0)
+            //int retries = this._totalRetries;
+            //while (retries > 0)
+            //{
+            //    try
+            //    {
+            //        response = queue.Client.PostAsJson(payloadBundle);
+            //    }
+            //    catch (WebException ex)
+            //    {
+            //        retries--;
+            //        this.OnRollbarEvent(
+            //            new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
+            //            );
+            //        payloadBundle.Register(ex);
+            //        Thread.Sleep(this._sleepInterval); // wait a bit before we retry it...
+            //        continue;
+            //    }
+            //    catch (ArgumentNullException ex)
+            //    {
+            //        retries = 0;
+            //        this.OnRollbarEvent(
+            //            new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
+            //            );
+            //        payloadBundle.Register(ex);
+            //        continue;
+            //    }
+            //    catch (System.Exception ex)
+            //    {
+            //        retries = 0;
+            //        this.OnRollbarEvent(
+            //            new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
+            //            );
+            //        payloadBundle.Register(ex);
+            //        continue;
+            //    }
+            //    retries = 0;
+            //}
+
+            try
             {
-                try
-                {
-                    response = queue.Client.PostAsJson(payloadBundle);
-                }
-                catch (WebException ex)
-                {
-                    retries--;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-                        );
-                    payloadBundle.Register(ex);
-                    Thread.Sleep(this._sleepInterval); // wait a bit before we retry it...
-                    continue;
-                }
-                catch (ArgumentNullException ex)
-                {
-                    retries = 0;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-                        );
-                    payloadBundle.Register(ex);
-                    continue;
-                }
-                catch (System.Exception ex)
-                {
-                    retries = 0;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-                        );
-                    payloadBundle.Register(ex);
-                    continue;
-                }
-                retries = 0;
+                response = queue.Client.PostAsJson(payloadBundle);
+            }
+            //catch (WebException ex)
+            //{
+            //    this.OnRollbarEvent(
+            //        new CommunicationErrorEventArgs(queue.Logger, payload, ex, 0)
+            //    );
+            //    payloadBundle.Register(ex);
+
+            //    throw;
+            //}
+            //catch (ArgumentNullException ex)
+            //{
+            //    this.OnRollbarEvent(
+            //        new CommunicationErrorEventArgs(queue.Logger, payload, ex, 0)
+            //    );
+            //    payloadBundle.Register(ex);
+            //}
+            catch (System.Exception ex)
+            {
+                this.OnRollbarEvent(
+                    new CommunicationErrorEventArgs(queue.Logger, payload, ex, 0)
+                );
+                payloadBundle.Register(ex);
+                throw;
             }
 
             if (response != null)
