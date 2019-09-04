@@ -273,7 +273,8 @@ namespace Sample.NetCore.ConsoleApp
                     state = new Dictionary<string, object>(state.Concat(RollbarAssistant.CaptureState(typeof(StaticType))));
 
                     // report the captured states along with the caught exception:
-                    RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(10000)).Error(ex, state);
+                    //RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(10000)).Error(ex, state);
+                    RollbarLocator.RollbarInstance.Error(ex, state);
                 }
             }
         }

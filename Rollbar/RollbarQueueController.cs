@@ -414,6 +414,10 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Persists the specified payload queue.
+        /// </summary>
+        /// <param name="payloadQueue">The payload queue.</param>
         private void Persist(PayloadQueue payloadQueue) 
         {
             var items = payloadQueue.GetItemsToPersist();
@@ -437,11 +441,12 @@ namespace Rollbar
 
             foreach (var item in items)
             {
-                PayloadRecord payloadRecord = 
-                    this.BuildPayloadRecord(item, payloadQueue, destination);
+                PayloadRecord payloadRecord =
+                    this.BuildPayloadRecord(item, payloadQueue);//, destination);
                 if (payloadRecord != null)
                 {
-                    this._storeContext.PayloadRecords.Add(payloadRecord);
+                    //this._storeContext.PayloadRecords.Add(payloadRecord);
+                    destination.PayloadRecords.Add(payloadRecord);
                 }
             }
 
@@ -464,7 +469,14 @@ namespace Rollbar
             }
         }
 
-        private PayloadRecord BuildPayloadRecord(PayloadBundle payloadBundle, PayloadQueue payloadQueue, Destination destination) 
+        /// <summary>
+        /// Builds the payload record.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <param name="payloadQueue">The payload queue.</param>
+        /// <param name="destination">The destination.</param>
+        /// <returns>PayloadRecord.</returns>
+        private PayloadRecord BuildPayloadRecord(PayloadBundle payloadBundle, PayloadQueue payloadQueue/*, Destination destination*/) 
         {
             try 
             {
@@ -480,7 +492,7 @@ namespace Rollbar
                 task.Wait();
                 return new PayloadRecord()
                 {
-                    Destination = destination, 
+                    //Destination = destination, 
                     Timestamp = payloadBundle.GetPayload().Data.Timestamp.Value, 
                     PayloadJson = task.Result,
                 };
@@ -580,64 +592,10 @@ namespace Rollbar
                 return payloadBundle;
             }
 
-            //int retries = this._totalRetries;
-            //while (retries > 0)
-            //{
-            //    try
-            //    {
-            //        response = queue.Client.PostAsJson(payloadBundle);
-            //    }
-            //    catch (WebException ex)
-            //    {
-            //        retries--;
-            //        this.OnRollbarEvent(
-            //            new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-            //            );
-            //        payloadBundle.Register(ex);
-            //        Thread.Sleep(this._sleepInterval); // wait a bit before we retry it...
-            //        continue;
-            //    }
-            //    catch (ArgumentNullException ex)
-            //    {
-            //        retries = 0;
-            //        this.OnRollbarEvent(
-            //            new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-            //            );
-            //        payloadBundle.Register(ex);
-            //        continue;
-            //    }
-            //    catch (System.Exception ex)
-            //    {
-            //        retries = 0;
-            //        this.OnRollbarEvent(
-            //            new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-            //            );
-            //        payloadBundle.Register(ex);
-            //        continue;
-            //    }
-            //    retries = 0;
-            //}
-
             try
             {
                 response = queue.Client.PostAsJson(payloadBundle);
             }
-            //catch (WebException ex)
-            //{
-            //    this.OnRollbarEvent(
-            //        new CommunicationErrorEventArgs(queue.Logger, payload, ex, 0)
-            //    );
-            //    payloadBundle.Register(ex);
-
-            //    throw;
-            //}
-            //catch (ArgumentNullException ex)
-            //{
-            //    this.OnRollbarEvent(
-            //        new CommunicationErrorEventArgs(queue.Logger, payload, ex, 0)
-            //    );
-            //    payloadBundle.Register(ex);
-            //}
             catch (System.Exception ex)
             {
                 this.OnRollbarEvent(

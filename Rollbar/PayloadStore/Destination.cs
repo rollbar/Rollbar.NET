@@ -11,6 +11,6 @@
         public string Endpoint { get; set; }
         public string AccessToken { get; set; }
 
-        public ICollection<PayloadRecord> PayloadRecords { get; set; }
+        public ICollection<PayloadRecord> PayloadRecords { get; set; } = new List<PayloadRecord>();
     }
 }
