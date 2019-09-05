@@ -36,7 +36,12 @@
             /// <summary>
             /// The rollbar queue controller flushed queues
             /// </summary>
-            RollbarQueueControllerFlushedQueues
+            RollbarQueueControllerFlushedQueues,
+
+            /// <summary>
+            /// The invalid payload
+            /// </summary>
+            InvalidPayload,
         }
 
         /// <summary>

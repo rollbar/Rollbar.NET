@@ -283,6 +283,8 @@ namespace Rollbar
                     {
                         ProcessAllQueuesOnce();
                     }
+
+                    ProcessPersistentStoreOnce();
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
                 catch (System.Threading.ThreadAbortException tae)
@@ -305,6 +307,11 @@ namespace Rollbar
             }
 
             CompleteProcessing();
+        }
+
+        private void ProcessPersistentStoreOnce()
+        {
+
         }
 
         /// <summary>
@@ -371,8 +378,20 @@ namespace Rollbar
                 {
                     payloadBundle = Process(queue, out response);
                 }
+                catch (AggregateException aggregateException)
+                {
+                    var bundle = queue.Dequeue();
+                    this.OnRollbarEvent(
+                        new PayloadDropEventArgs(queue.Logger, bundle.GetPayload(), PayloadDropEventArgs.DropReason.InvalidPayload)
+                    );
+                    queue.Dequeue();
+                    throw;
+                }
                 catch (System.Exception ex)
                 {
+                    //Console.WriteLine("PAYLOAD PERSISTENCE REASON:");
+                    //string exceptionString = ex.ToString();
+                    //Console.WriteLine(exceptionString);
                     this.Persist(queue);
                     continue;
                 }
@@ -441,18 +460,19 @@ namespace Rollbar
 
             foreach (var item in items)
             {
-                PayloadRecord payloadRecord =
-                    this.BuildPayloadRecord(item, payloadQueue);//, destination);
+                PayloadRecord payloadRecord = this.BuildPayloadRecord(item, payloadQueue);
                 if (payloadRecord != null)
                 {
-                    //this._storeContext.PayloadRecords.Add(payloadRecord);
                     destination.PayloadRecords.Add(payloadRecord);
                 }
             }
 
-            try {
+            try 
+            {
                 this._storeContext.SaveChanges();
-            } catch(System.Exception ex) {
+            } 
+            catch(System.Exception ex) 
+            {
                 RollbarErrorUtility.Report(
                         payloadQueue.Logger, 
                         items.Select(i=>i.GetPayload()), 
@@ -474,9 +494,8 @@ namespace Rollbar
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
         /// <param name="payloadQueue">The payload queue.</param>
-        /// <param name="destination">The destination.</param>
         /// <returns>PayloadRecord.</returns>
-        private PayloadRecord BuildPayloadRecord(PayloadBundle payloadBundle, PayloadQueue payloadQueue/*, Destination destination*/) 
+        private PayloadRecord BuildPayloadRecord(PayloadBundle payloadBundle, PayloadQueue payloadQueue) 
         {
             try 
             {
@@ -492,7 +511,6 @@ namespace Rollbar
                 task.Wait();
                 return new PayloadRecord()
                 {
-                    //Destination = destination, 
                     Timestamp = payloadBundle.GetPayload().Data.Timestamp.Value, 
                     PayloadJson = task.Result,
                 };
