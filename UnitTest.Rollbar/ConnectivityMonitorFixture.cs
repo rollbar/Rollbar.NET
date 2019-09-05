@@ -24,25 +24,25 @@ namespace UnitTest.Rollbar {
         {
         }
 
-        [TestMethod]
-        public void ManualTest()
-        {
-            bool lastState = false;
-            int stateSwitchCount = 0;
-            var stopWatch = Stopwatch.StartNew();
-            while (stopWatch.Elapsed < TimeSpan.FromSeconds(90))
-            {
-                bool isConnected = ConnectivityMonitor.ConnectivityAvailable;
-                if (isConnected != lastState)
-                {
-                    lastState = isConnected;
-                    stateSwitchCount++;
-                }
-                Trace.WriteLine($"Network ON: {isConnected}");
-                Thread.Sleep(TimeSpan.FromMilliseconds(500));
-            }
-            stopWatch.Stop();
-            Assert.IsTrue(stateSwitchCount > 1);
-        }
+        //[TestMethod]
+        //public void ManualTest()
+        //{
+        //    bool lastState = false;
+        //    int stateSwitchCount = 0;
+        //    var stopWatch = Stopwatch.StartNew();
+        //    while (stopWatch.Elapsed < TimeSpan.FromSeconds(90))
+        //    {
+        //        bool isConnected = ConnectivityMonitor.ConnectivityAvailable;
+        //        if (isConnected != lastState)
+        //        {
+        //            lastState = isConnected;
+        //            stateSwitchCount++;
+        //        }
+        //        Trace.WriteLine($"Network ON: {isConnected}");
+        //        Thread.Sleep(TimeSpan.FromMilliseconds(500));
+        //    }
+        //    stopWatch.Stop();
+        //    Assert.IsTrue(stateSwitchCount > 1);
+        //}
     }
 }
