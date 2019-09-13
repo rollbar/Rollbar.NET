@@ -18,6 +18,7 @@ namespace Rollbar
     using System.Net.Http;
     using System.Threading;
     using System.Threading.Tasks;
+    using Newtonsoft.Json;
     using PayloadStore;
 
 #if NETFX
@@ -311,7 +312,89 @@ namespace Rollbar
 
         private void ProcessPersistentStoreOnce()
         {
+            var destinations = this._storeContext.Destinations.ToArray();
+            foreach (var destination in destinations)
+            {
+                ProcessPersistentStoreOnce(destination);
+            }
+        }
 
+        private static TimeSpan staleRecordAge = TimeSpan.FromDays(7);
+
+        private void ProcessPersistentStoreOnce(Destination destination)
+        {
+            AccessTokenQueuesMetadata accessTokenMetadata = null;
+            lock(this._syncLock)
+            {
+                if (!this._queuesByAccessToken.TryGetValue(destination.AccessToken, out accessTokenMetadata))
+                {
+                    accessTokenMetadata = new AccessTokenQueuesMetadata(destination.AccessToken);
+                    this._queuesByAccessToken.Add(destination.AccessToken, accessTokenMetadata);
+                }
+            }
+
+            if(accessTokenMetadata.IsTransmissionSuspended && DateTimeOffset.Now < accessTokenMetadata.NextTimeTokenUsage) 
+            {
+                // the token is suspended and the next usage time is not reached,
+                // there is no point in continuing persistent store processing for this access token:
+                return;
+            }
+
+            // 1. delete all the stale records of this destination and save the store context
+            //    (if any records were deleted):
+
+            long staleRecordsLimit = 
+                DateTimeUtil.ConvertToUnixTimestampInSeconds(DateTime.UtcNow.Subtract(staleRecordAge));
+            var staleRecords = 
+                this._storeContext.PayloadRecords.Where(pr => pr.Timestamp < staleRecordsLimit).ToArray();
+            if (staleRecords != null && staleRecords.Length > 0) 
+            {
+                this._storeContext.PayloadRecords.RemoveRange(staleRecords);
+                this._storeContext.SaveChanges();
+            }
+
+            // 2. get the oldest record of this destination and try transmitting it:
+            var oldestRecord = 
+                this._storeContext.PayloadRecords
+                    .Where(r => r.DestinationID == destination.ID)
+                    .OrderBy(r => r.Timestamp)
+                    .FirstOrDefault();
+            if (oldestRecord != null)
+            {
+                var rollbarResponse = TryPosting(oldestRecord);
+                if (rollbarResponse == null)
+                {
+                    return; //could not reach Rollbar API...
+                }
+
+                // This processor did its best communicating with Rollbar API.
+                // Regardless of actual result, update next token usage and consider
+                // this payload record processed so it can be deleted:
+                accessTokenMetadata.UpdateNextTimeTokenUsage(rollbarResponse.RollbarRateLimit);
+                this._storeContext.PayloadRecords.Remove(oldestRecord);
+                this._storeContext.SaveChanges();
+            }
+        }
+
+        private RollbarResponse TryPosting(PayloadRecord payloadRecord)
+        {
+            Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
+            IRollbarConfig config = payload.Data.Notifier.Configuration;
+            RollbarClient rollbarClient  = new RollbarClient(config);
+
+            try
+            {
+                RollbarResponse response = 
+                    rollbarClient.PostAsJson(config.EndPoint, config.AccessToken, payloadRecord.PayloadJson);
+                return response;
+            }
+            catch (System.Exception ex)
+            {
+                this.OnRollbarEvent(
+                    new CommunicationErrorEventArgs(null, payload, ex, 0)
+                );
+                return null;
+            }
         }
 
         /// <summary>

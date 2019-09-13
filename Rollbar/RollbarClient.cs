@@ -54,20 +54,28 @@ namespace Rollbar
         /// </summary>
         /// <param name="rollbarLogger">The rollbar logger.</param>
         public RollbarClient(RollbarLogger rollbarLogger)
+        : this(rollbarLogger.Config)
         {
             Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
-            Assumption.AssertNotNull(rollbarLogger.Config, nameof(rollbarLogger.Config));
 
             this._rollbarLogger = rollbarLogger;
 
+            this._payloadTruncationStrategy = new IterativeTruncationStrategy();
+            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.GetFieldsToScrub());
+        }
+
+        public RollbarClient(IRollbarConfig rollbarConfig)
+        {
+            Assumption.AssertNotNull(rollbarConfig, nameof(rollbarConfig));
+
             this._payloadPostUri = 
-                new Uri($"{this._rollbarLogger.Config.EndPoint}item/");
+                new Uri($"{rollbarConfig.EndPoint}item/");
             this._httpClient = 
                 RollbarQueueController.Instance.ProvideHttpClient(
-                    this._rollbarLogger.Config.ProxyAddress,
-                    this._rollbarLogger.Config.ProxyUsername,
-                    this._rollbarLogger.Config.ProxyPassword
-                    );
+                    rollbarConfig.ProxyAddress,
+                    rollbarConfig.ProxyUsername,
+                    rollbarConfig.ProxyPassword
+                );
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
             if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
@@ -75,7 +83,7 @@ namespace Rollbar
                 this._httpClient.DefaultRequestHeaders.Accept.Add(header);
             }
 
-            var sp = ServicePointManager.FindServicePoint(new Uri(this._rollbarLogger.Config.EndPoint));
+            var sp = ServicePointManager.FindServicePoint(new Uri(rollbarConfig.EndPoint));
             try
             {
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
@@ -89,9 +97,6 @@ namespace Rollbar
                 // just a crash prevention.
                 // this is a work around the unimplemented property within Mono runtime...
             }
-
-            this._payloadTruncationStrategy = new IterativeTruncationStrategy();
-            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.GetFieldsToScrub());
         }
 
         /// <summary>
@@ -110,6 +115,26 @@ namespace Rollbar
             Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
             var task = this.PostAsJsonAsync(payloadBundle);
+
+            task.Wait();
+
+            return task.Result;
+        }
+
+        /// <summary>
+        /// Posts as json.
+        /// </summary>
+        /// <param name="destinationUri">The destination URI.</param>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <returns>RollbarResponse.</returns>
+        public RollbarResponse PostAsJson(string destinationUri, string accessToken, string jsonContent) 
+        {
+            Assumption.AssertNotNullOrWhiteSpace(destinationUri, nameof(destinationUri));
+            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
+            Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
+
+            var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent);
 
             task.Wait();
 
@@ -239,7 +264,6 @@ namespace Rollbar
 
             try
             {
-                //jsonData = ScrubPayload(jsonData, this._rollbarLogger.Config.GetFieldsToScrub());
                 jsonData = ScrubPayload(jsonData);
             }
             catch (System.Exception exception)
@@ -381,6 +405,11 @@ namespace Rollbar
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool TruncatePayload(PayloadBundle payloadBundle)
         {
+            if (this._payloadTruncationStrategy == null)
+            {
+                return true; // as far as truncation is concerned - everything is good...
+            }
+
             Payload payload = payloadBundle.GetPayload();
 
             if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
@@ -412,6 +441,11 @@ namespace Rollbar
         /// <returns>System.String.</returns>
         internal string ScrubPayload(string payload)
         {
+            if (this._payloadScrubber == null)
+            {
+                return payload; // as far as scrubbing is concerned - everything is good...
+            }
+
             var scrubbedPayload = this._payloadScrubber.ScrubPayload(payload);
             return scrubbedPayload;
         }
