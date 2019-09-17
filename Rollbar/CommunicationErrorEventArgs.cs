@@ -12,6 +12,18 @@
     {
         internal CommunicationErrorEventArgs(
             RollbarLogger logger, 
+            string payload, 
+            System.Exception error, 
+            int retriesLeft
+        ) 
+            : base(logger, payload)
+        {
+            this.Error = error;
+            this.RetriesLeft = retriesLeft;
+        }
+
+        internal CommunicationErrorEventArgs(
+            RollbarLogger logger, 
             Payload payload, 
             System.Exception error, 
             int retriesLeft

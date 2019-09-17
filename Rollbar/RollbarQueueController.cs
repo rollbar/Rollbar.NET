@@ -20,6 +20,7 @@ namespace Rollbar
     using System.Threading.Tasks;
     using Newtonsoft.Json;
     using PayloadStore;
+    using Serialization.Json;
 
 #if NETFX
     using System.Web.Hosting;
@@ -285,6 +286,7 @@ namespace Rollbar
                         ProcessAllQueuesOnce();
                     }
 
+                    //Console.WriteLine("ProcessPersistentStoreOnce()");
                     ProcessPersistentStoreOnce();
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
@@ -294,6 +296,15 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
+                    RollbarErrorUtility.Report(
+                        null, 
+                        null, 
+                        InternalRollbarError.QueueControllerError, 
+                        "While KeepProcessingAllQueues()...", 
+                        ex,
+                        null
+                    );
+
                     //TODO: do we want to direct the exception 
                     //      to some kind of Rollbar notifier maintenance "access token"?
                 }
@@ -343,8 +354,7 @@ namespace Rollbar
             // 1. delete all the stale records of this destination and save the store context
             //    (if any records were deleted):
 
-            long staleRecordsLimit = 
-                DateTimeUtil.ConvertToUnixTimestampInSeconds(DateTime.UtcNow.Subtract(staleRecordAge));
+            DateTime staleRecordsLimit = DateTime.UtcNow.Subtract(staleRecordAge);
             var staleRecords = 
                 this._storeContext.PayloadRecords.Where(pr => pr.Timestamp < staleRecordsLimit).ToArray();
             if (staleRecords != null && staleRecords.Length > 0) 
@@ -367,6 +377,10 @@ namespace Rollbar
                     return; //could not reach Rollbar API...
                 }
 
+                this.OnRollbarEvent(
+                    new CommunicationEventArgs(null, oldestRecord.PayloadJson, rollbarResponse)
+                );
+
                 // This processor did its best communicating with Rollbar API.
                 // Regardless of actual result, update next token usage and consider
                 // this payload record processed so it can be deleted:
@@ -374,12 +388,17 @@ namespace Rollbar
                 this._storeContext.PayloadRecords.Remove(oldestRecord);
                 this._storeContext.SaveChanges();
             }
+            else
+            {
+                
+            }
         }
 
         private RollbarResponse TryPosting(PayloadRecord payloadRecord)
         {
-            Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
-            IRollbarConfig config = payload.Data.Notifier.Configuration;
+            //Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
+            //IRollbarConfig config = payload.Data.Notifier.Configuration;
+            IRollbarConfig config = JsonConvert.DeserializeObject<RollbarConfig>(payloadRecord.ConfigJson);
             RollbarClient rollbarClient  = new RollbarClient(config);
 
             try
@@ -391,8 +410,18 @@ namespace Rollbar
             catch (System.Exception ex)
             {
                 this.OnRollbarEvent(
-                    new CommunicationErrorEventArgs(null, payload, ex, 0)
+                    new CommunicationErrorEventArgs(null, payloadRecord.PayloadJson, ex, 0)
                 );
+
+                RollbarErrorUtility.Report(
+                    null, 
+                    payloadRecord, 
+                    InternalRollbarError.PersistentPayloadRecordRepostError, 
+                    "While trying to report a stored payload...", 
+                    ex,
+                    null
+                );
+
                 return null;
             }
         }
@@ -463,12 +492,23 @@ namespace Rollbar
                 }
                 catch (AggregateException aggregateException)
                 {
-                    var bundle = queue.Dequeue();
-                    this.OnRollbarEvent(
-                        new PayloadDropEventArgs(queue.Logger, bundle.GetPayload(), PayloadDropEventArgs.DropReason.InvalidPayload)
-                    );
-                    queue.Dequeue();
-                    throw;
+                    if (aggregateException.InnerExceptions.Any(e => e is HttpRequestException))
+                    {
+                        //Console.WriteLine("PAYLOAD PERSISTENCE REASON:");
+                        //string exceptionString = ex.ToString();
+                        //Console.WriteLine(exceptionString);
+                        this.Persist(queue);
+                        continue;
+                    }
+                    else
+                    {
+                        var bundle = queue.Dequeue();
+                        this.OnRollbarEvent(
+                            new PayloadDropEventArgs(queue.Logger, bundle.GetPayload(), PayloadDropEventArgs.DropReason.InvalidPayload)
+                        );
+                        queue.Dequeue();
+                        throw;
+                    }
                 }
                 catch (System.Exception ex)
                 {
@@ -594,7 +634,8 @@ namespace Rollbar
                 task.Wait();
                 return new PayloadRecord()
                 {
-                    Timestamp = payloadBundle.GetPayload().Data.Timestamp.Value, 
+                    Timestamp = payloadBundle.GetPayload().TimeStamp, 
+                    ConfigJson = JsonUtil.SerializeAsJsonString(payloadBundle.GetPayload().Data.Notifier.Configuration),
                     PayloadJson = task.Result,
                 };
             } 

@@ -3,12 +3,13 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rollbar.PayloadStore;
 
 namespace Rollbar.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20190831022253_Initial")]
+    [Migration("20190916220704_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,12 +41,14 @@ namespace Rollbar.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ConfigJson");
+
                     b.Property<Guid>("DestinationID");
 
                     b.Property<string>("PayloadJson")
                         .IsRequired();
 
-                    b.Property<long>("Timestamp");
+                    b.Property<DateTime>("Timestamp");
 
                     b.HasKey("ID");
 

@@ -104,14 +104,14 @@
   </ItemGroup>
 
   <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp2.2')">
-    <Compile Remove="Migrations\20190831022253_Initial.cs" />
-    <Compile Remove="Migrations\20190831022253_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20190916220704_Initial.cs" />
+    <Compile Remove="Migrations\20190916220704_Initial.Designer.cs" />
     <Compile Remove="Migrations\StoreContextModelSnapshot.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp2.2')">
-    <None Include="Migrations\20190831022253_Initial.cs" />
-    <None Include="Migrations\20190831022253_Initial.Designer.cs" />
+    <None Include="Migrations\20190916220704_Initial.cs" />
+    <None Include="Migrations\20190916220704_Initial.Designer.cs" />
     <None Include="Migrations\StoreContextModelSnapshot.cs" />
   </ItemGroup>
 

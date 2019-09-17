@@ -1,13 +1,14 @@
-using Rollbar;
-using Rollbar.DTOs;
-using Rollbar.Telemetry;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
 namespace Sample.NetCore.ConsoleApp
 {
+    using Rollbar;
+    using Rollbar.DTOs;
+    using Rollbar.Telemetry;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading;
+
     class Program
     {
         static void Main(string[] args)
@@ -126,6 +127,8 @@ namespace Sample.NetCore.ConsoleApp
             msg = "*** Blocking (short timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
             System.Diagnostics.Trace.WriteLine(msg);
             Console.WriteLine(msg);
+
+            //Thread.Sleep(TimeSpan.FromMinutes(1));
         }
 
         /// <summary>

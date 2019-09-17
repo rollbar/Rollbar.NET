@@ -60,7 +60,9 @@
             JsonSerializer serializer
             )
         {
-            if (objectType != typeof(T))
+            if (objectType != typeof(T) 
+                && !(objectType.IsGenericType && objectType.GenericTypeArguments.Length == 1 && objectType.GenericTypeArguments[0] == typeof(T))
+                )
             {
                 throw new JsonSerializationException(string.Format("This converter cannot convert type {0}", objectType));
             }
@@ -70,7 +72,7 @@
                 throw new JsonSerializationException(string.Format("This converter cannot convert {1} of type {0}", existingValue, existingValue.GetType()));
             }
 
-            return ReadJson(reader, (T)existingValue, serializer);
+            return ReadJson(reader, (T) existingValue, serializer);
         }
 
         /// <summary>

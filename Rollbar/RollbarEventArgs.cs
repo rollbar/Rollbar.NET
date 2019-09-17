@@ -42,13 +42,21 @@
 
             if (dataObject != null)
             {
-                try
+                string payloadString = dataObject as string;
+                if (payloadString != null)
                 {
-                    this.Payload = JsonConvert.SerializeObject(dataObject);
+                    this.Payload = payloadString;
                 }
-                catch (Exception ex)
+                else
                 {
-                    Trace.WriteLine(ex, $"{nameof(RollbarEventArgs)}.{nameof(this.Payload)}");
+                    try
+                    {
+                        this.Payload = JsonConvert.SerializeObject(dataObject);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine(ex, $"{nameof(RollbarEventArgs)}.{nameof(this.Payload)}");
+                    }
                 }
             }
         }

@@ -78,5 +78,16 @@
         /// The persistent payload record error
         /// </summary>
         PersistentPayloadRecordError,
+
+        /// <summary>
+        /// The persistent payload record repost error
+        /// </summary>
+        PersistentPayloadRecordRepostError,
+
+        /// <summary>
+        /// The queue controller error
+        /// </summary>
+        QueueControllerError,
+
     }
 }

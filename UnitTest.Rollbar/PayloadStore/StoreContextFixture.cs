@@ -66,7 +66,7 @@ namespace UnitTest.Rollbar.PayloadStore
                 };
                 Assert.AreNotEqual(Guid.Empty, destination.ID);
 
-                destination.PayloadRecords.Add(new PayloadRecord() {PayloadJson = "payload1", Timestamp = 100, });
+                destination.PayloadRecords.Add(new PayloadRecord() {PayloadJson = "payload1", Timestamp = DateTime.UtcNow, });
 
                 storeContext.Add(destination);
                 storeContext.SaveChanges();
@@ -84,12 +84,12 @@ namespace UnitTest.Rollbar.PayloadStore
                 Assert.IsNotNull(destination);
                 Assert.AreEqual("token1", destination.AccessToken);
 
-                destination.PayloadRecords.Add(new PayloadRecord() {PayloadJson = "payload2", Timestamp = 101, });
+                destination.PayloadRecords.Add(new PayloadRecord() {PayloadJson = "payload2", Timestamp = DateTime.UtcNow, });
                 storeContext.Add(
-                    new PayloadRecord() {PayloadJson = "payload3", Timestamp = 103, Destination = destination}
+                    new PayloadRecord() {PayloadJson = "payload3", Timestamp = DateTime.UtcNow, Destination = destination}
                     );
                 storeContext.PayloadRecords.Add(
-                    new PayloadRecord() {PayloadJson = "payload4", Timestamp = 104, Destination = destination}
+                    new PayloadRecord() {PayloadJson = "payload4", Timestamp = DateTime.UtcNow, Destination = destination}
                 );
 
                 destination = new Destination()
@@ -99,12 +99,12 @@ namespace UnitTest.Rollbar.PayloadStore
                 };
                 Assert.AreNotEqual(Guid.Empty, destination.ID);
 
-                destination.PayloadRecords.Add(new PayloadRecord() {PayloadJson = "payload5", Timestamp = 105, });
+                destination.PayloadRecords.Add(new PayloadRecord() {PayloadJson = "payload5", Timestamp = DateTime.UtcNow, });
                 storeContext.Add(
-                    new PayloadRecord() {PayloadJson = "payload6", Timestamp = 106, Destination = destination}
+                    new PayloadRecord() {PayloadJson = "payload6", Timestamp = DateTime.UtcNow, Destination = destination}
                 );
                 storeContext.PayloadRecords.Add(
-                    new PayloadRecord() {PayloadJson = "payload7", Timestamp = 107, Destination = destination}
+                    new PayloadRecord() {PayloadJson = "payload7", Timestamp = DateTime.UtcNow, Destination = destination}
                 );
 
                 storeContext.Add(destination);

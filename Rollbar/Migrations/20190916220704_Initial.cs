@@ -25,8 +25,9 @@ namespace Rollbar.Migrations
                 columns: table => new
                 {
                     ID = table.Column<Guid>(nullable: false),
-                    Timestamp = table.Column<long>(nullable: false),
+                    Timestamp = table.Column<DateTime>(nullable: false),
                     PayloadJson = table.Column<string>(nullable: false),
+                    ConfigJson = table.Column<string>(nullable: true),
                     DestinationID = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>

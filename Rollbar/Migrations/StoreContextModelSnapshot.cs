@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rollbar.PayloadStore;
 
 namespace Rollbar.Migrations
@@ -38,12 +39,14 @@ namespace Rollbar.Migrations
                     b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ConfigJson");
+
                     b.Property<Guid>("DestinationID");
 
                     b.Property<string>("PayloadJson")
                         .IsRequired();
 
-                    b.Property<long>("Timestamp");
+                    b.Property<DateTime>("Timestamp");
 
                     b.HasKey("ID");
 

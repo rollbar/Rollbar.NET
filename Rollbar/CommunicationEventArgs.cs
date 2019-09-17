@@ -10,6 +10,12 @@
     public class CommunicationEventArgs
         : RollbarEventArgs
     {
+        internal CommunicationEventArgs(RollbarLogger logger, string payload, RollbarResponse response) 
+            : base(logger, payload)
+        {
+            this.Response = response;
+        }
+
         internal CommunicationEventArgs(RollbarLogger logger, Payload payload, RollbarResponse response) 
             : base(logger, payload)
         {

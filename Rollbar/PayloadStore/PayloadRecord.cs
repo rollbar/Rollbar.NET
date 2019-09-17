@@ -7,8 +7,9 @@
     {
         public Guid ID { get; set; } = Guid.NewGuid();
 
-        public long Timestamp { get; set; }
+        public DateTime Timestamp { get; set; }
         public string PayloadJson { get; set; }
+        public string ConfigJson { get; set; }
 
         public Destination Destination { get; set; }
         public Guid DestinationID { get; set; }

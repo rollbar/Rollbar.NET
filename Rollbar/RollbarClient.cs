@@ -199,7 +199,7 @@ namespace Rollbar
             // build an HTTP request:
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
             const string accessTokenHeader = "X-Rollbar-Access-Token";
-            request.Headers.Add(accessTokenHeader, this._rollbarLogger.Config.AccessToken);
+            request.Headers.Add(accessTokenHeader, accessToken);
             request.Content = jsonContent;
 
             // send the request:
