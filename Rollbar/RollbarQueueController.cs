@@ -806,7 +806,7 @@ namespace Rollbar
 #if NETFX
             HostingEnvironment.UnregisterObject(this);
 #endif
-            this._cancellationTokenSource.Dispose();
+            this._cancellationTokenSource?.Dispose();
             this._cancellationTokenSource = null;
             this._rollbarCommThread = null;
         }
