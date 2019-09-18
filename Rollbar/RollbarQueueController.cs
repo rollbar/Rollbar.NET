@@ -283,6 +283,7 @@ namespace Rollbar
                 {
                     lock(this._syncLock)
                     {
+                        //Console.WriteLine("ProcessAllQueuesOnce()");
                         ProcessAllQueuesOnce();
                     }
 
@@ -606,7 +607,7 @@ namespace Rollbar
                     );
             }
 
-            foreach (var item in items)
+            foreach(var item in items) 
             {
                 item.Signal?.Release();
             }
@@ -667,18 +668,9 @@ namespace Rollbar
             }
         }
 
-        /// <summary>
-        /// Processes the specified queue.
-        /// </summary>
-        /// <param name="queue">The queue.</param>
-        /// <param name="response">The response.</param>
-        /// <returns>PayloadBundle.</returns>
-        private PayloadBundle Process(PayloadQueue queue, out RollbarResponse response)
+        private PayloadBundle GetFirstTransmittablBundle(PayloadQueue queue)
         {
-            response = null;
-
-            PayloadBundle payloadBundle;
-            Payload payload = null;
+            PayloadBundle payloadBundle = null;
 
             bool ignorableBundle = false;
             do
@@ -702,7 +694,7 @@ namespace Rollbar
                         "While attempting to dequeue a payload bundle...",
                         ex,
                         payloadBundle
-                        );
+                    );
                     ignorableBundle = true; // since something is not kosher about this bundle/payload, it is wise to ignore one...
                 }
 
@@ -711,16 +703,27 @@ namespace Rollbar
                     queue.Dequeue(); //throw away the ignorable...
                     this.OnRollbarEvent(
                         new PayloadDropEventArgs(queue.Logger, null, PayloadDropEventArgs.DropReason.IgnorablePayload)
-                        );
-                }
-                else
-                {
-                    payload = payloadBundle.GetPayload();
+                    );
                 }
             }
             while (ignorableBundle);
 
-            if (payloadBundle == null || payload == null) // one more sanity check before proceeding further...
+            return payloadBundle;
+        }
+
+        /// <summary>
+        /// Processes the specified queue.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        /// <param name="response">The response.</param>
+        /// <returns>PayloadBundle.</returns>
+        private PayloadBundle Process(PayloadQueue queue, out RollbarResponse response)
+        {
+            response = null;
+
+            PayloadBundle payloadBundle = GetFirstTransmittablBundle(queue);
+            Payload payload = payloadBundle?.GetPayload();
+            if (payload == null) // one more sanity check before proceeding further...
             {
                 return null;
             }
@@ -744,6 +747,7 @@ namespace Rollbar
                     new CommunicationErrorEventArgs(queue.Logger, payload, ex, 0)
                 );
                 payloadBundle.Register(ex);
+                //payloadBundle.Signal?.Release();
                 throw;
             }
 

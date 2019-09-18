@@ -13,9 +13,11 @@ namespace Sample.NetCore.ConsoleApp
     {
         static void Main(string[] args)
         {
+            InitEventCounters();
+
             ConfigureRollbarSingleton();
             ConfigureRollbarTelemetry();
-
+/*
             TelemetryCollector.Instance.Capture(
                 new Telemetry(
                     TelemetrySource.Client, 
@@ -127,8 +129,25 @@ namespace Sample.NetCore.ConsoleApp
             msg = "*** Blocking (short timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
             System.Diagnostics.Trace.WriteLine(msg);
             Console.WriteLine(msg);
+*/
 
-            //Thread.Sleep(TimeSpan.FromMinutes(1));
+            int count = 0;
+            while (count++ < 10)
+            {
+                Console.WriteLine(count);
+                RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(100000))
+                    .Info("Pumping payloads via blocking mechanism with short timeout.")
+                    ;
+                RollbarLocator.RollbarInstance
+                            .Info("Pumping payloads via async mechanism with short timeout.")
+                            ;
+
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+            }
+
+            Thread.Sleep(TimeSpan.FromMinutes(1));
+
+            PrintCounters();
         }
 
         /// <summary>
@@ -164,7 +183,7 @@ namespace Sample.NetCore.ConsoleApp
                 // minimally required Rollbar configuration:
                 .Configure(config)
                 // optional step if you would like to monitor this Rollbar instance's internal events within your application:
-                .InternalEvent += OnRollbarInternalEvent
+                //.InternalEvent += OnRollbarInternalEvent
                 ;
 
             // optional step if you would like to monitor all Rollbar instances' internal events within your application:
@@ -195,33 +214,56 @@ namespace Sample.NetCore.ConsoleApp
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private static void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
-            Console.WriteLine(e.TraceAsString());
+            //Console.WriteLine(e.TraceAsString());
 
-            RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
-            if (apiErrorEvent != null)
+            //RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
+            //if (apiErrorEvent != null)
+            //{
+            //    //TODO: handle/report Rollbar API communication error event...
+            //    return;
+            //}
+            //CommunicationEventArgs commEvent = e as CommunicationEventArgs;
+            //if (commEvent != null)
+            //{
+            //    //TODO: handle/report Rollbar API communication event...
+            //    return;
+            //}
+            //CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
+            //if (commErrorEvent != null)
+            //{
+            //    //TODO: handle/report basic communication error while attempting to reach Rollbar API service... 
+            //    return;
+            //}
+            //InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
+            //if (internalErrorEvent != null)
+            //{
+            //    //TODO: handle/report basic internal error while using the Rollbar Notifier... 
+            //    return;
+            //}
+
+            _eventCounters[e.GetType().Name]++;
+        }
+
+        private static readonly Dictionary<string, int> _eventCounters = new Dictionary<string, int>();
+
+        private static void InitEventCounters()
+        {
+            _eventCounters[typeof(InternalErrorEventArgs).Name] = 0;
+            _eventCounters[typeof(RollbarApiErrorEventArgs).Name] = 0;
+            _eventCounters[typeof(CommunicationErrorEventArgs).Name] = 0;
+            _eventCounters[typeof(TransmissionOmittedEventArgs).Name] = 0;
+            _eventCounters[typeof(PayloadDropEventArgs).Name] = 0;
+            _eventCounters[typeof(CommunicationEventArgs).Name] = 0;
+        }
+
+        private static void PrintCounters() 
+        {
+            foreach (var eventCounterKey in _eventCounters.Keys)
             {
-                //TODO: handle/report Rollbar API communication error event...
-                return;
-            }
-            CommunicationEventArgs commEvent = e as CommunicationEventArgs;
-            if (commEvent != null)
-            {
-                //TODO: handle/report Rollbar API communication event...
-                return;
-            }
-            CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
-            if (commErrorEvent != null)
-            {
-                //TODO: handle/report basic communication error while attempting to reach Rollbar API service... 
-                return;
-            }
-            InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
-            if (internalErrorEvent != null)
-            {
-                //TODO: handle/report basic internal error while using the Rollbar Notifier... 
-                return;
+                Console.WriteLine(eventCounterKey + " = " + _eventCounters[eventCounterKey]);
             }
         }
+
 
         #region data mocks
 

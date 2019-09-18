@@ -6,6 +6,7 @@ namespace Rollbar
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Net;
     using System.Net.Http;
@@ -105,6 +106,8 @@ namespace Rollbar
         /// <value>The configuration.</value>
         public IRollbarConfig Config { get { return this._rollbarLogger.Config; } }
 
+        private static readonly TimeSpan expectedPostToApiTimeout = TimeSpan.FromMilliseconds(500);
+
         /// <summary>
         /// Posts as json.
         /// </summary>
@@ -116,6 +119,7 @@ namespace Rollbar
 
             var task = this.PostAsJsonAsync(payloadBundle);
 
+            //task.Wait(expectedPostToApiTimeout);
             task.Wait();
 
             return task.Result;
@@ -136,6 +140,7 @@ namespace Rollbar
 
             var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent);
 
+            //task.Wait(expectedPostToApiTimeout);
             task.Wait();
 
             return task.Result;
