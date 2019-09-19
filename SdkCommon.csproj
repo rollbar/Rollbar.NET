@@ -11,6 +11,7 @@
     <PackageReleaseNotes>
       feat:     resolve #424: Enable Persistence to Maintain Logs while Offline.
       refactor: ref     #424: Dropping support of .NET 4.5 in favor of feature #424.
+      refactor: resolve #439: Correct failing unit tests to account for payload persistence.
       fix:      resolve #436: NullReferenceException in CompleteProcessing.
     </PackageReleaseNotes>
 
