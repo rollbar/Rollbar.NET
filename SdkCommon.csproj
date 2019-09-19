@@ -10,6 +10,7 @@
   <SdkVersion>3.6.0</SdkVersion>
     <PackageReleaseNotes>
       feat: resolve #424: Enable Persistence to Maintain Logs while Offline.
+      fix: resolve #436: NullReferenceException in CompleteProcessing.
     </PackageReleaseNotes>
 
     <!--

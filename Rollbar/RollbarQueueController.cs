@@ -1057,9 +1057,12 @@ namespace Rollbar
 #if NETFX
             HostingEnvironment.UnregisterObject(this);
 #endif
-            this._cancellationTokenSource.Dispose();
-            this._cancellationTokenSource = null;
-            this._rollbarCommThread = null;
+            if (this._cancellationTokenSource != null)
+            {
+                this._cancellationTokenSource.Dispose();
+                this._cancellationTokenSource = null;
+                this._rollbarCommThread = null;
+            }
 
             if (this._storeContext != null)
             {
@@ -1067,7 +1070,6 @@ namespace Rollbar
                 this._storeContext.Dispose();
                 this._storeContext = null;
             }
-
         }
 
 #if NETFX
