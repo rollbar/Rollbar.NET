@@ -29,6 +29,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         [TestInitialize]
         public void SetupFixture()
         {
+            this._rollbarCommEvents.Clear();
             RollbarQueueController.Instance.FlushQueues();
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
         }
