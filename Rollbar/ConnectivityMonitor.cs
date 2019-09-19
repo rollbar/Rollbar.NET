@@ -14,6 +14,9 @@
         /// </summary>
         private const int timeoutMilliseconds = 500;
 
+        /// <summary>
+        /// The google DNS ping target
+        /// </summary>
         private static readonly IPAddress googleDnsPingTarget = IPAddress.Parse("8.8.8.8");
 
         /// <summary>
