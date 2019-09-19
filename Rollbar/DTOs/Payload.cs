@@ -12,6 +12,10 @@
     public class Payload
         : DtoBase
     {
+        /// <summary>
+        /// The time stamp of this instance
+        /// </summary>
+        private readonly DateTime _timeStamp = DateTime.UtcNow;
 
         /// <summary>
         /// The payload bundle
@@ -33,6 +37,16 @@
 
             AccessToken = accessToken;
             Data = data;
+        }
+
+        /// <summary>
+        /// Gets the time stamp.
+        /// </summary>
+        /// <value>The time stamp.</value>
+        [JsonIgnore]
+        public DateTime TimeStamp
+        {
+            get { return this._timeStamp; }
         }
 
         /// <summary>

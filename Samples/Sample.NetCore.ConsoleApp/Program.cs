@@ -1,20 +1,36 @@
-using Rollbar;
-using Rollbar.DTOs;
-using Rollbar.Telemetry;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-
 namespace Sample.NetCore.ConsoleApp
 {
+    using Rollbar;
+    using Rollbar.DTOs;
+    using Rollbar.Telemetry;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading;
+    using Rollbar.Common;
+
     class Program
     {
         static void Main(string[] args)
         {
+            InitEventCounters();
+
             ConfigureRollbarSingleton();
             ConfigureRollbarTelemetry();
 
+            DemonstrateRollbarUsage();
+            //ManualPayloadPersistenceDemo();
+
+            PrintEventCounters();
+            PrintEvents();
+        }
+
+        /// <summary>
+        /// Demonstrates the Rollbar usage.
+        /// </summary>
+        private static void DemonstrateRollbarUsage()
+        {
             TelemetryCollector.Instance.Capture(
                 new Telemetry(
                     TelemetrySource.Client, 
@@ -123,13 +139,41 @@ namespace Sample.NetCore.ConsoleApp
                 Console.WriteLine(msg);
             }
             stopwatch.Stop();
-            msg = "*** Blocking (short timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
+            msg = "*** 3. Blocking (short timeout) report took " + stopwatch.Elapsed.TotalMilliseconds + " [msec].";
             System.Diagnostics.Trace.WriteLine(msg);
             Console.WriteLine(msg);
         }
 
         /// <summary>
-        /// Configures the rollbar telemetry.
+        /// Manuals the payload persistence demo.
+        /// </summary>
+        /// <remarks>
+        /// Keep connecting/disconnecting network cable during this demo run while counters keeps increasing.
+        /// Connect the cable after the counter stops and until the stats are printed.
+        /// All the payloads (2 X maxCounterValue) are expected to be delivered to Rollbar API by the time the stats are printed.
+        /// </remarks>
+        private static void ManualPayloadPersistenceDemo() 
+        {
+            int count = 0;
+            while (count++ < 30)
+            {
+                Console.WriteLine(count);
+                RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(9000))
+                    .Info("Pumping payloads via blocking mechanism with short timeout.")
+                    ;
+                RollbarLocator.RollbarInstance
+                    .Info("Pumping payloads via async mechanism with short timeout.")
+                    ;
+
+                Thread.Sleep(TimeSpan.FromMilliseconds(500));
+            }
+
+            Thread.Sleep(TimeSpan.FromSeconds(10));
+        }
+
+
+        /// <summary>
+        /// Configures the Rollbar telemetry.
         /// </summary>
         private static void ConfigureRollbarTelemetry()
         {
@@ -161,7 +205,7 @@ namespace Sample.NetCore.ConsoleApp
                 // minimally required Rollbar configuration:
                 .Configure(config)
                 // optional step if you would like to monitor this Rollbar instance's internal events within your application:
-                .InternalEvent += OnRollbarInternalEvent
+                //.InternalEvent += OnRollbarInternalEvent
                 ;
 
             // optional step if you would like to monitor all Rollbar instances' internal events within your application:
@@ -172,7 +216,7 @@ namespace Sample.NetCore.ConsoleApp
         }
 
         /// <summary>
-        /// Sets the rollbar reporting user.
+        /// Sets the Rollbar reporting user.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="email">The email.</param>
@@ -192,31 +236,78 @@ namespace Sample.NetCore.ConsoleApp
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private static void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
-            Console.WriteLine(e.TraceAsString());
+            //Console.WriteLine(e.TraceAsString());
 
-            RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
-            if (apiErrorEvent != null)
+            switch (e)
             {
-                //TODO: handle/report Rollbar API communication error event...
-                return;
+                case InternalErrorEventArgs rollbarEvent:
+                    // handle this specific type of Rollbar event...
+                    break;
+                case RollbarApiErrorEventArgs rollbarEvent:
+                    // handle this specific type of Rollbar event...
+                    break;
+                case CommunicationErrorEventArgs rollbarEvent:
+                    // handle this specific type of Rollbar event...
+                    break;
+                case TransmissionOmittedEventArgs rollbarEvent:
+                    // handle this specific type of Rollbar event...
+                    break;
+                case PayloadDropEventArgs rollbarEvent:
+                    // handle this specific type of Rollbar event...
+                    break;
+                case CommunicationEventArgs rollbarEvent:
+                    // handle this specific type of Rollbar event...
+                    break;
+                default:
+                    // handle this specific type of Rollbar event...
+                    break;
             }
-            CommunicationEventArgs commEvent = e as CommunicationEventArgs;
-            if (commEvent != null)
+
+            _eventCounters[e.GetType().Name].Add(e);
+        }
+
+        private static readonly Dictionary<string, List<RollbarEventArgs>> _eventCounters = 
+            new Dictionary<string, List<RollbarEventArgs>>();
+
+        /// <summary>
+        /// Initializes the event counters.
+        /// </summary>
+        private static void InitEventCounters()
+        {
+            _eventCounters[typeof(InternalErrorEventArgs).Name] = new List<RollbarEventArgs>();
+            _eventCounters[typeof(RollbarApiErrorEventArgs).Name] = new List<RollbarEventArgs>();
+            _eventCounters[typeof(CommunicationErrorEventArgs).Name] = new List<RollbarEventArgs>();
+            _eventCounters[typeof(TransmissionOmittedEventArgs).Name] = new List<RollbarEventArgs>();
+            _eventCounters[typeof(PayloadDropEventArgs).Name] = new List<RollbarEventArgs>();
+            _eventCounters[typeof(CommunicationEventArgs).Name] = new List<RollbarEventArgs>();
+        }
+
+        /// <summary>
+        /// Prints the event counters.
+        /// </summary>
+        private static void PrintEventCounters() 
+        {
+            foreach (var eventCounterKey in _eventCounters.Keys)
             {
-                //TODO: handle/report Rollbar API communication event...
-                return;
+                Console.WriteLine(eventCounterKey + " = " + _eventCounters[eventCounterKey].Count);
             }
-            CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
-            if (commErrorEvent != null)
+        }
+
+        /// <summary>
+        /// Prints the events.
+        /// </summary>
+        private static void PrintEvents() 
+        {
+            foreach (var eventCounterKey in _eventCounters.Keys)
             {
-                //TODO: handle/report basic communication error while attempting to reach Rollbar API service... 
-                return;
-            }
-            InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
-            if (internalErrorEvent != null)
-            {
-                //TODO: handle/report basic internal error while using the Rollbar Notifier... 
-                return;
+                Console.WriteLine("==============================");
+                Console.WriteLine(eventCounterKey.ToUpper() + ":");
+                Console.WriteLine(eventCounterKey + " = " + _eventCounters[eventCounterKey].Count);
+                foreach (var @event in  _eventCounters[eventCounterKey])
+                {
+                    Console.WriteLine(@event.TraceAsString());
+                }
+                Console.WriteLine("==============================");
             }
         }
 
@@ -273,7 +364,8 @@ namespace Sample.NetCore.ConsoleApp
                     state = new Dictionary<string, object>(state.Concat(RollbarAssistant.CaptureState(typeof(StaticType))));
 
                     // report the captured states along with the caught exception:
-                    RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(10000)).Error(ex, state);
+                    //RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromMilliseconds(10000)).Error(ex, state);
+                    RollbarLocator.RollbarInstance.Error(ex, state);
                 }
             }
         }

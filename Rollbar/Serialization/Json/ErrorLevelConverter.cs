@@ -57,6 +57,13 @@
                 throw new JsonSerializationException(msg);
             }
 
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                var chars = value.ToCharArray();
+                chars[0] = Char.ToUpper(chars[0]);
+                value = new string(chars);
+            }
+
             if (Enum.TryParse(value, true, out ErrorLevel level))
             {
                 return level;

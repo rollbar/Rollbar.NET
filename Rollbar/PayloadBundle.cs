@@ -17,7 +17,7 @@
         /// <summary>
         /// The time stamp
         /// </summary>
-        private readonly DateTime _timeStamp = DateTime.UtcNow;
+        private readonly DateTime _timeStamp = DateTime.Now;
 
         /// <summary>
         /// The payload object

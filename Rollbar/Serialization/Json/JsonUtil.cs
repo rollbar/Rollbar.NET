@@ -5,7 +5,7 @@
     using System.Text;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-
+    using Newtonsoft.Json.Serialization;
 
     /// <summary>
     /// Class JsonUtil.
@@ -83,6 +83,17 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Serializes as a JSON string.
+        /// </summary>
+        /// <param name="obj">The object.</param>
+        /// <returns>System.String.</returns>
+        public static string SerializeAsJsonString(object obj)
+        {
+            string jsonString = JsonConvert.SerializeObject(obj);
+            return jsonString;
         }
 
     }

@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Runtime.ExceptionServices;
-
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {
@@ -12,6 +9,9 @@ namespace Rollbar
     using System;
     using System.Collections.Generic;
     using System.Threading;
+    using System.Linq;
+    using System.Runtime.ExceptionServices;
+
 
     /// <summary>
     /// Implements disposable implementation of IRollbar.

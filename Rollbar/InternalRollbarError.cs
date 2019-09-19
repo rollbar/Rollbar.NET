@@ -68,5 +68,25 @@
         /// The payload scrubbing error
         /// </summary>
         PayloadScrubbingError,
+
+        /// <summary>
+        /// The persistent store context error
+        /// </summary>
+        PersistentStoreContextError,
+
+        /// <summary>
+        /// The persistent payload record error
+        /// </summary>
+        PersistentPayloadRecordError,
+
+        /// <summary>
+        /// The persistent payload record repost error
+        /// </summary>
+        PersistentPayloadRecordRepostError,
+
+        /// <summary>
+        /// The queue controller error
+        /// </summary>
+        QueueControllerError,
     }
 }

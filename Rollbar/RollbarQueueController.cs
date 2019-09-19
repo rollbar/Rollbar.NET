@@ -1,5 +1,4 @@
 ﻿#define TRACE
-
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
@@ -11,11 +10,16 @@ namespace Rollbar
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Diagnostics;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading;
+    using System.Threading.Tasks;
+    using Newtonsoft.Json;
+    using PayloadStore;
+    using Serialization.Json;
 
 #if NETFX
     using System.Web.Hosting;
@@ -100,8 +104,17 @@ namespace Rollbar
             RollbarOmittedPayloads,
         }
 
-        private static readonly TraceSource transmittedPayloadsTraceSource = new TraceSource(PayloadTraceSources.RollbarTransmittedPayloads.ToString());
-        private static readonly TraceSource omittedPayloadsTraceSource = new TraceSource(PayloadTraceSources.RollbarOmittedPayloads.ToString());
+        /// <summary>
+        /// The transmitted payloads trace source
+        /// </summary>
+        private static readonly TraceSource transmittedPayloadsTraceSource = 
+            new TraceSource(PayloadTraceSources.RollbarTransmittedPayloads.ToString());
+
+        /// <summary>
+        /// The omitted payloads trace source
+        /// </summary>
+        private static readonly TraceSource omittedPayloadsTraceSource = 
+            new TraceSource(PayloadTraceSources.RollbarOmittedPayloads.ToString());
 
         /// <summary>
         /// The sleep interval
@@ -112,6 +125,11 @@ namespace Rollbar
         /// The total retries
         /// </summary>
         internal readonly int _totalRetries = 3;
+
+        /// <summary>
+        /// The store context (the payload persistence infrastructure)
+        /// </summary>
+        private StoreContext _storeContext = null;
 
         /// <summary>
         /// The HTTP clients by proxy settings
@@ -266,6 +284,8 @@ namespace Rollbar
                     {
                         ProcessAllQueuesOnce();
                     }
+
+                    ProcessPersistentStoreOnce();
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
                 catch (System.Threading.ThreadAbortException tae)
@@ -274,6 +294,15 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
+                    RollbarErrorUtility.Report(
+                        null, 
+                        null, 
+                        InternalRollbarError.QueueControllerError, 
+                        "While KeepProcessingAllQueues()...", 
+                        ex,
+                        null
+                    );
+
                     //TODO: do we want to direct the exception 
                     //      to some kind of Rollbar notifier maintenance "access token"?
                 }
@@ -288,6 +317,125 @@ namespace Rollbar
             }
 
             CompleteProcessing();
+        }
+
+        /// <summary>
+        /// Processes the persistent store once.
+        /// </summary>
+        private void ProcessPersistentStoreOnce()
+        {
+            var destinations = this._storeContext.Destinations.ToArray();
+            foreach (var destination in destinations)
+            {
+                ProcessPersistentStoreOnce(destination);
+            }
+        }
+
+        /// <summary>
+        /// The stale record age
+        /// </summary>
+        private static TimeSpan staleRecordAge = TimeSpan.FromDays(7);
+
+        /// <summary>
+        /// Processes the persistent store once.
+        /// </summary>
+        /// <param name="destination">The destination.</param>
+        private void ProcessPersistentStoreOnce(Destination destination)
+        {
+            AccessTokenQueuesMetadata accessTokenMetadata = null;
+            lock(this._syncLock)
+            {
+                if (!this._queuesByAccessToken.TryGetValue(destination.AccessToken, out accessTokenMetadata))
+                {
+                    accessTokenMetadata = new AccessTokenQueuesMetadata(destination.AccessToken);
+                    this._queuesByAccessToken.Add(destination.AccessToken, accessTokenMetadata);
+                }
+            }
+
+            if(accessTokenMetadata.IsTransmissionSuspended && DateTimeOffset.Now < accessTokenMetadata.NextTimeTokenUsage) 
+            {
+                // the token is suspended and the next usage time is not reached,
+                // there is no point in continuing persistent store processing for this access token:
+                return;
+            }
+
+            // 1. delete all the stale records of this destination and save the store context
+            //    (if any records were deleted):
+            DateTime staleRecordsLimit = DateTime.UtcNow.Subtract(staleRecordAge);
+            var staleRecords = 
+                this._storeContext.PayloadRecords.Where(pr => pr.Timestamp < staleRecordsLimit).ToArray();
+            if (staleRecords != null && staleRecords.Length > 0) 
+            {
+                this._storeContext.PayloadRecords.RemoveRange(staleRecords);
+                this._storeContext.SaveChanges();
+            }
+
+            // 2. get the oldest record of this destination and try transmitting it:
+            if (!ConnectivityMonitor.TestInternetPing())
+            {
+                return; // there is no point trying to transmit the oldest record (if any)...
+            }
+            var oldestRecord = 
+                this._storeContext.PayloadRecords
+                    .Where(r => r.DestinationID == destination.ID)
+                    .OrderBy(r => r.Timestamp)
+                    .FirstOrDefault();
+            if (oldestRecord != null)
+            {
+                var rollbarResponse = TryPosting(oldestRecord);
+                if (rollbarResponse == null)
+                {
+                    return; //could not reach Rollbar API...
+                }
+
+                this.OnRollbarEvent(
+                    new CommunicationEventArgs(null, oldestRecord.PayloadJson, rollbarResponse)
+                );
+
+                // This processor did its best communicating with Rollbar API.
+                // Regardless of actual result, update next token usage and consider
+                // this payload record processed so it can be deleted:
+                accessTokenMetadata.UpdateNextTimeTokenUsage(rollbarResponse.RollbarRateLimit);
+                this._storeContext.PayloadRecords.Remove(oldestRecord);
+                this._storeContext.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Tries the posting.
+        /// </summary>
+        /// <param name="payloadRecord">The payload record.</param>
+        /// <returns>RollbarResponse.</returns>
+        private RollbarResponse TryPosting(PayloadRecord payloadRecord)
+        {
+            //Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
+            //IRollbarConfig config = payload.Data.Notifier.Configuration;
+            IRollbarConfig config = JsonConvert.DeserializeObject<RollbarConfig>(payloadRecord.ConfigJson);
+            RollbarClient rollbarClient  = new RollbarClient(config);
+
+            try
+            {
+                RollbarResponse response = 
+                    rollbarClient.PostAsJson(config.EndPoint, config.AccessToken, payloadRecord.PayloadJson);
+                return response;
+            }
+            catch (System.Exception ex)
+            {
+                this.OnRollbarEvent(
+                    new CommunicationErrorEventArgs(null, payloadRecord.PayloadJson, ex, 0)
+                );
+
+                RollbarErrorUtility.Report(
+                    null, 
+                    payloadRecord, 
+                    InternalRollbarError.PersistentPayloadRecordRepostError, 
+                    "While trying to report a stored payload...", 
+                    ex,
+                    null
+                );
+
+                return null;
+            }
         }
 
         /// <summary>
@@ -348,8 +496,34 @@ namespace Rollbar
                     return;
                 }
 
+                PayloadBundle payloadBundle = null;
                 RollbarResponse response = null;
-                PayloadBundle payloadBundle = Process(queue, out response);
+                try
+                {
+                    payloadBundle = Process(queue, out response);
+                }
+                catch (AggregateException aggregateException)
+                {
+                    if (aggregateException.InnerExceptions.Any(e => e is HttpRequestException))
+                    {
+                        this.Persist(queue);
+                        continue;
+                    }
+                    else
+                    {
+                        var bundle = queue.Dequeue();
+                        this.OnRollbarEvent(
+                            new PayloadDropEventArgs(queue.Logger, bundle.GetPayload(), PayloadDropEventArgs.DropReason.InvalidPayload)
+                        );
+                        queue.Dequeue();
+                        throw;
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    this.Persist(queue);
+                    continue;
+                }
 
                 if (payloadBundle != null && response == null)
                 {
@@ -389,6 +563,104 @@ namespace Rollbar
         }
 
         /// <summary>
+        /// Persists the specified payload queue.
+        /// </summary>
+        /// <param name="payloadQueue">The payload queue.</param>
+        private void Persist(PayloadQueue payloadQueue) 
+        {
+            var items = payloadQueue.GetItemsToPersist();
+            if (items == null || items.Length == 0)
+            {
+                return;
+            }
+
+            string endPoint = payloadQueue.Logger.Config.EndPoint;
+            string accessToken = payloadQueue.AccessTokenQueuesMetadata.AccessToken;
+
+            Destination destination = this._storeContext.Destinations.SingleOrDefault(d =>
+                d.Endpoint == endPoint &&
+                d.AccessToken == accessToken
+                );
+            if (destination == null)
+            {
+                destination = new Destination() {Endpoint = endPoint, AccessToken = accessToken,};
+                this._storeContext.Destinations.Add(destination);
+            }
+
+            foreach (var item in items)
+            {
+                PayloadRecord payloadRecord = this.BuildPayloadRecord(item, payloadQueue);
+                if (payloadRecord != null)
+                {
+                    destination.PayloadRecords.Add(payloadRecord);
+                }
+            }
+
+            try 
+            {
+                this._storeContext.SaveChanges();
+            } 
+            catch(System.Exception ex) 
+            {
+                RollbarErrorUtility.Report(
+                        payloadQueue.Logger, 
+                        items.Select(i=>i.GetPayload()), 
+                        InternalRollbarError.PersistentStoreContextError, 
+                        "While attempting to save persistent store context...", 
+                        ex,
+                        null
+                    );
+            }
+
+            foreach(var item in items) 
+            {
+                item.Signal?.Release();
+            }
+        }
+
+        /// <summary>
+        /// Builds the payload record.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <param name="payloadQueue">The payload queue.</param>
+        /// <returns>PayloadRecord.</returns>
+        private PayloadRecord BuildPayloadRecord(PayloadBundle payloadBundle, PayloadQueue payloadQueue) 
+        {
+            try 
+            {
+                if (payloadBundle.Ignorable 
+                    || payloadBundle.GetPayload() == null 
+                    || !payloadQueue.Client.EnsureHttpContentToSend(payloadBundle)
+                )
+                {
+                    return null;
+                }
+
+                Task<string> task = payloadBundle.AsHttpContentToSend.ReadAsStringAsync();
+                task.Wait();
+                return new PayloadRecord()
+                {
+                    Timestamp = payloadBundle.GetPayload().TimeStamp, 
+                    ConfigJson = JsonUtil.SerializeAsJsonString(payloadBundle.GetPayload().Data.Notifier.Configuration),
+                    PayloadJson = task.Result,
+                };
+            } 
+            catch(System.Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    payloadQueue.Logger, 
+                    payloadBundle.GetPayload(), 
+                    InternalRollbarError.PersistentPayloadRecordError, 
+                    "While attempting to build persistent payload record...", 
+                    ex,
+                    null
+                );
+                return null;
+            }
+
+        }
+
+        /// <summary>
         /// Obeys the payload timeout.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
@@ -402,17 +674,13 @@ namespace Rollbar
         }
 
         /// <summary>
-        /// Processes the specified queue.
+        /// Gets the first transmittabl bundle.
         /// </summary>
         /// <param name="queue">The queue.</param>
-        /// <param name="response">The response.</param>
         /// <returns>PayloadBundle.</returns>
-        private PayloadBundle Process(PayloadQueue queue, out RollbarResponse response)
+        private PayloadBundle GetFirstTransmittableBundle(PayloadQueue queue)
         {
-            response = null;
-
-            PayloadBundle payloadBundle;
-            Payload payload = null;
+            PayloadBundle payloadBundle = null;
 
             bool ignorableBundle = false;
             do
@@ -436,7 +704,7 @@ namespace Rollbar
                         "While attempting to dequeue a payload bundle...",
                         ex,
                         payloadBundle
-                        );
+                    );
                     ignorableBundle = true; // since something is not kosher about this bundle/payload, it is wise to ignore one...
                 }
 
@@ -445,16 +713,27 @@ namespace Rollbar
                     queue.Dequeue(); //throw away the ignorable...
                     this.OnRollbarEvent(
                         new PayloadDropEventArgs(queue.Logger, null, PayloadDropEventArgs.DropReason.IgnorablePayload)
-                        );
-                }
-                else
-                {
-                    payload = payloadBundle.GetPayload();
+                    );
                 }
             }
             while (ignorableBundle);
 
-            if (payloadBundle == null || payload == null) // one more sanity check before proceeding further...
+            return payloadBundle;
+        }
+
+        /// <summary>
+        /// Processes the specified queue.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        /// <param name="response">The response.</param>
+        /// <returns>PayloadBundle.</returns>
+        private PayloadBundle Process(PayloadQueue queue, out RollbarResponse response)
+        {
+            response = null;
+
+            PayloadBundle payloadBundle = GetFirstTransmittableBundle(queue);
+            Payload payload = payloadBundle?.GetPayload();
+            if (payload == null) // one more sanity check before proceeding further...
             {
                 return null;
             }
@@ -468,42 +747,17 @@ namespace Rollbar
                 return payloadBundle;
             }
 
-            int retries = this._totalRetries;
-            while (retries > 0)
+            try
             {
-                try
-                {
-                    response = queue.Client.PostAsJson(payloadBundle);
-                }
-                catch (WebException ex)
-                {
-                    retries--;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-                        );
-                    payloadBundle.Register(ex);
-                    Thread.Sleep(this._sleepInterval); // wait a bit before we retry it...
-                    continue;
-                }
-                catch (ArgumentNullException ex)
-                {
-                    retries = 0;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-                        );
-                    payloadBundle.Register(ex);
-                    continue;
-                }
-                catch (System.Exception ex)
-                {
-                    retries = 0;
-                    this.OnRollbarEvent(
-                        new CommunicationErrorEventArgs(queue.Logger, payload, ex, retries)
-                        );
-                    payloadBundle.Register(ex);
-                    continue;
-                }
-                retries = 0;
+                response = queue.Client.PostAsJson(payloadBundle);
+            }
+            catch (System.Exception ex)
+            {
+                this.OnRollbarEvent(
+                    new CommunicationErrorEventArgs(queue.Logger, payload, ex, 0)
+                );
+                payloadBundle.Register(ex);
+                throw;
             }
 
             if (response != null)
@@ -780,6 +1034,12 @@ namespace Rollbar
         /// </summary>
         private void Start()
         {
+            if (this._storeContext == null)
+            {
+                this._storeContext = new StoreContext();
+                this._storeContext.MakeSureDatabaseExistsAndReady();
+            }
+
             if (this._rollbarCommThread == null)
             {
 #if NETFX
@@ -806,9 +1066,19 @@ namespace Rollbar
 #if NETFX
             HostingEnvironment.UnregisterObject(this);
 #endif
-            this._cancellationTokenSource.Dispose();
-            this._cancellationTokenSource = null;
-            this._rollbarCommThread = null;
+            if (this._cancellationTokenSource != null)
+            {
+                this._cancellationTokenSource.Dispose();
+                this._cancellationTokenSource = null;
+                this._rollbarCommThread = null;
+            }
+
+            if (this._storeContext != null)
+            {
+                this._storeContext.SaveChanges();
+                this._storeContext.Dispose();
+                this._storeContext = null;
+            }
         }
 
 #if NETFX

@@ -6,6 +6,7 @@ namespace Rollbar
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Threading.Tasks;
     using System.Net;
     using System.Net.Http;
@@ -54,20 +55,32 @@ namespace Rollbar
         /// </summary>
         /// <param name="rollbarLogger">The rollbar logger.</param>
         public RollbarClient(RollbarLogger rollbarLogger)
+            : this(rollbarLogger.Config)
         {
             Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
-            Assumption.AssertNotNull(rollbarLogger.Config, nameof(rollbarLogger.Config));
 
             this._rollbarLogger = rollbarLogger;
 
+            this._payloadTruncationStrategy = new IterativeTruncationStrategy();
+            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.GetFieldsToScrub());
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarClient"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
+        public RollbarClient(IRollbarConfig rollbarConfig)
+        {
+            Assumption.AssertNotNull(rollbarConfig, nameof(rollbarConfig));
+
             this._payloadPostUri = 
-                new Uri($"{this._rollbarLogger.Config.EndPoint}item/");
+                new Uri($"{rollbarConfig.EndPoint}item/");
             this._httpClient = 
                 RollbarQueueController.Instance.ProvideHttpClient(
-                    this._rollbarLogger.Config.ProxyAddress,
-                    this._rollbarLogger.Config.ProxyUsername,
-                    this._rollbarLogger.Config.ProxyPassword
-                    );
+                    rollbarConfig.ProxyAddress,
+                    rollbarConfig.ProxyUsername,
+                    rollbarConfig.ProxyPassword
+                );
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
             if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
@@ -75,7 +88,7 @@ namespace Rollbar
                 this._httpClient.DefaultRequestHeaders.Accept.Add(header);
             }
 
-            var sp = ServicePointManager.FindServicePoint(new Uri(this._rollbarLogger.Config.EndPoint));
+            var sp = ServicePointManager.FindServicePoint(new Uri(rollbarConfig.EndPoint));
             try
             {
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
@@ -89,9 +102,6 @@ namespace Rollbar
                 // just a crash prevention.
                 // this is a work around the unimplemented property within Mono runtime...
             }
-
-            this._payloadTruncationStrategy = new IterativeTruncationStrategy();
-            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.GetFieldsToScrub());
         }
 
         /// <summary>
@@ -99,6 +109,11 @@ namespace Rollbar
         /// </summary>
         /// <value>The configuration.</value>
         public IRollbarConfig Config { get { return this._rollbarLogger.Config; } }
+
+        /// <summary>
+        /// The expected post to API timeout
+        /// </summary>
+        private static readonly TimeSpan expectedPostToApiTimeout = TimeSpan.FromMilliseconds(500);
 
         /// <summary>
         /// Posts as json.
@@ -109,8 +124,44 @@ namespace Rollbar
         {
             Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
+            // first, let's run quick Internet availability check
+            // to minimize potential timeout of the following JSON POST call: 
+            if (!ConnectivityMonitor.TestInternetPing())
+            {
+                throw new HttpRequestException("Preliminary ConnectivityMonitor.TestInternetPing() failed!");
+            }
+
             var task = this.PostAsJsonAsync(payloadBundle);
 
+            //task.Wait(expectedPostToApiTimeout);
+            task.Wait();
+
+            return task.Result;
+        }
+
+        /// <summary>
+        /// Posts as json.
+        /// </summary>
+        /// <param name="destinationUri">The destination URI.</param>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <returns>RollbarResponse.</returns>
+        public RollbarResponse PostAsJson(string destinationUri, string accessToken, string jsonContent) 
+        {
+            Assumption.AssertNotNullOrWhiteSpace(destinationUri, nameof(destinationUri));
+            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
+            Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
+
+            // first, let's run quick Internet availability check
+            // to minimize potential timeout of the following JSON POST call: 
+            if (!ConnectivityMonitor.TestInternetPing())
+            {
+                throw new HttpRequestException("Preliminary ConnectivityMonitor.TestInternetPing() failed!");
+            }
+
+            var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent);
+
+            //task.Wait(expectedPostToApiTimeout);
             task.Wait();
 
             return task.Result;
@@ -131,11 +182,51 @@ namespace Rollbar
                 return null;
             }
 
+            return await PostAsJsonAsync(
+                this._payloadPostUri, 
+                this._rollbarLogger.Config.AccessToken,
+                payloadBundle.AsHttpContentToSend
+                );
+        }
+
+        /// <summary>
+        /// post as json as an asynchronous operation.
+        /// </summary>
+        /// <param name="destinationUri">The destination URI.</param>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <returns>Task&lt;RollbarResponse&gt;.</returns>
+        public async Task<RollbarResponse> PostAsJsonAsync(string destinationUri, string accessToken, string jsonContent)
+        {
+            Assumption.AssertNotNullOrWhiteSpace(destinationUri, nameof(destinationUri));
+            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
+            Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
+
+            return await PostAsJsonAsync(
+                new Uri(destinationUri), 
+                accessToken, 
+                new StringContent(jsonContent)
+                );
+        }
+
+        /// <summary>
+        /// post as json as an asynchronous operation.
+        /// </summary>
+        /// <param name="destinationUri">The destination URI.</param>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <returns>Task&lt;RollbarResponse&gt;.</returns>
+        private async Task<RollbarResponse> PostAsJsonAsync(Uri destinationUri, string accessToken, StringContent jsonContent)
+        {
+            Assumption.AssertNotNull(destinationUri, nameof(destinationUri));
+            Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
+            Assumption.AssertNotNull(jsonContent, nameof(jsonContent));
+
             // build an HTTP request:
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
             const string accessTokenHeader = "X-Rollbar-Access-Token";
-            request.Headers.Add(accessTokenHeader, this._rollbarLogger.Config.AccessToken);
-            request.Content = payloadBundle.AsHttpContentToSend;
+            request.Headers.Add(accessTokenHeader, accessToken);
+            request.Content = jsonContent;
 
             // send the request:
             var postResponse = await this._httpClient.SendAsync(request);
@@ -170,8 +261,8 @@ namespace Rollbar
         /// Ensures the HTTP content to send.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        private bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
+        /// <returns><c>true</c> if succeeds, <c>false</c> otherwise.</returns>
+        public bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
         {
             if (payloadBundle.AsHttpContentToSend != null)
             {
@@ -199,7 +290,6 @@ namespace Rollbar
 
             try
             {
-                //jsonData = ScrubPayload(jsonData, this._rollbarLogger.Config.GetFieldsToScrub());
                 jsonData = ScrubPayload(jsonData);
             }
             catch (System.Exception exception)
@@ -341,6 +431,11 @@ namespace Rollbar
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool TruncatePayload(PayloadBundle payloadBundle)
         {
+            if (this._payloadTruncationStrategy == null)
+            {
+                return true; // as far as truncation is concerned - everything is good...
+            }
+
             Payload payload = payloadBundle.GetPayload();
 
             if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
@@ -372,6 +467,11 @@ namespace Rollbar
         /// <returns>System.String.</returns>
         internal string ScrubPayload(string payload)
         {
+            if (this._payloadScrubber == null)
+            {
+                return payload; // as far as scrubbing is concerned - everything is good...
+            }
+
             var scrubbedPayload = this._payloadScrubber.ScrubPayload(payload);
             return scrubbedPayload;
         }

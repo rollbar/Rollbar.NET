@@ -180,6 +180,7 @@
         /// <value>
         /// The log level.
         /// </value>
+        [JsonProperty("LogLevel", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public ErrorLevel? LogLevel { get; set; }
 
         /// <summary>

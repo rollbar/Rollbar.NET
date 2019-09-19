@@ -7,11 +7,14 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.5.0</SdkVersion>
+  <SdkVersion>3.6.0</SdkVersion>
     <PackageReleaseNotes>
-      feat: resolve #432: Add ability to scrub form data like HTTP request/response body.
+      feat:     resolve #424: Enable Persistence to Maintain Logs while Offline.
+      refactor: ref     #424: Dropping support of .NET 4.5 in favor of feature #424.
+      refactor: resolve #439: Correct failing unit tests to account for payload persistence.
+      fix:      resolve #436: NullReferenceException in CompleteProcessing.
     </PackageReleaseNotes>
-    
+
     <!--
     Release Notes Tagging Conventions:
     ==================================

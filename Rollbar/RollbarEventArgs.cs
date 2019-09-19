@@ -31,6 +31,11 @@
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarEventArgs"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="dataObject">The data object.</param>
         internal RollbarEventArgs(
             RollbarLogger logger, 
             object dataObject
@@ -42,13 +47,21 @@
 
             if (dataObject != null)
             {
-                try
+                string payloadString = dataObject as string;
+                if (payloadString != null)
                 {
-                    this.Payload = JsonConvert.SerializeObject(dataObject);
+                    this.Payload = payloadString;
                 }
-                catch (Exception ex)
+                else
                 {
-                    Trace.WriteLine(ex, $"{nameof(RollbarEventArgs)}.{nameof(this.Payload)}");
+                    try
+                    {
+                        this.Payload = JsonConvert.SerializeObject(dataObject);
+                    }
+                    catch (Exception ex)
+                    {
+                        Trace.WriteLine(ex, $"{nameof(RollbarEventArgs)}.{nameof(this.Payload)}");
+                    }
                 }
             }
         }
