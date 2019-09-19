@@ -9,7 +9,7 @@
 
   <SdkVersion>3.6.0</SdkVersion>
     <PackageReleaseNotes>
-      feat: ref #424: Enable Persistence to Maintain Logs while Offline.
+      feat: resolve #424: Enable Persistence to Maintain Logs while Offline.
     </PackageReleaseNotes>
 
     <!--

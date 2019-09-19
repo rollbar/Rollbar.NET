@@ -117,6 +117,13 @@ namespace Rollbar
         {
             Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
+            // first, let's run quick Internet availability check
+            // to minimize potential timeout of the following JSON POST call: 
+            if (!ConnectivityMonitor.TestInternetPing())
+            {
+                throw new HttpRequestException("Preliminary ConnectivityMonitor.TestInternetPing() failed!");
+            }
+
             var task = this.PostAsJsonAsync(payloadBundle);
 
             //task.Wait(expectedPostToApiTimeout);
@@ -137,6 +144,13 @@ namespace Rollbar
             Assumption.AssertNotNullOrWhiteSpace(destinationUri, nameof(destinationUri));
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
+
+            // first, let's run quick Internet availability check
+            // to minimize potential timeout of the following JSON POST call: 
+            if (!ConnectivityMonitor.TestInternetPing())
+            {
+                throw new HttpRequestException("Preliminary ConnectivityMonitor.TestInternetPing() failed!");
+            }
 
             var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent);
 

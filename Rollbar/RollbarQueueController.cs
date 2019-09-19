@@ -365,6 +365,10 @@ namespace Rollbar
             }
 
             // 2. get the oldest record of this destination and try transmitting it:
+            if (!ConnectivityMonitor.TestInternetPing())
+            {
+                return; // there is no point trying to transmit the oldest record (if any)...
+            }
             var oldestRecord = 
                 this._storeContext.PayloadRecords
                     .Where(r => r.DestinationID == destination.ID)
@@ -388,10 +392,6 @@ namespace Rollbar
                 accessTokenMetadata.UpdateNextTimeTokenUsage(rollbarResponse.RollbarRateLimit);
                 this._storeContext.PayloadRecords.Remove(oldestRecord);
                 this._storeContext.SaveChanges();
-            }
-            else
-            {
-                
             }
         }
 

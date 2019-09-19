@@ -25,15 +25,18 @@ namespace UnitTest.Rollbar {
         }
 
         //[TestMethod]
-        //public void ManualTest()
+        //public void ManualTest() 
         //{
         //    bool lastState = false;
         //    int stateSwitchCount = 0;
         //    var stopWatch = Stopwatch.StartNew();
-        //    while (stopWatch.Elapsed < TimeSpan.FromSeconds(90))
+        //    while(stopWatch.Elapsed < TimeSpan.FromSeconds(60)) 
         //    {
-        //        bool isConnected = ConnectivityMonitor.ConnectivityAvailable;
-        //        if (isConnected != lastState)
+        //        var sw = Stopwatch.StartNew();
+        //        bool isConnected = ConnectivityMonitor.TestInternetPing();
+        //        sw.Stop();
+        //        Console.WriteLine("State check took " + sw.Elapsed);
+        //        if(isConnected != lastState) 
         //        {
         //            lastState = isConnected;
         //            stateSwitchCount++;
@@ -42,6 +45,7 @@ namespace UnitTest.Rollbar {
         //        Thread.Sleep(TimeSpan.FromMilliseconds(500));
         //    }
         //    stopWatch.Stop();
+        //    Console.WriteLine("stateSwitchCount = " + stateSwitchCount);
         //    Assert.IsTrue(stateSwitchCount > 1);
         //}
     }
