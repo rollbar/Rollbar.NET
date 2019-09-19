@@ -31,6 +31,11 @@
 
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarEventArgs"/> class.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="dataObject">The data object.</param>
         internal RollbarEventArgs(
             RollbarLogger logger, 
             object dataObject

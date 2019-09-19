@@ -55,7 +55,7 @@ namespace Rollbar
         /// </summary>
         /// <param name="rollbarLogger">The rollbar logger.</param>
         public RollbarClient(RollbarLogger rollbarLogger)
-        : this(rollbarLogger.Config)
+            : this(rollbarLogger.Config)
         {
             Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
 
@@ -65,6 +65,10 @@ namespace Rollbar
             this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.GetFieldsToScrub());
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarClient"/> class.
+        /// </summary>
+        /// <param name="rollbarConfig">The rollbar configuration.</param>
         public RollbarClient(IRollbarConfig rollbarConfig)
         {
             Assumption.AssertNotNull(rollbarConfig, nameof(rollbarConfig));
@@ -106,6 +110,9 @@ namespace Rollbar
         /// <value>The configuration.</value>
         public IRollbarConfig Config { get { return this._rollbarLogger.Config; } }
 
+        /// <summary>
+        /// The expected post to API timeout
+        /// </summary>
         private static readonly TimeSpan expectedPostToApiTimeout = TimeSpan.FromMilliseconds(500);
 
         /// <summary>
@@ -254,7 +261,7 @@ namespace Rollbar
         /// Ensures the HTTP content to send.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if succeeds, <c>false</c> otherwise.</returns>
         public bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
         {
             if (payloadBundle.AsHttpContentToSend != null)

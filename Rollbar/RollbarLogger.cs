@@ -648,8 +648,6 @@ namespace Rollbar
                     );
             }
 
-            //payloadBundle.Signal?.Release();
-
             return payloadBundle;
         }
 

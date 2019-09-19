@@ -7,7 +7,6 @@
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Serialization;
 
-
     /// <summary>
     /// Class JsonUtil.
     /// </summary>

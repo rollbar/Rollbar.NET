@@ -1,5 +1,4 @@
 ﻿#define TRACE
-
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
@@ -283,11 +282,9 @@ namespace Rollbar
                 {
                     lock(this._syncLock)
                     {
-                        //Console.WriteLine("ProcessAllQueuesOnce()");
                         ProcessAllQueuesOnce();
                     }
 
-                    //Console.WriteLine("ProcessPersistentStoreOnce()");
                     ProcessPersistentStoreOnce();
                 }
 #pragma warning disable CS0168 // Variable is declared but never used
@@ -322,6 +319,9 @@ namespace Rollbar
             CompleteProcessing();
         }
 
+        /// <summary>
+        /// Processes the persistent store once.
+        /// </summary>
         private void ProcessPersistentStoreOnce()
         {
             var destinations = this._storeContext.Destinations.ToArray();
@@ -331,8 +331,15 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// The stale record age
+        /// </summary>
         private static TimeSpan staleRecordAge = TimeSpan.FromDays(7);
 
+        /// <summary>
+        /// Processes the persistent store once.
+        /// </summary>
+        /// <param name="destination">The destination.</param>
         private void ProcessPersistentStoreOnce(Destination destination)
         {
             AccessTokenQueuesMetadata accessTokenMetadata = null;
@@ -354,7 +361,6 @@ namespace Rollbar
 
             // 1. delete all the stale records of this destination and save the store context
             //    (if any records were deleted):
-
             DateTime staleRecordsLimit = DateTime.UtcNow.Subtract(staleRecordAge);
             var staleRecords = 
                 this._storeContext.PayloadRecords.Where(pr => pr.Timestamp < staleRecordsLimit).ToArray();
@@ -395,6 +401,11 @@ namespace Rollbar
             }
         }
 
+        /// <summary>
+        /// Tries the posting.
+        /// </summary>
+        /// <param name="payloadRecord">The payload record.</param>
+        /// <returns>RollbarResponse.</returns>
         private RollbarResponse TryPosting(PayloadRecord payloadRecord)
         {
             //Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
@@ -495,9 +506,6 @@ namespace Rollbar
                 {
                     if (aggregateException.InnerExceptions.Any(e => e is HttpRequestException))
                     {
-                        //Console.WriteLine("PAYLOAD PERSISTENCE REASON:");
-                        //string exceptionString = ex.ToString();
-                        //Console.WriteLine(exceptionString);
                         this.Persist(queue);
                         continue;
                     }
@@ -513,9 +521,6 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
-                    //Console.WriteLine("PAYLOAD PERSISTENCE REASON:");
-                    //string exceptionString = ex.ToString();
-                    //Console.WriteLine(exceptionString);
                     this.Persist(queue);
                     continue;
                 }
@@ -668,7 +673,12 @@ namespace Rollbar
             }
         }
 
-        private PayloadBundle GetFirstTransmittablBundle(PayloadQueue queue)
+        /// <summary>
+        /// Gets the first transmittabl bundle.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        /// <returns>PayloadBundle.</returns>
+        private PayloadBundle GetFirstTransmittableBundle(PayloadQueue queue)
         {
             PayloadBundle payloadBundle = null;
 
@@ -721,7 +731,7 @@ namespace Rollbar
         {
             response = null;
 
-            PayloadBundle payloadBundle = GetFirstTransmittablBundle(queue);
+            PayloadBundle payloadBundle = GetFirstTransmittableBundle(queue);
             Payload payload = payloadBundle?.GetPayload();
             if (payload == null) // one more sanity check before proceeding further...
             {
@@ -747,7 +757,6 @@ namespace Rollbar
                     new CommunicationErrorEventArgs(queue.Logger, payload, ex, 0)
                 );
                 payloadBundle.Register(ex);
-                //payloadBundle.Signal?.Release();
                 throw;
             }
 

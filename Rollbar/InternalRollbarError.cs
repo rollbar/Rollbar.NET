@@ -88,6 +88,5 @@
         /// The queue controller error
         /// </summary>
         QueueControllerError,
-
     }
 }

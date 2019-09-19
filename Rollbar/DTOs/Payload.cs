@@ -12,6 +12,9 @@
     public class Payload
         : DtoBase
     {
+        /// <summary>
+        /// The time stamp of this instance
+        /// </summary>
         private readonly DateTime _timeStamp = DateTime.UtcNow;
 
         /// <summary>

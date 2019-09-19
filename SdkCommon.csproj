@@ -9,8 +9,9 @@
 
   <SdkVersion>3.6.0</SdkVersion>
     <PackageReleaseNotes>
-      feat: resolve #424: Enable Persistence to Maintain Logs while Offline.
-      fix: resolve #436: NullReferenceException in CompleteProcessing.
+      feat:     resolve #424: Enable Persistence to Maintain Logs while Offline.
+      refactor: ref     #424: Dropping support of .NET 4.5 in favor of feature #424.
+      fix:      resolve #436: NullReferenceException in CompleteProcessing.
     </PackageReleaseNotes>
 
     <!--
