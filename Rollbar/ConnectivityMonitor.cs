@@ -14,6 +14,8 @@
         /// </summary>
         private const int timeoutMilliseconds = 500;
 
+        private static readonly IPAddress googleDnsPingTarget = IPAddress.Parse("8.8.8.8");
+
         /// <summary>
         /// Tests the internet ping.
         /// </summary>
@@ -24,7 +26,7 @@
 
             try
             {
-                PingReply response = ping.Send(IPAddress.Parse("8.8.8.8"), timeoutMilliseconds);
+                PingReply response = ping.Send(googleDnsPingTarget, timeoutMilliseconds);
                 bool result = ((response != null) && (response.Status == IPStatus.Success));
                 return result;
             }
