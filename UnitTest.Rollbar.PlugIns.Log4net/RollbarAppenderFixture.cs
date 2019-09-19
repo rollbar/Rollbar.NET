@@ -24,6 +24,11 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         private readonly List<CommunicationEventArgs> _rollbarCommEvents = new List<CommunicationEventArgs>();
 
         /// <summary>
+        /// The rollbar comm error events
+        /// </summary>
+        private readonly List<CommunicationErrorEventArgs> _rollbarCommErrorEvents = new List<CommunicationErrorEventArgs>();
+        
+        /// <summary>
         /// Setups the fixture.
         /// </summary>
         [TestInitialize]
@@ -50,6 +55,13 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             {
                 this._rollbarCommEvents.Add(communicationEventArgs);
             }
+
+            CommunicationErrorEventArgs communicationErrorEventArgs = e as CommunicationErrorEventArgs;
+            if (e != null)
+            {
+                this._rollbarCommErrorEvents.Add(communicationErrorEventArgs);
+            }
+
         }
 
         /// <summary>
@@ -107,9 +119,29 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
 
-            Assert.IsFalse(this._rollbarCommEvents[0].Payload.Contains("\"person\":{\"id\":"));
-            Assert.IsTrue(this._rollbarCommEvents[1].Payload.Contains(expectedPersons[1].Id));
-            Assert.IsTrue(this._rollbarCommEvents[2].Payload.Contains(expectedPersons[2].Id));
+            Assert.IsTrue(this._rollbarCommEvents.Count == 3 || this._rollbarCommErrorEvents.Count == 3, "Either comm successes or errors are captured...");
+
+            if (this._rollbarCommEvents.Count == 3)
+            {
+                Assert.IsFalse(this._rollbarCommEvents[0].Payload.Contains("\"person\":{\"id\":"), "checking this._rollbarCommEvents[0].Payload");
+                Assert.IsTrue(this._rollbarCommEvents[1].Payload.Contains(expectedPersons[1].Id), "checking this._rollbarCommEvents[1].Payload");
+                Assert.IsTrue(this._rollbarCommEvents[2].Payload.Contains(expectedPersons[2].Id), "checking this._rollbarCommEvents[2].Payload");
+            }
+            else
+            {
+                //this scenario happens on the CI server (Azure Pipelines):
+                foreach (var commErrorEvent in this._rollbarCommErrorEvents)
+                {
+                    Assert.IsTrue(
+                        commErrorEvent.Error.Message.Contains(
+                        "System.Net.Http.HttpRequestException: Preliminary ConnectivityMonitor.TestInternetPing() failed!"),
+                        "Matching error message."
+                        );
+                }
+                Assert.IsFalse(this._rollbarCommErrorEvents[0].Payload.Contains("\"person\":{\"id\":"), "checking this._rollbarCommErrorEvents[0].Payload");
+                Assert.IsTrue(this._rollbarCommErrorEvents[1].Payload.Contains(expectedPersons[1].Id), "checking this._rollbarCommErrorEvents[1].Payload");
+                Assert.IsTrue(this._rollbarCommErrorEvents[2].Payload.Contains(expectedPersons[2].Id), "checking this._rollbarCommErrorEvents[2].Payload");
+            }
         }
     }
 }
