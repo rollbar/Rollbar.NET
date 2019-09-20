@@ -129,7 +129,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
                 {
                     Assert.IsTrue(
                         commErrorEvent.Error.Message.Contains(
-                            "System.Net.Http.HttpRequestException: Preliminary ConnectivityMonitor.TestInternetPing() failed!"),
+                            "Preliminary ConnectivityMonitor.TestInternetPing() failed!"),
                         "Matching error message."
                     );
                 }
