@@ -33,7 +33,7 @@
                 bool result = ((response != null) && (response.Status == IPStatus.Success));
                 return result;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
