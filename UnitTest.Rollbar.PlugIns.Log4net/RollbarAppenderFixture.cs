@@ -71,6 +71,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         [TestCleanup]
         public void TearDownFixture()
         {
+            RollbarQueueController.Instance.InternalEvent -= Instance_InternalEvent;
 
         }
 

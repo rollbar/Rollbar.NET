@@ -22,9 +22,13 @@ namespace UnitTest.Rollbar
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
+            RollbarQueueController.Instance.FlushQueues();
+            RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
+
             RollbarConfig loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
             _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
+
         }
 
         [TestCleanup]
@@ -34,7 +38,29 @@ namespace UnitTest.Rollbar
 
             // let's make sure we clean up all at the end:
             RollbarQueueController.Instance.FlushQueues();
+            RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
         }
+
+        private void Instance_InternalEvent(object sender, RollbarEventArgs e)
+        {
+            string eventTrace = $"##################{Environment.NewLine}{e.TraceAsString()}{Environment.NewLine}";
+            Console.WriteLine(eventTrace);
+            System.Diagnostics.Trace.WriteLine(eventTrace);
+
+            //CommunicationEventArgs communicationEventArgs = e as CommunicationEventArgs;
+            //if (communicationEventArgs != null)
+            //{
+            //    this._rollbarCommEvents.Add(communicationEventArgs);
+            //}
+
+            //CommunicationErrorEventArgs communicationErrorEventArgs = e as CommunicationErrorEventArgs;
+            //if (communicationErrorEventArgs != null)
+            //{
+            //    this._rollbarCommErrorEvents.Add(communicationErrorEventArgs);
+            //}
+
+        }
+
 
         [TestMethod]
         public void HasBlockingBehavior()
