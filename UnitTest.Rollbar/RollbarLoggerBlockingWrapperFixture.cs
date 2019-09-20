@@ -23,7 +23,7 @@ namespace UnitTest.Rollbar
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
             RollbarQueueController.Instance.FlushQueues();
-            RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
+            //RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
 
             RollbarConfig loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
@@ -118,6 +118,8 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void TimeoutExceptionAggregatesMisconfigurationDetails()
         {
+            RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
+
             RollbarConfig badConfig = new RollbarConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
             using (IRollbar logger = RollbarFactory.CreateNew(badConfig))
             {
