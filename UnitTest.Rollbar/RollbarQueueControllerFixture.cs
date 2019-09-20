@@ -38,7 +38,7 @@ namespace UnitTest.Rollbar
             Assert.AreSame(RollbarQueueController.Instance, RollbarQueueController.Instance);
         }
 
-        private const int maxQueueRegisterationTestDurationInMillisec = 5 * 1000;
+        private const int maxQueueRegisterationTestDurationInMillisec = 10 * 1000;
         [TestMethod]
         [Timeout(maxQueueRegisterationTestDurationInMillisec)]
         public void QueueRegisterationTest()
