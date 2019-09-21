@@ -15,6 +15,7 @@ pool:
   #vmImage: 'VS2017-Win2016'
   name: Hosted VS2017
   demands: 
+  - VisualStudio
   - VSBuild
   - VSTest
   - NuGet
