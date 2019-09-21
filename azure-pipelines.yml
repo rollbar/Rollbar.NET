@@ -12,13 +12,7 @@ trigger:
             - v*
 
 pool:
-  #vmImage: 'VS2017-Win2016'
-  name: Hosted VS2017
-  demands: 
-  - VisualStudio
-  - VSBuild
-  - VSTest
-  - NuGet
+  vmImage: 'VS2017-Win2016'
 
 variables:
   solution: '**/Rollbar.sln'
@@ -55,25 +49,25 @@ steps:
 #    includePreviewVersions: true
 #    installationPath: $(Agent.ToolsDirectory)/dotnet
     
-    #- script: dotnet --version
+- script: dotnet --version
 
-    #- script: dotnet --info
+- script: dotnet --info
 
 # NuGet Tool Installer
 # Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. Use this task to change the version of NuGet used in the NuGet tasks.
-    #- task: NuGetToolInstaller@0
-    #  displayName: 'Installing NuGet...'
+- task: NuGetToolInstaller@0
+  displayName: 'Installing NuGet...'
   #inputs:
     #versionSpec: '4.3.0' 
     #checkLatest: false # Optional
 
 # Visual Studio Test Platform Installer
 # Acquires the test platform from nuget.org or the tools cache. Satisfies the ‘vstest’ demand and can be used for running tests and collecting diagnostic data using the Visual Studio Test task.
-    #- task: VisualStudioTestPlatformInstaller@1
-    #  displayName: 'Installing VisualStudio Test Platform...'
-    #  inputs:
-    #    packageFeedSelector: 'nugetOrg' # Options: nugetOrg, customFeed, netShare
-    #    versionSelector: 'latestStable' # Required when packageFeedSelector == NugetOrg || PackageFeedSelector == CustomFeed# Options: latestPreRelease, latestStable, specificVersion
+- task: VisualStudioTestPlatformInstaller@1
+  displayName: 'Installing VisualStudio Test Platform...'
+  inputs:
+    packageFeedSelector: 'nugetOrg' # Options: nugetOrg, customFeed, netShare
+    versionSelector: 'latestStable' # Required when packageFeedSelector == NugetOrg || PackageFeedSelector == CustomFeed# Options: latestPreRelease, latestStable, specificVersion
     #testPlatformVersion: '15.9.0' # Required when versionSelector == SpecificVersion
     #customFeed: # Required when packageFeedSelector == CustomFeed
     #username: # Optional
@@ -85,7 +79,7 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-    #- script: dotnet restore Rollbar.sln
+- script: dotnet restore Rollbar.sln
 
 - task: VSBuild@1
   displayName: 'Building the solution...'
