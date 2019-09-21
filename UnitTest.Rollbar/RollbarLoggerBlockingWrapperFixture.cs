@@ -115,30 +115,29 @@ namespace UnitTest.Rollbar
             Assert.Fail("The timeout should be small enough for this test to trigger the TimeoutException!");
         }
 
-        //TODO: REFACTOR to account for ping failures on the CI server!!!
-        //[TestMethod]
-        //public void TimeoutExceptionAggregatesMisconfigurationDetails()
-        //{
-        //    RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
+        [TestMethod]
+        public void TimeoutExceptionAggregatesMisconfigurationDetails()
+        {
+            RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
 
-        //    RollbarConfig badConfig = new RollbarConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
-        //    using (IRollbar logger = RollbarFactory.CreateNew(badConfig))
-        //    {
-        //        try
-        //        {
-        //            var badData = new Data(new Body("Misconfigured Person data"));
-        //            badData.Person = new Person();
-        //            logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Log(badData);
-        //            Assert.Fail("No TimeoutException!");
-        //        }
-        //        catch (TimeoutException ex)
-        //        {
-        //            Assert.IsNotNull(ex.InnerException);
-        //            Assert.IsTrue(ex.InnerException is AggregateException);
-        //            Assert.IsTrue((ex.InnerException as AggregateException).InnerExceptions.Count > 0);
-        //        }
-        //    }
-        //}
+            RollbarConfig badConfig = new RollbarConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
+            using (IRollbar logger = RollbarFactory.CreateNew(badConfig))
+            {
+                try
+                {
+                    var badData = new Data(new Body("Misconfigured Person data"));
+                    badData.Person = new Person();
+                    logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Log(badData);
+                    Assert.Fail("No TimeoutException!");
+                }
+                catch (TimeoutException ex)
+                {
+                    Assert.IsNotNull(ex.InnerException);
+                    Assert.IsTrue(ex.InnerException is AggregateException);
+                    Assert.IsTrue((ex.InnerException as AggregateException).InnerExceptions.Count > 0);
+                }
+            }
+        }
 
         [DataTestMethod]
         [DataRow(ErrorLevel.Critical)]
