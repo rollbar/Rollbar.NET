@@ -356,19 +356,18 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(this.GetCount<CommunicationEventArgs>(), initialCommunicationEventsCount + 1, "Confirming Rollbar.NET is operational...");
         }
 
-        //TODO: REFACTOR to account for ping failures on the CI server!!!
-        //[TestMethod]
-        //public void _VerifyInstanceOperationalTest()
-        //{
-        //    // this test more about verifying if the test harness itself works well:
+        [TestMethod]
+        public void _VerifyInstanceOperationalTest() 
+        {
+            // this test more about verifying if the test harness itself works well:
 
-        //    this.ClearAllRollbarEvents();
+            this.ClearAllRollbarEvents();
 
-        //    using (IRollbar rollbar = this.ProvideDisposableRollbar())
-        //    {
-        //        this.VerifyInstanceOperational(rollbar);
-        //    }
-        //}
+            using(IRollbar rollbar = this.ProvideDisposableRollbar()) 
+            {
+                this.VerifyInstanceOperational(rollbar);
+            }
+        }
 
 
         #region IDisposable Support

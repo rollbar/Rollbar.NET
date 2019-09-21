@@ -58,87 +58,88 @@ namespace UnitTest.Rollbar
             //TODO:
         }
 
-        //TODO: REFACTOR to account for ping failures on the CI server!!!
-        //[TestMethod]
-        //public void RethrowConfigOptionWorks()
-        //{
-        //    this.Reset();
+        [TestMethod]
+        public void RethrowConfigOptionWorks()
+        {
+            this.Reset();
 
-        //    RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
 
-        //    using (IRollbar rollbar = this.ProvideDisposableRollbar())
-        //    {
-        //        rollbar.Configure(config);
-        //        this.IncrementCount<CommunicationEventArgs>();
-        //        rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async!"));
-        //        this.IncrementCount<CommunicationEventArgs>();
-        //        rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync!"));
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                rollbar.Configure(config);
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async!"));
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
+                    .Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync!"));
 
-        //        int rethrowCount = 0;
-        //        config.RethrowExceptionsAfterReporting = true;
-        //        rollbar.Configure(config);
-        //        try
-        //        {
-        //            this.IncrementCount<CommunicationEventArgs>();
-        //            rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async with rethrow!"));
-        //        }
-        //        catch
-        //        {
-        //            rethrowCount++;
-        //        }
+                int rethrowCount = 0;
+                config.RethrowExceptionsAfterReporting = true;
+                rollbar.Configure(config);
+                try
+                {
+                    this.IncrementCount<CommunicationEventArgs>();
+                    rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async with rethrow!"));
+                }
+                catch
+                {
+                    rethrowCount++;
+                }
 
-        //        try
-        //        {
-        //            this.IncrementCount<CommunicationEventArgs>();
-        //            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync with rethrow!"));
-        //        }
-        //        catch
-        //        {
-        //            rethrowCount++;
-        //        }
+                try
+                {
+                    this.IncrementCount<CommunicationEventArgs>();
+                    rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
+                        .Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync with rethrow!"));
+                }
+                catch
+                {
+                    rethrowCount++;
+                }
 
-        //        config.RethrowExceptionsAfterReporting = false;
-        //        rollbar.Configure(config);
-        //        this.IncrementCount<CommunicationEventArgs>();
-        //        rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async!"));
-        //        this.IncrementCount<CommunicationEventArgs>();
-        //        rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync!"));
+                config.RethrowExceptionsAfterReporting = false;
+                rollbar.Configure(config);
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async!"));
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
+                    .Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync!"));
 
-        //        Assert.AreEqual(2, rethrowCount, "matching total of rethrows...");
-        //    }
-        //}
+                Assert.AreEqual(2, rethrowCount, "matching total of rethrows...");
+            }
+        }
 
-        //TODO: REFACTOR to account for ping failures on the CI server!!!
-        //[TestMethod]
-        //public void TransmitConfigOptionWorks()
-        //{
-        //    this.Reset();
+        [TestMethod]
+        public void TransmitConfigOptionWorks()
+        {
+            this.Reset();
 
-        //    RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
 
-        //    using (IRollbar rollbar = this.ProvideDisposableRollbar())
-        //    {
-        //        rollbar.Configure(config);
-        //        this.IncrementCount<CommunicationEventArgs>();
-        //        rollbar.Critical("Transmission is expected to happen!");
-        //        this.IncrementCount<CommunicationEventArgs>();
-        //        rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
+            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            {
+                rollbar.Configure(config);
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.Critical("Transmission is expected to happen!");
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
 
-        //        config.Transmit = false;
-        //        rollbar.Configure(config);
-        //        this.IncrementCount<TransmissionOmittedEventArgs>();
-        //        rollbar.Critical("Transmission is expected to be omitted!");
-        //        this.IncrementCount<TransmissionOmittedEventArgs>();
-        //        rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to be omitted!");
+                config.Transmit = false;
+                rollbar.Configure(config);
+                this.IncrementCount<TransmissionOmittedEventArgs>();
+                rollbar.Critical("Transmission is expected to be omitted!");
+                this.IncrementCount<TransmissionOmittedEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to be omitted!");
 
-        //        config.Transmit = true;
-        //        rollbar.Configure(config);
-        //        this.IncrementCount<CommunicationEventArgs>();
-        //        rollbar.Critical("Transmission is expected to happen!");
-        //        this.IncrementCount<CommunicationEventArgs>();
-        //        rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
-        //    }
-        //}
+                config.Transmit = true;
+                rollbar.Configure(config);
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.Critical("Transmission is expected to happen!");
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
+            }
+        }
 
         /// <summary>
         /// Defines the test method FaultyPayloadTransformationTest.
