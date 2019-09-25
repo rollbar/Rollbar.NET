@@ -7,7 +7,8 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.6.0-beta1</SdkVersion>
+    <SdkVersion>3.6.0</SdkVersion>
+    <SdkVersionSuffix>-beta</SdkVersionSuffix>
     <PackageReleaseNotes>
       feat:     resolve #424: Enable Persistence to Maintain Logs while Offline.
       refactor: ref     #424: Dropping support of .NET 4.5 in favor of feature #424.
@@ -40,7 +41,7 @@
         depending on what is more appropriate in each case.
     -->
     
-    <Version>$(SdkVersion)</Version>
+    <Version>$(SdkVersion)$(SdkVersionSuffix)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
     <FileVersion>$(SdkVersion)</FileVersion>
     <Company>Rollbar Inc</Company>
