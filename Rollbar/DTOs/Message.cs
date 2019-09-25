@@ -56,8 +56,8 @@
         /// </value>
         public string Body
         {
-            get { return this._keyedValues[ReservedProperties.Body] as string; }
-            private set { this._keyedValues[ReservedProperties.Body] = value; }
+            get { return this[ReservedProperties.Body] as string; }
+            private set { this[ReservedProperties.Body] = value; }
         }
 
         /// <summary>

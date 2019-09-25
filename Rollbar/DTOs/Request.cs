@@ -89,8 +89,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public string Url
         {
-            get { return this._keyedValues[ReservedProperties.Url] as string; }
-            set { this._keyedValues[ReservedProperties.Url] = value; }
+            get { return this[ReservedProperties.Url] as string; }
+            set { this[ReservedProperties.Url] = value; }
         }
 
         /// <summary>
@@ -104,8 +104,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public string Method
         {
-            get { return this._keyedValues[ReservedProperties.Method] as string; }
-            set { this._keyedValues[ReservedProperties.Method] = value; }
+            get { return this[ReservedProperties.Method] as string; }
+            set { this[ReservedProperties.Method] = value; }
         }
 
         /// <summary>
@@ -119,8 +119,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public IDictionary<string, string> Headers
         {
-            get { return this._keyedValues[ReservedProperties.Headers] as IDictionary<string, string>; }
-            set { this._keyedValues[ReservedProperties.Headers] = value; }
+            get { return this[ReservedProperties.Headers] as IDictionary<string, string>; }
+            set { this[ReservedProperties.Headers] = value; }
         }
 
         /// <summary>
@@ -134,8 +134,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public IDictionary<string, object> Params
         {
-            get { return this._keyedValues[ReservedProperties.Params] as IDictionary<string, object>; }
-            set { this._keyedValues[ReservedProperties.Params] = value; }
+            get { return this[ReservedProperties.Params] as IDictionary<string, object>; }
+            set { this[ReservedProperties.Params] = value; }
         }
 
         /// <summary>
@@ -149,8 +149,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public IDictionary<string, object> GetParams
         {
-            get { return this._keyedValues[ReservedProperties.GetParams] as IDictionary<string, object>; }
-            set { this._keyedValues[ReservedProperties.GetParams] = value; }
+            get { return this[ReservedProperties.GetParams] as IDictionary<string, object>; }
+            set { this[ReservedProperties.GetParams] = value; }
         }
 
         /// <summary>
@@ -164,8 +164,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public string QueryString
         {
-            get { return this._keyedValues[ReservedProperties.QueryString] as string; }
-            set { this._keyedValues[ReservedProperties.QueryString] = value; }
+            get { return this[ReservedProperties.QueryString] as string; }
+            set { this[ReservedProperties.QueryString] = value; }
         }
 
         /// <summary>
@@ -179,8 +179,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public IDictionary<string, object> PostParams
         {
-            get { return this._keyedValues[ReservedProperties.PostParams] as IDictionary<string, object>; }
-            set { this._keyedValues[ReservedProperties.PostParams] = value; }
+            get { return this[ReservedProperties.PostParams] as IDictionary<string, object>; }
+            set { this[ReservedProperties.PostParams] = value; }
         }
 
         /// <summary>
@@ -194,8 +194,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public object PostBody
         {
-            get { return this._keyedValues[ReservedProperties.PostBody]; }
-            set { this._keyedValues[ReservedProperties.PostBody] = value; }
+            get { return this[ReservedProperties.PostBody]; }
+            set { this[ReservedProperties.PostBody] = value; }
         }
 
         /// <summary>
@@ -211,8 +211,8 @@ namespace Rollbar.DTOs
         /// </remarks>
         public string UserIp
         {
-            get { return this._keyedValues[ReservedProperties.UserIp] as string; }
-            set { this._keyedValues[ReservedProperties.UserIp] = value; }
+            get { return this[ReservedProperties.UserIp] as string; }
+            set { this[ReservedProperties.UserIp] = value; }
         }
 
     }

@@ -80,8 +80,8 @@
                 new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment };
             rollbarConfig.ScrubFields = new string[] // data fields which values we want to mask as "***"
             {
-                "url",
-                "method",
+                //"url",
+                //"method",
             };
 
             RollbarLocator.RollbarInstance

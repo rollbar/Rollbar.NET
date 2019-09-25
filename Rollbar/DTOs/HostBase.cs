@@ -59,8 +59,8 @@
         /// </remarks>
         public string Cpu
         {
-            get { return this._keyedValues[ReservedProperties.Cpu] as string; }
-            set { this._keyedValues[ReservedProperties.Cpu] = value; }
+            get { return this[ReservedProperties.Cpu] as string; }
+            set { this[ReservedProperties.Cpu] = value; }
         }
 
     }

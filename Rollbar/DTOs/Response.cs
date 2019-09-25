@@ -55,7 +55,7 @@
         {
             get
             {
-                if (this._keyedValues.TryGetValue(ReservedProperties.StatusCode, out object statusCode))
+                if (this.TryGetValue(ReservedProperties.StatusCode, out object statusCode))
                 {
                     if (statusCode != null)
                     {
@@ -65,7 +65,7 @@
 
                 return null;
             }
-            set { this._keyedValues[ReservedProperties.StatusCode] = value; }
+            set { this[ReservedProperties.StatusCode] = value; }
         }
 
         /// <summary>
@@ -74,8 +74,8 @@
         /// <value>The headers.</value>
         public IDictionary<string, string> Headers
         {
-            get { return this._keyedValues[ReservedProperties.Headers] as IDictionary<string, string>; }
-            set { this._keyedValues[ReservedProperties.Headers] = value; }
+            get { return this[ReservedProperties.Headers] as IDictionary<string, string>; }
+            set { this[ReservedProperties.Headers] = value; }
         }
 
         /// <summary>
@@ -84,8 +84,8 @@
         /// <value>The body.</value>
         public object Body
         {
-            get { return this._keyedValues[ReservedProperties.Body]; }
-            set { this._keyedValues[ReservedProperties.Body] = value; }
+            get { return this[ReservedProperties.Body]; }
+            set { this[ReservedProperties.Body] = value; }
         }
 
     }

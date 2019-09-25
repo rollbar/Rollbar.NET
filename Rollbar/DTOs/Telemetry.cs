@@ -89,8 +89,8 @@
         /// </value>
         public TelemetryLevel Level
         {
-            get { return (TelemetryLevel) this._keyedValues[ReservedProperties.Level]; }
-            private set { this._keyedValues[ReservedProperties.Level] = value; }
+            get { return (TelemetryLevel) this[ReservedProperties.Level]; }
+            private set { this[ReservedProperties.Level] = value; }
         }
 
         /// <summary>
@@ -101,8 +101,8 @@
         /// </value>
         public TelemetryType Type
         {
-            get { return (TelemetryType) this._keyedValues[ReservedProperties.Type]; }
-            private set { this._keyedValues[ReservedProperties.Type] = value; }
+            get { return (TelemetryType) this[ReservedProperties.Type]; }
+            private set { this[ReservedProperties.Type] = value; }
         }
 
         /// <summary>
@@ -113,8 +113,8 @@
         /// </value>
         public TelemetrySource Source
         {
-            get { return (TelemetrySource)this._keyedValues[ReservedProperties.Source]; }
-            private set { this._keyedValues[ReservedProperties.Source] = value; }
+            get { return (TelemetrySource)this[ReservedProperties.Source]; }
+            private set { this[ReservedProperties.Source] = value; }
         }
 
         /// <summary>
@@ -125,8 +125,8 @@
         /// </value>
         public long Timestamp
         {
-            get { return (long) this._keyedValues[ReservedProperties.Timestamp]; }
-            private set { this._keyedValues[ReservedProperties.Timestamp] = value; }
+            get { return (long) this[ReservedProperties.Timestamp]; }
+            private set { this[ReservedProperties.Timestamp] = value; }
         }
 
         /// <summary>
@@ -137,8 +137,8 @@
         /// </value>
         public TelemetryBody Body
         {
-            get { return this._keyedValues[ReservedProperties.Body] as TelemetryBody; }
-            private set { this._keyedValues[ReservedProperties.Body] = value; }
+            get { return this[ReservedProperties.Body] as TelemetryBody; }
+            private set { this[ReservedProperties.Body] = value; }
         }
 
         /// <summary>

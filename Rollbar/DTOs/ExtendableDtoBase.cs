@@ -33,7 +33,7 @@
         /// <summary>
         /// The keyed values
         /// </summary>
-        protected readonly IDictionary<string, object> _keyedValues = 
+        private readonly IDictionary<string, object> _keyedValues = 
             new Dictionary<string, object>();
 
         static ExtendableDtoBase()
@@ -92,15 +92,15 @@
                     "conditional " + nameof(value) + " assessment"
                     );
 
-                Assumption.AssertTrue(
-                    !metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey.ContainsKey(key) 
-                    || value == null
-                    || metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType == value.GetType()
-                    || (metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.IsGenericType                                // dealing with nullable type
-                        && metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.GenericTypeArguments.Length == 1
-                        && metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.GenericTypeArguments[0] == value.GetType())
-                    , nameof(value)
-                    );
+                //Assumption.AssertTrue(
+                //    !metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey.ContainsKey(key) 
+                //    || value == null
+                //    || metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType == value.GetType()
+                //    || (metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.IsGenericType                                // dealing with nullable type
+                //        && metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.GenericTypeArguments.Length == 1
+                //        && metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.GenericTypeArguments[0] == value.GetType())
+                //    , nameof(value)
+                //    );
 
                 this._keyedValues[key] = value;
             }

@@ -7,11 +7,13 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-  <SdkVersion>3.6.0</SdkVersion>
+    <SdkVersion>3.6.0</SdkVersion>
+    <SdkVersionSuffix>-beta</SdkVersionSuffix>
     <PackageReleaseNotes>
       feat:     resolve #424: Enable Persistence to Maintain Logs while Offline.
       refactor: ref     #424: Dropping support of .NET 4.5 in favor of feature #424.
       refactor: resolve #439: Correct failing unit tests to account for payload persistence.
+      fix:      resolve #457: DTOs that are derivatives of ExtendableDtoBase generate 'key not found' exceptions for optional attributes.
       fix:      resolve #436: NullReferenceException in CompleteProcessing.
     </PackageReleaseNotes>
 
@@ -39,7 +41,7 @@
         depending on what is more appropriate in each case.
     -->
     
-    <Version>$(SdkVersion)</Version>
+    <Version>$(SdkVersion)$(SdkVersionSuffix)</Version>
     <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
     <FileVersion>$(SdkVersion)</FileVersion>
     <Company>Rollbar Inc</Company>
