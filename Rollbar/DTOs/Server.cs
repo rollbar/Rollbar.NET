@@ -68,8 +68,8 @@
         /// </remarks>
         public string Host
         {
-            get { return this._keyedValues[ReservedProperties.Host] as string; }
-            set { this._keyedValues[ReservedProperties.Host] = value; }
+            get { return this[ReservedProperties.Host] as string; }
+            set { this[ReservedProperties.Host] = value; }
         }
 
         /// <summary>
@@ -84,8 +84,8 @@
         /// </remarks>
         public string Root
         {
-            get { return this._keyedValues[ReservedProperties.Root] as string; }
-            set { this._keyedValues[ReservedProperties.Root] = value; }
+            get { return this[ReservedProperties.Root] as string; }
+            set { this[ReservedProperties.Root] = value; }
         }
 
         /// <summary>
@@ -99,8 +99,8 @@
         /// </remarks>
         public string Branch
         {
-            get { return this._keyedValues[ReservedProperties.Branch] as string; }
-            set { this._keyedValues[ReservedProperties.Branch] = value; }
+            get { return this[ReservedProperties.Branch] as string; }
+            set { this[ReservedProperties.Branch] = value; }
         }
 
         /// <summary>
@@ -115,8 +115,8 @@
         /// </remarks>
         public string CodeVersion
         {
-            get { return this._keyedValues[ReservedProperties.CodeVersion] as string; }
-            set { this._keyedValues[ReservedProperties.CodeVersion] = value; }
+            get { return this[ReservedProperties.CodeVersion] as string; }
+            set { this[ReservedProperties.CodeVersion] = value; }
         }
     }
 }

@@ -57,8 +57,8 @@
         /// <value>The name.</value>
         public string Name
         {
-            get { return this._keyedValues[ReservedProperties.Name] as string; }
-            private set { this._keyedValues[ReservedProperties.Name] = value; }
+            get { return this[ReservedProperties.Name] as string; }
+            private set { this[ReservedProperties.Name] = value; }
         }
 
         /// <summary>
@@ -67,8 +67,8 @@
         /// <value>The version.</value>
         public string Version
         {
-            get { return this._keyedValues[ReservedProperties.Version] as string; }
-            private set { this._keyedValues[ReservedProperties.Version] = value; }
+            get { return this[ReservedProperties.Version] as string; }
+            private set { this[ReservedProperties.Version] = value; }
         }
         /// <summary>
         /// Gets or sets the configuration.
@@ -76,8 +76,8 @@
         /// <value>The configuration.</value>
         public IRollbarConfig Configuration
         {
-            get { return this._keyedValues[ReservedProperties.Configuration] as IRollbarConfig; }
-            set { this._keyedValues[ReservedProperties.Configuration] = value; }
+            get { return this[ReservedProperties.Configuration] as IRollbarConfig; }
+            set { this[ReservedProperties.Configuration] = value; }
         }
 
         /// <summary>
