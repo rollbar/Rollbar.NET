@@ -153,5 +153,20 @@
             return types.ToArray();
         }
 
+        /// <summary>
+        /// Does the type implement interface.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="interfaceType">Type of the interface.</param>
+        /// <returns><c>true</c> if implements, <c>false</c> otherwise.</returns>
+        public static bool DoesTypeImplementInterface(Type type, Type interfaceType)
+        {
+            Assumption.AssertNotNull(type, nameof(type));
+            Assumption.AssertNotNull(interfaceType, nameof(interfaceType));
+            Assumption.AssertTrue(interfaceType.IsInterface, nameof(interfaceType));
+
+            return type.GetInterfaces().Any(i => i.FullName == interfaceType.FullName);
+        }
+
     }
 }

@@ -5,7 +5,9 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Text;
+    using Common;
 
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
 #pragma warning disable CS1658 // Warning is overriding an error
@@ -80,29 +82,55 @@
                 {
                     return result;
                 }
+
+                var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
+                if (concreteDtoMetadata
+                    .ReservedPropertyInfoByReservedKey
+                    .TryGetValue(key, out PropertyInfo reservedPropertyInfo))
+                {
+                    //if we have matching reserved property of value type - return default for it:   
+                    if(reservedPropertyInfo.PropertyType.IsValueType)
+                    {
+                        return Activator.CreateInstance(reservedPropertyInfo.PropertyType);
+                    }
+                }
+
                 return null;
             }
             set
             {
                 Assumption.AssertTrue(
-                    !this._keyedValues.ContainsKey(key)                                         // no such key preset yet
+                    !this._keyedValues.ContainsKey(key)                               // no such key preset yet
                     || this._keyedValues[key] == null                                           // OR its not initialized yet
                     || value != null                                                            // OR no-null value
                     || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),    // OR not about reserved property/key
                     "conditional " + nameof(value) + " assessment"
                     );
-
-                //Assumption.AssertTrue(
-                //    !metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey.ContainsKey(key) 
-                //    || value == null
-                //    || metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType == value.GetType()
-                //    || (metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.IsGenericType                                // dealing with nullable type
-                //        && metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.GenericTypeArguments.Length == 1
-                //        && metadataByDerivedType[this.GetType()].ReservedPropertyInfoByReservedKey[key].PropertyType.GenericTypeArguments[0] == value.GetType())
-                //    , nameof(value)
-                //    );
-
-                this._keyedValues[key] = value;
+//
+                var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
+                if (concreteDtoMetadata
+                    .ReservedPropertyInfoByReservedKey
+                    .TryGetValue(key, out PropertyInfo reservedPropertyInfo))
+                {
+                    var reservedPropertyType = reservedPropertyInfo.PropertyType;
+                    var valueType = value?.GetType();
+                    Assumption.AssertTrue(
+                        //we are not dealing with a reserved property, hence, anything works:
+                        !concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(key)
+                        //OR we are dealing with a reserved property and the value and its type should make sense:  
+                        || value == null
+                        || reservedPropertyType == valueType
+                        || (reservedPropertyType.IsInterface 
+                            && ReflectionUtility.DoesTypeImplementInterface(valueType, reservedPropertyType))
+                        || (reservedPropertyType.IsGenericType                                // dealing with nullable type
+                            && reservedPropertyType.GenericTypeArguments.Length == 1
+                            && reservedPropertyType.GenericTypeArguments[0] == valueType)
+                        || valueType.IsSubclassOf(reservedPropertyType),
+                        nameof(value)
+                    );
+                }
+//
+            this._keyedValues[key] = value;
             }
         }
 
