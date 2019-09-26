@@ -126,9 +126,9 @@ namespace Rollbar
 
             // first, let's run quick Internet availability check
             // to minimize potential timeout of the following JSON POST call: 
-            if (!ConnectivityMonitor.TestInternetPing())
+            if (!ConnectivityMonitor.Instance.IsConnectivityOn)
             {
-                throw new HttpRequestException("Preliminary ConnectivityMonitor.TestInternetPing() failed!");
+                throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
 
             var task = this.PostAsJsonAsync(payloadBundle);
@@ -154,9 +154,9 @@ namespace Rollbar
 
             // first, let's run quick Internet availability check
             // to minimize potential timeout of the following JSON POST call: 
-            if (!ConnectivityMonitor.TestInternetPing())
+            if (!ConnectivityMonitor.Instance.IsConnectivityOn)
             {
-                throw new HttpRequestException("Preliminary ConnectivityMonitor.TestInternetPing() failed!");
+                throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
 
             var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent);

@@ -371,7 +371,7 @@ namespace Rollbar
             }
 
             // 2. get the oldest record of this destination and try transmitting it:
-            if (!ConnectivityMonitor.TestInternetPing())
+            if (!ConnectivityMonitor.Instance.IsConnectivityOn)
             {
                 return; // there is no point trying to transmit the oldest record (if any)...
             }
