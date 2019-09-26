@@ -305,7 +305,7 @@ namespace UnitTest.Rollbar
         public void RateLimitConfigSettingOverridesServerHeadersBasedReportingRateTest()
         {
             const int totalTestPayloads = 10;
-            const int localReportingRate = 60;
+            const int localReportingRate = 30;
 
             using (IRollbar rollbar = this.ProvideDisposableRollbar())
             {
@@ -340,7 +340,7 @@ namespace UnitTest.Rollbar
                 sw.Stop();
                 TimeSpan localRateDuration = sw.Elapsed;
 
-                Assert.IsTrue(5 < (localRateDuration.TotalMilliseconds / serverRateDuration.TotalMilliseconds), "This is good enough confirmation of locally defined rate in action...");
+                Assert.IsTrue(2 < (localRateDuration.TotalMilliseconds / serverRateDuration.TotalMilliseconds), "This is good enough confirmation of locally defined rate in action...");
             }
 
             this.IncrementCount<CommunicationEventArgs>(2 * totalTestPayloads);
@@ -889,7 +889,7 @@ namespace UnitTest.Rollbar
                 Thread.Sleep(TimeSpan.FromMilliseconds(50));
             }
 
-            System.Threading.Thread.Sleep(TimeSpan.FromSeconds(10));
+            Thread.Sleep(TimeSpan.FromSeconds(10));
             
             RollbarQueueController.Instance.InternalEvent -= RollbarStress_InternalEvent;
 
@@ -910,6 +910,9 @@ namespace UnitTest.Rollbar
             if (e is CommunicationEventArgs)
             {
                 Interlocked.Increment(ref RollbarLoggerFixture.stressLogsCount);
+            }
+            else
+            {
             }
         }
 
