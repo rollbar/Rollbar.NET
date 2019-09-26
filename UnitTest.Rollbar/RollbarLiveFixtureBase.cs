@@ -85,6 +85,10 @@ namespace UnitTest.Rollbar
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
+            if(!(e is CommunicationEventArgs)) 
+            {
+            }
+
             //// for basic RollbarRateLimitVerification test:
             //switch (e)
             //{

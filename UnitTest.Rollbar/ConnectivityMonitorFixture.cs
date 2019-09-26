@@ -25,28 +25,27 @@ namespace UnitTest.Rollbar {
         }
 
         //[TestMethod]
-        //public void ManualTest() 
-        //{
-        //    bool lastState = false;
-        //    int stateSwitchCount = 0;
-        //    var stopWatch = Stopwatch.StartNew();
-        //    while(stopWatch.Elapsed < TimeSpan.FromSeconds(60)) 
-        //    {
-        //        var sw = Stopwatch.StartNew();
-        //        bool isConnected = ConnectivityMonitor.TestInternetPing();
-        //        sw.Stop();
-        //        Console.WriteLine("State check took " + sw.Elapsed);
-        //        if(isConnected != lastState) 
-        //        {
-        //            lastState = isConnected;
-        //            stateSwitchCount++;
-        //        }
-        //        Trace.WriteLine($"Network ON: {isConnected}");
-        //        Thread.Sleep(TimeSpan.FromMilliseconds(500));
-        //    }
-        //    stopWatch.Stop();
-        //    Console.WriteLine("stateSwitchCount = " + stateSwitchCount);
-        //    Assert.IsTrue(stateSwitchCount > 1);
+        //public void ManualTest() {
+        //bool lastState = false;
+        //int stateSwitchCount = 0;
+        //var stopWatch = Stopwatch.StartNew();
+        //while(stopWatch.Elapsed < TimeSpan.FromSeconds(60)) {
+        //var sw = Stopwatch.StartNew();
+        //bool isConnected = ConnectivityMonitor.TestApiServer();
+        ////bool isConnected = ConnectivityMonitor.Instance.IsConnectivityOn;
+        //sw.Stop();
+        //Console.WriteLine("State check took " + sw.Elapsed);
+        //if(isConnected != lastState) {
+        //lastState = isConnected;
+        //stateSwitchCount++;
         //}
+        //Console.WriteLine($"Network ON: {isConnected}");
+        //Thread.Sleep(TimeSpan.FromMilliseconds(500));
+        //}
+        //stopWatch.Stop();
+        //Console.WriteLine("stateSwitchCount = " + stateSwitchCount);
+        //Assert.IsTrue(stateSwitchCount > 1);
+        //}
+
     }
 }

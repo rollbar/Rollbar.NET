@@ -132,6 +132,7 @@ namespace UnitTest.Rollbar
                 }
                 catch (TimeoutException ex)
                 {
+                    Assert.AreEqual("Posting a payload to the Rollbar API Service timed-out", ex.Message);
                     Assert.IsNotNull(ex.InnerException);
                     Assert.IsTrue(ex.InnerException is AggregateException);
                     Assert.IsTrue((ex.InnerException as AggregateException).InnerExceptions.Count > 0);

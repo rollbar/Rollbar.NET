@@ -8,6 +8,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
     using System;
     using log4net.Core;
     using System.Collections.Generic;
+    using System.Threading;
     using log4net;
     using log4net.Config;
 
@@ -121,6 +122,9 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
 
+            // wait until all the payloads are processed and transmitted
+            Thread.Sleep(TimeSpan.FromSeconds(5));
+
             Assert.IsTrue(this._rollbarCommEvents.Count == 3 || this._rollbarCommErrorEvents.Count == 3, "Either comm successes or errors are captured...");
 
             if (this._rollbarCommErrorEvents.Count == 3)
@@ -130,7 +134,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
                 {
                     Assert.IsTrue(
                         commErrorEvent.Error.Message.Contains(
-                            "Preliminary ConnectivityMonitor.TestInternetPing() failed!"),
+                            "Preliminary ConnectivityMonitor detected offline status!"),
                         "Matching error message."
                     );
                 }

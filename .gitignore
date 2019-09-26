@@ -284,3 +284,5 @@ cli-tools/
 Rollbar/comments\.xml
 
 .editorconfig
+
+Samples/Sample.AspNetCore2.WebApi/RollbarPayloadsStore.db

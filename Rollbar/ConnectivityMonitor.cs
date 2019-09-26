@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Net;
     using System.Net.NetworkInformation;
+    using System.Net.Sockets;
     using System.Threading;
 
     /// <summary>
@@ -37,6 +38,9 @@
 
             this._isConnectivityOn = false;
             this._currentMonitoringInterval = this._minMonitoringInterval;
+
+            this.CheckConnectivityStatus(null);
+
             this._monitoringTimer = new Timer(
                 CheckConnectivityStatus, 
                 null, 
@@ -88,7 +92,7 @@
                 return false;
             }
 
-            // however, this will include all adapters -- filter by opstatus and activity
+            // however, this will include all adapters -- filter by operational status and activity
             NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
             return (from networkInterface in interfaces
                 where networkInterface.OperationalStatus == OperationalStatus.Up
@@ -99,7 +103,8 @@
 
         private void CheckConnectivityStatus(object state)
         {
-            bool isConnectedNow = this.IsConnectivityAvailable();
+            //bool isConnectedNow = this.IsConnectivityAvailable();
+            bool isConnectedNow = this.TestApiServer();
 
             lock (this._connectivityStatusSyncLock)
             {
@@ -202,6 +207,33 @@
 
 
 */
+
+        /// <summary>
+        /// The timeout milliseconds
+        /// </summary>
+        private const int timeoutMilliseconds = 500;
+
+        /// <summary>
+        /// The google DNS ping target
+        /// </summary>
+        private static readonly IPAddress googleDnsPingTarget = IPAddress.Parse("8.8.8.8");
+
+        /// <summary>
+        /// Tests the internet ping.
+        /// </summary>
+        /// <returns><c>true</c> if the test succeeded, <c>false</c> otherwise.</returns>
+        public bool TestApiServer()
+        {
+            try
+            {
+                using (var client = new TcpClient("www.rollbar.com", 80))
+                    return true;
+            }
+            catch (SocketException ex)
+            {
+                return false;
+            }
+        }
 
     }
 }
