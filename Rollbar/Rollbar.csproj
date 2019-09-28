@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.0</TargetFrameworks>
+    <!--TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461</TargetFrameworks-->
     <AssemblyName>Rollbar</AssemblyName>
     <RootNamespace>Rollbar</RootNamespace>
     <Configurations>Debug;Release;Instrumented</Configurations>
@@ -81,7 +82,8 @@
   
   <ItemGroup Label="EF Core for NetStandard 2.0 non-copmliant framework targets." Condition="'$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451'">
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.7" />
   </ItemGroup>
 
   <ItemGroup Label="EF Core relatively recent tools" Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
@@ -98,7 +100,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.0" />
     <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.2.0" /-->
-    
+    <!--PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.1" /-->
+
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
   </ItemGroup>
@@ -124,6 +127,27 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
+  <Target 
+    Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')))"
+    Name="IncludeNativeBinariesAsOutput" 
+    BeforeTargets="GetCopyToOutputDirectoryItems"
+    >
+    <ItemGroup>
+      <Content Include="$(OutputPath)\x64\e_sqlite3.dll">
+        <Link>x64\e_sqlite3.dll</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="$(OutputPath)\x86\e_sqlite3.dll">
+        <Link>x86\e_sqlite3.dll</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="AssignedFiles" ItemName="ContentWithTargetPath" />
+    </AssignTargetPath>
+  </Target>
 
   <!-- REFERENCE: https://docs.microsoft.com/en-us/visualstudio/msbuild/otherwise-element-msbuild?view=vs-2019 -->
 

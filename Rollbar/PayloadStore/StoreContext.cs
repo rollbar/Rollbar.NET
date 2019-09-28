@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Text;
     using Common;
     using Microsoft.EntityFrameworkCore;
@@ -15,10 +16,27 @@
     public class StoreContext 
         : DbContext
     {
+        static StoreContext() 
+        {
+            SQLitePCL.Batteries_V2.Init();
+
+            //string currentDir = Environment.CurrentDirectory;
+            //string appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            if(!Environment.OSVersion.VersionString.Contains("Windows")) 
+            {
+                string localAppDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+                sqliteConnectionString = $"Filename={Path.Combine(localAppDataDir, rollbarStoreDbFile)};";
+            }
+        }
+
+        private const string rollbarStoreDbFile = "RollbarPayloadsStore.db";
         /// <summary>
         /// The sqlite connection string
         /// </summary>
-        private const string sqliteConnectionString = @"Data Source=RollbarPayloadsStore.db;";
+        //private const string sqliteConnectionString = @"Data Source=RollbarPayloadsStore.db;";
+        private static readonly string sqliteConnectionString = @"Filename=RollbarPayloadsStore.db;";
 
         /// <summary>
         /// Gets or sets the destinations.
@@ -37,15 +55,15 @@
         /// </summary>
         public void MakeSureDatabaseExistsAndReady()
         {
-            Type[] migrations = 
-                ReflectionUtility.GetSubClassesOf(typeof(Migration), this.GetType().Assembly);
+            //Type[] migrations =
+            //    ReflectionUtility.GetSubClassesOf(typeof(Migration), this.GetType().Assembly);
 
-            if(migrations != null && migrations.LongLength > 0) 
-            {
-                // when using migrations:
-                this.Database.Migrate(); // if needed creates db and runs migrations
-            }
-            else
+            //if (migrations != null && migrations.LongLength > 0)
+            //{
+            //    // when using migrations:
+            //    this.Database.Migrate(); // if needed creates db and runs migrations
+            //}
+            //else
             {
                 // when not using migrations:
                 this.Database.EnsureCreated(); // if needed creates db (but doesn't run migrations)
@@ -121,6 +139,8 @@
                 .Property(pr => pr.Timestamp)
                 .IsRequired(true)
                 ;
+
+            base.OnModelCreating(modelBuilder);
         }
 
         #endregion
