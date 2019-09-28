@@ -22,6 +22,8 @@ namespace Sample.NetCore.ConsoleApp
             DemonstrateRollbarUsage();
             //ManualPayloadPersistenceDemo();
 
+            Thread.Sleep(TimeSpan.FromSeconds(10));
+
             PrintEventCounters();
             PrintEvents();
         }

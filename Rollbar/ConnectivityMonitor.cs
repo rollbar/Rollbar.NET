@@ -39,14 +39,15 @@
             this._isConnectivityOn = false;
             this._currentMonitoringInterval = this._minMonitoringInterval;
 
-            this.CheckConnectivityStatus(null);
-
             this._monitoringTimer = new Timer(
                 CheckConnectivityStatus, 
                 null, 
                 this._initialDelay, 
                 this._currentMonitoringInterval
             );
+
+            this.CheckConnectivityStatus(null);
+
         }
 
         private sealed class NestedSingleInstance
@@ -211,12 +212,12 @@
         /// <summary>
         /// The timeout milliseconds
         /// </summary>
-        private const int timeoutMilliseconds = 500;
+        //private const int timeoutMilliseconds = 500;
 
         /// <summary>
         /// The google DNS ping target
         /// </summary>
-        private static readonly IPAddress googleDnsPingTarget = IPAddress.Parse("8.8.8.8");
+        //private static readonly IPAddress googleDnsPingTarget = IPAddress.Parse("8.8.8.8");
 
         /// <summary>
         /// Tests the internet ping.
@@ -224,10 +225,13 @@
         /// <returns><c>true</c> if the test succeeded, <c>false</c> otherwise.</returns>
         public bool TestApiServer()
         {
+            //return false;
             try
             {
                 using (var client = new TcpClient("www.rollbar.com", 80))
+                {
                     return true;
+                }
             }
             catch (SocketException ex)
             {
