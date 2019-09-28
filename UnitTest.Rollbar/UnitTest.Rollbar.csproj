@@ -95,8 +95,4 @@
     <NoWarn>NU1701;1701</NoWarn>
   </PropertyGroup>
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="xcopy $(ProjectDir)..\libs\Sqlite3\x86\sqlite3.dll $(OutDir) /f /y /i" />
-  </Target>
-
 </Project>
