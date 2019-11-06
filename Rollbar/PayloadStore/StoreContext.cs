@@ -20,23 +20,33 @@
         {
             SQLitePCL.Batteries_V2.Init();
 
-            //string currentDir = Environment.CurrentDirectory;
-            //string appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
             if(!Environment.OSVersion.VersionString.Contains("Windows")) 
             {
-                string localAppDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-                sqliteConnectionString = $"Filename={Path.Combine(localAppDataDir, rollbarStoreDbFile)};";
+                StoreContext.DefaultRollbarStoreDbFileLocation = 
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             }
         }
 
-        private const string rollbarStoreDbFile = "RollbarPayloadsStore.db";
+        /// <summary>
+        /// The default rollbar store database file
+        /// </summary>
+        public const string DefaultRollbarStoreDbFile = "RollbarPayloadsStore.db";
+
+        /// <summary>
+        /// The default rollbar store database file location
+        /// </summary>
+        public static readonly string DefaultRollbarStoreDbFileLocation = null;
+
+        /// <summary>
+        /// Gets or sets the full name of the rollbar store database.
+        /// </summary>
+        /// <value>The full name of the rollbar store database.</value>
+        public static string RollbarStoreDbFullName { get; set; } = StoreContext.DefaultRollbarStoreDbFile;
+
         /// <summary>
         /// The sqlite connection string
         /// </summary>
-        //private const string sqliteConnectionString = @"Data Source=RollbarPayloadsStore.db;";
-        private static readonly string sqliteConnectionString = @"Filename=RollbarPayloadsStore.db;";
+        private static string sqliteConnectionString { get; set; } = $"Filename={StoreContext.RollbarStoreDbFullName};";
 
         /// <summary>
         /// Gets or sets the destinations.
@@ -89,7 +99,8 @@
         /// typically define extension methods on this object that allow you to configure the context.</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite(sqliteConnectionString);
+            StoreContext.sqliteConnectionString = $"Filename={StoreContext.RollbarStoreDbFullName};";
+            optionsBuilder.UseSqlite(StoreContext.sqliteConnectionString);
         }
 
         /// <summary>

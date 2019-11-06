@@ -11,6 +11,8 @@ namespace Rollbar
     using System.Threading;
     using System.Linq;
     using System.Runtime.ExceptionServices;
+    using Rollbar.PayloadStore;
+    using System.IO;
 
 
     /// <summary>
@@ -73,8 +75,13 @@ namespace Rollbar
                 this._config = new RollbarConfig(this);
             }
 
+            // let's figure out where to keep the local payloads store:
+            StoreContext.RollbarStoreDbFullName = ((RollbarConfig) this._config).GetLocalPayloadStoreFullPathName(); 
+
+            // let's init proper Rollbar client:
             var rollbarClient = new RollbarClient(this);
 
+            // let's init the corresponding queue and register it:
             this._payloadQueue = new PayloadQueue(this, rollbarClient);
             RollbarQueueController.Instance.Register(this._payloadQueue);
         }

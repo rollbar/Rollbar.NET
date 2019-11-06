@@ -20,6 +20,7 @@ namespace Rollbar
     using Newtonsoft.Json;
     using PayloadStore;
     using Serialization.Json;
+    using System.IO;
 
 #if NETFX
     using System.Web.Hosting;
@@ -782,11 +783,19 @@ namespace Rollbar
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void Config_Reconfigured(object sender, EventArgs e)
         {
+            RollbarConfig config = (RollbarConfig)sender;
+            Assumption.AssertNotNull(config, nameof(config));
+
+            string newStorePath = config.GetLocalPayloadStoreFullPathName();
+            if (string.Compare(newStorePath, StoreContext.RollbarStoreDbFullName, false) != 0)
+            {
+                this.Stop(true);
+                StoreContext.RollbarStoreDbFullName = newStorePath;
+                this.Start();
+            }
+
             lock (this._syncLock)
             {
-                RollbarConfig config = (RollbarConfig)sender;
-                Assumption.AssertNotNull(config, nameof(config));
-
                 PayloadQueue queue = config.Logger.Queue;
                 Assumption.AssertNotNull(queue, nameof(queue));
 
@@ -1032,7 +1041,7 @@ namespace Rollbar
         /// <summary>
         /// Starts this instance.
         /// </summary>
-        private void Start()
+        public void Start()
         {
             if (this._storeContext == null)
             {
@@ -1081,9 +1090,6 @@ namespace Rollbar
             }
         }
 
-#if NETFX
-
-
         /// <summary>
         /// Stops the queues processing.
         /// </summary>
@@ -1098,12 +1104,15 @@ namespace Rollbar
             this._cancellationTokenSource.Cancel();
             if (this._rollbarCommThread != null)
             {
-                this._rollbarCommThread.Join(TimeSpan.FromSeconds(60));
+                
+                if (!this._rollbarCommThread.Join(TimeSpan.FromSeconds(60)))
+                {
+                    this._rollbarCommThread.Abort();
+                }
+
                 CompleteProcessing();
             }
         }
-
-#endif
 
 
         #region IDisposable Support

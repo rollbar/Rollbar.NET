@@ -40,74 +40,101 @@
             {
                 rollbarConfig.AccessToken = rollbarConfigSection.AccessToken;
             }
+
             if (!string.IsNullOrWhiteSpace(rollbarConfigSection.Environment))
             {
                 rollbarConfig.Environment = rollbarConfigSection.Environment;
             }
+            
             if (rollbarConfigSection.Enabled.HasValue)
             {
                 rollbarConfig.Enabled = rollbarConfigSection.Enabled.Value;
             }
+            
             if (rollbarConfigSection.Transmit.HasValue)
             {
                 rollbarConfig.Transmit = rollbarConfigSection.Transmit.Value;
             }
+            
             if (rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
             {
                 rollbarConfig.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
             }
+            
+            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreFileName))
+            {
+                rollbarConfig.LocalPayloadStoreFileName = rollbarConfigSection.LocalPayloadStoreFileName;
+            }
+            
+            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreLocationPath))
+            {
+                rollbarConfig.LocalPayloadStoreLocationPath = rollbarConfigSection.LocalPayloadStoreLocationPath;
+            }
+            
             if (rollbarConfigSection.MaxReportsPerMinute.HasValue)
             {
                 rollbarConfig.MaxReportsPerMinute = rollbarConfigSection.MaxReportsPerMinute.Value;
             }
+            
             if (rollbarConfigSection.ReportingQueueDepth.HasValue)
             {
                 rollbarConfig.ReportingQueueDepth = rollbarConfigSection.ReportingQueueDepth.Value;
             }
+            
             if (rollbarConfigSection.MaxItems.HasValue)
             {
                 rollbarConfig.MaxItems = rollbarConfigSection.MaxItems.Value;
             }
+            
             if (rollbarConfigSection.CaptureUncaughtExceptions.HasValue)
             {
                 rollbarConfig.CaptureUncaughtExceptions = rollbarConfigSection.CaptureUncaughtExceptions.Value;
             }
+            
             if (rollbarConfigSection.LogLevel.HasValue)
             {
                 rollbarConfig.LogLevel = rollbarConfigSection.LogLevel.Value;
             }
+            
             if (rollbarConfigSection.ScrubFields != null && rollbarConfigSection.ScrubFields.Length > 0)
             {
                 rollbarConfig.ScrubFields =
                     string.IsNullOrEmpty(rollbarConfigSection.ScrubFields) ? new string[0]
                     : rollbarConfigSection.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
             }
+            
             if (rollbarConfigSection.ScrubWhitelistFields != null && rollbarConfigSection.ScrubWhitelistFields.Length > 0)
             {
                 rollbarConfig.ScrubWhitelistFields =
                     string.IsNullOrEmpty(rollbarConfigSection.ScrubWhitelistFields) ? new string[0]
                     : rollbarConfigSection.ScrubWhitelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
             }
+            
             if (!string.IsNullOrWhiteSpace(rollbarConfigSection.EndPoint))
             {
                 rollbarConfig.EndPoint = rollbarConfigSection.EndPoint;
             }
+            
             if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyAddress))
             {
                 rollbarConfig.ProxyAddress = rollbarConfigSection.ProxyAddress;
             }
+            
             if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyUsername))
             {
                 rollbarConfig.ProxyUsername = rollbarConfigSection.ProxyUsername;
             }
+            
             if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyPassword))
             {
                 rollbarConfig.ProxyPassword = rollbarConfigSection.ProxyPassword;
             }
+            
             if (rollbarConfigSection.PersonDataCollectionPolicies.HasValue)
             {
                 rollbarConfig.PersonDataCollectionPolicies = rollbarConfigSection.PersonDataCollectionPolicies.Value;
             }
+            
             if (rollbarConfigSection.IpAddressCollectionPolicy.HasValue)
             {
                 rollbarConfig.IpAddressCollectionPolicy = rollbarConfigSection.IpAddressCollectionPolicy.Value;
