@@ -409,6 +409,8 @@
             sb.AppendLine(indent + "  CaptureUncaughtExceptions: " + this.CaptureUncaughtExceptions);
             sb.AppendLine(indent + "  IpAddressCollectionPolicy: " + this.IpAddressCollectionPolicy);
             sb.AppendLine(indent + "  PersonDataCollectionPolicies: " + this.PersonDataCollectionPolicies);
+            sb.AppendLine(indent + "  StoreDb: " + this.GetLocalPayloadStoreFullPathName());
+
             return sb.ToString();
         }
 

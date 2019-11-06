@@ -20,15 +20,10 @@
         {
             SQLitePCL.Batteries_V2.Init();
 
-            //string currentDir = Environment.CurrentDirectory;
-            //string appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
             if(!Environment.OSVersion.VersionString.Contains("Windows")) 
             {
                 StoreContext.DefaultRollbarStoreDbFileLocation = 
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-                //StoreContext.SqliteConnectionString = $"Filename={Path.Combine(StoreContext.DefaultRollbarStoreDbFileLocation, StoreContext.DefaultRollbarStoreDbFile)};";
             }
         }
 
@@ -51,7 +46,6 @@
         /// <summary>
         /// The sqlite connection string
         /// </summary>
-        //private const string sqliteConnectionString = @"Data Source=RollbarPayloadsStore.db;";
         private static string sqliteConnectionString { get; set; } = $"Filename={StoreContext.RollbarStoreDbFullName};";
 
         /// <summary>
