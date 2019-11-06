@@ -56,6 +56,16 @@ We are also unifying versioning for all of the modules to follow common SDK vers
 
 ### Fixes and Improvements
 
+#### v3.6.1-beta
+-   feat: resolve #465: StoreContext.sqliteConnectionString is hardcoded.
+
+#### v3.6.0-beta
+-   feat:     resolve #424: Enable Persistence to Maintain Logs while Offline.
+-   refactor: ref     #424: Dropping support of .NET 4.5 in favor of feature #424.
+-   refactor: resolve #439: Correct failing unit tests to account for payload persistence.
+-   fix:      resolve #457: DTOs that are derivatives of ExtendableDtoBase generate 'key not found' exceptions for optional attributes.
+-   fix:      resolve #436: NullReferenceException in CompleteProcessing.
+
 #### v3.5.0
 -   feat: resolve #432: Add ability to scrub form data like HTTP request/response body.
 
