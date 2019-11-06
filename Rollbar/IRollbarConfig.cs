@@ -64,6 +64,18 @@
         bool RethrowExceptionsAfterReporting { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the local payload store file.
+        /// </summary>
+        /// <value>The name of the local payload store file.</value>
+        string LocalPayloadStoreFileName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the local payload store location path.
+        /// </summary>
+        /// <value>The local payload store location path.</value>
+        string LocalPayloadStoreLocationPath { get; set; }
+
+        /// <summary>
         /// Gets or sets the log level.
         /// </summary>
         /// <value>

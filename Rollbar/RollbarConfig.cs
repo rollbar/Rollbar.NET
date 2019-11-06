@@ -6,9 +6,11 @@
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
     using Rollbar.NetFramework;
+    using Rollbar.PayloadStore;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Text;
 
@@ -82,6 +84,8 @@
             this.Enabled = true;
             this.Transmit = true;
             this.RethrowExceptionsAfterReporting = false;
+            this.LocalPayloadStoreFileName = StoreContext.DefaultRollbarStoreDbFile;
+            this.LocalPayloadStoreLocationPath = StoreContext.DefaultRollbarStoreDbFileLocation;
             this.MaxReportsPerMinute = null; //5000;
             this.ReportingQueueDepth = 20;
             this.MaxItems = 0;
@@ -211,6 +215,18 @@
         public bool RethrowExceptionsAfterReporting { get; set; }
 
         /// <summary>
+        /// Gets or sets the name of the local payload store file.
+        /// </summary>
+        /// <value>The name of the local payload store file.</value>
+        public string LocalPayloadStoreFileName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the local payload store location path.
+        /// </summary>
+        /// <value>The local payload store location path.</value>
+        public string LocalPayloadStoreLocationPath { get; set; }
+
+        /// <summary>
         /// Gets or sets the environment.
         /// </summary>
         /// <value>
@@ -336,6 +352,27 @@
         /// </value>
         [JsonConverter(typeof(StringEnumConverter))]
         public IpAddressCollectionPolicy IpAddressCollectionPolicy { get; set; }
+
+        /// <summary>
+        /// Gets the full-path-name of the local payload store.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        internal string GetLocalPayloadStoreFullPathName()
+        {
+            string dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath) 
+                ? StoreContext.DefaultRollbarStoreDbFileLocation
+                : this.LocalPayloadStoreLocationPath ;
+
+            string dbFile = string.IsNullOrWhiteSpace(this.LocalPayloadStoreFileName) 
+                ? StoreContext.DefaultRollbarStoreDbFile
+                : this.LocalPayloadStoreFileName;
+
+            string result = string.IsNullOrWhiteSpace(dbLocation) 
+                ? dbFile 
+                : Path.Combine(dbLocation, dbFile);
+
+            return result;
+        }
 
         /// <summary>
         /// Traces as string.

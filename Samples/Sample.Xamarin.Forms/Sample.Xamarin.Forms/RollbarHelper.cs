@@ -47,7 +47,7 @@
                 {
                     "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
                     "username",
-                }
+                },
             };
             RollbarLocator.RollbarInstance
                 // minimally required Rollbar configuration:

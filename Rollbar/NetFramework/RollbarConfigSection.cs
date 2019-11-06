@@ -116,6 +116,22 @@
             => this["rethrowExceptionsAfterReporting"] as bool?;
 
         /// <summary>
+        /// Gets or sets the name of the local payload store file.
+        /// </summary>
+        /// <value>The name of the local payload store file.</value>
+        [ConfigurationProperty("localPayloadStoreFileName", IsRequired = false)]
+        public string LocalPayloadStoreFileName 
+            => this["localPayloadStoreFileName"] as string;
+
+        /// <summary>
+        /// Gets or sets the local payload store location path.
+        /// </summary>
+        /// <value>The local payload store location path.</value>
+        [ConfigurationProperty("localPayloadStoreLocationPath", IsRequired = false)]
+        public string LocalPayloadStoreLocationPath
+            => this["localPayloadStoreLocationPath"] as string;
+
+        /// <summary>
         /// Gets or sets the environment.
         /// </summary>
         /// <value>
