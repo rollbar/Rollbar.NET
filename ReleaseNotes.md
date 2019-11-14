@@ -56,6 +56,10 @@ We are also unifying versioning for all of the modules to follow common SDK vers
 
 ### Fixes and Improvements
 
+#### v3.6.2
+-   feat: ref #472: Add explicit support of .NET Core 3.0
+-   feat: ref #471: Update Microsoft.AspNetCore.Http
+
 #### v3.6.1-beta
 -   feat: resolve #465: StoreContext.sqliteConnectionString is hardcoded.
 

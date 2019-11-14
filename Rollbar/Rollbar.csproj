@@ -1,7 +1,7 @@
 ﻿<Project ToolsVersion="15.0">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.0</TargetFrameworks>
     <!--TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461</TargetFrameworks-->
     <AssemblyName>Rollbar</AssemblyName>
     <RootNamespace>Rollbar</RootNamespace>
@@ -11,102 +11,166 @@
 
   <Import Project="..\SdkCommon.csproj" />
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU' Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.1|AnyCPU' Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.0|AnyCPU' ">
-    <DefineConstants>NETCOREAPP;INSTRUMENT</DefineConstants>
+  <PropertyGroup Label="Any build">
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-
-  <!--ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-  </ItemGroup-->
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <NetVariant>NET_STANDARD</NetVariant>
-    <DefineConstants>TRACE;NETSTANDARD</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0' Or '$(TargetFramework)' == 'netcoreapp2.2' Or '$(TargetFramework)' == 'netcoreapp2.1' Or '$(TargetFramework)' == 'netcoreapp2.0'">
-    <NetVariant>NET_CORE</NetVariant>
-    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net47' Or '$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451' ">
-    <NetVariant>NET_FX</NetVariant>
-    <DefineConstants>TRACE;NETFX</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net47' Or '$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'net461' Or '$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451' ">
-    <DefineConstants>NETFX_47nOlder;NETFX</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net47' Or '$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'net461' ">
-    <DefineConstants>NETFX_461nNewer;NETFX</DefineConstants>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48' Or '$(TargetFramework)' == 'net472' Or '$(TargetFramework)' == 'net471' Or '$(TargetFramework)' == 'net47' Or '$(TargetFramework)' == 'net462' Or '$(TargetFramework)' == 'net461' ">
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-  </ItemGroup>
-
-
-  <ItemGroup Label="Required for netcoreapp2.1 and above..." Condition="'$(NetVariant)' == 'NET_CORE' And ('TargetFramework' == 'netcoreapp2.1' Or 'TargetFramework' == 'netcoreapp2.2')">
-    <PackageReference Include="Microsoft.NetCore.App" />
-  </ItemGroup>
-
-  <ItemGroup Condition="('$(NetVariant)' == 'NET_CORE' Or '$(NetVariant)' == 'NET_STANDARD') And !('$(TargetFramework)' == 'netcoreapp2.2') ">
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(NetVariant)' == 'NET_FX' ">
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.ServiceModel" />
-  </ItemGroup>
-
-  <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451' Or '$(TargetFramework)' == 'netcoreapp2.2')">
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
-    <!--PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
-  </ItemGroup>
   
-  <ItemGroup Label="EF Core for NetStandard 2.0 non-copmliant framework targets." Condition="'$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451'">
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />
-    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.7" />
-  </ItemGroup>
+  <PropertyGroup Label="Instrumented build" 
+                 Condition="'$(Configuration)'=='Instrumented' And '$(Platform)' == 'AnyCPU'">
+    <DefineConstants>INSTRUMENT</DefineConstants>
+  </PropertyGroup>
 
-  <ItemGroup Label="EF Core relatively recent tools" Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+  <!--TargetFramework dependent settings-->
+  
+  <Choose>
+    
+    <!--.Net Standard-->
+    <When Condition="$(TargetFramework.StartsWith('netstandard'))">
+      <PropertyGroup Label=".NetStandard build">
+        <NetVariant>NET_STANDARD</NetVariant>
+        <DefineConstants>NETSTANDARD</DefineConstants>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+      </ItemGroup>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+      </ItemGroup>
+    </When>
+    
+    <!--.Net Core-->
+    <When Condition="$(TargetFramework.StartsWith('netcoreapp'))">
+      <PropertyGroup Label=".NetCore build">
+        <NetVariant>NET_CORE</NetVariant>
+        <DefineConstants>NETCOREAPP</DefineConstants>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+      </ItemGroup>
+      <Choose>
+        <When Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+          <ItemGroup>
+            <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
+            <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+          </ItemGroup>
+        </When>
+        <When Condition="$(TragetFramework.StartsWith('netcoreapp2.')) And ('$(TargetFramework)' != 'netcoreapp2.0')">
+          <ItemGroup Label="Required for netcoreapp2.1 and above..." >
+            <PackageReference Include="Microsoft.NetCore.App" Version="2.1.0" />
+          </ItemGroup>
+          <ItemGroup>
+            <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
+            <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
+            <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.1.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
+          </ItemGroup>
+        </When>
+        <When Condition="$(TragetFramework.StartsWith('netcoreapp3.'))">
+          <ItemGroup Label="Required for netcoreapp2.1 and above..." >
+            <PackageReference Include="Microsoft.NetCore.App" Version="3.0.0" />
+          </ItemGroup>
+          <ItemGroup>
+            <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+            <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+            <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+          </ItemGroup>
+        </When>
+      </Choose>
+    </When>
 
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+    <!--.NET Framework-->
+    <When Condition="$(TargetFramework.StartsWith('net4'))">
+      <PropertyGroup Label=".NET Framework build">
+        <NetVariant>NET_FX</NetVariant>
+        <DefineConstants>NETFX</DefineConstants>
+      </PropertyGroup>
+      <ItemGroup Label=".NET Framework build">
+        <Reference Include="System.Configuration" />
+        <Reference Include="System.Net" />
+        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Web" />
+        <Reference Include="System.ServiceModel" />
+      </ItemGroup>
+      <PropertyGroup Condition="'$(TargetFramework)' == 'net47' Or $(TargetFramework.StartsWith('net46')) Or $(TargetFramework.StartsWith('net45'))">
+        <DefineConstants>NETFX_47nOlder</DefineConstants>
+      </PropertyGroup>
+      <PropertyGroup Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net471')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
+        <DefineConstants>NETFX_461nNewer</DefineConstants>
+      </PropertyGroup>
+      <Choose>
+        <When Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net471')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
+          <ItemGroup>
+            <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+            <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+          </ItemGroup>
+        </When>
+      </Choose>
+    </When>
+    <Otherwise>
+      <!--NOTHING-->
+    </Otherwise>
+  </Choose>
+  
+  
+  <!--EF Core specific settings dependent on TargetFramework-->
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net46' Or $(TargetFramework.StartsWith('net45'))">
+      <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets." >
+        <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />
+        <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.7" />
+      </ItemGroup>
+    </When>
+    <When Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+      <ItemGroup Label="EF Core relatively recent tools" >
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.0" />
-    <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.2.0" /-->
-    <!--PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.1" /-->
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
 
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-  </ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
+        <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.2.0" /-->
+        <!--PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.1" /-->
 
-  <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp2.2')">
+        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
+        <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
+        <!--PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
+        <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  
+  <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp3.0')">
     <Compile Remove="Migrations\20190916220704_Initial.cs" />
     <Compile Remove="Migrations\20190916220704_Initial.Designer.cs" />
     <Compile Remove="Migrations\StoreContextModelSnapshot.cs" />

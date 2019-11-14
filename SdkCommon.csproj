@@ -7,10 +7,11 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.6.1</SdkVersion>
-    <SdkVersionSuffix>-beta</SdkVersionSuffix>
+    <SdkVersion>3.6.2</SdkVersion>
+    <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      feat: resolve #465: StoreContext.sqliteConnectionString is hardcoded.
+      feat: ref #472: Add explicit support of .NET Core 3.0
+      feat: ref #471: Update Microsoft.AspNetCore.Http
     </PackageReleaseNotes>
 
     <!--
