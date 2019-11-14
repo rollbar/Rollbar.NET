@@ -1,7 +1,7 @@
-﻿<Project ToolsVersion="15.0">
+﻿<Project ToolsVersion="16.0">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;netstandard2.0</TargetFrameworks>
     <AssemblyName>Rollbar.NetCore.AspNet</AssemblyName>
     <RootNamespace>Rollbar.NetCore.AspNet</RootNamespace>
   </PropertyGroup>
@@ -18,14 +18,40 @@
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 
-  <ItemGroup Label="Package References">
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-  </ItemGroup>
-
+  <Choose>
+    <When Condition="$(TargetFramework.StartsWith('netcoreapp3.'))">
+      <ItemGroup Label="Package References">
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+      </ItemGroup>
+    </When>
+    <When Condition="$(TargetFramework.StartsWith('netcoreapp2.')) And '$(TargetFramework)' != 'netcoreapp2.0'">
+      <ItemGroup Label="Package References">
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup Label="Package References">
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  
 </Project>
