@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="15.0">
+﻿<Project ToolsVersion="16.0">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.0</TargetFrameworks>
@@ -65,10 +65,7 @@
             <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
           </ItemGroup>
         </When>
-        <When Condition="$(TragetFramework.StartsWith('netcoreapp2.')) And ('$(TargetFramework)' != 'netcoreapp2.0')">
-          <ItemGroup Label="Required for netcoreapp2.1 and above..." >
-            <PackageReference Include="Microsoft.NetCore.App" Version="2.1.0" />
-          </ItemGroup>
+        <When Condition="$(TargetFramework.StartsWith('netcoreapp2.')) And ('$(TargetFramework)' != 'netcoreapp2.0')">
           <ItemGroup>
             <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
             <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
@@ -78,10 +75,7 @@
             <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
           </ItemGroup>
         </When>
-        <When Condition="$(TragetFramework.StartsWith('netcoreapp3.'))">
-          <ItemGroup Label="Required for netcoreapp2.1 and above..." >
-            <PackageReference Include="Microsoft.NetCore.App" Version="3.0.0" />
-          </ItemGroup>
+        <When Condition="$(TargetFramework.StartsWith('netcoreapp3.'))">
           <ItemGroup>
             <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
             <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
@@ -127,8 +121,8 @@
       <!--NOTHING-->
     </Otherwise>
   </Choose>
-  
-  
+
+    
   <!--EF Core specific settings dependent on TargetFramework-->
   <Choose>
     <When Condition="'$(TargetFramework)' == 'net46' Or $(TargetFramework.StartsWith('net45'))">
@@ -142,8 +136,8 @@
       <ItemGroup Label="EF Core relatively recent tools" >
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 
-        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
@@ -161,7 +155,7 @@
     </When>
     <Otherwise>
       <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
-        <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
         <!--PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
