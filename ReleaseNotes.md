@@ -57,8 +57,14 @@ We are also unifying versioning for all of the modules to follow common SDK vers
 ### Fixes and Improvements
 
 #### v3.6.2
--   feat: ref #472: Add explicit support of .NET Core 3.0
--   feat: ref #471: Update Microsoft.AspNetCore.Http
+-   feat: resolve #472: Add explicit support of .NET Core 3.0
+-   feat: resolve #471: Update Microsoft.AspNetCore.Http
+-   feat: resolve #465: StoreContext.sqliteConnectionString is hardcoded.
+-   feat: resolve #424: Enable Persistence to Maintain Logs while Offline.
+-   refactor: ref     #424: Dropping support of .NET 4.5 in favor of feature #424.
+-   refactor: resolve #439: Correct failing unit tests to account for payload persistence.
+-   fix:  resolve #457: DTOs that are derivatives of ExtendableDtoBase generate 'key not found' exceptions for optional attributes.
+-   fix:  resolve #436: NullReferenceException in CompleteProcessing.
 
 #### v3.6.1-beta
 -   feat: resolve #465: StoreContext.sqliteConnectionString is hardcoded.
