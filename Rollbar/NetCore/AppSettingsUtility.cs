@@ -211,7 +211,9 @@ namespace Rollbar.NetCore
             string fileFullName = Path.Combine(folderPath, appSettingsFileName);
             if (!File.Exists(fileFullName))
             {
-                Debug.WriteLine($"File: {fileFullName} does not exist...");
+                //NOTE: the following line causes the RollbarTraceListener into infinite creation loop and subsequent stck overflow:
+                //Debug.WriteLine($"File: {fileFullName} does not exist...");
+
                 return null;
             }
 
