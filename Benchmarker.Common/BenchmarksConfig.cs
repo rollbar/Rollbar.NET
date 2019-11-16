@@ -23,16 +23,16 @@
 
             Job[] jobs = new Job[]
             {
-                Job.Clr,
-                Job.Core,
+                Job.Default.With(ClrRuntime.Net48),
+                Job.Default.With(CoreRuntime.Core30),
                 //Job.CoreRT,
                 //Job.Mono,
             };
 
             Runtime[] runtimes = new Runtime[]
             {
-                Runtime.Clr,
-                Runtime.Core,
+                ClrRuntime.Net48,
+                CoreRuntime.Core30,
                 //Runtime.CoreRT,
                 //Runtime.Mono,
                 //new MonoRuntime("Mono x64", @"C:\Program Files\Mono\bin\mono.exe"),

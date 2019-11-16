@@ -1,7 +1,7 @@
-﻿<Project ToolsVersion="15.0">
+﻿<Project ToolsVersion="16.0">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.0</TargetFrameworks>
     <AssemblyName>Rollbar.PlugIns.Log4net</AssemblyName>
     <RootNamespace>Rollbar.PlugIns.Log4net</RootNamespace>
   </PropertyGroup>
