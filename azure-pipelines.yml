@@ -57,9 +57,9 @@ steps:
 # Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. Use this task to change the version of NuGet used in the NuGet tasks.
 - task: NuGetToolInstaller@0
   displayName: 'Installing NuGet...'
-  #inputs:
+  inputs:
     #versionSpec: '4.3.0' 
-    #checkLatest: false # Optional
+    checkLatest: true # Optional
 
 # Visual Studio Test Platform Installer
 # Acquires the test platform from nuget.org or the tools cache. Satisfies the ‘vstest’ demand and can be used for running tests and collecting diagnostic data using the Visual Studio Test task.
