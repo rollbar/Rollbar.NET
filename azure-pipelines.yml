@@ -58,8 +58,8 @@ steps:
 - task: NuGetToolInstaller@0
   displayName: 'Installing NuGet...'
   inputs:
-    #versionSpec: '4.3.0' 
-    checkLatest: true # Optional
+    versionSpec: '5.3.1' 
+    #checkLatest: true # Optional
 
 # Visual Studio Test Platform Installer
 # Acquires the test platform from nuget.org or the tools cache. Satisfies the ‘vstest’ demand and can be used for running tests and collecting diagnostic data using the Visual Studio Test task.
