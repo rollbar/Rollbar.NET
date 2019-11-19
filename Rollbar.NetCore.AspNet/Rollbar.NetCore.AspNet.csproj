@@ -1,7 +1,7 @@
 ﻿<Project ToolsVersion="16.0">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;netstandard2.1;netstandard2.0</TargetFrameworks>
     <AssemblyName>Rollbar.NetCore.AspNet</AssemblyName>
     <RootNamespace>Rollbar.NetCore.AspNet</RootNamespace>
   </PropertyGroup>
