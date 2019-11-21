@@ -146,6 +146,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
+        <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.2" />
         <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.2.0" /-->
         <!--PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.1" /-->
 
@@ -157,6 +158,7 @@
       <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
+        <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.2" />
         <!--PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
         <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
@@ -187,16 +189,16 @@
   </ItemGroup>
 
   <Target 
-    Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')))"
+    Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')"
     Name="IncludeNativeBinariesAsOutput" 
     BeforeTargets="GetCopyToOutputDirectoryItems"
     >
     <ItemGroup>
-      <Content Include="$(OutputPath)\x64\e_sqlite3.dll">
+      <Content Include="$(OutputPath)\runtimes\win-x64\native\e_sqlite3.dll">
         <Link>x64\e_sqlite3.dll</Link>
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
-      <Content Include="$(OutputPath)\x86\e_sqlite3.dll">
+      <Content Include="$(OutputPath)\runtimes\win-x86\native\e_sqlite3.dll">
         <Link>x86\e_sqlite3.dll</Link>
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
