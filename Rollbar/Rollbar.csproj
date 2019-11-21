@@ -129,7 +129,6 @@
       <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets." >
         <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />
-        <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.7" />
       </ItemGroup>
     </When>
     <When Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
@@ -146,9 +145,6 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
-        <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.2" />
-        <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.2.0" /-->
-        <!--PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.1" /-->
 
         <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
@@ -158,10 +154,6 @@
       <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
-        <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.2" />
-        <!--PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
-        <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -194,11 +186,11 @@
     BeforeTargets="GetCopyToOutputDirectoryItems"
     >
     <ItemGroup>
-      <Content Include="$(OutputPath)\runtimes\win-x64\native\e_sqlite3.dll">
+      <Content Include="$(OutputPath)\x64\e_sqlite3.dll">
         <Link>x64\e_sqlite3.dll</Link>
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
-      <Content Include="$(OutputPath)\runtimes\win-x86\native\e_sqlite3.dll">
+      <Content Include="$(OutputPath)\x86\e_sqlite3.dll">
         <Link>x86\e_sqlite3.dll</Link>
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>

@@ -18,7 +18,9 @@
     {
         static StoreContext() 
         {
+            #if (!NETFX || NETFX_461nNewer)
             SQLitePCL.Batteries_V2.Init();
+            #endif
 
             if(!Environment.OSVersion.VersionString.Contains("Windows")) 
             {
