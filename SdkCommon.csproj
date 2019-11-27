@@ -10,6 +10,7 @@
     <SdkVersion>3.6.3</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
+      - fix: resolve #479: System.TypeLoadException: Could not load type 'Microsoft.AspNetCore.Http.Internal.BufferingHelper' from assembly 'Microsoft.AspNetCore.Http, Version=3.0.0.0
       - feat: resolve #476: Add explicit netstandard2.1 target framework
     </PackageReleaseNotes>
 
