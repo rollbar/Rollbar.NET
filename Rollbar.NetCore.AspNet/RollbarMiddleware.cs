@@ -89,7 +89,13 @@ namespace Rollbar.NetCore.AspNet
             requestId = context?.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
+
+#if (NETSTANDARD2_1 || NETCOREAPP3_0)
+            context?.Request.EnableBuffering();
+#else
             context?.Request.EnableRewind();
+#endif
+
             using (_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
                 NetworkTelemetry networkTelemetry = null;

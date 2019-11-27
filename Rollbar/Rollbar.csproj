@@ -25,6 +25,24 @@
   <Choose>
     
     <!--.Net Standard-->
+    <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
+      <PropertyGroup Label=".NetStandard build">
+        <NetVariant>NET_STANDARD</NetVariant>
+        <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+      </ItemGroup>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.1" />
+      </ItemGroup>
+    </When>
     <When Condition="$(TargetFramework.StartsWith('netstandard'))">
       <PropertyGroup Label=".NetStandard build">
         <NetVariant>NET_STANDARD</NetVariant>
@@ -129,7 +147,6 @@
       <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets." >
         <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />
-        <PackageReference Include="SQLitePCLRaw.bundle_green" Version="1.1.7" />
       </ItemGroup>
     </When>
     <When Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
@@ -146,20 +163,21 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
-        <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.2.0" /-->
-        <!--PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.0.1" /-->
 
         <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+      </ItemGroup>
+    </When>
+    <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
+      <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.1" />
       </ItemGroup>
     </When>
     <Otherwise>
       <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
-        <!--PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
-        <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -187,7 +205,7 @@
   </ItemGroup>
 
   <Target 
-    Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')))"
+    Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')"
     Name="IncludeNativeBinariesAsOutput" 
     BeforeTargets="GetCopyToOutputDirectoryItems"
     >

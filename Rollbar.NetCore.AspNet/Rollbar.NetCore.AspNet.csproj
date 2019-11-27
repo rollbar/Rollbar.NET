@@ -19,15 +19,15 @@
   </ItemGroup>
 
   <Choose>
-    <When Condition="$(TargetFramework.StartsWith('netcoreapp3.'))">
+    <When Condition="$(TargetFramework.StartsWith('netcoreapp3.')) Or '$(TargetFramework)' == 'netstandard2.1'">
       <ItemGroup Label="Package References">
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.1" />
       </ItemGroup>
     </When>
     <When Condition="$(TargetFramework.StartsWith('netcoreapp2.')) And '$(TargetFramework)' != 'netcoreapp2.0'">
