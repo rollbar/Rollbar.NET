@@ -1,7 +1,9 @@
 ﻿namespace Rollbar.PlugIns.Serilog
 {
     using global::Serilog;
+    using global::Serilog.Core;
     using global::Serilog.Configuration;
+    using global::Serilog.Events;
     using System;
 
     /// <summary>
@@ -15,11 +17,17 @@
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="rollbarAccessToken">The Rollbar access token.</param>
         /// <param name="rollbarEnvironment">The Rollbar environment.</param>
+        /// <param name="restrictedToMinimumLevel">
+        ///   The minimum level for events passed through the sink. Ignored when <paramref name="levelSwitch"/> is specified.
+        /// </param>
+        /// <param name="levelSwitch">A switch allowing the pass-through minimum level to be changed at runtime.</param>
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
                   string rollbarAccessToken,
-                  string rollbarEnvironment
+                  string rollbarEnvironment,
+                  LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+                  LoggingLevelSwitch levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -27,8 +35,9 @@
                 rollbarAccessToken,
                 rollbarEnvironment,
                 null,
-                null
-                );
+                null,
+                restrictedToMinimumLevel,
+                levelSwitch);
         }
 
         /// <summary>
@@ -38,12 +47,18 @@
         /// <param name="rollbarAccessToken">The Rollbar access token.</param>
         /// <param name="rollbarEnvironment">The Rollbar environment.</param>
         /// <param name="formatProvider">The format provider.</param>
+        /// <param name="restrictedToMinimumLevel">
+        ///   The minimum level for events passed through the sink. Ignored when <paramref name="levelSwitch"/> is specified.
+        /// </param>
+        /// <param name="levelSwitch">A switch allowing the pass-through minimum level to be changed at runtime.</param>
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
                   string rollbarAccessToken,
                   string rollbarEnvironment,
-                  IFormatProvider formatProvider
+                  IFormatProvider formatProvider,
+                  LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+                  LoggingLevelSwitch levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -51,8 +66,9 @@
                 rollbarAccessToken,
                 rollbarEnvironment,
                 null,
-                formatProvider
-                );
+                formatProvider,
+                restrictedToMinimumLevel,
+                levelSwitch);
         }
 
         /// <summary>
@@ -62,12 +78,18 @@
         /// <param name="rollbarAccessToken">The Rollbar access token.</param>
         /// <param name="rollbarEnvironment">The Rollbar environment.</param>
         /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
+        /// <param name="restrictedToMinimumLevel">
+        ///   The minimum level for events passed through the sink. Ignored when <paramref name="levelSwitch"/> is specified.
+        /// </param>
+        /// <param name="levelSwitch">A switch allowing the pass-through minimum level to be changed at runtime.</param>
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
                   string rollbarAccessToken,
                   string rollbarEnvironment,
-                  TimeSpan? rollbarBlockingLoggingTimeout
+                  TimeSpan? rollbarBlockingLoggingTimeout,
+                  LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+                  LoggingLevelSwitch levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -75,8 +97,9 @@
                 rollbarAccessToken, 
                 rollbarEnvironment, 
                 rollbarBlockingLoggingTimeout, 
-                null
-                );
+                null,
+                restrictedToMinimumLevel,
+                levelSwitch);
         }
 
         /// <summary>
@@ -87,13 +110,19 @@
         /// <param name="rollbarEnvironment">The Rollbar environment.</param>
         /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
         /// <param name="formatProvider">The format provider.</param>
+        /// <param name="restrictedToMinimumLevel">
+        ///   The minimum level for events passed through the sink. Ignored when <paramref name="levelSwitch"/> is specified.
+        /// </param>
+        /// <param name="levelSwitch">A switch allowing the pass-through minimum level to be changed at runtime.</param>
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
                   string rollbarAccessToken,
                   string rollbarEnvironment,
                   TimeSpan? rollbarBlockingLoggingTimeout,
-                  IFormatProvider formatProvider
+                  IFormatProvider formatProvider,
+                  LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+                  LoggingLevelSwitch levelSwitch = null
             )
         {
             IRollbarConfig config = new RollbarConfig(rollbarAccessToken)
@@ -101,7 +130,7 @@
                 Environment = rollbarEnvironment,
             };
 
-            return loggerConfiguration.RollbarSink(config, rollbarBlockingLoggingTimeout, formatProvider);
+            return loggerConfiguration.RollbarSink(config, rollbarBlockingLoggingTimeout, formatProvider, restrictedToMinimumLevel, levelSwitch);
         }
 
         /// <summary>
@@ -109,18 +138,25 @@
         /// </summary>
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="rollbarConfig">The Rollbar configuration.</param>
+        /// <param name="restrictedToMinimumLevel">
+        ///   The minimum level for events passed through the sink. Ignored when <paramref name="levelSwitch"/> is specified.
+        /// </param>
+        /// <param name="levelSwitch">A switch allowing the pass-through minimum level to be changed at runtime.</param>
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
-                  IRollbarConfig rollbarConfig
+                  IRollbarConfig rollbarConfig,
+                  LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+                  LoggingLevelSwitch levelSwitch = null
                   )
         {
             return RollbarSink(
                 loggerConfiguration, 
                 rollbarConfig, 
                 null, 
-                null
-                );
+                null,
+                restrictedToMinimumLevel,
+                levelSwitch);
         }
 
         /// <summary>
@@ -129,19 +165,26 @@
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="rollbarConfig">The Rollbar configuration.</param>
         /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
+        /// <param name="restrictedToMinimumLevel">
+        ///   The minimum level for events passed through the sink. Ignored when <paramref name="levelSwitch"/> is specified.
+        /// </param>
+        /// <param name="levelSwitch">A switch allowing the pass-through minimum level to be changed at runtime.</param>
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
                   IRollbarConfig rollbarConfig,
-                  TimeSpan? rollbarBlockingLoggingTimeout
+                  TimeSpan? rollbarBlockingLoggingTimeout,
+                  LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+                  LoggingLevelSwitch levelSwitch = null
                   )
         {
             return RollbarSink(
                 loggerConfiguration, 
                 rollbarConfig, 
                 rollbarBlockingLoggingTimeout, 
-                null
-                );
+                null,
+                restrictedToMinimumLevel,
+                levelSwitch);
         }
 
         /// <summary>
@@ -150,19 +193,26 @@
         /// <param name="loggerConfiguration">The logger configuration.</param>
         /// <param name="rollbarConfig">The Rollbar configuration.</param>
         /// <param name="formatProvider">The format provider.</param>
+        /// <param name="restrictedToMinimumLevel">
+        ///   The minimum level for events passed through the sink. Ignored when <paramref name="levelSwitch"/> is specified.
+        /// </param>
+        /// <param name="levelSwitch">A switch allowing the pass-through minimum level to be changed at runtime.</param>
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
                   IRollbarConfig rollbarConfig,
-                  IFormatProvider formatProvider
+                  IFormatProvider formatProvider,
+                  LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+                  LoggingLevelSwitch levelSwitch = null
                   )
         {
             return RollbarSink(
                 loggerConfiguration, 
                 rollbarConfig, 
                 null, 
-                formatProvider
-                );
+                formatProvider,
+                restrictedToMinimumLevel,
+                levelSwitch);
         }
 
         /// <summary>
@@ -172,16 +222,23 @@
         /// <param name="rollbarConfig">The Rollbar configuration.</param>
         /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
         /// <param name="formatProvider">The format provider.</param>
+        /// <param name="restrictedToMinimumLevel">
+        ///   The minimum level for events passed through the sink. Ignored when <paramref name="levelSwitch"/> is specified.
+        /// </param>
+        /// <param name="levelSwitch">A switch allowing the pass-through minimum level to be changed at runtime.</param>
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
                   IRollbarConfig rollbarConfig,
                   TimeSpan? rollbarBlockingLoggingTimeout,
-                  IFormatProvider formatProvider)
+                  IFormatProvider formatProvider,
+                  LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
+                  LoggingLevelSwitch levelSwitch = null)
         {
             return loggerConfiguration.Sink(
-                new RollbarSink(rollbarConfig, rollbarBlockingLoggingTimeout, formatProvider)
-                );
+                new RollbarSink(rollbarConfig, rollbarBlockingLoggingTimeout, formatProvider),
+                restrictedToMinimumLevel,
+                levelSwitch);
         }
     }
 }
