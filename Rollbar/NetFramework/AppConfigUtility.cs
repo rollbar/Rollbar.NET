@@ -61,6 +61,11 @@
                 rollbarConfig.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
             }
             
+            if (rollbarConfigSection.EnableLocalPayloadStore.HasValue)
+            {
+                rollbarConfig.EnableLocalPayloadStore = rollbarConfigSection.EnableLocalPayloadStore.Value;
+            }
+            
             if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreFileName))
             {
                 rollbarConfig.LocalPayloadStoreFileName = rollbarConfigSection.LocalPayloadStoreFileName;

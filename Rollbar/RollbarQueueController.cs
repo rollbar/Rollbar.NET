@@ -60,6 +60,8 @@ namespace Rollbar
         /// </summary>
         private RollbarQueueController()
         {
+            this.ReevaluateUseOfLocalPayloadStore();
+
             this.Start();
         }
 
@@ -121,11 +123,6 @@ namespace Rollbar
         /// The sleep interval
         /// </summary>
         internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(25);
-
-        /// <summary>
-        /// The total retries
-        /// </summary>
-        internal readonly int _totalRetries = 3;
 
         /// <summary>
         /// The store context (the payload persistence infrastructure)
@@ -198,6 +195,16 @@ namespace Rollbar
 
                 this._allQueues.Add(queue);
                 this.IndexByToken(queue);
+
+                this._useLocalPayloadStore |= queue.Logger.Config.EnableLocalPayloadStore;
+                if (this._useLocalPayloadStore && this._storeContext == null)
+                {
+                    Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.Register) + "...");
+                    this._storeContext = new StoreContext();
+                    this._storeContext.MakeSureDatabaseExistsAndReady();
+                    Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Register) + ".");
+                }
+
                 ((RollbarConfig) queue.Logger.Config).Reconfigured += Config_Reconfigured;
 
                 // The following debug line causes stack overflow when RollbarTraceListener is activated:                
@@ -218,9 +225,31 @@ namespace Rollbar
 
                 this.DropIndexByToken(queue);
                 this._allQueues.Remove(queue);
+                this.ReevaluateUseOfLocalPayloadStore();
                 ((RollbarConfig)queue.Logger.Config).Reconfigured -= Config_Reconfigured;
                 Debug.WriteLine(this.GetType().Name + ": Unregistered a queue. Total queues count: " + this._allQueues.Count + ".");
             }
+        }
+
+        private void ReevaluateUseOfLocalPayloadStore()
+        {
+            foreach (var queue in _allQueues)
+            {
+                if (queue.Logger.Config.EnableLocalPayloadStore)
+                {
+                    this._useLocalPayloadStore = true;
+                    if (this._storeContext == null)
+                    {
+                        Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.ReevaluateUseOfLocalPayloadStore) + "...");
+                        this._storeContext = new StoreContext();
+                        this._storeContext.MakeSureDatabaseExistsAndReady();
+                        Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.ReevaluateUseOfLocalPayloadStore) + ".");
+                    }
+                    return;
+                }
+            }
+
+            this._useLocalPayloadStore = false;
         }
 
         /// <summary>
@@ -268,6 +297,11 @@ namespace Rollbar
         /// </summary>
         private readonly Dictionary<string, AccessTokenQueuesMetadata> _queuesByAccessToken = 
             new Dictionary<string, AccessTokenQueuesMetadata>();
+
+        /// <summary>
+        /// Flags the use of local payload store
+        /// </summary>
+        private bool _useLocalPayloadStore = false;
 
         /// <summary>
         /// Keeps the processing all queues.
@@ -325,6 +359,11 @@ namespace Rollbar
         /// </summary>
         private void ProcessPersistentStoreOnce()
         {
+            if (!this._useLocalPayloadStore)
+            {
+                return;
+            }
+
             var destinations = this._storeContext.Destinations.ToArray();
             foreach (var destination in destinations)
             {
@@ -569,6 +608,11 @@ namespace Rollbar
         /// <param name="payloadQueue">The payload queue.</param>
         private void Persist(PayloadQueue payloadQueue) 
         {
+            if (!payloadQueue.Logger.Config.EnableLocalPayloadStore)
+            {
+                return;
+            }
+
             var items = payloadQueue.GetItemsToPersist();
             if (items == null || items.Length == 0)
             {
@@ -787,7 +831,7 @@ namespace Rollbar
             Assumption.AssertNotNull(config, nameof(config));
 
             string newStorePath = config.GetLocalPayloadStoreFullPathName();
-            if (string.Compare(newStorePath, StoreContext.RollbarStoreDbFullName, false) != 0)
+            if (this._useLocalPayloadStore && string.Compare(newStorePath, StoreContext.RollbarStoreDbFullName, false) != 0)
             {
                 this.Stop(true);
                 StoreContext.RollbarStoreDbFullName = newStorePath;
@@ -796,6 +840,8 @@ namespace Rollbar
 
             lock (this._syncLock)
             {
+                this.ReevaluateUseOfLocalPayloadStore();
+
                 PayloadQueue queue = config.Logger.Queue;
                 Assumption.AssertNotNull(queue, nameof(queue));
 
@@ -1043,10 +1089,12 @@ namespace Rollbar
         /// </summary>
         public void Start()
         {
-            if (this._storeContext == null)
+            if (this._useLocalPayloadStore && this._storeContext == null)
             {
+                Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.Start) + "...");
                 this._storeContext = new StoreContext();
                 this._storeContext.MakeSureDatabaseExistsAndReady();
+                Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Start) + ".");
             }
 
             if (this._rollbarCommThread == null)
