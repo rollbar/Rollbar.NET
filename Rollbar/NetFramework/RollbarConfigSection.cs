@@ -116,6 +116,14 @@
             => this["rethrowExceptionsAfterReporting"] as bool?;
 
         /// <summary>
+        /// Gets a value indicating whether to enable local payload store.
+        /// </summary>
+        /// <value><c>null</c> if to enable local payload store contains no value, <c>true</c> if [enable local payload store]; otherwise, <c>false</c>.</value>
+        [ConfigurationProperty("enableLocalPayloadStore", IsRequired = false, DefaultValue = false)]
+        public bool? EnableLocalPayloadStore 
+            => this["enableLocalPayloadStore"] as bool?;
+
+        /// <summary>
         /// Gets or sets the name of the local payload store file.
         /// </summary>
         /// <value>The name of the local payload store file.</value>

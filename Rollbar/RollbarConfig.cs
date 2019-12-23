@@ -84,6 +84,7 @@
             this.Enabled = true;
             this.Transmit = true;
             this.RethrowExceptionsAfterReporting = false;
+            this.EnableLocalPayloadStore = false;
             this.LocalPayloadStoreFileName = StoreContext.DefaultRollbarStoreDbFile;
             this.LocalPayloadStoreLocationPath = StoreContext.DefaultRollbarStoreDbFileLocation;
             this.MaxReportsPerMinute = null; //5000;
@@ -213,6 +214,12 @@
         /// </summary>
         /// <value><c>true</c> if to rethrow exceptions after reporting them to Rollbar API; otherwise, <c>false</c>.</value>
         public bool RethrowExceptionsAfterReporting { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to enable local payload store.
+        /// </summary>
+        /// <value><c>true</c> if to enable local payload store; otherwise, <c>false</c>.</value>
+        public bool EnableLocalPayloadStore { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the local payload store file.

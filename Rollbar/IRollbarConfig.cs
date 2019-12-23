@@ -64,6 +64,12 @@
         bool RethrowExceptionsAfterReporting { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to enable local payload store.
+        /// </summary>
+        /// <value><c>true</c> if to enable local payload store; otherwise, <c>false</c>.</value>
+        bool EnableLocalPayloadStore { get; set; }
+
+        /// <summary>
         /// Gets or sets the name of the local payload store file.
         /// </summary>
         /// <value>The name of the local payload store file.</value>
