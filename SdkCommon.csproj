@@ -10,7 +10,7 @@
     <SdkVersion>3.7.0</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - feat: resolve #476: Add ability to disable payload persistence
+      - feat: resolve #486: Add ability to disable payload persistence
     </PackageReleaseNotes>
 
     <!--
