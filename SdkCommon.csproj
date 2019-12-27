@@ -11,6 +11,7 @@
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
       - chore: resolve #470: cleanup build warnings
+      - docs: resolve #488: Add Xamarin sample integrating Rollbar.NET via Nuget
     </PackageReleaseNotes>
 
     <!--
