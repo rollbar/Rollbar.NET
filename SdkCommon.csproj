@@ -7,10 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.7.0</SdkVersion>
+    <SdkVersion>3.7.1</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - feat: resolve #486: Add ability to disable payload persistence
+      - chore: resolve #470: cleanup build warnings
     </PackageReleaseNotes>
 
     <!--
@@ -52,11 +52,15 @@
     <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/rollbar/Rollbar.NET/master/rollbar-logo.png</PackageIconUrl>
+    <PackageIcon>rollbar-logo.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\rollbar-logo.png" Pack="true" Visible="false" PackagePath=""/>
+  </ItemGroup>
 
   <ItemGroup Label=".NET Global References">
     <!--ADD here-->

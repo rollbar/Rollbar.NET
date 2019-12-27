@@ -561,6 +561,7 @@ namespace Rollbar
                 }
                 catch (System.Exception ex)
                 {
+                    Debug.WriteLine($"EXCEPTION: {ex}");
                     this.Persist(queue);
                     continue;
                 }

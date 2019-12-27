@@ -99,7 +99,7 @@
             }
             catch (Exception e)
             {
-                return this.GetType().Name + ": " + failedScrubbingMessage;
+                return this.GetType().Name + ": " + failedScrubbingMessage + $"EXCEPTION: {e}";
             }
         }
 
