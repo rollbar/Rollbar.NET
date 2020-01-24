@@ -12,6 +12,9 @@
     <PackageReleaseNotes>
       - chore: resolve #470: cleanup build warnings
       - docs: resolve #488: Add Xamarin sample integrating Rollbar.NET via Nuget
+      - chore: resolve #490: Colocate internal infrastructure types
+      - chore: resolve #491: Extract key internal infrastructure interfaces
+      - chore: resolve #492: Colocate Rollbar Internal Events types
     </PackageReleaseNotes>
 
     <!--
