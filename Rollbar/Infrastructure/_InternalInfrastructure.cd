@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.AccessTokenQueuesMetadata">
+    <Position X="10.75" Y="1" Width="6.25" />
+    <TypeIdentifier>
+      <HashCode>QAAAQEAAAAAAAAIAAAAAAAAAUAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>InternalInfrastructure\AccessTokenQueuesMetadata.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.PayloadQueue">
+    <Position X="5.25" Y="1" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>gABAAAAAABIEAEIAEAAAAAAAIEAABAAAAAIIARAIACQ=</HashCode>
+      <FileName>InternalInfrastructure\PayloadQueue.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarRateLimit">
+    <Position X="17.25" Y="1" Width="5.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.RollbarRateLimit.RollbarRateLimitHeaders">
+        <TypeIdentifier>
+          <NewMemberFileName>InternalInfrastructure\RollbarRateLimit.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EAAACAAAAAABAAIAAAAAAEAIAAAAIAAAAAAQAAAAgAA=</HashCode>
+      <FileName>InternalInfrastructure\RollbarRateLimit.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.RollbarResponse">
+    <Position X="13" Y="4.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAQAAAAAQAAAAAAAAQAAAAAAABAAA=</HashCode>
+      <FileName>InternalInfrastructure\RollbarResponse.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarClient">
+    <Position X="5.25" Y="7" Width="7" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAEAgCAAAQAAhAAAAACAQABAAAAAAIAAADAABA=</HashCode>
+      <FileName>InternalInfrastructure\RollbarClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.PayloadBundle">
+    <Position X="16.5" Y="7.75" Width="11.75" />
+    <TypeIdentifier>
+      <HashCode>EAQAAAAABAAAAAAJAEIQgSQigAIHAoAAAABACAAAKAA=</HashCode>
+      <FileName>InternalInfrastructure\PayloadBundle.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.ConnectivityMonitor">
+    <Position X="22.75" Y="1" Width="5.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.ConnectivityMonitor.NestedSingleInstance">
+        <TypeIdentifier>
+          <NewMemberFileName>InternalInfrastructure\ConnectivityMonitor.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ARAgAARAAQAQQAAQAEAAAAAAAoCAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>InternalInfrastructure\ConnectivityMonitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.RollbarErrorUtility">
+    <Position X="0.5" Y="16.25" Width="9.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>InternalInfrastructure\RollbarErrorUtility.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.RollbarLoggerBlockingWrapper">
+    <Position X="0.5" Y="8" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAACABAYAABAAAABAAAAkAAAAAAAEAQkAABAA=</HashCode>
+      <FileName>InternalInfrastructure\RollbarLoggerBlockingWrapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarResult">
+    <Position X="12" Y="13.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>InternalInfrastructure\RollbarResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarUtility">
+    <Position X="0.5" Y="14.25" Width="9.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAAAAQAAAA=</HashCode>
+      <FileName>InternalInfrastructure\RollbarUtility.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Rollbar.InternalInfrastructure.IPayloadQueuesRegistry">
+    <Position X="0.5" Y="5.25" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAABAABAAAAAEAA=</HashCode>
+      <FileName>InternalInfrastructure\IPayloadQueuesRegistry.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.IPayloadQueue">
+    <Position X="0.5" Y="0.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>gABAAAAAAAIEAAIAAAAAAAAAAEAABAAAAAAIARAIAAQ=</HashCode>
+      <FileName>InternalInfrastructure\IPayloadQueue.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Rollbar.InternalRollbarError">
+    <Position X="13" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAgAAAAAAgAAFCAEAIAAAAAAYCAAAAIAAAwEA=</HashCode>
+      <FileName>InternalInfrastructure\InternalRollbarError.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

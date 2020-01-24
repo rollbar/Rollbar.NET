@@ -1,4 +1,4 @@
-﻿namespace Rollbar.InternalInfrastructure
+﻿namespace Rollbar.Infrastructure
 {
     using System;
     using System.Collections.Generic;
