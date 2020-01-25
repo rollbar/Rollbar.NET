@@ -260,7 +260,7 @@ namespace Rollbar
             {
                 if (this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata metadata))
                 {
-                    return metadata.Queues.Count;
+                    return metadata.PayloadQueuesCount;
                 }
                 return 0;
             }
@@ -268,7 +268,7 @@ namespace Rollbar
             int result = 0;
             foreach(var md in this._queuesByAccessToken.Values)
             {
-                result += md.Queues.Count;
+                result += md.PayloadQueuesCount;
             }
             return result;
         }
@@ -493,7 +493,7 @@ namespace Rollbar
         private void ProcessQueues(AccessTokenQueuesMetadata tokenMetadata)
         {
             // let's see if we can unregister any recently released queues:
-            var releasedQueuesToRemove = tokenMetadata.Queues.Where(q => q.IsReleased && (q.GetPayloadCount() == 0)).ToArray();
+            var releasedQueuesToRemove = tokenMetadata.PayloadQueues.Where(q => q.IsReleased && (q.GetPayloadCount() == 0)).ToArray();
             if (releasedQueuesToRemove != null && releasedQueuesToRemove.LongLength > 0)
             {
                 foreach (var queue in releasedQueuesToRemove)
@@ -503,7 +503,7 @@ namespace Rollbar
             }
 
             // process the access token's queues:
-            foreach (var queue in tokenMetadata.Queues)
+            foreach (var queue in tokenMetadata.PayloadQueues)
             {
                 if (DateTimeOffset.Now < queue.NextDequeueTime)
                 {
@@ -517,7 +517,7 @@ namespace Rollbar
                     // the token is suspended and the next usage time is not reached,
                     // let's flush the token queues (we are not allowed to transmit anyway)
                     // and quit processing this token's queues this time (until next processing iteration):
-                    foreach (var tokenQueue in tokenMetadata.Queues)
+                    foreach (var tokenQueue in tokenMetadata.PayloadQueues)
                     {
                         foreach (var flushedBundle in tokenQueue.Flush())
                         {
@@ -869,8 +869,7 @@ namespace Rollbar
                 tokenMetadata = new AccessTokenQueuesMetadata(queueToken);
                 this._queuesByAccessToken.Add(queueToken, tokenMetadata);
             }
-            tokenMetadata.Queues.Add(queue);
-            queue.AccessTokenQueuesMetadata = tokenMetadata;
+            tokenMetadata.Register(queue);
         }
 
         /// <summary>
@@ -881,10 +880,8 @@ namespace Rollbar
         {
             foreach (var tokenMetadata in this._queuesByAccessToken.Values)
             {
-                if (tokenMetadata.Queues.Contains(queue))
+                if (tokenMetadata.Unregister(queue))
                 {
-                    tokenMetadata.Queues.Remove(queue);
-                    queue.AccessTokenQueuesMetadata = null;
                     break;
                 }
             }
@@ -964,7 +961,7 @@ namespace Rollbar
             {
                 if (this._queuesByAccessToken.TryGetValue(accessToken, out tokenMetadata))
                 {
-                    foreach(var queue in tokenMetadata.Queues)
+                    foreach(var queue in tokenMetadata.PayloadQueues)
                     {
                         counter += queue.GetPayloadCount();
                     }
@@ -997,7 +994,7 @@ namespace Rollbar
             {
                 if (this._queuesByAccessToken.TryGetValue(accessToken, out tokenMetadata))
                 {
-                    foreach (var queue in tokenMetadata.Queues)
+                    foreach (var queue in tokenMetadata.PayloadQueues)
                     {
                         totalPayloads += queue.GetPayloadCount();
                         TimeSpan queueTimeout = 
