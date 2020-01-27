@@ -15,6 +15,7 @@
       - chore: resolve #490: Colocate internal infrastructure types
       - chore: resolve #491: Extract key internal infrastructure interfaces
       - chore: resolve #492: Colocate Rollbar Internal Events types
+      - chore: resolve #493: Colocate payload package types.
     </PackageReleaseNotes>
 
     <!--
