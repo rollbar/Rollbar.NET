@@ -5,11 +5,15 @@ namespace Rollbar
     using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
-    /// Models metadata needed to keep track of a given Rollbar access token usage.
+    /// Class AccessTokenQueuesMetadata.
+    /// Implements the <see cref="Rollbar.IPayloadQueuesRegistry" /> with thread-safety.
     /// </summary>
+    /// <seealso cref="Rollbar.IPayloadQueuesRegistry" />
     internal class AccessTokenQueuesMetadata
+        : IPayloadQueuesRegistry
     {
 
         /// <summary>
@@ -17,12 +21,13 @@ namespace Rollbar
         /// </summary>
         private readonly HashSet<PayloadQueue> _queues = new HashSet<PayloadQueue>();
 
+        private readonly object _queuesSyncLock = new object();
+
         /// <summary>
         /// Prevents a default instance of the <see cref="AccessTokenQueuesMetadata"/> class from being created.
         /// </summary>
         private AccessTokenQueuesMetadata()
         {
-
         }
 
         /// <summary>
@@ -43,14 +48,6 @@ namespace Rollbar
         /// The access token.
         /// </value>
         public string AccessToken { get; private set; }
-
-        /// <summary>
-        /// Gets the queues associated with a given Rollbar access token.
-        /// </summary>
-        /// <value>
-        /// The queues.
-        /// </value>
-        public HashSet<PayloadQueue> Queues { get { return this._queues; } }
 
         /// <summary>
         /// Gets the next time token usage.
@@ -95,5 +92,82 @@ namespace Rollbar
         /// </summary>
         /// <value><c>true</c> if this instance is transmission suspended; otherwise, <c>false</c>.</value>
         public bool IsTransmissionSuspended { get; private set; }
+
+
+        #region IPayloadQueuesRegistry
+
+        /// <summary>
+        /// Registers the specified queue.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        /// <returns><c>true</c> if the queue was actually reqistered during this call, <c>false</c> if the queue was already registered prior to this call.</returns>
+        public bool Register(PayloadQueue queue)
+        {
+            lock(this._queuesSyncLock)
+            {
+                if (this._queues.Add(queue))
+                {
+                    queue.AccessTokenQueuesMetadata = this;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unregisters the specified queue.
+        /// </summary>
+        /// <param name="queue">The queue.</param>
+        /// <returns><c>true</c> if the queue was actually unregistered, <c>false</c> if the queue was not even registered in the first place.</returns>
+        public bool Unregister(PayloadQueue queue)
+        {
+            lock(this._queuesSyncLock)
+            {
+                if (this._queues.Remove(queue))
+                {
+                    queue.AccessTokenQueuesMetadata = null;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the payload queues.
+        /// </summary>
+        /// <value>The payload queues.</value>
+        public IReadOnlyCollection<PayloadQueue> PayloadQueues 
+        {
+            get
+            {
+                lock(this._queuesSyncLock)
+                {
+                    return this._queues.ToArray();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the payload queues count.
+        /// </summary>
+        /// <value>The payload queues count.</value>
+        public int PayloadQueuesCount
+         {
+            get
+            {
+                lock(this._queuesSyncLock)
+                {
+                    return this._queues.Count;
+                }
+            }
+        }
+
+        #endregion IPayloadQueuesRegistry
     }
 }

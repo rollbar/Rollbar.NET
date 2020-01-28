@@ -87,11 +87,7 @@
                     rollbarData.Response = new Response();
                 }
 
-                var responseStatusCode = this._httpActionContext.Response.StatusCode;
-                if (responseStatusCode != null)
-                {
-                    rollbarData.Response.StatusCode = (int)responseStatusCode;
-                }
+                rollbarData.Response.StatusCode = (int) this._httpActionContext.Response.StatusCode;
 
                 if (this._httpActionContext.Response.Headers != null)
                 {

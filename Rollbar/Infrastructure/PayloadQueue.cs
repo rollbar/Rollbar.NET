@@ -10,6 +10,7 @@ namespace Rollbar
     /// Class PayloadQueue.
     /// </summary>
     internal class PayloadQueue
+        : IPayloadQueue
     {
         /// <summary>
         /// The synchronize lock
@@ -221,7 +222,7 @@ namespace Rollbar
         /// Gets or sets the access token queues metadata.
         /// </summary>
         /// <value>The access token queues metadata.</value>
-        internal AccessTokenQueuesMetadata AccessTokenQueuesMetadata
+        public AccessTokenQueuesMetadata AccessTokenQueuesMetadata
         {
             get { return this._accessTokenQueuesMetadata; }
             set { this._accessTokenQueuesMetadata = value; }

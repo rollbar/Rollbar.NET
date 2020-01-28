@@ -1,6 +1,7 @@
 ﻿namespace Rollbar
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using System.Net;
     using System.Net.NetworkInformation;
@@ -146,79 +147,6 @@
             }
         }
 
-/*
-        /// <summary>
-        /// The timeout milliseconds
-        /// </summary>
-        private const int timeoutMilliseconds = 500;
-
-        /// <summary>
-        /// The google DNS ping target
-        /// </summary>
-        private static readonly IPAddress googleDnsPingTarget = IPAddress.Parse("8.8.8.8");
-
-        /// <summary>
-        /// Tests the internet ping.
-        /// </summary>
-        /// <returns><c>true</c> if the test succeeded, <c>false</c> otherwise.</returns>
-        public static bool TestInternetPing()
-        {
-            Ping ping = new Ping();
-
-            try
-            {
-                PingReply response = ping.Send(googleDnsPingTarget, timeoutMilliseconds);
-                bool result = ((response != null) && (response.Status == IPStatus.Success));
-                return result;
-            }
-            catch
-            {
-                return false;
-            }
-
-        }
-
-        /// <summary>
-        /// Determines whether [is available network active].
-        /// </summary>
-        /// <returns><c>true</c> if [is available network active]; otherwise, <c>false</c>.</returns>
-        public static bool IsAvailableNetworkActive()
-        {
-            //return true;
-
-            // only recognizes changes related to Internet adapters
-            if (!NetworkInterface.GetIsNetworkAvailable())
-            {
-                return false;
-            }
-
-            // however, this will include all adapters -- filter by opstatus and activity
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            return (from networkInterface in interfaces
-                where networkInterface.OperationalStatus == OperationalStatus.Up
-                where (networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel) && (networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                where (!(networkInterface.Name.ToLower().Contains("virtual") || networkInterface.Description.ToLower().Contains("virtual")))
-                select networkInterface.GetIPv4Statistics()).Any(statistics => (statistics.BytesReceived > 0) && (statistics.BytesSent > 0));
-        }
-
-        public static bool IsAnyNetwork() 
-        {
-            return NetworkInterface.GetIsNetworkAvailable();
-        }
-
-
-*/
-
-        /// <summary>
-        /// The timeout milliseconds
-        /// </summary>
-        //private const int timeoutMilliseconds = 500;
-
-        /// <summary>
-        /// The google DNS ping target
-        /// </summary>
-        //private static readonly IPAddress googleDnsPingTarget = IPAddress.Parse("8.8.8.8");
-
         /// <summary>
         /// Tests the internet ping.
         /// </summary>
@@ -235,6 +163,7 @@
             }
             catch (SocketException ex)
             {
+                Debug.WriteLine($"EXCEPTION: {ex}");
                 return false;
             }
         }

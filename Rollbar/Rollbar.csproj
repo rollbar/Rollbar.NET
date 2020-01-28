@@ -15,8 +15,7 @@
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
   </PropertyGroup>
   
-  <PropertyGroup Label="Instrumented build" 
-                 Condition="'$(Configuration)'=='Instrumented' And '$(Platform)' == 'AnyCPU'">
+  <PropertyGroup Label="Instrumented build" Condition="'$(Configuration)'=='Instrumented' And '$(Platform)' == 'AnyCPU'">
     <DefineConstants>$(DefineConstants);INSTRUMENT</DefineConstants>
   </PropertyGroup>
 
@@ -144,13 +143,13 @@
   <!--EF Core specific settings dependent on TargetFramework-->
   <Choose>
     <When Condition="'$(TargetFramework)' == 'net46' Or $(TargetFramework.StartsWith('net45'))">
-      <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets." >
+      <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets.">
         <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />
       </ItemGroup>
     </When>
     <When Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-      <ItemGroup Label="EF Core relatively recent tools" >
+      <ItemGroup Label="EF Core relatively recent tools">
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
@@ -204,11 +203,7 @@
     </Content>
   </ItemGroup>
 
-  <Target 
-    Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')"
-    Name="IncludeNativeBinariesAsOutput" 
-    BeforeTargets="GetCopyToOutputDirectoryItems"
-    >
+  <Target Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')" Name="IncludeNativeBinariesAsOutput" BeforeTargets="GetCopyToOutputDirectoryItems">
     <ItemGroup>
       <Content Include="$(OutputPath)\x64\e_sqlite3.dll">
         <Link>x64\e_sqlite3.dll</Link>
