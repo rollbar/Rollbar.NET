@@ -7,16 +7,11 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.7.1</SdkVersion>
+    <SdkVersion>3.7.2</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - chore: resolve #470: cleanup build warnings
-      - docs: resolve #488: Add Xamarin sample integrating Rollbar.NET via Nuget
-      - chore: resolve #490: Colocate internal infrastructure types
-      - chore: resolve #491: Extract key internal infrastructure interfaces
-      - chore: resolve #492: Colocate Rollbar Internal Events types
-      - chore: resolve #493: Colocate payload package types.
-      - chore: resolve #494: Colocate payload package decorator types.
+      - test: resolve #500: Add CustomKeyValuePackageDecoratorFixture
+      - docs: ref #501: Add VB.NET sample app
     </PackageReleaseNotes>
 
     <!--

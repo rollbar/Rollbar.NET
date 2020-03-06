@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-namespace UnitTest.Rollbar.DTOs
+namespace UnitTest.Rollbar.PayloadPackageDecorators
 {
     using global::Rollbar;
     using global::Rollbar.DTOs;
