@@ -11,7 +11,7 @@
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
       - test: resolve #500: Add CustomKeyValuePackageDecoratorFixture
-      - docs: ref #501: Add VB.NET sample app
+      - docs: resolve #501: Add VB.NET sample app
     </PackageReleaseNotes>
 
     <!--
