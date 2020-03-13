@@ -2,6 +2,7 @@
 {
     using System;
     using System.Configuration;
+    using System.Diagnostics;
     using Rollbar.DTOs;
 
     /// <summary>
@@ -16,6 +17,8 @@
     public class RollbarTelemetryConfigSection
             : ConfigurationSection
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarTelemetryConfigSection).FullName);
+
         /// <summary>
         /// Gets the configuration.
         /// </summary>
@@ -35,6 +38,7 @@
                 System.Diagnostics.Trace.TraceError(
                     "Error while attempting to get RollbarTelemetryConfigSection:" + System.Environment.NewLine + ex
                     );
+                traceSource.TraceEvent(TraceEventType.Warning, 0, $"Error while attempting to get RollbarTelemetryConfigSection:{Environment.NewLine}{ex}");
                 return null;
             }
         }

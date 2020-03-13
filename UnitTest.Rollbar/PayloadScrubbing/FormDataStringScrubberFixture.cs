@@ -85,11 +85,11 @@ namespace UnitTest.Rollbar.PayloadScrubbing
             };
             var scrubber = new FormDataStringScrubber(contentTypeHeaderValue, scrubMask, scrubFields);
 
-            Assert.AreEqual("FormDataStringScrubber: Data scrubbing failed!", scrubber.Scrub("<This is not a form-data>"), "Properly handles mis-formatted form-data.");
+            string scrubbedResult = scrubber.Scrub("<This is not a form-data>");
+            Assert.IsTrue(scrubbedResult.StartsWith("FormDataStringScrubber: Data scrubbing failed!"), "Properly handles mis-formatted form-data.");
 
             var testCase = BuildTestCase();
-            string scrubbedResult = scrubber.Scrub(testCase.Input);
-
+            scrubbedResult = scrubber.Scrub(testCase.Input);
             Assert.AreEqual(testCase.ExpectedOutput, scrubbedResult);
 
         }

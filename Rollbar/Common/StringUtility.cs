@@ -10,6 +10,7 @@
     /// </summary>
     public static class StringUtility
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(StringUtility).FullName);
         /// <summary>
         /// Delegate TryParseHandler
         /// </summary>
@@ -38,7 +39,7 @@
                 return result;
             }
 
-            Trace.TraceWarning("Invalid value '{0}'", value);
+            traceSource.TraceEvent(TraceEventType.Warning, 0, $"Invalid value '{value}'");
             return null;
         }
 

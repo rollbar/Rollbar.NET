@@ -1,22 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
   <PropertyGroup Label="Toolset Related">
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.7.1</SdkVersion>
+    <SdkVersion>3.8.0</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - chore: resolve #470: cleanup build warnings
-      - docs: resolve #488: Add Xamarin sample integrating Rollbar.NET via Nuget
-      - chore: resolve #490: Colocate internal infrastructure types
-      - chore: resolve #491: Extract key internal infrastructure interfaces
-      - chore: resolve #492: Colocate Rollbar Internal Events types
-      - chore: resolve #493: Colocate payload package types.
-      - chore: resolve #494: Colocate payload package decorator types.
+      - feat: resolve #503: Enable use of the latest available C# compiler by the SDK projects.
+      - feat: resolve #502: Replace internal use of Trace with use TraceSource to have better control over what is traced.
+      - feat: resolve #497: Explore possibility of being able to use RollbarLogger and RollbarLoggerProvider outside AspNetCore middleware.
+      - test: resolve #500: Add CustomKeyValuePackageDecoratorFixture
+      - docs: resolve #501: Add VB.NET sample app
     </PackageReleaseNotes>
 
     <!--

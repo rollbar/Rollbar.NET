@@ -1,6 +1,6 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-namespace UnitTest.Rollbar
+namespace UnitTest.Rollbar.PayloadPackageDecorators
 {
     using global::Rollbar;
     using global::Rollbar.DTOs;
@@ -9,8 +9,8 @@ namespace UnitTest.Rollbar
     using System.Collections.Generic;
 
     [TestClass]
-    [TestCategory(nameof(RollbarPackageDecoratorFixture))]
-    public class RollbarPackageDecoratorFixture
+    [TestCategory(nameof(CustomKeyValuePackageDecoratorFixture))]
+    public class CustomKeyValuePackageDecoratorFixture
     {
         [TestInitialize]
         public void SetupFixture()
@@ -23,7 +23,7 @@ namespace UnitTest.Rollbar
         }
 
         [TestMethod]
-        public void PersonPackageDecoratorTest()
+        public void BasicTest()
         {
             const string rollbarDataTitle = "Let's test some strategy decoration...";
             const string exceptionMessage = "Someone forgot null-test!";
@@ -50,10 +50,20 @@ namespace UnitTest.Rollbar
             Assert.IsTrue(rollbarData.Timestamp.HasValue);
             long initialTimestamp = rollbarData.Timestamp.Value;
 
-            const string personID = "007";
-            const string personUsername = "JamesBond";
-            const string personEmail = "jbond@mi6.uk";
-            packagingStrategy = new PersonPackageDecorator(packagingStrategy, personID, personUsername, personEmail);
+
+            const string customKey1 = "customKey1";
+            const string customValue1 = "customValue1";
+
+            const string customKey2 = "customKey2";
+            const string customValue2 = "customValue2";
+
+            Dictionary<string, object> customData = new Dictionary<string, object>()
+            {
+                { customKey1, customValue1},
+                { customKey2, customValue2},
+            };
+
+            packagingStrategy = new CustomKeyValuePackageDecorator(packagingStrategy, customData);
 
             // All the asserts prior to the decoration should be good again:
 
@@ -72,12 +82,14 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(exceptionMessage, rollbarData.Body.Trace.Exception.Message);
             Assert.AreEqual(exception.GetType().FullName, rollbarData.Body.Trace.Exception.Class);
 
-            // Person decoration specific asserts:
+            // Custom data decoration specific asserts:
 
-            Assert.IsNotNull(rollbarData.Person);
-            Assert.AreEqual(personID, rollbarData.Person.Id);
-            Assert.AreEqual(personUsername, rollbarData.Person.UserName);
-            Assert.AreEqual(personEmail, rollbarData.Person.Email);
+            Assert.IsNotNull(rollbarData.Custom);
+            Assert.AreEqual(customData.Count, rollbarData.Custom.Count);
+            Assert.IsTrue(rollbarData.Custom.ContainsKey(customKey1));
+            Assert.IsTrue(rollbarData.Custom.ContainsKey(customKey2));
+            Assert.AreEqual(customValue1, rollbarData.Custom[customKey1]);
+            Assert.AreEqual(customValue2, rollbarData.Custom[customKey2]);
 
             // Make sure the Data.Timestamp was not overwritten:
 
@@ -86,6 +98,5 @@ namespace UnitTest.Rollbar
             System.Diagnostics.Debug.WriteLine($"Initial timestamp: {initialTimestamp}");
             System.Diagnostics.Debug.WriteLine($"Decorated timestamp: {rollbarData.Timestamp.Value}");
         }
-
     }
 }

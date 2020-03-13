@@ -14,6 +14,8 @@
         : EventArgs
         , ITraceable
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarEventArgs).FullName);
+
         private readonly RollbarLogger _logger;
 
         private readonly DateTimeOffset _eventTimeStamp = DateTimeOffset.Now;
@@ -60,7 +62,11 @@
                     }
                     catch (Exception ex)
                     {
-                        Trace.WriteLine(ex, $"{nameof(RollbarEventArgs)}.{nameof(this.Payload)}");
+                        traceSource.TraceEvent(
+                            TraceEventType.Critical, 
+                            0, 
+                            $"Exception while serializing payload:{Environment.NewLine}{ex}"
+                            );
                     }
                 }
             }

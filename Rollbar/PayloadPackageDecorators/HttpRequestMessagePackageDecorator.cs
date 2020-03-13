@@ -1,5 +1,6 @@
 ﻿namespace Rollbar
 {
+    using System.Diagnostics;
     using System.Collections.Generic;
     using System.Net.Http;
     using Rollbar.DTOs;
@@ -20,6 +21,8 @@
     public class HttpRequestMessagePackageDecorator
         : RollbarPackageDecoratorBase
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(HttpRequestMessagePackageDecorator).FullName);
+
         /// <summary>
         /// The HTTP request message
         /// </summary>
@@ -150,7 +153,7 @@
                     rollbarData.Request.GetParams = null;
                     break;
                 default:
-                    System.Diagnostics.Trace.WriteLine(
+                    traceSource.TraceInformation(
                         $"No-op processing {rollbarData.Request.Method.ToUpperInvariant()} HTTP method."
                         );
                     break;
