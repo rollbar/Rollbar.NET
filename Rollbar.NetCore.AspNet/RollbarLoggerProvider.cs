@@ -13,7 +13,7 @@
     /// </summary>
     /// <seealso cref="Microsoft.Extensions.Logging.ILoggerProvider" />
     [ProviderAlias("Rollbar")]
-    internal class RollbarLoggerProvider
+    public class RollbarLoggerProvider
             : ILoggerProvider
     {
         private readonly ConcurrentDictionary<string, RollbarLogger> _loggers =

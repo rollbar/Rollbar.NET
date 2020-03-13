@@ -10,6 +10,7 @@
     <SdkVersion>3.7.2</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
+      - feat: resolve #497: Explore possibility of being able to use RollbarLogger and RollbarLoggerProvider outside AspNetCore middleware.
       - test: resolve #500: Add CustomKeyValuePackageDecoratorFixture
       - docs: resolve #501: Add VB.NET sample app
     </PackageReleaseNotes>
