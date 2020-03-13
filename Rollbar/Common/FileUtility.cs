@@ -11,6 +11,8 @@
     /// </summary>
     public static class FileUtility
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(FileUtility).FullName);
+
         /// <summary>
         /// Verifies if the specified application file (a file that is part of an application) exists.
         /// </summary>
@@ -35,7 +37,7 @@
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex);
+                traceSource.TraceInformation(ex.ToString());
             }
 
             try
@@ -51,7 +53,7 @@
             }
             catch (Exception ex)
             {
-                Trace.WriteLine(ex);
+                traceSource.TraceInformation(ex.ToString());
             }
 
             return false;

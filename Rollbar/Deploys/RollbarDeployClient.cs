@@ -13,6 +13,7 @@
 
     internal class RollbarDeployClient
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarDeployClient).FullName);
 
         private readonly RollbarConfig _config;
         private readonly HttpClient _httpClient;
@@ -114,7 +115,7 @@
             if (postResponse.IsSuccessStatusCode)
             {
                 string reply = await postResponse.Content.ReadAsStringAsync();
-                Trace.WriteLine($"Deploy post response: {reply}.");
+                traceSource.TraceInformation($"Deploy post response: {reply}.");
             }
             else
             {

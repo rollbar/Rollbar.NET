@@ -43,11 +43,12 @@ namespace UnitTest.Rollbar.PayloadScrubbing
             };
             var scrubber = new XmlStringScrubber(scrubMask, scrubFields);
 
-            Assert.AreEqual("XmlStringScrubber: Data scrubbing failed!", scrubber.Scrub("{This is not XML}"), "Properly handles mis-formatted XML.");
-
-            string inputToScrub = "<body><not_secret>123</not_secret><secret1>aha1</secret1><data secret2=\"aha2\" /><data1 supersecret=\"SUPER\"><secret2>\"aha12\"</secret2></data1></body>";
+            string inputToScrub = "{This is not XML}";
             string scrubbedResult = scrubber.Scrub(inputToScrub);
+            Assert.IsTrue(scrubbedResult.StartsWith("XmlStringScrubber: Data scrubbing failed!"), "Properly handles mis-formatted XML.");
 
+            inputToScrub = "<body><not_secret>123</not_secret><secret1>aha1</secret1><data secret2=\"aha2\" /><data1 supersecret=\"SUPER\"><secret2>\"aha12\"</secret2></data1></body>";
+            scrubbedResult = scrubber.Scrub(inputToScrub);
             Assert.IsTrue(scrubbedResult.Contains(scrubMask), "Scrubbed at least something.");
             Assert.IsTrue(scrubbedResult.Contains("<not_secret>123</not_secret>"), "Did not touch wrong field.");
             Assert.IsTrue(scrubbedResult.Contains("<secret1>***</secret1>"), "Scrubbed by element name.");

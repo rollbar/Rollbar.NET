@@ -14,6 +14,8 @@
     public class Trace
         : DtoBase
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(Trace).FullName);
+
         internal Trace(string callStack, string exceptionInfo)
         {
             Assumption.AssertNotNullOrEmpty(callStack, nameof(callStack));
@@ -49,9 +51,7 @@
                     ex = new DTOs.Exception(entries[0]);
                     break;
                 default:
-                    System.Diagnostics.Trace.WriteLine(
-                        $"Unexpected exception info component/entry..."
-                        );
+                    traceSource.TraceEvent(TraceEventType.Warning, 0, $"Unexpected exception info component/entry...");
                     break;
             }
             if (ex != null)

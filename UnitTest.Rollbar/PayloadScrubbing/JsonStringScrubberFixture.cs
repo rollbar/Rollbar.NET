@@ -41,11 +41,12 @@ namespace UnitTest.Rollbar.PayloadScrubbing
             };
             var scrubber = new JsonStringScrubber(scrubMask, scrubFields);
 
-            Assert.AreEqual("JsonStringScrubber: Data scrubbing failed!", scrubber.Scrub("<This is not Json>"), "Properly handles mis-formatted JSON.");
-
-            string inputToScrub = "{\"not_secret\":123,\"secret1\":\"aha1\",\"data\": { \"secret2\":\"aha2\"}}";
+            string inputToScrub = "<This is not Json>";
             string scrubbedResult = scrubber.Scrub(inputToScrub);
+            Assert.IsTrue(scrubbedResult.StartsWith("JsonStringScrubber: Data scrubbing failed!"), "Properly handles mis-formatted JSON.");
 
+            inputToScrub = "{\"not_secret\":123,\"secret1\":\"aha1\",\"data\": { \"secret2\":\"aha2\"}}";
+            scrubbedResult = scrubber.Scrub(inputToScrub);
             Assert.IsTrue(scrubbedResult.Contains(scrubMask), "Scrubbed at least something.");
             Assert.IsTrue(scrubbedResult.Contains("123"), "Did not touch wrong field.");
             Assert.IsTrue(scrubbedResult.Contains("\"secret1\": \"***\""), "Scrubbed by field name.");

@@ -14,6 +14,8 @@ namespace Rollbar.Telemetry
         : ITelemetryCollector
         , IDisposable
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(TelemetryCollector).FullName);
+        
         #region singleton implementation
 
         /// <summary>
@@ -253,14 +255,14 @@ namespace Rollbar.Telemetry
                 }
                 catch (System.Threading.ThreadAbortException tae)
                 {
-                    System.Diagnostics.Trace.WriteLine(tae);
+                    traceSource.TraceEvent(TraceEventType.Warning, 0, $"{nameof(KeepCollectingTelemetry)}(...):{Environment.NewLine}{tae}");
                     return;
                 }
                 catch (System.Exception ex)
                 {
                     string msg = ex.Message;
-                    System.Diagnostics.Trace.WriteLine(msg);
-                    System.Diagnostics.Trace.WriteLine(ex);
+                    traceSource.TraceEvent(TraceEventType.Error, 0, $"{nameof(KeepCollectingTelemetry)}(...):{Environment.NewLine}{msg}");
+                    traceSource.TraceEvent(TraceEventType.Error, 0, $"{nameof(KeepCollectingTelemetry)}(...):{Environment.NewLine}{ex}");
                 }
 
                 if (cancellationToken.IsCancellationRequested)

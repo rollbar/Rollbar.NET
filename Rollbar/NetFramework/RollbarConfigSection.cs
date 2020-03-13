@@ -16,6 +16,8 @@
     public class RollbarConfigSection
             : ConfigurationSection
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarConfigSection).FullName);
+
         /// <summary>
         /// Gets the configuration.
         /// </summary>
@@ -32,9 +34,10 @@
             catch (Exception ex)
             {
                 //let's just trace it for now:
-                Trace.TraceError(
-                    "Error while attempting to get RollbarConfigSection:" + System.Environment.NewLine + ex
-                    );
+                traceSource.TraceEvent(
+                    TraceEventType.Warning, 
+                    0, 
+                    $"Error while attempting to get RollbarConfigSection:{System.Environment.NewLine}{ex}");
                 return null;
             }
         }
