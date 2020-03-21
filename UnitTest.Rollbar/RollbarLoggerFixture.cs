@@ -806,10 +806,13 @@ namespace UnitTest.Rollbar
         {
             RollbarLoggerFixture.stressLogsCount = 0;
 
+            //ConnectivityMonitor.Instance.Disable();
+
             RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
             {
                 Environment = RollbarUnitTestSettings.Environment,
                 ReportingQueueDepth = 200,
+                //ProxyAddress = "proxy",
             };
 
             this.IncrementCount<CommunicationEventArgs>(loggerConfig.ReportingQueueDepth);

@@ -7,14 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.8.0</SdkVersion>
+    <SdkVersion>3.9.0</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - feat: resolve #503: Enable use of the latest available C# compiler by the SDK projects.
-      - feat: resolve #502: Replace internal use of Trace with use TraceSource to have better control over what is traced.
-      - feat: resolve #497: Explore possibility of being able to use RollbarLogger and RollbarLoggerProvider outside AspNetCore middleware.
-      - test: resolve #500: Add CustomKeyValuePackageDecoratorFixture
-      - docs: resolve #501: Add VB.NET sample app
+      - feat: resolve #507: Disable ConnectivityMonitor in case a proxy server custom configuration.
     </PackageReleaseNotes>
 
     <!--
