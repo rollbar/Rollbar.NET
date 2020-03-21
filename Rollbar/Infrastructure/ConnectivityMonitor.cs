@@ -11,12 +11,12 @@
     /// <summary>
     /// Class ConnectivityMonitor.
     /// </summary>
-    internal class ConnectivityMonitor
+    public class ConnectivityMonitor
     {
         private readonly object _connectivityStatusSyncLock = new object();
         private bool _isConnectivityOn;
         private TimeSpan _currentMonitoringInterval;
-        private readonly Timer _monitoringTimer;
+        private  Timer _monitoringTimer;
         private readonly TimeSpan _initialDelay;
         private readonly TimeSpan _minMonitoringInterval;
         private readonly TimeSpan _maxMonitoringInterval;
@@ -69,38 +69,58 @@
 
         #endregion singleton implementation
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is connectivity on.
+        /// </summary>
+        /// <value><c>true</c> if this instance is connectivity on; otherwise, <c>false</c>.</value>
         public bool IsConnectivityOn
         {
             get { return this._isConnectivityOn; }
         }
 
+        /// <summary>
+        /// Overrides as offline.
+        /// </summary>
         public void OverrideAsOffline()
         {
             if (this._isConnectivityOn) 
             {
                 lock (this._connectivityStatusSyncLock)
                 {
-                    this._isConnectivityOn = false;
-                    //this.ResetMonitoringInterval();
+                    // we do not want to override anything as offline 
+                    // if the monitoring timer does not exist:
+                    if (this._monitoringTimer != null)
+                    {
+                        this._isConnectivityOn = false;
+                        //this.ResetMonitoringInterval();
+                    }
                 }
             }
         }
 
-        private bool IsConnectivityAvailable()
+        /// <summary>
+        /// Disables this instance.
+        /// </summary>
+        public void Disable()
         {
-            // only recognizes changes related to Internet adapters
-            if (!NetworkInterface.GetIsNetworkAvailable())
+            lock (this._connectivityStatusSyncLock)
             {
-                return false;
+                if (this._monitoringTimer != null)
+                {
+                    this._monitoringTimer.Dispose();
+                    this._monitoringTimer = null;
+                    this._isConnectivityOn = true;
+                }
             }
+        }
 
-            // however, this will include all adapters -- filter by operational status and activity
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            return (from networkInterface in interfaces
-                where networkInterface.OperationalStatus == OperationalStatus.Up
-                where (networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel) && (networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                where (!(networkInterface.Name.ToLower().Contains("virtual") || networkInterface.Description.ToLower().Contains("virtual")))
-                select networkInterface.GetIPv4Statistics()).Any(statistics => (statistics.BytesReceived > 0) && (statistics.BytesSent > 0));
+        /// <summary>
+        /// Gets a value indicating whether this instance is disabled.
+        /// </summary>
+        /// <value><c>true</c> if this instance is disabled; otherwise, <c>false</c>.</value>
+        public bool IsDisabled
+        {
+            get { return (this._monitoringTimer == null);}
         }
 
         private void CheckConnectivityStatus(object state)
@@ -149,8 +169,14 @@
 
         /// <summary>
         /// Tests the internet ping.
+        /// 
+        /// NOTE: this function will always retun 'false' when executed 
+        ///       behind a web proxy server requiring configuration custom settings!!!
         /// </summary>
         /// <returns><c>true</c> if the test succeeded, <c>false</c> otherwise.</returns>
+        /// <remarks>
+        /// https://stackoverflow.com/questions/35066981/how-to-use-proxy-with-tcpclient-connectasync
+        /// </remarks>
         public bool TestApiServer()
         {
             //return false;
@@ -167,6 +193,23 @@
                 return false;
             }
         }
+
+        //private bool IsConnectivityAvailable()
+        //{
+        //    // only recognizes changes related to Internet adapters
+        //    if (!NetworkInterface.GetIsNetworkAvailable())
+        //    {
+        //        return false;
+        //    }
+
+        //    // however, this will include all adapters -- filter by operational status and activity
+        //    NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+        //    return (from networkInterface in interfaces
+        //        where networkInterface.OperationalStatus == OperationalStatus.Up
+        //        where (networkInterface.NetworkInterfaceType != NetworkInterfaceType.Tunnel) && (networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+        //        where (!(networkInterface.Name.ToLower().Contains("virtual") || networkInterface.Description.ToLower().Contains("virtual")))
+        //        select networkInterface.GetIPv4Statistics()).Any(statistics => (statistics.BytesReceived > 0) && (statistics.BytesSent > 0));
+        //}
 
     }
 }

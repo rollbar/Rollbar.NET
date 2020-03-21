@@ -147,6 +147,10 @@ namespace Rollbar
                 || !string.IsNullOrWhiteSpace(proxyPassword)
                 )
             {
+                if (!ConnectivityMonitor.Instance.IsDisabled)
+                {
+                    ConnectivityMonitor.Instance.Disable();
+                }
                 proxySettings = $"{proxyAddress?.ToLower()}+{proxyUsername?.ToLower()}+{proxyPassword?.ToLower()}";
             }
 
