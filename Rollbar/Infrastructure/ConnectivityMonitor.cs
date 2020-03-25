@@ -107,6 +107,7 @@
             {
                 if (this._monitoringTimer != null)
                 {
+                    this._monitoringTimer.Change(Timeout.Infinite, Timeout.Infinite);
                     this._monitoringTimer.Dispose();
                     this._monitoringTimer = null;
                     this._isConnectivityOn = true;
@@ -125,11 +126,29 @@
 
         private void CheckConnectivityStatus(object state)
         {
-            //bool isConnectedNow = this.IsConnectivityAvailable();
-            bool isConnectedNow = this.TestApiServer();
+            try
+            {
+                DoCheckConnectivityStatus();
+            }
+            catch(Exception ex)
+            {
+                RollbarErrorUtility.Report(null, null, InternalRollbarError.ConnectivityMonitorError, null, ex, null);
+            }
+        }
 
+        private void DoCheckConnectivityStatus()
+        {
             lock (this._connectivityStatusSyncLock)
             {
+                if (this._monitoringTimer == null)
+                {
+                    this._isConnectivityOn = true;
+                    return;
+                }
+
+                //bool isConnectedNow = this.IsConnectivityAvailable();
+                bool isConnectedNow = this.TestApiServer();
+
                 if (isConnectedNow)
                 {
                     this.ResetMonitoringInterval();
@@ -147,7 +166,8 @@
         {
             // Keep incrementing the monitoring interval until max monitoring interval is reached.
             // Then, keep the max monitoring interval:
-            if (!this._isConnectivityOn 
+            if (this._monitoringTimer != null
+                && !this._isConnectivityOn 
                 && this._currentMonitoringInterval < this._maxMonitoringInterval)
             {
                 this._currentMonitoringInterval = 
@@ -160,7 +180,8 @@
         private void ResetMonitoringInterval()
         {
             // Making sure we are using shortest monitoring interval:
-            if (this._currentMonitoringInterval > this._minMonitoringInterval)
+            if (this._monitoringTimer != null 
+                && this._currentMonitoringInterval > this._minMonitoringInterval)
             {
                 this._currentMonitoringInterval = this._minMonitoringInterval;
                 this._monitoringTimer.Change(this._currentMonitoringInterval, this._currentMonitoringInterval);

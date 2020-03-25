@@ -798,6 +798,17 @@ namespace UnitTest.Rollbar
         }
 
         /// <summary>
+        /// Defines the test method MultithreadedStressTest_ConnectivityMonitorDisabled.
+        /// </summary>
+        //[TestMethod]
+        //[Timeout(60000)]
+        //public void MultithreadedStressTest_ConnectivityMonitorDisabled()
+        //{
+        //    ConnectivityMonitor.Instance.Disable();
+        //    MultithreadedStressTest();
+        //}
+
+        /// <summary>
         /// Defines the test method MultithreadedStressTest.
         /// </summary>
         [TestMethod]
