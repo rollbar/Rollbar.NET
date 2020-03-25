@@ -88,5 +88,10 @@
         /// The queue controller error
         /// </summary>
         QueueControllerError,
+
+        /// <summary>
+        /// The connectivity monitor error
+        /// </summary>
+        ConnectivityMonitorError,
     }
 }

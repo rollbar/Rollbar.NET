@@ -89,8 +89,8 @@ namespace UnitTest.Rollbar
             {
             }
 
-            //// for basic RollbarRateLimitVerification test:
-            //switch (e)
+            // for basic RollbarRateLimitVerification test:
+            //switch(e)
             //{
             //    case RollbarApiErrorEventArgs apiErrorEvent:
             //        //this.ApiErrorEvents.Add(apiErrorEvent);

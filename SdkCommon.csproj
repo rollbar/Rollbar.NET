@@ -7,10 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.9.0</SdkVersion>
+    <SdkVersion>3.9.1</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - feat: resolve #507: Disable ConnectivityMonitor in case a proxy server custom configuration.
+      - fix: resolve #509: ConnectivityMonitor's time disposed when CheckConnectivityStatus(..) is executed in a web proxy runtime environment
     </PackageReleaseNotes>
 
     <!--
