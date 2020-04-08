@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{3635FA93-6994-4CE4-9923-BF330DF1A439}"
 	ProjectSection(SolutionItems) = preProject
@@ -53,6 +53,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.Net.AspNet", "Rollbar.Net.AspNet\Rollbar.Net.AspNet.csproj", "{3248F1D9-9AA8-418B-B7F6-D89A801B24FA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.NetCore.AspNet", "Rollbar.NetCore.AspNet\Rollbar.NetCore.AspNet.csproj", "{D9EDC779-BE13-4C72-80A9-690B404D0384}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.NetPlatformExtensions", "Rollbar.NetPlatformExtensions\Rollbar.NetPlatformExtensions.csproj", "{DDF8E45C-B879-416F-950C-7DA9925911FF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.NetPlatformExtensions", "UnitTest.Rollbar.NetPlatformExtensions\UnitTest.Rollbar.NetPlatformExtensions.csproj", "{866217E8-59F1-4108-975C-78DCCEAFD154}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -163,6 +167,18 @@ Global
 		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
 		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9EDC779-BE13-4C72-80A9-690B404D0384}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF8E45C-B879-416F-950C-7DA9925911FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF8E45C-B879-416F-950C-7DA9925911FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF8E45C-B879-416F-950C-7DA9925911FF}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF8E45C-B879-416F-950C-7DA9925911FF}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{DDF8E45C-B879-416F-950C-7DA9925911FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF8E45C-B879-416F-950C-7DA9925911FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{866217E8-59F1-4108-975C-78DCCEAFD154}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{866217E8-59F1-4108-975C-78DCCEAFD154}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{866217E8-59F1-4108-975C-78DCCEAFD154}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{866217E8-59F1-4108-975C-78DCCEAFD154}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{866217E8-59F1-4108-975C-78DCCEAFD154}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{866217E8-59F1-4108-975C-78DCCEAFD154}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -180,6 +196,7 @@ Global
 		{4BB97A89-157A-4AB8-BC61-B702CD184FAF} = {0B7283A9-1926-4DD7-8B00-755D792118A8}
 		{A9654D0D-DF0E-4036-AABD-0369F8998555} = {0B7283A9-1926-4DD7-8B00-755D792118A8}
 		{8EEA898F-1E43-4C7D-B41F-51EC4D3F4417} = {0B7283A9-1926-4DD7-8B00-755D792118A8}
+		{866217E8-59F1-4108-975C-78DCCEAFD154} = {0B7283A9-1926-4DD7-8B00-755D792118A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB9E5CFE-0437-4312-99E5-1EBF60FB8157}

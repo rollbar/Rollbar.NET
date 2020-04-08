@@ -11,6 +11,7 @@
     using Microsoft.Extensions.Options;
     using Rollbar;
     using Rollbar.NetCore.AspNet;
+    using Rollbar.Telemetry;
     using Swashbuckle.AspNetCore.Swagger;
 
     public class Startup

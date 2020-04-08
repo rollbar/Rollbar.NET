@@ -8,7 +8,7 @@
 
   <Import Project="..\SdkCommon.csproj" />
 
-  <PropertyGroup Label="Appned or Override SDK Common NuGet Packaging Info">
+  <PropertyGroup Label="Append or Override SDK Common NuGet Packaging Info">
     <Title>$(Title) for a .NET Core ASP.NET based application.</Title>
     <Description>Implements Rollbar Notifier integration with .NET Core ASP.NET based application. $(Description)</Description>
     <PackageTags>$(PackageTags);.net-core;asp.net</PackageTags>

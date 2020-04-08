@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="16.0">
 
   <PropertyGroup Label="Toolset Related">
     <LangVersion>latest</LangVersion>
@@ -7,10 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.9.1</SdkVersion>
+    <SdkVersion>3.10.0</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - fix: resolve #509: ConnectivityMonitor's time disposed when CheckConnectivityStatus(..) is executed in a web proxy runtime environment
+      - feat: ref #513: Implement a new Rollbar.NetPlatformExtensions SDK module
     </PackageReleaseNotes>
 
     <!--
