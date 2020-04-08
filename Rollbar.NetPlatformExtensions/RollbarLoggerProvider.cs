@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.NetPlatformExtensions
 {
-    //using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -24,8 +23,6 @@
 
         private readonly RollbarOptions _rollbarOptions;
 
-        //private readonly IHttpContextAccessor _httpContextAccessor;
-
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarLoggerProvider" /> class from being created.
         /// </summary>
@@ -38,11 +35,9 @@
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <param name="options">The options.</param>
-        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public RollbarLoggerProvider(
                     IConfiguration configuration
                     , IOptions<RollbarOptions> options
-//                    , IHttpContextAccessor httpContextAccessor
                     )
         {
             Assumption.AssertNotNull(configuration, nameof(configuration));
@@ -52,7 +47,6 @@
             TelemetryCollector.Instance.StartAutocollection();
             this._rollbarOptions = options.Value;
             this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
-//            this._httpContextAccessor = httpContextAccessor;
 
             Assumption.AssertNotNull(this._rollbarConfig, nameof(this._rollbarConfig));
             Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.AccessToken, nameof(this._rollbarConfig.AccessToken));
@@ -74,7 +68,6 @@
                 name
                 , this._rollbarConfig
                 , this._rollbarOptions
-//                , this._httpContextAccessor
                 );
         }
 

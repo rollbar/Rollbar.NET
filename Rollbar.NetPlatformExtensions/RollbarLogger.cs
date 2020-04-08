@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using mslogging = Microsoft.Extensions.Logging;
     using Rollbar.Diagnostics;
-    //using Microsoft.AspNetCore.Http;
 
     /// <summary>
     /// Implements RollbarLogger.
@@ -18,8 +17,6 @@
         private readonly string _name;
 
         private readonly RollbarOptions _rollbarOptions;
-
-//        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private readonly IRollbar _rollbar;
 
@@ -36,16 +33,13 @@
         /// <param name="name">The name.</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarOptions">The options.</param>
-        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public RollbarLogger(string name
             , IRollbarConfig rollbarConfig
             , RollbarOptions rollbarOptions
-//            , IHttpContextAccessor httpContextAccessor
             )
         {
             this._name = name;
             this._rollbarOptions = rollbarOptions;
-//            this._httpContextAccessor = httpContextAccessor;
 
             this._rollbar = RollbarFactory.CreateNew(rollbarConfig);
         }
@@ -79,7 +73,7 @@
         /// <param name="state">The entry to be written. Can be also an object.</param>
         /// <param name="exception">The exception related to this entry.</param>
         /// <param name="formatter">Function to create a <c>string</c> message of the <paramref name="state" /> and <paramref name="exception" />.</param>
-        public virtual void Log<TState>(
+        public void Log<TState>(
             mslogging.LogLevel logLevel
             , mslogging.EventId eventId
             , TState state
@@ -115,48 +109,6 @@
                 }
             }
 
-            // let's custom build the Data object that includes the exception: 
-
-            //string message = null;
-            //if (formatter != null)
-            //{
-            //    message = formatter(state, exception);
-            //}
-
-            //IRollbarPackage rollbarPackage = null;
-            //if (exception != null)
-            //{
-            //    rollbarPackage = new ExceptionPackage(exception, exception.Message);
-            //}
-            //else if (!string.IsNullOrWhiteSpace(message))
-            //{
-            //    rollbarPackage = new MessagePackage(message, message);
-            //}
-            //else
-            //{
-            //    return; //nothing to report...
-            //}
-            
-            //Dictionary<string, object> customProperties = new Dictionary<string, object>();
-            //customProperties.Add(
-            //    "LogEventID"
-            //    , $"{eventId.Id}" + (string.IsNullOrWhiteSpace(eventId.Name) ? string.Empty : $" ({eventId.Name})")
-            //    );
-            //if (exception != null && message != null)
-            //{
-            //    customProperties.Add("LogMessage", message);
-            //}
-            //if (customProperties.Count > 0)
-            //{
-            //    rollbarPackage = new CustomKeyValuePackageDecorator(rollbarPackage, customProperties);
-            //}
-
-            //var currentContext = GetCurrentContext();
-            //if (currentContext != null)
-            //{
-            //    rollbarPackage = new RollbarHttpContextPackageDecorator(rollbarPackage, currentContext, true);
-            //}
-
             IRollbarPackage rollbarPackage = this.ComposeRolbarPackage(eventId, state, exception, formatter);
 
             var rollbarErrorLevel = RollbarLogger.Convert(logLevel);
@@ -181,6 +133,15 @@
             return RollbarScope.Push(scope);
         }
 
+        /// <summary>
+        /// Composes the rolbar package.
+        /// </summary>
+        /// <typeparam name="TState">The type of the t state.</typeparam>
+        /// <param name="eventId">The event identifier.</param>
+        /// <param name="state">The state.</param>
+        /// <param name="exception">The exception.</param>
+        /// <param name="formatter">The formatter.</param>
+        /// <returns>IRollbarPackage (if any) or null.</returns>
         protected virtual IRollbarPackage ComposeRolbarPackage<TState>(
             mslogging.EventId eventId
             , TState state
@@ -222,29 +183,8 @@
                 rollbarPackage = new CustomKeyValuePackageDecorator(rollbarPackage, customProperties);
             }
 
-            //var currentContext = GetCurrentContext();
-            //if (currentContext != null)
-            //{
-            //    rollbarPackage = new RollbarHttpContextPackageDecorator(rollbarPackage, currentContext, true);
-            //}
-
             return rollbarPackage;
         }
-
-        //private RollbarHttpContext GetCurrentContext()
-        //{
-        //    var context = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
-
-        //    if (context.HttpAttributes == null 
-        //        && this._httpContextAccessor != null 
-        //        && this._httpContextAccessor.HttpContext != null
-        //        )
-        //    {
-        //        context.HttpAttributes = new RollbarHttpAttributes(this._httpContextAccessor.HttpContext);
-        //    }
-
-        //    return context;
-        //}
 
         private static ErrorLevel Convert(mslogging.LogLevel logLevel)
         {

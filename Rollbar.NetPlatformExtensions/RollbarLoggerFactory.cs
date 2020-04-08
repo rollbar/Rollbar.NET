@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.NetPlatformExtensions
 {
-//    using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -19,15 +18,11 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <param name="rollbarOptions">The rollbar options.</param>
-        /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public RollbarLoggerFactory(
                     IConfiguration config
                     , IOptions<RollbarOptions> rollbarOptions
-//                    , IHttpContextAccessor httpContextAccessor
                     )
         {
-            //this._loggerProvider =
-            //    new RollbarLoggerProvider(config, rollbarOptions, httpContextAccessor);
             this._loggerProvider =
                 new RollbarLoggerProvider(config, rollbarOptions);
         }

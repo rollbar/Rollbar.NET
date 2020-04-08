@@ -43,12 +43,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the HTTP context.
-        /// </summary>
-        /// <value>The HTTP context.</value>
-//        public RollbarHttpContext HttpContext { get; set; }
-
-        /// <summary>
         /// Gets or sets the next.
         /// </summary>
         /// <value>The next.</value>
