@@ -12,11 +12,11 @@
     public static class RollbarServiceCollectionExtensions
     {
         /// <summary>
-        /// Adds the rollbar middleware.
+        /// Adds the Rollbar logger provider.
         /// </summary>
         /// <param name="services">The services.</param>
         /// <returns></returns>
-        public static IServiceCollection AddRollbarMiddleware(this IServiceCollection services)
+        public static IServiceCollection AddRollbarLoggerProvider(this IServiceCollection services)
         {
             services.AddOptions();
             services.TryAddSingleton<RollbarLoggerProvider>();
@@ -25,7 +25,7 @@
         }
 
         /// <summary>
-        /// Adds the rollbar logger.
+        /// Adds the Rollbar logger.
         /// </summary>
         /// <param name="services">The services.</param>
         /// <returns></returns>
@@ -40,7 +40,7 @@
         }
 
         /// <summary>
-        /// Adds the rollbar logger.
+        /// Adds the Rollbar logger.
         /// </summary>
         /// <param name="services">The services.</param>
         /// <param name="rollbarOptionsConfigAction">The rollbar options configuration action.</param>
@@ -49,7 +49,7 @@
         {
             Assumption.AssertNotNull(rollbarOptionsConfigAction, nameof(rollbarOptionsConfigAction));
 
-            services.AddRollbarMiddleware();
+            services.AddRollbarLoggerProvider();
             services.Configure(rollbarOptionsConfigAction);
 
             return services;

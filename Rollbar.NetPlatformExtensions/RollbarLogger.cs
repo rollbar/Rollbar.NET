@@ -190,19 +190,19 @@
         {
             switch (logLevel)
             {
+                case mslogging.LogLevel.None:
                 case mslogging.LogLevel.Critical:
                     return ErrorLevel.Critical;
                 case mslogging.LogLevel.Error:
                     return ErrorLevel.Error;
                 case mslogging.LogLevel.Warning:
                     return ErrorLevel.Warning;
+                case mslogging.LogLevel.Information:
+                    return ErrorLevel.Info;
                 case mslogging.LogLevel.Trace:
                 case mslogging.LogLevel.Debug:
-                    return ErrorLevel.Debug;
-                case mslogging.LogLevel.Information:
-                case mslogging.LogLevel.None:
                 default:
-                    return ErrorLevel.Info;
+                    return ErrorLevel.Debug;
             }
         }
 

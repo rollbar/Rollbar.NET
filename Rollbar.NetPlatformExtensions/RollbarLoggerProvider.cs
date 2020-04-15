@@ -7,6 +7,7 @@
     using Rollbar.NetCore;
     using Rollbar.Telemetry;
     using System.Collections.Concurrent;
+    using System.Linq;
 
     /// <summary>
     /// Implements Rollbar version of Microsoft.Extensions.Logging.ILoggerProvider.
@@ -36,8 +37,8 @@
         /// <param name="configuration">The configuration.</param>
         /// <param name="options">The options.</param>
         public RollbarLoggerProvider(
-                    IConfiguration configuration
-                    , IOptions<RollbarOptions> options
+                    IConfiguration configuration,
+                    IOptions<RollbarOptions> options
                     )
         {
             Assumption.AssertNotNull(configuration, nameof(configuration));
@@ -87,6 +88,11 @@
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
+                    foreach(var item in this._loggers?.Values)
+                    {
+                        item?.Dispose();
+                    }
+                    this._loggers?.Clear();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
