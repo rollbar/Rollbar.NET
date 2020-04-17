@@ -58,6 +58,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.NetPlatformExtensio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.NetPlatformExtensions", "UnitTest.Rollbar.NetPlatformExtensions\UnitTest.Rollbar.NetPlatformExtensions.csproj", "{866217E8-59F1-4108-975C-78DCCEAFD154}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.RollbarTestCommon", "UnitTest.RollbarTestCommon\UnitTest.RollbarTestCommon.csproj", "{D048FD85-6E35-423A-A67D-629C3A296EE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +181,12 @@ Global
 		{866217E8-59F1-4108-975C-78DCCEAFD154}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
 		{866217E8-59F1-4108-975C-78DCCEAFD154}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{866217E8-59F1-4108-975C-78DCCEAFD154}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D048FD85-6E35-423A-A67D-629C3A296EE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D048FD85-6E35-423A-A67D-629C3A296EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D048FD85-6E35-423A-A67D-629C3A296EE2}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{D048FD85-6E35-423A-A67D-629C3A296EE2}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{D048FD85-6E35-423A-A67D-629C3A296EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D048FD85-6E35-423A-A67D-629C3A296EE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -197,6 +205,7 @@ Global
 		{A9654D0D-DF0E-4036-AABD-0369F8998555} = {0B7283A9-1926-4DD7-8B00-755D792118A8}
 		{8EEA898F-1E43-4C7D-B41F-51EC4D3F4417} = {0B7283A9-1926-4DD7-8B00-755D792118A8}
 		{866217E8-59F1-4108-975C-78DCCEAFD154} = {0B7283A9-1926-4DD7-8B00-755D792118A8}
+		{D048FD85-6E35-423A-A67D-629C3A296EE2} = {0B7283A9-1926-4DD7-8B00-755D792118A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB9E5CFE-0437-4312-99E5-1EBF60FB8157}

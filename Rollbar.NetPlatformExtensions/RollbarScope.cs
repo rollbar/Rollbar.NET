@@ -46,7 +46,7 @@
         /// Gets or sets the next.
         /// </summary>
         /// <value>The next.</value>
-        public RollbarScope Next { get; set; }
+        public RollbarScope Next { get; private set; }
 
         /// <summary>
         /// The current scope
