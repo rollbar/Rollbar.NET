@@ -1,8 +1,5 @@
 ﻿namespace Rollbar.NetPlatformExtensions
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
     using mslogging = Microsoft.Extensions.Logging;
 
     /// <summary>

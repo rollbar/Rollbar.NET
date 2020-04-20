@@ -113,7 +113,6 @@
 
             var rollbarErrorLevel = ConverterUtil.ToRollbarErrorLevel(logLevel);
 
-            //RollbarLocator.RollbarInstance.Log(rollbarErrorLevel, rollbarPackage);
             this._rollbar.Log(rollbarErrorLevel, rollbarPackage);
         }
 
@@ -130,7 +129,6 @@
             Assumption.AssertTrue(!object.Equals(state, default(TState)), nameof(state));
 
             var scope = new RollbarScope(_name, state);
-//            scope.HttpContext = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
             return RollbarScope.Push(scope);
         }
 
@@ -206,7 +204,10 @@
                 {
                     // TODO: dispose managed state (managed objects).
 
-                    this._rollbar.Dispose();
+                    if (this._rollbar != RollbarLocator.RollbarInstance)
+                    {
+                        this._rollbar.Dispose();
+                    }
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

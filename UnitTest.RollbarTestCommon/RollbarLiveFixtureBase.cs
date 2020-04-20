@@ -5,6 +5,7 @@ namespace UnitTest.Rollbar
     using global::Rollbar;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Linq;
     using System.Collections.Generic;
     using System.Collections.Concurrent;
     using System.Diagnostics;
@@ -181,6 +182,19 @@ namespace UnitTest.Rollbar
                     eventType, 
                     new List<RollbarEventArgs>(new[] {rollbarEvent})
                     );
+            }
+        }
+
+        protected IReadOnlyCollection<TRollbarEvent> GetAllEvents<TRollbarEvent>()
+            where TRollbarEvent : RollbarEventArgs
+        {
+            if (this._rollbarEventsByType.TryGetValue(typeof(TRollbarEvent), out var rollbarEvents))
+            {
+                return rollbarEvents.Cast<TRollbarEvent>().ToArray();
+            }
+            else
+            {
+                return Array.Empty<TRollbarEvent>();
             }
         }
 

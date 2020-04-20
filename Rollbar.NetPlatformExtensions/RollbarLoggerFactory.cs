@@ -4,7 +4,6 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using System.Collections.Generic;
-    using System.Collections.Concurrent;
     using Rollbar.Diagnostics;
 
     /// <summary>
