@@ -34,12 +34,12 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarOptions">The options.</param>
         public RollbarLogger(string name
-            , IRollbarConfig rollbarConfig
-            , RollbarOptions rollbarOptions
+            ,IRollbarConfig rollbarConfig
+            ,RollbarOptions rollbarOptions = default
             )
         {
             this._name = name;
-            this._rollbarOptions = rollbarOptions;
+            this._rollbarOptions = rollbarOptions ?? new RollbarOptions();
 
             this._rollbar = RollbarFactory.CreateNew(rollbarConfig);
         }
@@ -111,9 +111,10 @@
 
             IRollbarPackage rollbarPackage = this.ComposeRolbarPackage(eventId, state, exception, formatter);
 
-            var rollbarErrorLevel = RollbarLogger.Convert(logLevel);
+            var rollbarErrorLevel = ConverterUtil.ToRollbarErrorLevel(logLevel);
 
-            RollbarLocator.RollbarInstance.Log(rollbarErrorLevel, rollbarPackage);
+            //RollbarLocator.RollbarInstance.Log(rollbarErrorLevel, rollbarPackage);
+            this._rollbar.Log(rollbarErrorLevel, rollbarPackage);
         }
 
         /// <summary>
@@ -184,26 +185,6 @@
             }
 
             return rollbarPackage;
-        }
-
-        private static ErrorLevel Convert(mslogging.LogLevel logLevel)
-        {
-            switch (logLevel)
-            {
-                case mslogging.LogLevel.None:
-                case mslogging.LogLevel.Critical:
-                    return ErrorLevel.Critical;
-                case mslogging.LogLevel.Error:
-                    return ErrorLevel.Error;
-                case mslogging.LogLevel.Warning:
-                    return ErrorLevel.Warning;
-                case mslogging.LogLevel.Information:
-                    return ErrorLevel.Info;
-                case mslogging.LogLevel.Trace:
-                case mslogging.LogLevel.Debug:
-                default:
-                    return ErrorLevel.Debug;
-            }
         }
 
         #region IDisposable Support

@@ -5,7 +5,7 @@ namespace UnitTest.Rollbar.NetPlatformExtensions
     using global::Rollbar;
     using global::Rollbar.DTOs;
     using global::Rollbar.NetPlatformExtensions;
-
+    using Microsoft.Extensions.Logging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
@@ -16,20 +16,33 @@ namespace UnitTest.Rollbar.NetPlatformExtensions
     public class RollbarLoggerFixture
         : RollbarLiveFixtureBase
     {
-         [TestInitialize]
-        public void SetupFixture()
+
+        [TestInitialize]
+        public override void SetupFixture()
         {
+            base.SetupFixture();
         }
 
         [TestCleanup]
-        public void TearDownFixture()
+        public override void TearDownFixture()
         {
+            base.TearDownFixture();
         }
 
 
         [TestMethod]
         public void TestBasics()
         {
+            RollbarLogger rl = new RollbarLogger(@"RollbarLoggerExtension", this.ProvideLiveRollbarConfig(), new RollbarOptions());
+
+            using(rl.BeginScope(@"ScopeState"))
+            {
+                this.IncrementCount<CommunicationEventArgs>();
+                rl.Log(LogLevel.Critical,default(EventId),@"LogState",new System.Exception(@"LogException"),default(Func<string,System.Exception,string>));
+                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(3));
+            }
+
+
 
         }
     }
