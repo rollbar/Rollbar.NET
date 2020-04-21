@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <!--TargetFramework>net48</TargetFramework-->
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;net48;net472;net462;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;net48;net472;net462</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <Configurations>Debug;Release;Instrumented</Configurations>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
@@ -33,10 +33,6 @@
   <ItemGroup>
     <None Remove="TestData\appsettings.json" Condition="'$(NetVariant)' == 'NET_FX'" />
     <None Remove="TestData\app.config" Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\RollbarUnitTestSettings.cs" Link="RollbarUnitTestSettings.cs" />
   </ItemGroup>  
 
   <ItemGroup>
@@ -51,23 +47,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+    <ProjectReference Include="..\UnitTest.RollbarTestCommon\UnitTest.RollbarTestCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'">
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(NetVariant)' == 'NET_FX'">

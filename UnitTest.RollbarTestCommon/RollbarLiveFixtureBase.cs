@@ -185,6 +185,11 @@ namespace UnitTest.Rollbar
             }
         }
 
+        /// <summary>
+        /// Gets all events.
+        /// </summary>
+        /// <typeparam name="TRollbarEvent">The type of the t rollbar event.</typeparam>
+        /// <returns>IReadOnlyCollection&lt;TRollbarEvent&gt;.</returns>
         protected IReadOnlyCollection<TRollbarEvent> GetAllEvents<TRollbarEvent>()
             where TRollbarEvent : RollbarEventArgs
         {
