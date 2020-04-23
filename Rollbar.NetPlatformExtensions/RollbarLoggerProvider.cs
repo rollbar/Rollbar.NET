@@ -24,10 +24,15 @@
 
         private readonly RollbarOptions _rollbarOptions;
 
+        //private RollbarLoggerProvider()
+        //{
+        //}
+
         /// <summary>
-        /// Prevents a default instance of the <see cref="RollbarLoggerProvider" /> class from being created.
+        /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.
         /// </summary>
-        private RollbarLoggerProvider()
+        public RollbarLoggerProvider()
+            : this(null,null)
         {
         }
 
@@ -41,16 +46,23 @@
                     IOptions<RollbarOptions> options
                     )
         {
-            Assumption.AssertNotNull(configuration, nameof(configuration));
-            Assumption.AssertNotNull(options, nameof(options));
+            //Assumption.AssertNotNull(configuration, nameof(configuration));
+            //Assumption.AssertNotNull(options, nameof(options));
 
-            RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-            TelemetryCollector.Instance.StartAutocollection();
-            this._rollbarOptions = options.Value;
-            this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
+            if(configuration!= null)
+            {
+                RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
+                TelemetryCollector.Instance.StartAutocollection();
+                this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
+            }
 
-            Assumption.AssertNotNull(this._rollbarConfig, nameof(this._rollbarConfig));
-            Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.AccessToken, nameof(this._rollbarConfig.AccessToken));
+            if(options != null)
+            {
+                this._rollbarOptions = options.Value;
+            }
+
+            //Assumption.AssertNotNull(this._rollbarConfig, nameof(this._rollbarConfig));
+            //Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.AccessToken, nameof(this._rollbarConfig.AccessToken));
         }
 
         /// <summary>

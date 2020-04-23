@@ -113,6 +113,7 @@
 
             var rollbarErrorLevel = ConverterUtil.ToRollbarErrorLevel(logLevel);
 
+            //RollbarLocator.RollbarInstance.Log(rollbarErrorLevel, rollbarPackage);
             this._rollbar.Log(rollbarErrorLevel, rollbarPackage);
         }
 
