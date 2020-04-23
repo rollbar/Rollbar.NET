@@ -11,6 +11,7 @@
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
       - feat: resolve #513: Implement a new Rollbar.NetPlatformExtensions SDK module
+      - feat: resolve #499: Explore possibility of integration with WorkerService (.Net Core 3.1)
     </PackageReleaseNotes>
 
     <!--
