@@ -24,10 +24,6 @@
 
         private readonly RollbarOptions _rollbarOptions;
 
-        //private RollbarLoggerProvider()
-        //{
-        //}
-
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.
         /// </summary>
@@ -46,9 +42,6 @@
                     IOptions<RollbarOptions> options
                     )
         {
-            //Assumption.AssertNotNull(configuration, nameof(configuration));
-            //Assumption.AssertNotNull(options, nameof(options));
-
             if(configuration!= null)
             {
                 RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
@@ -60,9 +53,6 @@
             {
                 this._rollbarOptions = options.Value;
             }
-
-            //Assumption.AssertNotNull(this._rollbarConfig, nameof(this._rollbarConfig));
-            //Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.AccessToken, nameof(this._rollbarConfig.AccessToken));
         }
 
         /// <summary>
