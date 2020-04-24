@@ -7,19 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\RollbarUnitTestSettings.cs" Link="RollbarUnitTestSettings.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Benchmarker.Common\Benchmarker.Common.csproj" />
     <ProjectReference Include="..\Rollbar.PlugIns.Serilog\Rollbar.PlugIns.Serilog.csproj" />
+    <ProjectReference Include="..\UnitTest.RollbarTestCommon\UnitTest.RollbarTestCommon.csproj" />
   </ItemGroup>
 
 </Project>

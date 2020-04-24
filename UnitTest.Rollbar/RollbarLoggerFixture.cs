@@ -506,7 +506,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// The maximum scoped instance test duration in millisec
         /// </summary>
-        private const int maxScopedInstanceTestDurationInMillisec = 50 * 1000;
+        private const int maxScopedInstanceTestDurationInMillisec = 60 * 1000;
         /// <summary>
         /// Defines the test method ScopedInstanceTest.
         /// </summary>
@@ -764,7 +764,7 @@ namespace UnitTest.Rollbar
         /// Defines the test method MultithreadedStressTest_BlockingLogs.
         /// </summary>
         [TestMethod]
-        [Timeout(60000)]
+        [Timeout(80000)]
         public void MultithreadedStressTest_BlockingLogs()
         {
             RollbarLoggerFixture.stressLogsCount = 0;

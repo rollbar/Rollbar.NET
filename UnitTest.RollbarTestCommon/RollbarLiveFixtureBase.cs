@@ -1,13 +1,13 @@
-﻿using System.Collections.Concurrent;
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace UnitTest.Rollbar
 {
     using global::Rollbar;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Linq;
     using System.Collections.Generic;
+    using System.Collections.Concurrent;
     using System.Diagnostics;
     using System.Threading;
 
@@ -21,8 +21,8 @@ namespace UnitTest.Rollbar
     /// It allows to set expectations for internal Rollbar events
     /// (as payload delivery to Rollbar API or any communication or internal errors).
     /// It has built-in verification of actual event counts against the expected ones per type of the events.</remarks>
-    [TestClass]
-    [TestCategory(nameof(RollbarLiveFixtureBase))]
+    //[TestClass]
+    //[TestCategory(nameof(RollbarLiveFixtureBase))]
     public abstract class RollbarLiveFixtureBase
         : IDisposable
     {
@@ -182,6 +182,24 @@ namespace UnitTest.Rollbar
                     eventType, 
                     new List<RollbarEventArgs>(new[] {rollbarEvent})
                     );
+            }
+        }
+
+        /// <summary>
+        /// Gets all events.
+        /// </summary>
+        /// <typeparam name="TRollbarEvent">The type of the t rollbar event.</typeparam>
+        /// <returns>IReadOnlyCollection&lt;TRollbarEvent&gt;.</returns>
+        protected IReadOnlyCollection<TRollbarEvent> GetAllEvents<TRollbarEvent>()
+            where TRollbarEvent : RollbarEventArgs
+        {
+            if (this._rollbarEventsByType.TryGetValue(typeof(TRollbarEvent), out var rollbarEvents))
+            {
+                return rollbarEvents.Cast<TRollbarEvent>().ToArray();
+            }
+            else
+            {
+                return Array.Empty<TRollbarEvent>();
             }
         }
 
