@@ -172,7 +172,7 @@ Each plug-in maintains its own versioning schema and is distributed as its own N
 
 ## More Information about the SDK
 
-More detailed information about Rollbar.NET usage and API reference are available at [Rollbar.NET SDK Documentation](https://docs.rollbar.com/docs/dotnet)
+More details about Rollbar.NET usage and API reference are available at [Rollbar.NET SDK Documentation](https://docs.rollbar.com/docs/dotnet).
 
 ## Help / Support
 
