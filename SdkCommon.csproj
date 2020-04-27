@@ -7,11 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.10.0</SdkVersion>
+    <SdkVersion>3.10.1</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - feat: resolve #513: Implement a new Rollbar.NetPlatformExtensions SDK module
-      - feat: resolve #499: Explore possibility of integration with WorkerService (.Net Core 3.1)
+      - chore: resolve #520: Update Readme.md to include Rollbar.NetPlatformExtentions Nuget badge
     </PackageReleaseNotes>
 
     <!--

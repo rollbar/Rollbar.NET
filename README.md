@@ -3,7 +3,7 @@
 A .NET Rollbar Client/Notifier that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, .NET Full Framework 4.5+, Mono, Xamarin, and, in general, any implementation of the .NET Standard 2.0+.
 It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the [Rollbar API](https://www.rollbar.com) for remote monitoring and analysis of the hosting application's behavior.'
 
-It also includes a collection of Rollbar.NET plug-ins into most popular .NET logging and exception handling libraries/frameworks, like:
+It also includes a collection of adapters and helpers for many .NET application frameworks as well as a collection of Rollbar.NET plug-ins into most popular .NET logging and exception handling libraries/frameworks, like:
 *   Serilog
 *   log4net
 *   NLog
@@ -23,10 +23,11 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 ## Available as NuGet packages
 - `Rollbar (the core)....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
+- `Rollbar.NetPlatformExtensions.........`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/)
+- `Rollbar.NetCore.AspNet................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/)
 - `Rollbar.Net.AspNet....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/)
 - `Rollbar.Net.AspNet.Mvc................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.Mvc/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.Mvc/)
 - `Rollbar.Net.AspNet.WebApi.............`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.WebApi/)
-- `Rollbar.NetCore.AspNet................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/)
 - `Rollbar.PlugIns.Log4net...............`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Log4net/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Log4net/)
 - `Rollbar.PlugIns.MSEnterpriseLibrary...`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.MSEnterpriseLibrary/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.MSEnterpriseLibrary/)
 - `Rollbar.PlugIns.NLog..................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.NLog/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.NLog/)
@@ -171,7 +172,7 @@ Each plug-in maintains its own versioning schema and is distributed as its own N
 
 ## More Information about the SDK
 
-More detailed information about Rollbar.NET usage and API reference are available at [https://docs.rollbar.com/docs/dotnet](https://docs.rollbar.com/docs/dotnet)
+More details about Rollbar.NET usage and API reference are available at [Rollbar.NET SDK Documentation](https://docs.rollbar.com/docs/dotnet).
 
 ## Help / Support
 
