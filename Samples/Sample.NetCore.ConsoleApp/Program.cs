@@ -203,6 +203,7 @@ namespace Sample.NetCore.ConsoleApp
                     "username",
                 },
                 EnableLocalPayloadStore = true,
+                //ProxyAddress = "http://something.com",
             };
             RollbarLocator.RollbarInstance
                 // minimally required Rollbar configuration:

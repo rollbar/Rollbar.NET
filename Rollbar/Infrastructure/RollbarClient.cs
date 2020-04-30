@@ -82,6 +82,8 @@ namespace Rollbar
                     rollbarConfig.ProxyPassword
                 );
 
+            this._httpClient.Timeout = rollbarConfig.PayloadPostTimeout;
+
             var header = new MediaTypeWithQualityHeaderValue("application/json");
             if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
             {
@@ -133,8 +135,22 @@ namespace Rollbar
 
             var task = this.PostAsJsonAsync(payloadBundle);
 
-            //task.Wait(expectedPostToApiTimeout);
-            task.Wait();
+            try
+            {
+                //task.Wait(expectedPostToApiTimeout);
+                task.Wait();
+            }
+            catch(System.Exception ex)
+            {
+                    RollbarErrorUtility.Report(
+                        null, 
+                        payloadBundle.AsHttpContentToSend, 
+                        InternalRollbarError.PayloadPostError, 
+                        "While PostAsJson(PayloadBundle payloadBundle)...", 
+                        ex,
+                        payloadBundle
+                    );
+            }
 
             return task.Result;
         }
@@ -160,7 +176,6 @@ namespace Rollbar
             }
 
             var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent);
-
             //task.Wait(expectedPostToApiTimeout);
             task.Wait();
 
@@ -227,32 +242,44 @@ namespace Rollbar
             const string accessTokenHeader = "X-Rollbar-Access-Token";
             request.Headers.Add(accessTokenHeader, accessToken);
             request.Content = jsonContent;
-
+            
             // send the request:
-            var postResponse = await this._httpClient.SendAsync(request);
-
+            HttpResponseMessage postResponse = null;
             RollbarResponse response = null;
-            if (postResponse.IsSuccessStatusCode)
+            try 
             {
-                string reply = 
-                    await postResponse.Content.ReadAsStringAsync();
-                response = 
-                    JsonConvert.DeserializeObject<RollbarResponse>(reply);
-                response.RollbarRateLimit = 
-                    new RollbarRateLimit(postResponse.Headers);
-                response.HttpDetails =
-                    $"Response: {postResponse}"
-                    + Environment.NewLine
-                    + $"Request: {postResponse.RequestMessage}"
-                    + Environment.NewLine
-                    ;
-            }
-            else
-            {
-                postResponse.EnsureSuccessStatusCode();
-            }
+                postResponse = await this._httpClient.SendAsync(request);
 
-            postResponse.Dispose();
+                if (postResponse.IsSuccessStatusCode)
+                {
+                    string reply = 
+                        await postResponse.Content.ReadAsStringAsync();
+                    response = 
+                        JsonConvert.DeserializeObject<RollbarResponse>(reply);
+                    response.RollbarRateLimit = 
+                        new RollbarRateLimit(postResponse.Headers);
+                    response.HttpDetails =
+                        $"Response: {postResponse}"
+                        + Environment.NewLine
+                        + $"Request: {postResponse.RequestMessage}"
+                        + Environment.NewLine
+                        ;
+                }
+                else
+                {
+                    postResponse.EnsureSuccessStatusCode();
+                }
+
+            }
+            catch(System.Exception ex)
+            {
+                throw ex; // we are waiting outside of this method...
+            }
+            finally
+            {
+                postResponse?.Dispose();
+
+            }
 
             return response;
         }

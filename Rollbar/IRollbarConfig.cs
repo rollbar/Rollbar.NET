@@ -110,6 +110,12 @@
         string ProxyPassword { get; }
 
         /// <summary>
+        /// Gets the payload POST timeout.
+        /// </summary>
+        /// <value>The payload POST timeout.</value>
+        TimeSpan PayloadPostTimeout { get; }
+
+        /// <summary>
         /// Gets the maximum reports per minute.
         /// </summary>
         /// <value>

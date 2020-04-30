@@ -51,9 +51,7 @@
         /// </value>
         [ConfigurationProperty("telemetryEnabled", IsRequired = false)]
         public bool? TelemetryEnabled
-        {
-            get { return this["telemetryEnabled"] as bool?; }
-        }
+            => this["telemetryEnabled"] as bool?;
 
         /// <summary>
         /// Gets the telemetry queue depth.
@@ -63,12 +61,7 @@
         /// </value>
         [ConfigurationProperty("telemetryQueueDepth", IsRequired = false)]
         public int? TelemetryQueueDepth
-        {
-            get
-            {
-                return this["telemetryQueueDepth"] as int?;
-            }
-        }
+            => this["telemetryQueueDepth"] as int?;
 
         /// <summary>
         /// Gets the telemetry automatic collection types.
@@ -78,12 +71,7 @@
         /// </value>
         [ConfigurationProperty("telemetryAutoCollectionTypes", IsRequired = false)]
         public TelemetryType? TelemetryAutoCollectionTypes
-        {
-            get
-            {
-                return this["telemetryAutoCollectionTypes"] as TelemetryType?;
-            }
-        }
+            => this["telemetryAutoCollectionTypes"] as TelemetryType?;
 
         /// <summary>
         /// Gets the telemetry automatic collection interval.
@@ -93,13 +81,7 @@
         /// </value>
         [ConfigurationProperty("telemetryAutoCollectionInterval", IsRequired = false)]
         public TimeSpan? TelemetryAutoCollectionInterval
-        {
-            get
-            {
-                return this["telemetryAutoCollectionInterval"] as TimeSpan?;
-            }
-        }
+            => this["telemetryAutoCollectionInterval"] as TimeSpan?;
 
     }
-
 }

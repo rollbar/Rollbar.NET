@@ -179,6 +179,14 @@
             => this["proxyPassword"] as string;
 
         /// <summary>
+        /// Gets the payload POST timeout.
+        /// </summary>
+        /// <value>The payload POST timeout.</value>
+        [ConfigurationProperty("payloadPostTimeout", IsRequired = false)]
+        public TimeSpan? PayloadPostTimeout
+            => this["payloadPostTimeout"] as TimeSpan?;
+
+        /// <summary>
         /// Gets or sets the maximum reports per minute.
         /// </summary>
         /// <value>

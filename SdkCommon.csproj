@@ -7,9 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.10.1</SdkVersion>
+    <SdkVersion>3.11.0</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
+      - feat: ref #522: Make Internal HttpClient's timeout property configurable
       - chore: resolve #520: Update Readme.md to include Rollbar.NetPlatformExtentions Nuget badge
     </PackageReleaseNotes>
 
