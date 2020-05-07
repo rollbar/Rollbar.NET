@@ -103,12 +103,14 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
 
          
             log.Info("Via log4net");
+            //Thread.Sleep(appender.RollbarConfig.PayloadPostTimeout);
 
             RollbarConfig newConfig = new RollbarConfig();
             newConfig.Reconfigure(appender.RollbarConfig);
             newConfig.Person = expectedPersons[1];
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
+            //Thread.Sleep(appender.RollbarConfig.PayloadPostTimeout);
 
             newConfig = new RollbarConfig();
             newConfig.Reconfigure(appender.RollbarConfig);

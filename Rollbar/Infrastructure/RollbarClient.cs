@@ -19,6 +19,7 @@ namespace Rollbar
     using Rollbar.Serialization.Json;
     using Rollbar.PayloadTruncation;
     using Rollbar.PayloadScrubbing;
+    using System.Threading;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -82,7 +83,8 @@ namespace Rollbar
                     rollbarConfig.ProxyPassword
                 );
 
-            this._httpClient.Timeout = rollbarConfig.PayloadPostTimeout;
+            //this._httpClient.Timeout = rollbarConfig.PayloadPostTimeout;
+            this._expectedPostToApiTimeout = rollbarConfig.PayloadPostTimeout;
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
             if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
@@ -115,7 +117,7 @@ namespace Rollbar
         /// <summary>
         /// The expected post to API timeout
         /// </summary>
-        private static readonly TimeSpan expectedPostToApiTimeout = TimeSpan.FromMilliseconds(500);
+        private readonly TimeSpan _expectedPostToApiTimeout;
 
         /// <summary>
         /// Posts as json.
@@ -133,15 +135,21 @@ namespace Rollbar
                 throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
 
-            var task = this.PostAsJsonAsync(payloadBundle);
+            using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+            {
+                var task = this.PostAsJsonAsync(payloadBundle, cancellationTokenSource.Token);
 
-            try
-            {
-                //task.Wait(expectedPostToApiTimeout);
-                task.Wait();
-            }
-            catch(System.Exception ex)
-            {
+                try
+                {
+                    //task.Wait();
+                    if(!task.Wait(this._expectedPostToApiTimeout))
+                    {
+                        cancellationTokenSource.Cancel(true);
+                    }
+                    return task.Result;
+                }
+                catch(System.Exception ex)
+                {
                     RollbarErrorUtility.Report(
                         null, 
                         payloadBundle.AsHttpContentToSend, 
@@ -150,9 +158,9 @@ namespace Rollbar
                         ex,
                         payloadBundle
                     );
+                    return null;
+                }
             }
-
-            return task.Result;
         }
 
         /// <summary>
@@ -175,19 +183,45 @@ namespace Rollbar
                 throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
 
-            var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent);
-            //task.Wait(expectedPostToApiTimeout);
-            task.Wait();
+            using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+            {
+                var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent, cancellationTokenSource.Token);
 
-            return task.Result;
+                try
+                {
+                    //task.Wait();
+                    if (!task.Wait(this._expectedPostToApiTimeout))
+                    {
+                        cancellationTokenSource.Cancel(true);
+                    }
+                    return task.Result;
+                }
+                catch(System.Exception ex)
+                {
+                    RollbarErrorUtility.Report(
+                        null, 
+                        jsonContent, 
+                        InternalRollbarError.PayloadPostError, 
+                        "While PostAsJson((string destinationUri, string accessToken, string jsonContent)...", 
+                        ex,
+                        null
+                    );
+                    return null;
+                }
+            }
+
         }
 
         /// <summary>
         /// post as json as an asynchronous operation.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        public async Task<RollbarResponse> PostAsJsonAsync(PayloadBundle payloadBundle)
+        public async Task<RollbarResponse> PostAsJsonAsync(
+            PayloadBundle payloadBundle, 
+            CancellationToken cancellationToken
+            )
         {
             Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
@@ -200,7 +234,8 @@ namespace Rollbar
             return await PostAsJsonAsync(
                 this._payloadPostUri, 
                 this._rollbarLogger.Config.AccessToken,
-                payloadBundle.AsHttpContentToSend
+                payloadBundle.AsHttpContentToSend,
+                cancellationToken
                 );
         }
 
@@ -210,8 +245,14 @@ namespace Rollbar
         /// <param name="destinationUri">The destination URI.</param>
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        public async Task<RollbarResponse> PostAsJsonAsync(string destinationUri, string accessToken, string jsonContent)
+        public async Task<RollbarResponse> PostAsJsonAsync(
+            string destinationUri, 
+            string accessToken, 
+            string jsonContent, 
+            CancellationToken cancellationToken
+            )
         {
             Assumption.AssertNotNullOrWhiteSpace(destinationUri, nameof(destinationUri));
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
@@ -220,7 +261,8 @@ namespace Rollbar
             return await PostAsJsonAsync(
                 new Uri(destinationUri), 
                 accessToken, 
-                new StringContent(jsonContent)
+                new StringContent(jsonContent),
+                cancellationToken
                 );
         }
 
@@ -230,8 +272,14 @@ namespace Rollbar
         /// <param name="destinationUri">The destination URI.</param>
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        private async Task<RollbarResponse> PostAsJsonAsync(Uri destinationUri, string accessToken, StringContent jsonContent)
+        private async Task<RollbarResponse> PostAsJsonAsync(
+            Uri destinationUri, 
+            string accessToken, 
+            StringContent jsonContent, 
+            CancellationToken cancellationToken
+            )
         {
             Assumption.AssertNotNull(destinationUri, nameof(destinationUri));
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
@@ -248,7 +296,7 @@ namespace Rollbar
             RollbarResponse response = null;
             try 
             {
-                postResponse = await this._httpClient.SendAsync(request);
+                postResponse = await this._httpClient.SendAsync(request, cancellationToken);
 
                 if (postResponse.IsSuccessStatusCode)
                 {
