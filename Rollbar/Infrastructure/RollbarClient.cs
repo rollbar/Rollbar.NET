@@ -3,10 +3,8 @@
 namespace Rollbar
 {
     using System;
-    using System.Linq;
     using System.Text;
-    using System.Collections.Generic;
-    using System.Diagnostics;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Net;
     using System.Net.Http;
@@ -16,16 +14,16 @@ namespace Rollbar
 
     using Rollbar.DTOs;
     using Rollbar.Diagnostics;
-    using Rollbar.Serialization.Json;
     using Rollbar.PayloadTruncation;
     using Rollbar.PayloadScrubbing;
-    using System.Threading;
 
     /// <summary>
     /// Client for accessing the Rollbar API
     /// </summary>
     internal class RollbarClient 
     {
+        #region fields
+
         /// <summary>
         /// The rollbar logger
         /// </summary>
@@ -35,6 +33,11 @@ namespace Rollbar
         /// The HTTP client
         /// </summary>
         private readonly HttpClient _httpClient;
+
+        /// <summary>
+        /// The expected post to API timeout
+        /// </summary>
+        private readonly TimeSpan _expectedPostToApiTimeout;
 
         /// <summary>
         /// The payload post URI
@@ -50,6 +53,10 @@ namespace Rollbar
         /// The payload scrubber
         /// </summary>
         private readonly RollbarPayloadScrubber _payloadScrubber;
+
+        #endregion fields
+
+        #region constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarClient" /> class.
@@ -83,7 +90,6 @@ namespace Rollbar
                     rollbarConfig.ProxyPassword
                 );
 
-            //this._httpClient.Timeout = rollbarConfig.PayloadPostTimeout;
             this._expectedPostToApiTimeout = rollbarConfig.PayloadPostTimeout;
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
@@ -108,6 +114,8 @@ namespace Rollbar
             }
         }
 
+        #endregion constructors
+
         /// <summary>
         /// Gets the configuration.
         /// </summary>
@@ -115,9 +123,62 @@ namespace Rollbar
         public IRollbarConfig Config { get { return this._rollbarLogger.Config; } }
 
         /// <summary>
-        /// The expected post to API timeout
+        /// Ensures the HTTP content to send.
         /// </summary>
-        private readonly TimeSpan _expectedPostToApiTimeout;
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns><c>true</c> if succeeds, <c>false</c> otherwise.</returns>
+        public bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
+        {
+            if (payloadBundle.AsHttpContentToSend != null)
+            {
+                return true;
+            }
+
+            Payload payload = payloadBundle.GetPayload();
+            Assumption.AssertNotNull(payload, nameof(payload));
+
+            if (!TruncatePayload(payloadBundle))
+            {
+                return false;
+            }
+
+            if (!ScrubHttpMessages(payloadBundle))
+            {
+                return false;
+            }
+
+            string jsonData = SerializePayloadAsJsonString(payloadBundle);
+            if (string.IsNullOrWhiteSpace(jsonData))
+            {
+                return false;
+            }
+
+            try
+            {
+                jsonData = ScrubPayload(jsonData);
+            }
+            catch (System.Exception exception)
+            {
+                RollbarErrorUtility.Report(
+                    this._rollbarLogger,
+                    payload,
+                    InternalRollbarError.PayloadScrubbingError,
+                    "While scrubbing a payload...",
+                    exception,
+                    payloadBundle
+                    );
+
+                return false;
+            }
+
+            payloadBundle.AsHttpContentToSend =
+                new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
+
+            Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
+            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.AccessToken), nameof(payload.AccessToken));
+
+            return true;
+        }
 
         /// <summary>
         /// Posts as json.
@@ -333,61 +394,92 @@ namespace Rollbar
         }
 
         /// <summary>
-        /// Ensures the HTTP content to send.
+        /// Serializes the payload as json string.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if succeeds, <c>false</c> otherwise.</returns>
-        public bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
+        /// <returns>System.String.</returns>
+        private string SerializePayloadAsJsonString(PayloadBundle payloadBundle)
         {
-            if (payloadBundle.AsHttpContentToSend != null)
-            {
-                return true;
-            }
-
             Payload payload = payloadBundle.GetPayload();
-            Assumption.AssertNotNull(payload, nameof(payload));
 
-            if (!TruncatePayload(payloadBundle))
-            {
-                return false;
-            }
-
-            if (!ScrubHttpMessages(payloadBundle))
-            {
-                return false;
-            }
-
-            string jsonData = SerializePayloadAsJsonString(payloadBundle);
-            if (string.IsNullOrWhiteSpace(jsonData))
-            {
-                return false;
-            }
-
+            string jsonData;
             try
             {
-                jsonData = ScrubPayload(jsonData);
+                jsonData = JsonConvert.SerializeObject(payload);
             }
             catch (System.Exception exception)
             {
                 RollbarErrorUtility.Report(
                     this._rollbarLogger,
                     payload,
-                    InternalRollbarError.PayloadScrubbingError,
-                    "While scrubbing a payload...",
+                    InternalRollbarError.PayloadSerializationError,
+                    "While serializing a payload...",
                     exception,
                     payloadBundle
-                    );
+                );
+
+                return null;
+            }
+
+            return jsonData;
+        }
+
+        #region payload truncation
+
+        /// <summary>
+        /// Truncates the payload.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        private bool TruncatePayload(PayloadBundle payloadBundle)
+        {
+            if (this._payloadTruncationStrategy == null)
+            {
+                return true; // as far as truncation is concerned - everything is good...
+            }
+
+            Payload payload = payloadBundle.GetPayload();
+
+            if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
+            {
+                var exception = new ArgumentOutOfRangeException(
+                    paramName: nameof(payload),
+                    message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
+                );
+
+                RollbarErrorUtility.Report(
+                    this._rollbarLogger,
+                    payload,
+                    InternalRollbarError.PayloadTruncationError,
+                    "While truncating a payload...",
+                    exception,
+                    payloadBundle
+                );
 
                 return false;
             }
 
-            payloadBundle.AsHttpContentToSend =
-                new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
-
-            Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
-            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.AccessToken), nameof(payload.AccessToken));
-
             return true;
+        }
+
+        #endregion payload truncation
+
+        #region payload scrubbing
+
+        /// <summary>
+        /// Scrubs the payload.
+        /// </summary>
+        /// <param name="payload">The payload.</param>
+        /// <returns>System.String.</returns>
+        internal string ScrubPayload(string payload)
+        {
+            if (this._payloadScrubber == null)
+            {
+                return payload; // as far as scrubbing is concerned - everything is good...
+            }
+
+            var scrubbedPayload = this._payloadScrubber.ScrubPayload(payload);
+            return scrubbedPayload;
         }
 
         /// <summary>
@@ -468,87 +560,6 @@ namespace Rollbar
             }
         }
 
-        /// <summary>
-        /// Serializes the payload as json string.
-        /// </summary>
-        /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns>System.String.</returns>
-        private string SerializePayloadAsJsonString(PayloadBundle payloadBundle)
-        {
-            Payload payload = payloadBundle.GetPayload();
-
-            string jsonData;
-            try
-            {
-                jsonData = JsonConvert.SerializeObject(payload);
-            }
-            catch (System.Exception exception)
-            {
-                RollbarErrorUtility.Report(
-                    this._rollbarLogger,
-                    payload,
-                    InternalRollbarError.PayloadSerializationError,
-                    "While serializing a payload...",
-                    exception,
-                    payloadBundle
-                );
-
-                return null;
-            }
-
-            return jsonData;
-        }
-
-        /// <summary>
-        /// Truncates the payload.
-        /// </summary>
-        /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        private bool TruncatePayload(PayloadBundle payloadBundle)
-        {
-            if (this._payloadTruncationStrategy == null)
-            {
-                return true; // as far as truncation is concerned - everything is good...
-            }
-
-            Payload payload = payloadBundle.GetPayload();
-
-            if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
-            {
-                var exception = new ArgumentOutOfRangeException(
-                    paramName: nameof(payload),
-                    message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
-                );
-
-                RollbarErrorUtility.Report(
-                    this._rollbarLogger,
-                    payload,
-                    InternalRollbarError.PayloadTruncationError,
-                    "While truncating a payload...",
-                    exception,
-                    payloadBundle
-                );
-
-                return false;
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Scrubs the payload.
-        /// </summary>
-        /// <param name="payload">The payload.</param>
-        /// <returns>System.String.</returns>
-        internal string ScrubPayload(string payload)
-        {
-            if (this._payloadScrubber == null)
-            {
-                return payload; // as far as scrubbing is concerned - everything is good...
-            }
-
-            var scrubbedPayload = this._payloadScrubber.ScrubPayload(payload);
-            return scrubbedPayload;
-        }
+        #endregion payload scrubbing
     }
 }
