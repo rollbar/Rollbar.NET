@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace UnitTest.Rollbar
 {
     using global::Rollbar;
-    using global::Rollbar.Deploys;
+    using global::Rollbar.Common;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
-    using System.Net.Http;
     using System.Threading;
+    using System.Linq;
 
     [TestClass]
     [TestCategory(nameof(RollbarClientFixture))]
@@ -32,5 +30,49 @@ namespace UnitTest.Rollbar
         {
         }
 
+        [TestMethod]
+        public void BasicTest()
+        {
+            MessagePackage package = new MessagePackage($"{nameof(RollbarClientFixture)}.BasicTest");
+
+            // [DO]: let's send a payload with default config settings (including default value for the PayloadPostTimeout)
+            // [EXPECT]: under all the good networking conditions sending a payload should succeed
+            RollbarConfig config = new RollbarConfig();
+            config.Reconfigure(this._loggerConfig);
+            RollbarLogger logger = (RollbarLogger)RollbarFactory.CreateNew(config);
+            RollbarClient client = new RollbarClient(logger);
+            PayloadBundle bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+            client.EnsureHttpContentToSend(bundle);
+            var response = client.PostAsJson(bundle);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(0, response.Error);
+            Assert.AreEqual(0, bundle.Exceptions.Count);
+
+            // [DO]: let's send a payload using unreasonably short PayloadPostTimeout
+            // [EXPECT]: even under all the good networking conditions sending a payload should not succeed
+            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(50); // too short
+            logger = (RollbarLogger)RollbarFactory.CreateNew(config);
+            client = new RollbarClient(logger);
+            bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+            client.EnsureHttpContentToSend(bundle);
+            response = client.PostAsJson(bundle);
+            Assert.IsNull(response);
+            Assert.AreEqual(1, bundle.Exceptions.Count);
+            Assert.AreEqual("While PostAsJson(PayloadBundle payloadBundle)...", bundle.Exceptions.First().Message);
+            Assert.IsTrue(bundle.Exceptions.First().InnerException.Message.StartsWith("One or more errors occurred"));
+            Assert.AreEqual("A task was canceled.",  bundle.Exceptions.First().InnerException.InnerException.Message);
+
+            // [DO]: let's send a payload using reasonably long PayloadPostTimeout
+            // [EXPECT]: even under all the good networking conditions sending a payload should succeed
+            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(1000); // long enough
+            logger = (RollbarLogger)RollbarFactory.CreateNew(config);
+            client = new RollbarClient(logger);
+            bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+            client.EnsureHttpContentToSend(bundle);
+            response = client.PostAsJson(bundle);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(0, response.Error);
+            Assert.AreEqual(0, bundle.Exceptions.Count);
+        }
     }
 }

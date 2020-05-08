@@ -102,6 +102,7 @@
             this.ProxyAddress = null;
             this.ProxyUsername = null;
             this.ProxyPassword = null;
+            this.PayloadPostTimeout = TimeSpan.FromSeconds(30);
             this.CheckIgnore = null;
             this.Transform = null;
             this.Truncate = null;
@@ -305,6 +306,12 @@
         public string ProxyPassword { get; set; }
 
         /// <summary>
+        /// Gets or sets the payload POST timeout.
+        /// </summary>
+        /// <value>The payload POST timeout.</value>
+        public TimeSpan PayloadPostTimeout { get; set; }
+
+        /// <summary>
         /// Gets or sets the maximum reports per minute.
         /// </summary>
         /// <value>
@@ -410,6 +417,8 @@
             sb.AppendLine(indent + "  Server: " + this.Server);
             sb.AppendLine(indent + "  Person: " + this.Person);
             sb.AppendLine(indent + "  ProxyAddress: " + this.ProxyAddress);
+            sb.AppendLine(indent + "  ProxyPassword: " + this.ProxyPassword);
+            sb.AppendLine(indent + "  PayloadPostTimeout: " + this.PayloadPostTimeout);
             sb.AppendLine(indent + "  MaxReportsPerMinute: " + this.MaxReportsPerMinute);
             sb.AppendLine(indent + "  ReportingQueueDepth: " + this.ReportingQueueDepth);
             sb.AppendLine(indent + "  MaxItems: " + this.MaxItems);

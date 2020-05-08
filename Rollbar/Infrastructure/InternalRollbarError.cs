@@ -90,6 +90,11 @@
         QueueControllerError,
 
         /// <summary>
+        /// The payload post error
+        /// </summary>
+        PayloadPostError,
+
+        /// <summary>
         /// The connectivity monitor error
         /// </summary>
         ConnectivityMonitorError,

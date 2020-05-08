@@ -135,6 +135,11 @@
                 rollbarConfig.ProxyPassword = rollbarConfigSection.ProxyPassword;
             }
             
+            if (rollbarConfigSection.PayloadPostTimeout.HasValue)
+            {
+                rollbarConfig.PayloadPostTimeout = rollbarConfigSection.PayloadPostTimeout.Value;
+            }
+
             if (rollbarConfigSection.PersonDataCollectionPolicies.HasValue)
             {
                 rollbarConfig.PersonDataCollectionPolicies = rollbarConfigSection.PersonDataCollectionPolicies.Value;
