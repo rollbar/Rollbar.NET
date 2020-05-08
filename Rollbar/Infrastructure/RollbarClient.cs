@@ -227,13 +227,11 @@ namespace Rollbar
         /// <summary>
         /// Posts as json.
         /// </summary>
-        /// <param name="destinationUri">The destination URI.</param>
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
         /// <returns>RollbarResponse.</returns>
-        public RollbarResponse PostAsJson(string destinationUri, string accessToken, string jsonContent) 
+        public RollbarResponse PostAsJson(string accessToken, string jsonContent) 
         {
-            Assumption.AssertNotNullOrWhiteSpace(destinationUri, nameof(destinationUri));
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
 
@@ -246,7 +244,7 @@ namespace Rollbar
 
             using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
             {
-                var task = this.PostAsJsonAsync(destinationUri, accessToken, jsonContent, cancellationTokenSource.Token);
+                var task = this.PostAsJsonAsync(accessToken, jsonContent, cancellationTokenSource.Token);
 
                 try
                 {
@@ -293,7 +291,6 @@ namespace Rollbar
             }
 
             return await PostAsJsonAsync(
-                this._payloadPostUri, 
                 this._rollbarLogger.Config.AccessToken,
                 payloadBundle.AsHttpContentToSend,
                 cancellationToken
@@ -303,24 +300,20 @@ namespace Rollbar
         /// <summary>
         /// post as json as an asynchronous operation.
         /// </summary>
-        /// <param name="destinationUri">The destination URI.</param>
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
         public async Task<RollbarResponse> PostAsJsonAsync(
-            string destinationUri, 
             string accessToken, 
             string jsonContent, 
             CancellationToken cancellationToken
             )
         {
-            Assumption.AssertNotNullOrWhiteSpace(destinationUri, nameof(destinationUri));
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
 
             return await PostAsJsonAsync(
-                new Uri(destinationUri), 
                 accessToken, 
                 new StringContent(jsonContent),
                 cancellationToken
@@ -330,19 +323,16 @@ namespace Rollbar
         /// <summary>
         /// post as json as an asynchronous operation.
         /// </summary>
-        /// <param name="destinationUri">The destination URI.</param>
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
         private async Task<RollbarResponse> PostAsJsonAsync(
-            Uri destinationUri, 
             string accessToken, 
             StringContent jsonContent, 
             CancellationToken cancellationToken
             )
         {
-            Assumption.AssertNotNull(destinationUri, nameof(destinationUri));
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNull(jsonContent, nameof(jsonContent));
 
@@ -359,7 +349,7 @@ namespace Rollbar
             {
                 postResponse = await this._httpClient.SendAsync(request, cancellationToken);
 
-                if (postResponse.IsSuccessStatusCode)
+                if(postResponse.IsSuccessStatusCode)
                 {
                     string reply = 
                         await postResponse.Content.ReadAsStringAsync();

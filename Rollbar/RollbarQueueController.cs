@@ -457,7 +457,7 @@ namespace Rollbar
             try
             {
                 RollbarResponse response = 
-                    rollbarClient.PostAsJson(config.EndPoint, config.AccessToken, payloadRecord.PayloadJson);
+                    rollbarClient.PostAsJson(config.AccessToken, payloadRecord.PayloadJson);
                 return response;
             }
             catch (System.Exception ex)

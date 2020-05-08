@@ -6,9 +6,8 @@ namespace UnitTest.Rollbar
     using global::Rollbar.Common;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
-    using System.Net.Http;
     using System.Threading;
-    using System.Diagnostics;
+    using System.Linq;
 
     [TestClass]
     [TestCategory(nameof(RollbarClientFixture))]
@@ -31,29 +30,49 @@ namespace UnitTest.Rollbar
         {
         }
 
-        // NOTE: we need to figure out how we can simulate programmatically network coditions that
-        //       cause prolonged network operation timeouts (over 20 sec), so we can test HttpClient's
-        //       set to let's say 10 sec.
-        //[TestMethod]
-        //public void BasicTest()
-        //{
-        //    MessagePackage package = new MessagePackage(@"Test message");
+        [TestMethod]
+        public void BasicTest()
+        {
+            MessagePackage package = new MessagePackage($"{nameof(RollbarClientFixture)}.BasicTest");
 
-        //    RollbarConfig config = new RollbarConfig();
-        //    config.Reconfigure(this._loggerConfig);
-        //    config.ProxyAddress = @"http://10.0.1.11";
+            // [DO]: let's send a payload with default config settings (including default value for the PayloadPostTimeout)
+            // [EXPECT]: under all the good networking conditions sending a payload should succeed
+            RollbarConfig config = new RollbarConfig();
+            config.Reconfigure(this._loggerConfig);
+            RollbarLogger logger = (RollbarLogger)RollbarFactory.CreateNew(config);
+            RollbarClient client = new RollbarClient(logger);
+            PayloadBundle bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+            client.EnsureHttpContentToSend(bundle);
+            var response = client.PostAsJson(bundle);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(0, response.Error);
+            Assert.AreEqual(0, bundle.Exceptions.Count);
 
-        //    RollbarLogger logger = (RollbarLogger) RollbarFactory.CreateNew(config);
-            
-        //    RollbarClient client = new RollbarClient(logger);
-            
-        //    PayloadBundle bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
-        //    client.EnsureHttpContentToSend(bundle);
+            // [DO]: let's send a payload using unreasonably short PayloadPostTimeout
+            // [EXPECT]: even under all the good networking conditions sending a payload should not succeed
+            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(50); // too short
+            logger = (RollbarLogger)RollbarFactory.CreateNew(config);
+            client = new RollbarClient(logger);
+            bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+            client.EnsureHttpContentToSend(bundle);
+            response = client.PostAsJson(bundle);
+            Assert.IsNull(response);
+            Assert.AreEqual(1, bundle.Exceptions.Count);
+            Assert.AreEqual("While PostAsJson(PayloadBundle payloadBundle)...", bundle.Exceptions.First().Message);
+            Assert.IsTrue(bundle.Exceptions.First().InnerException.Message.StartsWith("One or more errors occurred"));
+            Assert.AreEqual("A task was canceled.",  bundle.Exceptions.First().InnerException.InnerException.Message);
 
-        //    Stopwatch sw = Stopwatch.StartNew();
-        //    var response = client.PostAsJson(@"http://api.rollbar.com", config.AccessToken, "payload");
-        //    sw.Stop();
-        //    TimeSpan postTimespan = sw.Elapsed;
-        //}
+            // [DO]: let's send a payload using reasonably long PayloadPostTimeout
+            // [EXPECT]: even under all the good networking conditions sending a payload should succeed
+            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(1000); // long enough
+            logger = (RollbarLogger)RollbarFactory.CreateNew(config);
+            client = new RollbarClient(logger);
+            bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+            client.EnsureHttpContentToSend(bundle);
+            response = client.PostAsJson(bundle);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(0, response.Error);
+            Assert.AreEqual(0, bundle.Exceptions.Count);
+        }
     }
 }
