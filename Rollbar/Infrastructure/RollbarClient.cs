@@ -16,6 +16,7 @@ namespace Rollbar
     using Rollbar.Diagnostics;
     using Rollbar.PayloadTruncation;
     using Rollbar.PayloadScrubbing;
+    using System.Runtime.ExceptionServices;
 
     /// <summary>
     /// Client for accessing the Rollbar API
@@ -202,7 +203,6 @@ namespace Rollbar
 
                 try
                 {
-                    //task.Wait();
                     if(!task.Wait(this._expectedPostToApiTimeout))
                     {
                         cancellationTokenSource.Cancel(true);
@@ -248,7 +248,6 @@ namespace Rollbar
 
                 try
                 {
-                    //task.Wait();
                     if (!task.Wait(this._expectedPostToApiTimeout))
                     {
                         cancellationTokenSource.Cancel(true);
@@ -372,7 +371,7 @@ namespace Rollbar
             }
             catch(System.Exception ex)
             {
-                throw ex; // we are waiting outside of this method...
+                ExceptionDispatchInfo.Capture(ex).Throw();  // we are waiting outside of this method...
             }
             finally
             {
