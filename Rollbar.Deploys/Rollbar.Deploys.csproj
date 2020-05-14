@@ -1,0 +1,21 @@
+<Project ToolsVersion="16.0">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Rollbar.Deploys</AssemblyName>
+    <RootNamespace>Rollbar.Deploys</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="Append or Override SDK Common NuGet Packaging Info">
+    <Title>$(Title) for tracking deployments with a Rollbar project.</Title>
+    <Description>Implements Rollbar project deployments tracking. $(Description)</Description>
+    <PackageTags>$(PackageTags);rollbar;deployment;deploys;microsoft;.net</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+</Project>
