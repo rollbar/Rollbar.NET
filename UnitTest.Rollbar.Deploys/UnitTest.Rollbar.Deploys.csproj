@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup Label="Toolset Related">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <PropertyGroup>
     <!--TargetFramework>netcoreapp3.1</TargetFramework-->
     <TargetFrameworks>netcoreapp3.1;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</TargetFrameworks>

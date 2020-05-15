@@ -1,40 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
-  <Class Name="Rollbar.Deploys.Deployment">
-    <Position X="6.75" Y="1" Width="6.25" />
+  <Class Name="Rollbar.Deploys.RollbarDeploysManagerFactory">
+    <Position X="12.5" Y="1" Width="7" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAGAAAAAAAAAAAAAAAAAEBAAAAAAAIAABAAAAA=</HashCode>
-      <FileName>Deploys\Deployment.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RollbarDeploysManagerFactory.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Rollbar.Deploys.RollbarDeploysManager">
-    <Position X="6.75" Y="5" Width="6.25" />
+  <Class Name="Rollbar.Deploys.DeploymentFactory">
+    <Position X="0.5" Y="1" Width="11.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABACAAQAAAAAAAAAAAAgAAAAAABAAAA=</HashCode>
-      <FileName>Deploys\RollbarDeploysManager.cs</FileName>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DeploymentFactory.cs</FileName>
     </TypeIdentifier>
-    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Rollbar.Deploys.IDeployment">
-    <Position X="0.75" Y="1" Width="3.5" />
+    <Position X="0.5" Y="2.5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAGAAAAAAAAAAAAAAAAAEBAAAAAAAIAAAAAAAA=</HashCode>
-      <FileName>Deploys\IDeployment.cs</FileName>
+      <FileName>IDeployment.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.Deploys.IDeploymentDetails">
-    <Position X="0.75" Y="3.5" Width="3.5" />
+    <Position X="0.5" Y="5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAJAAgAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Deploys\IDeploymentDetails.cs</FileName>
+      <FileName>IDeploymentDetails.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.Deploys.IRollbarDeploysManager">
-    <Position X="0.75" Y="6" Width="5.75" />
+    <Position X="12.5" Y="2.5" Width="5.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAABAAAAQAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Deploys\IRollbarDeploysManager.cs</FileName>
+      <FileName>IRollbarDeploysManager.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

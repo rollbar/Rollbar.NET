@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{3635FA93-6994-4CE4-9923-BF330DF1A439}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		azure-pipelines.yml = azure-pipelines.yml
 		README.md = README.md
 		ReadMe.txt = ReadMe.txt
@@ -57,9 +58,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.NetPlatfor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.RollbarTestCommon", "UnitTest.RollbarTestCommon\UnitTest.RollbarTestCommon.csproj", "{D048FD85-6E35-423A-A67D-629C3A296EE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rollbar.Deploys", "Rollbar.Deploys\Rollbar.Deploys.csproj", "{1D76F140-CB8E-40F6-AEE7-C5CBC1291375}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.Deploys", "Rollbar.Deploys\Rollbar.Deploys.csproj", "{1D76F140-CB8E-40F6-AEE7-C5CBC1291375}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Rollbar.Deploys", "UnitTest.Rollbar.Deploys\UnitTest.Rollbar.Deploys.csproj", "{7907781E-B227-4E52-A8DA-096429B1FBB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.Deploys", "UnitTest.Rollbar.Deploys\UnitTest.Rollbar.Deploys.csproj", "{7907781E-B227-4E52-A8DA-096429B1FBB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

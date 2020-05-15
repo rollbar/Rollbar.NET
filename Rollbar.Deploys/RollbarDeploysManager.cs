@@ -1,6 +1,7 @@
 ﻿namespace Rollbar.Deploys
 {
     using Rollbar.Diagnostics;
+    using System;
     using System.Net.Http;
     using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@
     /// Implements IRollbarDeploysManager.
     /// </summary>
     /// <seealso cref="Rollbar.Deploys.IRollbarDeploysManager" />
+    [Obsolete("This type is obsolete. Instead, use Rollbar.Deploys.RollbarDeploysManagerFactory.", false)]
     public class RollbarDeploysManager
             : IRollbarDeploysManager
     {
@@ -23,6 +25,7 @@
         /// </summary>
         /// <param name="writeAccessToken">The write access token.</param>
         /// <param name="readAccessToken">The read access token.</param>
+        [Obsolete("This constructor is obsolete. Instead, use Rollbar.Deploys.RollbarDeploysManagerFactory.CreateRollbarDeploysManager(...)", false)]
         public RollbarDeploysManager(string writeAccessToken, string readAccessToken)
         {
             Assumption.AssertFalse(
@@ -46,11 +49,9 @@
             var config =
                new RollbarConfig(this._writeAccessToken) { Environment = deployment.Environment, };
 
-            using (var httpClient = new HttpClient())
-            {
-                RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
-                await rollbarClient.PostAsync(deployment);
-            }
+            using HttpClient httpClient = new HttpClient();
+            RollbarDeployClient rollbarClient = new RollbarDeployClient(config,httpClient);
+            await rollbarClient.PostAsync(deployment);
         }
 
         /// <summary>
@@ -65,14 +66,10 @@
 
             var config = new RollbarConfig(this._readAccessToken);
 
-            using (var httpClient = new HttpClient())
-            {
-                RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
-
-                var result = await rollbarClient.GetDeploymentAsync(this._readAccessToken, deploymentID);
-
-                return result.Deploy;
-            }
+            using HttpClient httpClient = new HttpClient();
+            RollbarDeployClient rollbarClient = new RollbarDeployClient(config,httpClient);
+            var result = await rollbarClient.GetDeploymentAsync(this._readAccessToken,deploymentID);
+            return result.Deploy;
         }
 
         /// <summary>
@@ -87,14 +84,10 @@
 
             var config = new RollbarConfig(this._readAccessToken);
 
-            using (var httpClient = new HttpClient())
-            {
-                RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
-
-                var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken, pageNumber);
-
-                return result.DeploysPage.Deploys;
-            }
+            using HttpClient httpClient = new HttpClient();
+            RollbarDeployClient rollbarClient = new RollbarDeployClient(config,httpClient);
+            var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken,pageNumber);
+            return result.DeploysPage.Deploys;
         }
     }
 }
