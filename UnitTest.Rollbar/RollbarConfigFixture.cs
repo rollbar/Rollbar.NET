@@ -1,7 +1,6 @@
 ﻿namespace UnitTest.Rollbar
 {
     using global::Rollbar;
-    using global::Rollbar.Deploys;
     using global::Rollbar.DTOs;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;

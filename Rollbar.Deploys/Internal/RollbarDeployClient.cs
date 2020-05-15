@@ -1,4 +1,6 @@
-﻿namespace Rollbar.Deploys
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar.Deploys")]
+
+namespace Rollbar.Deploys
 {
     using Newtonsoft.Json;
     using Rollbar.Common;
