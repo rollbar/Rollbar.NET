@@ -5,6 +5,7 @@
     /// <summary>
     /// Models data used for registering a deployment instance.
     /// </summary>
+    /// [TODO] Eventually, make this class internal AND remove all the [Obsolete] attributes ...
     [Obsolete("This type is obsolete. Instead, use Rollbar.Deploys.IDeployment.", false)]
  #pragma warning disable CA1724 // The type name conflicts with the namespace
    public class Deployment 

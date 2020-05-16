@@ -9,6 +9,7 @@
     /// Implements IRollbarDeploysManager.
     /// </summary>
     /// <seealso cref="Rollbar.Deploys.IRollbarDeploysManager" />
+    /// [TODO] Eventually, make this class internal AND remove all the [Obsolete] attributes ...
     [Obsolete("This type is obsolete. Instead, use Rollbar.Deploys.RollbarDeploysManagerFactory.", false)]
     public class RollbarDeploysManager
             : IRollbarDeploysManager
@@ -50,7 +51,7 @@
                new RollbarConfig(this._writeAccessToken) { Environment = deployment.Environment, };
 
             using HttpClient httpClient = new HttpClient();
-            RollbarDeployClient rollbarClient = new RollbarDeployClient(config,httpClient);
+            RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
             await rollbarClient.PostAsync(deployment);
         }
 
@@ -68,7 +69,7 @@
 
             using HttpClient httpClient = new HttpClient();
             RollbarDeployClient rollbarClient = new RollbarDeployClient(config,httpClient);
-            var result = await rollbarClient.GetDeploymentAsync(this._readAccessToken,deploymentID);
+            var result = await rollbarClient.GetDeploymentAsync(this._readAccessToken, deploymentID);
             return result.Deploy;
         }
 
@@ -85,8 +86,8 @@
             var config = new RollbarConfig(this._readAccessToken);
 
             using HttpClient httpClient = new HttpClient();
-            RollbarDeployClient rollbarClient = new RollbarDeployClient(config,httpClient);
-            var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken,pageNumber);
+            RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
+            var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken, pageNumber);
             return result.DeploysPage.Deploys;
         }
     }

@@ -10,7 +10,7 @@
     <SdkVersion>3.12.0</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - refactor: ref #526: Split out Deploys related functionality into separate deployable module
+      - refactor: resolve #526: Split out Deploys related functionality into separate deployable module
     </PackageReleaseNotes>
 
     <!--
