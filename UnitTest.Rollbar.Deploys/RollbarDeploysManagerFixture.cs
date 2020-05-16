@@ -16,7 +16,7 @@ namespace UnitTest.Rollbar.Deploys
     public class RollbarDeploysManagerFixture
     {
         private readonly IRollbarDeploysManager _deploysManager = 
-            new RollbarDeploysManager(
+            RollbarDeploysManagerFactory.CreateRollbarDeploysManager(
                 RollbarUnitTestSettings.AccessToken,
                 RollbarUnitTestSettings.DeploymentsReadAccessToken
                 );
@@ -37,7 +37,7 @@ namespace UnitTest.Rollbar.Deploys
             List<IDeploymentDetails> deployments = new List<IDeploymentDetails>();
 
             int pageCount = 0;
-            int pageItems = 0;
+            int pageItems;
             do
             {
                 var task = this._deploysManager.GetDeploymentsPageAsync(RollbarUnitTestSettings.Environment, ++pageCount);
@@ -60,13 +60,14 @@ namespace UnitTest.Rollbar.Deploys
         {
             var initialDeployments = this.GetAllDeployments();
 
-            var deployment = 
-                new Deployment(RollbarUnitTestSettings.Environment, "99909a3a5a3dd4363f414161f340b582bb2e4161")
-                {
-                    Comment = "Some new unit test deployment @ " + DateTimeOffset.Now,
-                    LocalUsername = "UnitTestRunner",
-                    RollbarUsername = "rollbar",
-                };
+            var deployment = DeploymentFactory.CreateDeployment(
+                    environment: RollbarUnitTestSettings.Environment, 
+                    revision: "99909a3a5a3dd4363f414161f340b582bb2e4161", 
+                    comment: "Some new unit test deployment @ " + DateTimeOffset.Now,
+                    localUserName: "UnitTestRunner", 
+                    rollbarUserName: "rollbar" 
+                    );
+
             var task = this._deploysManager.RegisterAsync(deployment);
             task.Wait(TimeSpan.FromSeconds(3));
             Assert.IsNull(task.Exception);
