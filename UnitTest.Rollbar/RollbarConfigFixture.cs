@@ -4,6 +4,7 @@
     using global::Rollbar.DTOs;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
 
@@ -46,6 +47,18 @@
                 Assert.Fail("The instance creation is expected to succeed, but did not!");
             }
 
+        }
+
+        /// <summary>
+        /// Defines the test method TestDefaultScrubFields.
+        /// </summary>
+        [TestMethod]
+        public void TestDefaultScrubFields()
+        {
+            var config = new RollbarConfig(RollbarUnitTestSettings.AccessToken);
+            Assert.IsTrue(
+                new HashSet<string>(config.ScrubFields).IsSupersetOf(RollbarDataScrubbingHelper.Instance.GetDefaultFields())
+                );
         }
 
         /// <summary>
