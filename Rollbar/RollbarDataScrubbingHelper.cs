@@ -100,6 +100,27 @@
         }
 
         /// <summary>
+        /// Gets the default fields.
+        /// </summary>
+        /// <returns>ISet&lt;System.String&gt;.</returns>
+        public virtual ISet<string> GetDefaultFields()
+        {
+            return new HashSet<string>(
+                new[]
+                {
+                    "Password", 
+                    "passwd", 
+                    "confirm_password", 
+                    "password_confirmation", 
+                    "accessToken", 
+                    "auth_token", 
+                    "authentication", 
+                    "secret",
+                }
+                );
+        }
+
+        /// <summary>
         /// Gets the common password fields.
         /// </summary>
         /// <returns>ISet&lt;System.String&gt;.</returns>

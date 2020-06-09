@@ -7,10 +7,10 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.12.0</SdkVersion>
+    <SdkVersion>3.12.1</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - refactor: resolve #526: Split out Deploys related functionality into separate deployable module
+      - feat: resolve #530: Implement non-empty default scrubbing fields list
     </PackageReleaseNotes>
 
     <!--

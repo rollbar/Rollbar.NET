@@ -92,12 +92,8 @@
             this.MaxItems = 0;
             this.CaptureUncaughtExceptions = true;
             this.LogLevel = ErrorLevel.Debug;
-            this.ScrubFields = new string[]
-            {
-            };
-            this.ScrubWhitelistFields = new string[]
-            {
-            };
+            this.ScrubFields = RollbarDataScrubbingHelper.Instance.GetDefaultFields().ToArray();
+            this.ScrubWhitelistFields = new string[] {};
             this.EndPoint = "https://api.rollbar.com/api/1/";
             this.ProxyAddress = null;
             this.ProxyUsername = null;
