@@ -123,8 +123,6 @@ namespace Rollbar.NetCore.AspNet
                     }
 
                     await this._nextRequestProcessor(context);
-
-
                 }
                 catch (System.Exception ex)
                 {
@@ -157,15 +155,16 @@ namespace Rollbar.NetCore.AspNet
                             throw;
                         }
                     }
-                    else
-                    {
-                        IRollbarPackage rollbarPackage = new ExceptionPackage(ex, $"{nameof(RollbarMiddleware)} processed uncaught exception.");
-                        rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
-                        rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
-                        RollbarLocator.RollbarInstance.Critical(rollbarPackage);
-                    }
 
-                    throw new RollbarMiddlewareException(ex);
+                    var title = !string.IsNullOrWhiteSpace(ex.Message)
+                        ? ex.Message
+                        : $"{nameof(RollbarMiddleware)} processed uncaught exception.";
+                    IRollbarPackage rollbarPackage = new ExceptionPackage(ex, title);
+                    rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
+                    rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
+                    RollbarLocator.RollbarInstance.Critical(rollbarPackage);
+
+                    throw;
                 }
                 finally
                 {
