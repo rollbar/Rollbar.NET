@@ -85,6 +85,23 @@ steps:
 - script: dotnet restore Rollbar.sln
   displayName: 'Restore Rollbar.sln package dependencies...'
 
+# Run: dotnet tool install --global dotnet-sonarscanner --version 4.7.1
+- script: dotnet tool install --global dotnet-sonarscanner
+  displayName: 'Installing SonarScanner for MSBuild'
+
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare SonarCloud analysis'
+  inputs:
+    SonarCloud: 'WSC Rollbar.NET SonarCloud'
+    organization: '$(SonarOrganization)'
+    scannerMode: 'MSBuild'
+    projectKey: '$(SonarProjectKey)'
+    projectName: '$(SonarProjectName)'
+    projectVersion: '$(Build.BuildNumber)'
+#    extraProperties: |
+#     sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml
+#     sonar.exclusions=**/wwwroot/lib/**/*
+
 
 - task: VSBuild@1
   displayName: 'Building the solution...'
@@ -115,23 +132,6 @@ steps:
     #buildPlatform: # Optional
     #buildConfiguration: # Optional
     #publishRunAttachments: true # Optional
-
-# Run: dotnet tool install --global dotnet-sonarscanner --version 4.7.1
-- script: dotnet tool install --global dotnet-sonarscanner
-  displayName: 'Installing SonarScanner for MSBuild'
-
-- task: SonarCloudPrepare@1
-  displayName: 'Prepare SonarCloud analysis'
-  inputs:
-    SonarCloud: 'WSC Rollbar.NET SonarCloud'
-    organization: '$(SonarOrganization)'
-    scannerMode: 'MSBuild'
-    projectKey: '$(SonarProjectKey)'
-    projectName: '$(SonarProjectName)'
-    projectVersion: '$(Build.BuildNumber)'
-#    extraProperties: |
-#     sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml
-#     sonar.exclusions=**/wwwroot/lib/**/*
 
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud code analysis'
