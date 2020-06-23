@@ -50,11 +50,14 @@ steps:
 #    installationPath: $(Agent.ToolsDirectory)/dotnet
     
 - script: dotnet --version
+  displayName: 'Show .NET Core Version...'
 
 - script: dotnet --info
+  displayName: 'Show .NET Core Info...'
 
 # NuGet Tool Installer
-# Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. Use this task to change the version of NuGet used in the NuGet tasks.
+# Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. 
+# Use this task to change the version of NuGet used in the NuGet tasks.
 - task: NuGetToolInstaller@0
   displayName: 'Installing NuGet...'
   inputs:
@@ -80,6 +83,7 @@ steps:
     restoreSolution: '$(solution)'
 
 - script: dotnet restore Rollbar.sln
+  displayName: 'Restore Rollbar.sln package dependencies...'
 
 
 - task: VSBuild@1
@@ -99,9 +103,9 @@ steps:
 
 # Publish Test Results
 # Publish test results to Azure Pipelines
-#- task: PublishTestResults@2
-#  inputs:
-#    testResultsFormat: VSTest
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: VSTest
     #testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
     #testResultsFiles: '**/TEST-*.xml' 
     #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
@@ -111,6 +115,10 @@ steps:
     #buildPlatform: # Optional
     #buildConfiguration: # Optional
     #publishRunAttachments: true # Optional
+
+# Run: dotnet tool install --global dotnet-sonarscanner --version 4.7.1
+- script: dotnet tool install --global dotnet-sonarscanner
+  displayName: 'Installing SonarScanner for MSBuild'
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare SonarCloud analysis'
