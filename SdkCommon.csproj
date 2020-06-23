@@ -7,10 +7,11 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.12.1</SdkVersion>
+    <SdkVersion>3.12.2</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - feat: resolve #530: Implement non-empty default scrubbing fields list
+      - feat: ref #???: ???
+      - fix: resolve #???: ???
     </PackageReleaseNotes>
 
     <!--
