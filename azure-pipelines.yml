@@ -91,11 +91,11 @@ steps:
     configuration: '$(buildConfiguration)'
 
 # DISABLED UNTIL FAILING UNIT-TEST ON CI SERVER ARE FIXED 
-#- task: VSTest@2
-#  displayName: 'Unit-testing build results...'
-#  inputs:
-#    platform: '$(buildPlatform)'
-#    configuration: '$(buildConfiguration)'
+- task: VSTest@2
+  displayName: 'Unit-testing build results...'
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
 # Publish Test Results
 # Publish test results to Azure Pipelines
