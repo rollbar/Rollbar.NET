@@ -506,7 +506,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// The maximum scoped instance test duration in millisec
         /// </summary>
-        private const int maxScopedInstanceTestDurationInMillisec = 60 * 1000;
+        private const int maxScopedInstanceTestDurationInMillisec = 120 * 1000;
         /// <summary>
         /// Defines the test method ScopedInstanceTest.
         /// </summary>
