@@ -17,7 +17,7 @@
     <!-- MSTest adapter -->
     <MSTest>
         <MapInconclusiveToFailed>True</MapInconclusiveToFailed>
-        <CaptureTraceOutput>false</CaptureTraceOutput>
+        <CaptureTraceOutput>True</CaptureTraceOutput>
         <DeleteDeploymentDirectoryAfterTestRunIsComplete>False</DeleteDeploymentDirectoryAfterTestRunIsComplete>
         <DeploymentEnabled>False</DeploymentEnabled>
         <!-- Uncomment and update path for assembly resolution  -->

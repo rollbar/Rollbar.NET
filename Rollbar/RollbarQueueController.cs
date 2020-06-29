@@ -278,6 +278,23 @@ namespace Rollbar
         }
 
         /// <summary>
+        /// Gets the queues.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <returns>IEnumerable&lt;PayloadQueue&gt;.</returns>
+        internal IEnumerable<PayloadQueue> GetQueues(string accessToken = null)
+        {
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                if (this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata metadata))
+                {
+                    return metadata.PayloadQueues;
+                }
+            }
+            return new PayloadQueue[0];
+        }
+
+        /// <summary>
         /// The synchronize lock
         /// </summary>
         private readonly object _syncLock = new object();

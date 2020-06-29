@@ -506,7 +506,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// The maximum scoped instance test duration in millisec
         /// </summary>
-        private const int maxScopedInstanceTestDurationInMillisec = 120 * 1000;
+        private const int maxScopedInstanceTestDurationInMillisec = 60 * 1000;
         /// <summary>
         /// Defines the test method ScopedInstanceTest.
         /// </summary>
@@ -515,9 +515,21 @@ namespace UnitTest.Rollbar
         public void ScopedInstanceTest()
         {
             // we need to make sure we are starting clean:
-            while (RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken) > 0)
+            RollbarQueueController.Instance.FlushQueues();
+            var accessTokenQueues = 
+                RollbarQueueController.Instance.GetQueues(RollbarUnitTestSettings.AccessToken);
+            while (accessTokenQueues.Count() > 0)
             {
+                string msg = "Initial queues count: " + accessTokenQueues.Count();
+                System.Diagnostics.Trace.WriteLine(msg);
+                Console.WriteLine(msg);
+                foreach(var queue in accessTokenQueues)
+                {
+                    queue.Release();
+                }
                 Thread.Sleep(TimeSpan.FromMilliseconds(250));
+                accessTokenQueues = 
+                    RollbarQueueController.Instance.GetQueues(RollbarUnitTestSettings.AccessToken);
             }
 
             RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
@@ -533,9 +545,16 @@ namespace UnitTest.Rollbar
                 logger.Log(ErrorLevel.Error, "test message");
             }
             // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles: 
-            while (totalInitialQueues != RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken))
+            int currentQueuesCount = 
+                RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken);
+            while (totalInitialQueues != currentQueuesCount)
             {
+                string msg = "Current queues count: " + currentQueuesCount + " while initial count was: " + totalInitialQueues;
+                System.Diagnostics.Trace.WriteLine(msg);
+                Console.WriteLine(msg);
                 Thread.Sleep(TimeSpan.FromMilliseconds(250)); 
+                currentQueuesCount = 
+                    RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken);
             }
 
             // if everything is good, we should get here way before this test method times out:
