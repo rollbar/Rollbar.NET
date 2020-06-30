@@ -15,7 +15,12 @@
         /// <returns>IDictionary&lt;System.String, System.Object&gt;.</returns>
         public static IDictionary<string, object> ToObjectDictionary(this IDictionary<string, string> stringDictionary)
         {
-            int capacity = stringDictionary?.Count ?? 0;
+            if (stringDictionary == null)
+            {
+                return new Dictionary<string, object>(0);
+            }
+
+            int capacity = stringDictionary.Count;
             var objectDictionary = new Dictionary<string, object>(capacity);
             if (capacity == 0)
             {
@@ -26,7 +31,6 @@
             {
                 objectDictionary[key] = stringDictionary[key];
             }
-
             return objectDictionary;
         }
 
