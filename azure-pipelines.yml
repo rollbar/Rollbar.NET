@@ -58,10 +58,11 @@ steps:
 # NuGet Tool Installer
 # Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. 
 # Use this task to change the version of NuGet used in the NuGet tasks.
-- task: NuGetToolInstaller@0
+- task: NuGetToolInstaller@1
   displayName: 'Installing NuGet...'
   inputs:
-    versionSpec: '5.3.1' 
+    versionSpec: '5.x' 
+    checkLatest: true
     #checkLatest: true # Optional
 
 # Visual Studio Test Platform Installer
