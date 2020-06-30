@@ -10,8 +10,9 @@
     <SdkVersion>3.12.2</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - feat: ref #???: ???
-      - fix: resolve #???: ???
+      - chore: ref #537: .NET SDK SonarCloud "issues and vulnerabilities" cleanup.
+      - chore: resolve #535: Investigate .NET SDK SonarCloud code coverage by unit tests in Azure DevOps.
+      - chore: resolve #536: Integrate the CI with SonarCloud.
     </PackageReleaseNotes>
 
     <!--

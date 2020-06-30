@@ -65,49 +65,47 @@ namespace UnitTest.Rollbar
 
             RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
 
-            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            using IRollbar rollbar = this.ProvideDisposableRollbar();
+            rollbar.Configure(config);
+            this.IncrementCount<CommunicationEventArgs>();
+            rollbar.Critical(ExceptionSimulator.GetExceptionWith(5,"Exception logged async!"));
+            this.IncrementCount<CommunicationEventArgs>();
+            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
+                .Critical(ExceptionSimulator.GetExceptionWith(5,"Exception logged sync!"));
+
+            int rethrowCount = 0;
+            config.RethrowExceptionsAfterReporting = true;
+            rollbar.Configure(config);
+            try
             {
-                rollbar.Configure(config);
                 this.IncrementCount<CommunicationEventArgs>();
-                rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async!"));
-                this.IncrementCount<CommunicationEventArgs>();
-                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
-                    .Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync!"));
-
-                int rethrowCount = 0;
-                config.RethrowExceptionsAfterReporting = true;
-                rollbar.Configure(config);
-                try
-                {
-                    this.IncrementCount<CommunicationEventArgs>();
-                    rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async with rethrow!"));
-                }
-                catch
-                {
-                    rethrowCount++;
-                }
-
-                try
-                {
-                    this.IncrementCount<CommunicationEventArgs>();
-                    rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
-                        .Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync with rethrow!"));
-                }
-                catch
-                {
-                    rethrowCount++;
-                }
-
-                config.RethrowExceptionsAfterReporting = false;
-                rollbar.Configure(config);
-                this.IncrementCount<CommunicationEventArgs>();
-                rollbar.Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged async!"));
-                this.IncrementCount<CommunicationEventArgs>();
-                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
-                    .Critical(ExceptionSimulator.GetExceptionWith(5, "Exception logged sync!"));
-
-                Assert.AreEqual(2, rethrowCount, "matching total of rethrows...");
+                rollbar.Critical(ExceptionSimulator.GetExceptionWith(5,"Exception logged async with rethrow!"));
             }
+            catch
+            {
+                rethrowCount++;
+            }
+
+            try
+            {
+                this.IncrementCount<CommunicationEventArgs>();
+                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
+                    .Critical(ExceptionSimulator.GetExceptionWith(5,"Exception logged sync with rethrow!"));
+            }
+            catch
+            {
+                rethrowCount++;
+            }
+
+            config.RethrowExceptionsAfterReporting = false;
+            rollbar.Configure(config);
+            this.IncrementCount<CommunicationEventArgs>();
+            rollbar.Critical(ExceptionSimulator.GetExceptionWith(5,"Exception logged async!"));
+            this.IncrementCount<CommunicationEventArgs>();
+            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3))
+                .Critical(ExceptionSimulator.GetExceptionWith(5,"Exception logged sync!"));
+
+            Assert.AreEqual(2,rethrowCount,"matching total of rethrows...");
         }
 
         [TestMethod]
@@ -117,28 +115,26 @@ namespace UnitTest.Rollbar
 
             RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
 
-            using (IRollbar rollbar = this.ProvideDisposableRollbar())
-            {
-                rollbar.Configure(config);
-                this.IncrementCount<CommunicationEventArgs>();
-                rollbar.Critical("Transmission is expected to happen!");
-                this.IncrementCount<CommunicationEventArgs>();
-                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
+            using IRollbar rollbar = this.ProvideDisposableRollbar();
+            rollbar.Configure(config);
+            this.IncrementCount<CommunicationEventArgs>();
+            rollbar.Critical("Transmission is expected to happen!");
+            this.IncrementCount<CommunicationEventArgs>();
+            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
 
-                config.Transmit = false;
-                rollbar.Configure(config);
-                this.IncrementCount<TransmissionOmittedEventArgs>();
-                rollbar.Critical("Transmission is expected to be omitted!");
-                this.IncrementCount<TransmissionOmittedEventArgs>();
-                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to be omitted!");
+            config.Transmit = false;
+            rollbar.Configure(config);
+            this.IncrementCount<TransmissionOmittedEventArgs>();
+            rollbar.Critical("Transmission is expected to be omitted!");
+            this.IncrementCount<TransmissionOmittedEventArgs>();
+            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to be omitted!");
 
-                config.Transmit = true;
-                rollbar.Configure(config);
-                this.IncrementCount<CommunicationEventArgs>();
-                rollbar.Critical("Transmission is expected to happen!");
-                this.IncrementCount<CommunicationEventArgs>();
-                rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
-            }
+            config.Transmit = true;
+            rollbar.Configure(config);
+            this.IncrementCount<CommunicationEventArgs>();
+            rollbar.Critical("Transmission is expected to happen!");
+            this.IncrementCount<CommunicationEventArgs>();
+            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
         }
 
         /// <summary>
@@ -357,10 +353,7 @@ namespace UnitTest.Rollbar
 
             try
             {
-                using (var rollbar = RollbarFactory.CreateNew(false, invalidConfig))
-                {
-
-                }
+                using var rollbar = RollbarFactory.CreateNew(false,invalidConfig);
             }
             catch (RollbarException ex)
             {
@@ -496,11 +489,9 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ImplementsIDisposable()
         {
-            using (IRollbar logger = this.ProvideDisposableRollbar())
-            {
-                IDisposable disposable = logger as IDisposable;
-                Assert.IsNotNull(disposable);
-            }
+            using IRollbar logger = this.ProvideDisposableRollbar();
+            IDisposable disposable = logger as IDisposable;
+            Assert.IsNotNull(disposable);
         }
 
         /// <summary>
@@ -568,17 +559,15 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ReportException()
         {
-            using (IRollbar logger = this.ProvideDisposableRollbar())
+            using IRollbar logger = this.ProvideDisposableRollbar();
+            try
             {
-                try
-                {
-                    this.IncrementCount<CommunicationEventArgs>();
-                    logger.AsBlockingLogger(defaultRollbarTimeout).Error(new System.Exception("test exception"));
-                }
-                catch
-                {
-                    Assert.Fail("the execution should not reach here!");
-                }
+                this.IncrementCount<CommunicationEventArgs>();
+                logger.AsBlockingLogger(defaultRollbarTimeout).Error(new System.Exception("test exception"));
+            }
+            catch
+            {
+                Assert.Fail("the execution should not reach here!");
             }
         }
 
@@ -596,17 +585,15 @@ namespace UnitTest.Rollbar
             }
             catch (System.Exception ex)
             {
-                using (IRollbar logger = this.ProvideDisposableRollbar())
+                using IRollbar logger = this.ProvideDisposableRollbar();
+                try
                 {
-                    try
-                    {
-                        this.IncrementCount<CommunicationEventArgs>();
-                        logger.AsBlockingLogger(defaultRollbarTimeout).Error(new System.Exception("outer exception", ex));
-                    }
-                    catch
-                    {
-                        Assert.Fail();
-                    }
+                    this.IncrementCount<CommunicationEventArgs>();
+                    logger.AsBlockingLogger(defaultRollbarTimeout).Error(new System.Exception("outer exception",ex));
+                }
+                catch
+                {
+                    Assert.Fail();
                 }
             }
         }
@@ -617,18 +604,16 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ReportMessage()
         {
-            using (IRollbar logger = this.ProvideDisposableRollbar())
+            using IRollbar logger = this.ProvideDisposableRollbar();
+            try
             {
-                try
-                {
-                    this.IncrementCount<CommunicationEventArgs>();
-                    logger.AsBlockingLogger(defaultRollbarTimeout).Log(ErrorLevel.Error, "test message");
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    Assert.Fail("should never reach here!");
-                }
+                this.IncrementCount<CommunicationEventArgs>();
+                logger.AsBlockingLogger(defaultRollbarTimeout).Log(ErrorLevel.Error,"test message");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                Assert.Fail("should never reach here!");
             }
         }
 
@@ -703,22 +688,23 @@ namespace UnitTest.Rollbar
             TimeSpan payloadSubmissionDelay = TimeSpan.FromMilliseconds(3 * maxCallLengthInMillisec);
             RollbarConfig loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            loggerConfig.Transform = delegate { Thread.Sleep(payloadSubmissionDelay); };
-            using (IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig))
+            loggerConfig.Transform = delegate
             {
-                try
-                {
-                    this.IncrementCount<CommunicationEventArgs>();
-                    Stopwatch sw = Stopwatch.StartNew();
-                    logger.Log(ErrorLevel.Error, "test message");
-                    sw.Stop();
-                    Assert.IsTrue(sw.ElapsedMilliseconds < maxCallLengthInMillisec);
-                    Thread.Sleep(payloadSubmissionDelay);
-                }
-                catch
-                {
-                    Assert.Fail("should never get here!");
-                }
+                Thread.Sleep(payloadSubmissionDelay);
+            };
+            using IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig);
+            try
+            {
+                this.IncrementCount<CommunicationEventArgs>();
+                Stopwatch sw = Stopwatch.StartNew();
+                logger.Log(ErrorLevel.Error,"test message");
+                sw.Stop();
+                Assert.IsTrue(sw.ElapsedMilliseconds < maxCallLengthInMillisec);
+                Thread.Sleep(payloadSubmissionDelay);
+            }
+            catch
+            {
+                Assert.Fail("should never get here!");
             }
         }
 
@@ -734,26 +720,25 @@ namespace UnitTest.Rollbar
             RollbarConfig loggerConfig =
                 new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
             loggerConfig.Transform = delegate { throw new NullReferenceException(); };
-            using (IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig))
+            using IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig);
+            logger.InternalEvent += Logger_InternalEvent;
+
+            try
             {
-                logger.InternalEvent += Logger_InternalEvent;
-
-                try
-                {
-                    this.IncrementCount<CommunicationEventArgs>();
-                    logger.Log(ErrorLevel.Error, "test message");
-                }
-                catch
-                {
-                    logger.InternalEvent -= Logger_InternalEvent;
-                    Assert.Fail("should never get here!");
-                }
-
-                this._signal.Wait();
-                logger.InternalEvent -= Logger_InternalEvent;
-
-                Assert.IsTrue(this._transformException);
+                this.IncrementCount<CommunicationEventArgs>();
+                logger.Log(ErrorLevel.Error,"test message");
             }
+            catch
+            {
+                logger.InternalEvent -= Logger_InternalEvent;
+                Assert.Fail("should never get here!");
+                throw;
+            }
+
+            this._signal.Wait();
+            logger.InternalEvent -= Logger_InternalEvent;
+
+            Assert.IsTrue(this._transformException);
         }
 
         /// <summary>

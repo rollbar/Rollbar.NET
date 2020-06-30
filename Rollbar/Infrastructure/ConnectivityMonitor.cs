@@ -23,6 +23,10 @@
 
         #region singleton implementation
 
+        /// <summary>
+        /// Gets the instance.
+        /// </summary>
+        /// <value>The instance.</value>
         public static ConnectivityMonitor Instance
         {
             get
@@ -147,7 +151,7 @@
                 }
 
                 //bool isConnectedNow = this.IsConnectivityAvailable();
-                bool isConnectedNow = this.TestApiServer();
+                bool isConnectedNow = TestApiServer();
 
                 if (isConnectedNow)
                 {
@@ -198,15 +202,13 @@
         /// <remarks>
         /// https://stackoverflow.com/questions/35066981/how-to-use-proxy-with-tcpclient-connectasync
         /// </remarks>
-        public bool TestApiServer()
+        public static bool TestApiServer()
         {
             //return false;
             try
             {
-                using (var client = new TcpClient("www.rollbar.com", 80))
-                {
-                    return true;
-                }
+                using var client = new TcpClient("www.rollbar.com",80);
+                return true;
             }
             catch (SocketException ex)
             {
