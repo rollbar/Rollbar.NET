@@ -117,6 +117,8 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    vsTestVersion: toolsInstaller
+    codeCoverageEnabled: true
 
 # Publish Test Results
 # Publish test results to Azure Pipelines
@@ -127,6 +129,7 @@ steps:
     #testResultsFiles: '**/TEST-*.xml' 
     #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
     #mergeTestResults: false # Optional
+    failTaskOnFailedTests: false # Optional
     #failTaskOnFailedTests: false # Optional
     #testRunTitle: # Optional
     #buildPlatform: # Optional
