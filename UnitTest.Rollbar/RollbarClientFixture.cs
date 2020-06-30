@@ -22,7 +22,10 @@ namespace UnitTest.Rollbar
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
             this._loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
+                new RollbarConfig(RollbarUnitTestSettings.AccessToken) 
+                { 
+                    Environment = RollbarUnitTestSettings.Environment, 
+                };
         }
 
         [TestCleanup]
@@ -39,40 +42,46 @@ namespace UnitTest.Rollbar
             // [EXPECT]: under all the good networking conditions sending a payload should succeed
             RollbarConfig config = new RollbarConfig();
             config.Reconfigure(this._loggerConfig);
-            RollbarLogger logger = (RollbarLogger)RollbarFactory.CreateNew(config);
-            RollbarClient client = new RollbarClient(logger);
-            PayloadBundle bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
-            client.EnsureHttpContentToSend(bundle);
-            var response = client.PostAsJson(bundle);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(0, response.Error);
-            Assert.AreEqual(0, bundle.Exceptions.Count);
+            using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
+            {
+                var client = new RollbarClient(logger);
+                var bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+                client.EnsureHttpContentToSend(bundle);
+                var response = client.PostAsJson(bundle);
+                Assert.IsNotNull(response);
+                Assert.AreEqual(0, response.Error);
+                Assert.AreEqual(0, bundle.Exceptions.Count);
+            }
 
             // [DO]: let's send a payload using unreasonably short PayloadPostTimeout
             // [EXPECT]: even under all the good networking conditions sending a payload should not succeed
             config.PayloadPostTimeout = TimeSpan.FromMilliseconds(50); // too short
-            logger = (RollbarLogger)RollbarFactory.CreateNew(config);
-            client = new RollbarClient(logger);
-            bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
-            client.EnsureHttpContentToSend(bundle);
-            response = client.PostAsJson(bundle);
-            Assert.IsNull(response);
-            Assert.AreEqual(1, bundle.Exceptions.Count);
-           // Assert.AreEqual("While PostAsJson(PayloadBundle payloadBundle)...", bundle.Exceptions.First().Message);
-            //Assert.IsTrue(bundle.Exceptions.First().InnerException.Message.StartsWith("One or more errors occurred"));
-            //Assert.AreEqual("A task was canceled.",  bundle.Exceptions.First().InnerException.InnerException.Message);
+            using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
+            {
+                var client = new RollbarClient(logger);
+                var bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+                client.EnsureHttpContentToSend(bundle);
+                var response = client.PostAsJson(bundle);
+                Assert.IsNull(response);
+                Assert.AreEqual(1, bundle.Exceptions.Count);
+                //Assert.AreEqual("While PostAsJson(PayloadBundle payloadBundle)...", bundle.Exceptions.First().Message);
+                //Assert.IsTrue(bundle.Exceptions.First().InnerException.Message.StartsWith("One or more errors occurred"));
+                //Assert.AreEqual("A task was canceled.",  bundle.Exceptions.First().InnerException.InnerException.Message);
+            }
 
             // [DO]: let's send a payload using reasonably long PayloadPostTimeout
             // [EXPECT]: even under all the good networking conditions sending a payload should succeed
             config.PayloadPostTimeout = TimeSpan.FromMilliseconds(1000); // long enough
-            logger = (RollbarLogger)RollbarFactory.CreateNew(config);
-            client = new RollbarClient(logger);
-            bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
-            client.EnsureHttpContentToSend(bundle);
-            response = client.PostAsJson(bundle);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(0, response.Error);
-            Assert.AreEqual(0, bundle.Exceptions.Count);
+            using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
+            {
+                var client = new RollbarClient(logger);
+                var bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+                client.EnsureHttpContentToSend(bundle);
+                var response = client.PostAsJson(bundle);
+                Assert.IsNotNull(response);
+                Assert.AreEqual(0, response.Error);
+                Assert.AreEqual(0, bundle.Exceptions.Count);
+            }
         }
     }
 }
