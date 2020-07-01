@@ -226,29 +226,26 @@
         /// <remarks>https://stackoverflow.com/questions/35066981/how-to-use-proxy-with-tcpclient-connectasync</remarks>
         public static bool TestApiServer()
         {
+            bool result = false;
+            TcpClient client = null;
             try
             {
-                using var client = new TcpClient("www.rollbar.com",80);
-                return true;
+                client = new TcpClient("www.rollbar.com",80);
+                result = true;
             }
             catch (SocketException ex)
             {
                 Debug.WriteLine($"EXCEPTION: {ex}");
-                return false;
+                result = false;
             }
+            finally
+            {
+                client?.Close();
+                (client as IDisposable)?.Dispose();
+            }
+
+            return result;
         }
-
-        #region IDisposable explicitly
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        void IDisposable.Dispose()
-        {
-            this.Dispose();
-        }
-
-        #endregion IDisposable explicitly
 
         #region IDisposable Support
 
@@ -301,6 +298,5 @@
         }
 
         #endregion IDisposable Support
-
     }
 }
