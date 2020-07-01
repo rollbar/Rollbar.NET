@@ -1,8 +1,5 @@
 ﻿namespace Rollbar.Deploys
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Class RollbarDeploysManagerFactory.

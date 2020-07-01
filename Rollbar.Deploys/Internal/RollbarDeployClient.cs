@@ -107,7 +107,7 @@
                     { "comment", deployment.Comment },
                 };
 
-            var httpContent = new FormUrlEncodedContent(parameters);
+            using var httpContent = new FormUrlEncodedContent(parameters);
 
             var httpClient = ProvideHttpClient();
             var postResponse = await httpClient.PostAsync(uri, httpContent);
