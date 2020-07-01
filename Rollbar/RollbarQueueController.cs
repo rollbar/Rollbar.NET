@@ -1165,7 +1165,7 @@ namespace Rollbar
                 return;
             }
 
-            this._cancellationTokenSource.Cancel();
+            this._cancellationTokenSource?.Cancel();
             if (this._rollbarCommThread != null)
             {
                 

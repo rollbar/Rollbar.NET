@@ -184,8 +184,11 @@
             bool any = false;
             foreach(var i in value)
             {
-                any = true;
-                break;
+                if (i != null)
+                {
+                    any = true;
+                    break;
+                }
             }
             if (!any)
             {

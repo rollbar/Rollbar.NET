@@ -19,9 +19,7 @@
     /// <seealso cref="System.IEquatable{T}" />
     /// <seealso cref="Rollbar.Common.IReconfigurable{T}" />
     [Preserve]
-#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public abstract class ReconfigurableBase<T>
-#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         : ReconfigurableBase
         , IReconfigurable<T>
         , IEquatable<T>
@@ -61,6 +59,15 @@
             return this.Equals(obj as T);
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        public override int GetHashCode()
+        {
+            T instance = (T) this;
+            return instance.GetHashCode();
+        }
     }
 
     /// <summary>
@@ -75,9 +82,7 @@
     /// <seealso cref="Rollbar.Common.IReconfigurable{T, TBase}" />
     /// <seealso cref="System.IEquatable{TBase}" />
     /// <seealso cref="Rollbar.Common.IReconfigurable{T}" />
-#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public abstract class ReconfigurableBase<T, TBase>
-#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         : ReconfigurableBase
         , IReconfigurable<T, TBase>
         , IEquatable<TBase>
@@ -129,6 +134,20 @@
             return this.Equals(obj as TBase);
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        public override int GetHashCode()
+        {
+            switch(this)
+            {
+                case TBase baseInstance:
+                    return baseInstance.GetHashCode();
+                default:
+                    return (this as T)?.GetHashCode() ?? 0;
+            }
+        }
     }
 
     /// <summary>
