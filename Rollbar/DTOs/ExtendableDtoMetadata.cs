@@ -73,7 +73,7 @@
             foreach(var reservedAttribue in reservedAttributes)
             {
                 var property = 
-                    extendableDtoType
+                    extendableDtoType?
                     .GetProperty(
                         reservedAttribue.Name, 
                         BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
