@@ -20,11 +20,19 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 ### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) repo (primary development fork)
 
-[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=alert_status)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=ncloc)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=bugs)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9adf26abd5694ebb8fecf6d4925f1da7)](https://www.codacy.com/app/WideSpectrumComputing/WideSpectrumComputing-Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WideSpectrumComputing/Rollbar.NET&amp;utm_campaign=Badge_Grade)[![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
 
 ## Available as NuGet packages
 - `Rollbar (the core)....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
+- `Rollbar.Deploys.......................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar.Deploys/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Deploys.svg)](http://www.nuget.org/packages/Rollbar.Deploys/)
 - `Rollbar.NetPlatformExtensions.........`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/)
 - `Rollbar.NetCore.AspNet................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/)
 - `Rollbar.Net.AspNet....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/)
