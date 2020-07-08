@@ -70,20 +70,20 @@ jobs:
         fetch-depth: 0
 
     # Install the .NET Core workload
-    - name: Install .NET Core 2.2.100
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '2.2.100'
+    #- name: Install .NET Core 2.2.100
+    #  uses: actions/setup-dotnet@v1
+    #  with:
+    #    dotnet-version: '2.2.100'
          
-    - name: Install .NET Core 3.1.101
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.101
+    #- name: Install .NET Core 3.1.101
+    #  uses: actions/setup-dotnet@v1
+    #  with:
+    #    dotnet-version: 3.1.101
 
-    - name: Show installed .NET Core version
+    - name: .NET Core Versions
       run: dotnet --version
       
-    - name: Show installed .NET Core info
+    - name: .NET Core Infos
       run: dotnet --info
       
     - name: Restore Nuget packages
@@ -93,7 +93,7 @@ jobs:
       run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }} --no-restore   
 
     - name: Run unit tests on the SDK build
-      run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --collect "Code Coverage" 
+      run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --blame --verbosity detailed # --no-build --collect "Code Coverage" 
 
         
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
