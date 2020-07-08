@@ -63,45 +63,55 @@ jobs:
 
     steps:
     
-    # Get the codebase
-    - name: Checkout the SDK's codebase
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+      # Get the codebase
+      - name: Checkout the SDK's codebase
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-    # Install the .NET Core workload
-    #- name: Install .NET Core 2.2.100
-    #  uses: actions/setup-dotnet@v1
-    #  with:
-    #    dotnet-version: '2.2.100'
-         
-    #- name: Install .NET Core 3.1.101
-    #  uses: actions/setup-dotnet@v1
-    #  with:
-    #    dotnet-version: 3.1.101
+      # Install the .NET Core workload
+      #- name: Install .NET Core 2.2.100
+      #  uses: actions/setup-dotnet@v1
+      #  with:
+      #    dotnet-version: '2.2.100'
 
-    - name: .NET Core Version
-      run: dotnet --version
-      
-    - name: .NET Core Info
-      run: dotnet --info
-      
-    - name: Restore the SDK's Nuget packages
-      run: dotnet restore $env:Solution_Name
-      
-    - name: Build the SDK
-      run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }} --no-restore   
+      #- name: Install .NET Core 3.1.101
+      #  uses: actions/setup-dotnet@v1
+      #  with:
+      #    dotnet-version: 3.1.101
 
-    - name: Unit-test the SDK build
-      run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --blame --verbosity normal --collect "Code Coverage" 
+      - name: .NET Core Version
+        run: dotnet --version
 
-    #- run: |	
-    #    mkdir -p ${{ github.workspace }}/artifacts
-    #    echo hello > ${{ github.workspace }}/artifacts/world.txt
-        
-    # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
-    #- name: Upload build artifacts
-    #  uses: actions/upload-artifact@v2
-    #  with:
-    #    name: 'SDK-build'
-    #    path: ${{ github.workspace }}/artifacts/**/*
+      - name: .NET Core Info
+        run: dotnet --info
+
+      - name: Restore the SDK's Nuget packages
+        run: dotnet restore $env:Solution_Name
+
+      - name: Build the SDK
+        run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }} --no-restore   
+
+      - name: Unit-test the SDK build
+        run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --blame --verbosity normal --collect "Code Coverage" 
+
+      #- run: |	
+      #    mkdir -p ${{ github.workspace }}/artifacts
+      #    echo hello > ${{ github.workspace }}/artifacts/world.txt
+
+      # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
+      #- name: Upload build artifacts
+      #  uses: actions/upload-artifact@v2
+      #  with:
+      #    name: 'SDK-build'
+      #    path: ${{ github.workspace }}/artifacts/**/*
+
+  #sonarcloud:
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v1.3
+        with: 
+          # Set the sonar.projectBaseDir analysis property
+          projectBaseDir: . # optional, default is .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
