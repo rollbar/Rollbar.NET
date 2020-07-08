@@ -69,17 +69,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Install the .NET Core workload
-      #- name: Install .NET Core 2.2.100
-      #  uses: actions/setup-dotnet@v1
-      #  with:
-      #    dotnet-version: '2.2.100'
-
-      #- name: Install .NET Core 3.1.101
-      #  uses: actions/setup-dotnet@v1
-      #  with:
-      #    dotnet-version: 3.1.101
-
       - name: .NET Core Version
         run: dotnet --version
 
@@ -106,7 +95,15 @@ jobs:
       #    name: 'SDK-build'
       #    path: ${{ github.workspace }}/artifacts/**/*
 
-  #sonarcloud:
+  sonarcloud:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the SDK's codebase
+        uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v1.3
         with: 
