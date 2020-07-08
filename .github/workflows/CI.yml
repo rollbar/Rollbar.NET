@@ -70,10 +70,10 @@ jobs:
         fetch-depth: 0
 
     # Install the .NET Core workload
-    - name: Install .NET Core 2.2.0
+    - name: Install .NET Core 2.2.100
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 2.2.0
+        dotnet-version: 2.2.100
 
     - name: Install .NET Core 3.1.101
       uses: actions/setup-dotnet@v1
