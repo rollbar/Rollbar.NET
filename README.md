@@ -20,6 +20,8 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 ### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) repo (primary development fork)
 
+![CI workflow on the master branch](https://github.com/WideSpectrumComputing/Rollbar.NET/workflows/CI%20workflow%20on%20the%20master%20branch/badge.svg)
+
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=ncloc)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
