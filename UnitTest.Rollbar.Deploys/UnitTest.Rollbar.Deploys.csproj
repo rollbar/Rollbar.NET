@@ -6,7 +6,7 @@
 
   <PropertyGroup>
     <!--TargetFramework>netcoreapp3.1</TargetFramework-->
-    <TargetFrameworks>netcoreapp3.1;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netcoreapp2.1</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
 
