@@ -55,7 +55,7 @@ namespace UnitTest.Rollbar
 
             // [DO]: let's send a payload using unreasonably short PayloadPostTimeout
             // [EXPECT]: even under all the good networking conditions sending a payload should not succeed
-            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(50); // too short
+            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(10); // too short
             using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
             {
                 var client = new RollbarClient(logger);
