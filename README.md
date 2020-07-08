@@ -30,12 +30,12 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 [![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
 
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=ncloc)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=bugs)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 
