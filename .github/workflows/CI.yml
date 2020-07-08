@@ -85,10 +85,10 @@ jobs:
       run: dotnet restore $env:Solution_Name
       
     - name: Build the SDK
-      run: dotnet build $env:Solution_Name --configuration $env:Configuration --no-restore   
+      run: dotnet build $env:Solution_Name --configuration $matrix:Configuration --no-restore   
 
     - name: Run unit tests on the SDK build
-      run: dotnet test $env:Solution_Name --configuration $env:Configuration --no-build --collect "Code Coverage" 
+      run: dotnet test $env:Solution_Name --configuration $matrix:Configuration --no-build --collect "Code Coverage" 
 
         
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
