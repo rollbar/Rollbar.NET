@@ -64,7 +64,7 @@ jobs:
     steps:
     
     # Get the codebase
-    - name: Checkout
+    - name: Checkout the SDK's codebase
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
@@ -86,14 +86,14 @@ jobs:
     - name: .NET Core Info
       run: dotnet --info
       
-    - name: Restore Nuget packages
+    - name: Restore the SDK's Nuget packages
       run: dotnet restore $env:Solution_Name
       
     - name: Build the SDK
       run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }} --no-restore   
 
-    - name: Run unit tests on the SDK build
-      run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --blame --verbosity norma # --collect "Code Coverage" 
+    - name: Unit-test the SDK build
+      run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --blame --verbosity normal # --collect "Code Coverage" 
 
         
     # Upload the MSIX package: https://github.com/marketplace/actions/upload-artifact
