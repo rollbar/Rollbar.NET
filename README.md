@@ -30,7 +30,10 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=bugs)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9adf26abd5694ebb8fecf6d4925f1da7)](https://www.codacy.com/app/WideSpectrumComputing/WideSpectrumComputing-Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WideSpectrumComputing/Rollbar.NET&amp;utm_campaign=Badge_Grade)[![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9adf26abd5694ebb8fecf6d4925f1da7)](https://www.codacy.com/app/WideSpectrumComputing/WideSpectrumComputing-Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WideSpectrumComputing/Rollbar.NET&amp;utm_campaign=Badge_Grade)
+
+[![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
 
 ## Available as NuGet packages
 - `Rollbar (the core)....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
