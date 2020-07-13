@@ -1,7 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup Label="Toolset Related">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;net48;net472;net462</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;netcoreapp2.1;net48;net472;net462</TargetFrameworks>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>

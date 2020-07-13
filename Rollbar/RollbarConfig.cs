@@ -162,7 +162,10 @@
         /// <value>
         /// The scrub fields.
         /// </value>
-        public string[] ScrubFields { get; set; }
+        public string[] ScrubFields
+        {
+            get; set;
+        }
 
         /// <summary>
         /// Gets the scrub white-list fields.

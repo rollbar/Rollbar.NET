@@ -65,11 +65,10 @@
         /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            T instance = (T) this;
+            return instance.GetHashCode();
         }
     }
-
-
 
     /// <summary>
     /// An abstract base for implementing IReconfigurable (based on a base type) types.
@@ -132,7 +131,7 @@
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
-            return base.Equals(obj as TBase);
+            return this.Equals(obj as TBase);
         }
 
         /// <summary>
@@ -141,7 +140,13 @@
         /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            switch(this)
+            {
+                case TBase baseInstance:
+                    return baseInstance.GetHashCode();
+                default:
+                    return (this as T)?.GetHashCode() ?? 0;
+            }
         }
     }
 
@@ -179,11 +184,10 @@
         /// <returns>PropertyInfo[].</returns>
         protected static PropertyInfo[] ListInstancePublicProperties(Type objectType)
         {
-            PropertyInfo[] properties = null;
-            if (!publicPropertyInfosByType.TryGetValue(objectType, out properties))
+            if(!publicPropertyInfosByType.TryGetValue(objectType,out PropertyInfo[] properties))
             {
                 properties = ReflectionUtility.GetAllPublicInstanceProperties(objectType);
-                publicPropertyInfosByType.TryAdd(objectType, properties);
+                publicPropertyInfosByType.TryAdd(objectType,properties);
             }
             return properties;
         }
@@ -302,8 +306,10 @@
                 }
                 if (property.PropertyType.GetInterface(typeof(IEnumerable).FullName) != null)
                 {
+#pragma warning disable IDE0019 // Use pattern matching
                     var leftCollection = leftPropertyValue as ICollection;
                     var rightCollection = rightPropertyValue as ICollection;
+#pragma warning restore IDE0019 // Use pattern matching
                     if (leftCollection != null && rightCollection != null && leftCollection.Count != rightCollection.Count)
                     {
                         return false;
@@ -371,12 +377,7 @@
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         protected virtual void OnReconfigured(EventArgs e)
         {
-            EventHandler handler = Reconfigured;
-
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            Reconfigured?.Invoke(this,e);
         }
     }
 

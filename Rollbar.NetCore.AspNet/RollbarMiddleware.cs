@@ -123,20 +123,20 @@ namespace Rollbar.NetCore.AspNet
                     }
 
                     await this._nextRequestProcessor(context);
-
-
                 }
                 catch (System.Exception ex)
                 {
                     if (networkTelemetry != null)
                     {
-                        networkTelemetry.StatusCode = context?.Response?.StatusCode.ToString();
+                        networkTelemetry.StatusCode = 
+                            context?.Response?.StatusCode.ToString();
                         networkTelemetry.FinalizeEvent();
                     }
 
                     if (!RollbarLocator.RollbarInstance.Config.CaptureUncaughtExceptions)
                     {
-                        // just rethrow since the Rollbar SDK is configured not to auto-capture uncaught exceptions:
+                        // just rethrow since the Rollbar SDK is configured not to auto-capture 
+                        // uncaught exceptions:
                         throw; 
                     }
 
@@ -160,8 +160,17 @@ namespace Rollbar.NetCore.AspNet
                     else
                     {
                         IRollbarPackage rollbarPackage = new ExceptionPackage(ex, $"{nameof(RollbarMiddleware)} processed uncaught exception.");
-                        rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
-                        rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
+                        if (context != null)
+                        {
+                            if (context.Request != null)
+                            {
+                                rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
+                            }
+                            if (context.Response != null)
+                            {
+                                rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
+                            }
+                        }
                         RollbarLocator.RollbarInstance.Critical(rollbarPackage);
                     }
 

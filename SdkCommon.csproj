@@ -7,10 +7,13 @@
   
   <PropertyGroup Label="SDK Common NuGet Packaging Info" >
 
-    <SdkVersion>3.12.1</SdkVersion>
+    <SdkVersion>3.12.2</SdkVersion>
     <SdkVersionSuffix></SdkVersionSuffix>
     <PackageReleaseNotes>
-      - feat: resolve #530: Implement non-empty default scrubbing fields list
+      - chore: ref #538: Fix VisualStudio build warnings.
+      - chore: ref #537: .NET SDK SonarCloud "issues and vulnerabilities" cleanup.
+      - chore: resolve #535: Investigate .NET SDK SonarCloud code coverage by unit tests in Azure DevOps.
+      - chore: resolve #536: Integrate the CI with SonarCloud.
     </PackageReleaseNotes>
 
     <!--

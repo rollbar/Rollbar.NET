@@ -23,7 +23,7 @@
         protected readonly string _mediumMessage = BenchmarkingData.Message_Medium;
         protected readonly string _largeMessage = BenchmarkingData.Message_Large;
 
-        public BenchmarksBase()
+        protected BenchmarksBase()
         {
         }
 

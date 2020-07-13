@@ -226,7 +226,7 @@ namespace Rollbar
         /// <returns>ILogger.</returns>
         public ILogger Log(DTOs.Data rollbarData)
         {
-            return this.Enqueue(rollbarData, rollbarData.Level.HasValue ? rollbarData.Level.Value : ErrorLevel.Debug, null);
+            return this.Enqueue(rollbarData, rollbarData.Level??ErrorLevel.Debug, null);
         }
 
         /// <summary>
@@ -591,17 +591,17 @@ namespace Rollbar
                         var config = new RollbarConfig();
                         config.Reconfigure(this._config);
                         config.RethrowExceptionsAfterReporting = false;
-                        using (var rollbar = RollbarFactory.CreateNew(config))
-                        {
-                            rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level, dataObject, custom);
-                        }
+                        using var rollbar = RollbarFactory.CreateNew(config);
+                        rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level,dataObject,custom);
                     }
+#pragma warning disable CA1031 // Do not catch general exception types
                     catch
                     {
                         // In case there was a TimeoutException (or any un-expected exception),
                         // there is nothing we can do here.
                         // We tried our best...
                     }
+#pragma warning restore CA1031 // Do not catch general exception types
                     finally
                     {
                         if (exception is AggregateException aggregateException)
@@ -626,6 +626,7 @@ namespace Rollbar
             {
                 payloadBundle = CreatePayloadBundle(dataObject, level, custom, timeout, signal);
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (System.Exception exception)
             {
                 RollbarErrorUtility.Report(
@@ -638,11 +639,13 @@ namespace Rollbar
                     );
                 return null;
             }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             try
             {
                 this._payloadQueue.Enqueue(payloadBundle);
             }
+#pragma warning disable CA1031 // Do not catch general exception types
             catch (System.Exception exception)
             {
                 RollbarErrorUtility.Report(
@@ -654,6 +657,7 @@ namespace Rollbar
                     payloadBundle
                     );
             }
+#pragma warning restore CA1031 // Do not catch general exception types
 
             return payloadBundle;
         }
@@ -681,27 +685,17 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
 
-            PayloadBundle payloadBundle = null;
-
-            IRollbarPackage rollbarPackage = dataObject as IRollbarPackage;
-
-            if (rollbarPackage != null)
+            switch(dataObject)
             {
-                if (rollbarPackage.MustApplySynchronously)
-                {
-                    rollbarPackage.PackageAsRollbarData();
-                }
-
-                payloadBundle =
-                    new PayloadBundle(this, rollbarPackage, level, custom, timeoutAt, signal);
+                case IRollbarPackage package:
+                    if (package.MustApplySynchronously)
+                    {
+                        package.PackageAsRollbarData();
+                    }
+                    return new PayloadBundle(this, package, level, custom, timeoutAt, signal);
+                default:
+                    return new PayloadBundle(this, dataObject, level, custom, timeoutAt, signal);
             }
-            else
-            {
-                payloadBundle =
-                    new PayloadBundle(this, dataObject, level, custom, timeoutAt, signal);
-            }
-
-            return payloadBundle;
         }
 
         /// <summary>
@@ -710,11 +704,7 @@ namespace Rollbar
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         internal virtual void OnRollbarEvent(RollbarEventArgs e)
         {
-            EventHandler<RollbarEventArgs> handler = InternalEvent;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            InternalEvent?.Invoke(this,e);
         }
 
         /// <summary>
@@ -723,23 +713,23 @@ namespace Rollbar
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         private void ValidateConfiguration(IRollbarConfig rollbarConfig)
         {
-            IValidatable validatableConfig = rollbarConfig as IValidatable;
-            if (validatableConfig != null)
+            switch(rollbarConfig)
             {
-                var failedValidationRules = validatableConfig.Validate();
-                if (failedValidationRules.Count > 0)
-                {
-                    var exception =
-                        new RollbarException(
-                            InternalRollbarError.ConfigurationError,
-                            "Failed to configure using invalid configuration prototype!"
-                            );
-                    exception.Data[nameof(failedValidationRules)] = failedValidationRules.ToArray();
+                case IValidatable v:
+                    var failedValidationRules = v.Validate();
+                    if (failedValidationRules.Count > 0)
+                    {
+                        var exception =
+                            new RollbarException(
+                                InternalRollbarError.ConfigurationError,
+                                "Failed to configure using invalid configuration prototype!"
+                                );
+                        exception.Data[nameof(failedValidationRules)] = failedValidationRules.ToArray();
 
-                    throw exception;
-                }
+                        throw exception;
+                    }
+                    break;
             }
-
         }
 
         #region IDisposable Support

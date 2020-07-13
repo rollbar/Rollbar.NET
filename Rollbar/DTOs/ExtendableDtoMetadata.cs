@@ -73,7 +73,11 @@
             foreach(var reservedAttribue in reservedAttributes)
             {
                 var property = 
-                    extendableDtoType.GetProperty(reservedAttribue.Name, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                    extendableDtoType?
+                    .GetProperty(
+                        reservedAttribue.Name, 
+                        BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy
+                        );
                 Assumption.AssertNotNull(property, nameof(property));
 
                 string reservedKey = ReflectionUtility.GetStaticFieldValue<string>(reservedAttribue);

@@ -50,15 +50,19 @@ steps:
 #    installationPath: $(Agent.ToolsDirectory)/dotnet
     
 - script: dotnet --version
+  displayName: 'Show .NET Core Version...'
 
 - script: dotnet --info
+  displayName: 'Show .NET Core Info...'
 
 # NuGet Tool Installer
-# Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. Use this task to change the version of NuGet used in the NuGet tasks.
-- task: NuGetToolInstaller@0
+# Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. 
+# Use this task to change the version of NuGet used in the NuGet tasks.
+- task: NuGetToolInstaller@1
   displayName: 'Installing NuGet...'
   inputs:
-    versionSpec: '5.3.1' 
+    versionSpec: '5.x' 
+    checkLatest: true
     #checkLatest: true # Optional
 
 # Visual Studio Test Platform Installer
@@ -80,6 +84,25 @@ steps:
     restoreSolution: '$(solution)'
 
 - script: dotnet restore Rollbar.sln
+  displayName: 'Restore Rollbar.sln package dependencies...'
+
+# Run: dotnet tool install --global dotnet-sonarscanner --version 4.7.1
+- script: dotnet tool install --global dotnet-sonarscanner
+  displayName: 'Installing SonarScanner for MSBuild'
+
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare SonarCloud analysis'
+  inputs:
+    SonarCloud: 'WSC Rollbar.NET SonarCloud'
+    organization: '$(SonarOrganization)'
+    scannerMode: 'MSBuild'
+    projectKey: '$(SonarProjectKey)'
+    projectName: '$(SonarProjectName)'
+    projectVersion: '$(Build.BuildNumber)'
+    extraProperties: 
+#     sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml
+     sonar.exclusions=UnitTest.*/**/*, Samples/**/*, Benchmarker.Common/**/*, Rollbar.Benchmarker/**/*
+
 
 - task: VSBuild@1
   displayName: 'Building the solution...'
@@ -90,24 +113,33 @@ steps:
     configuration: '$(buildConfiguration)'
 
 # DISABLED UNTIL FAILING UNIT-TEST ON CI SERVER ARE FIXED 
-#- task: VSTest@2
-#  displayName: 'Unit-testing build results...'
-#  inputs:
-#    platform: '$(buildPlatform)'
-#    configuration: '$(buildConfiguration)'
+- task: VSTest@2
+  displayName: 'Unit-testing build results...'
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    vsTestVersion: toolsInstaller
+    codeCoverageEnabled: true
 
 # Publish Test Results
 # Publish test results to Azure Pipelines
-#- task: PublishTestResults@2
-#  inputs:
-#    testResultsFormat: VSTest
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: VSTest
     #testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
     #testResultsFiles: '**/TEST-*.xml' 
     #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
     #mergeTestResults: false # Optional
+    failTaskOnFailedTests: false # Optional
     #failTaskOnFailedTests: false # Optional
     #testRunTitle: # Optional
     #buildPlatform: # Optional
     #buildConfiguration: # Optional
     #publishRunAttachments: true # Optional
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud code analysis'
+
+- task: SonarCloudPublish@1
+  displayName: 'Publish SonarCloud quality gate results'
 

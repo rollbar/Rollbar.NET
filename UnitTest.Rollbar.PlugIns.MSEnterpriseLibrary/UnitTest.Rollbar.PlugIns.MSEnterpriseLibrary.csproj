@@ -1,5 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup Label="Toolset Related">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>

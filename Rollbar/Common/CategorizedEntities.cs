@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.Common
 {
-    using System;
     using System.Linq;
     using System.Collections.Generic;
 
@@ -53,7 +52,10 @@
         /// <param name="category">The category.</param>
         /// <param name="entities">The entities.</param>
         /// <returns>ICategorizedEntities&lt;TCategory, TEntity&gt;.</returns>
-        public ICategorizedEntities<TCategory, TEntity> RegisterCategory(TCategory category, ISet<TEntity> entities)
+        public ICategorizedEntities<TCategory, TEntity> RegisterCategory(
+            TCategory category, 
+            ISet<TEntity> entities
+            )
         {
             HashSet<TEntity> entitiesSet = new HashSet<TEntity>(entities);
 
@@ -96,7 +98,10 @@
         /// <param name="category">The category.</param>
         /// <param name="deltaEntities">The delta entities.</param>
         /// <returns>ICategorizedEntities&lt;TCategory, TEntity&gt;.</returns>
-        public ICategorizedEntities<TCategory, TEntity> ExpandCategory(TCategory category, ISet<TEntity> deltaEntities)
+        public ICategorizedEntities<TCategory, TEntity> ExpandCategory(
+            TCategory category, 
+            ISet<TEntity> deltaEntities
+            )
         {
             lock (_entitiesByCategorySyncRoot)
             {
@@ -112,7 +117,10 @@
         /// <param name="category">The category.</param>
         /// <param name="deltaEntities">The delta entities.</param>
         /// <returns>ICategorizedEntities&lt;TCategory, TEntity&gt;.</returns>
-        public ICategorizedEntities<TCategory, TEntity> ReduceCategory(TCategory category, ISet<TEntity> deltaEntities)
+        public ICategorizedEntities<TCategory, TEntity> ReduceCategory(
+            TCategory category, 
+            ISet<TEntity> deltaEntities
+            )
         {
             lock (_entitiesByCategorySyncRoot)
             {
@@ -128,7 +136,10 @@
         /// <param name="category">The category.</param>
         /// <param name="entities">The entities.</param>
         /// <returns>ICategorizedEntities&lt;TCategory, TEntity&gt;.</returns>
-        public ICategorizedEntities<TCategory, TEntity> ReplaceCategory(TCategory category, ISet<TEntity> entities)
+        public ICategorizedEntities<TCategory, TEntity> ReplaceCategory(
+            TCategory category, 
+            ISet<TEntity> entities
+            )
         {
             HashSet<TEntity> entitiesSet = new HashSet<TEntity>(entities);
 
@@ -268,17 +279,11 @@
         /// <returns>ISet&lt;T&gt;.</returns>
         private ISet<T> MergeSets<T>(IEnumerable<ISet<T>> setsToMerge)
         {
-            //int resultCapacity = 0;
-            //foreach (var set in setsToMerge)
-            //{
-            //    resultCapacity += set.Count;
-            //}
-            //HashSet<T> resultingSet = new HashSet<T>(resultCapacity);
             HashSet<T> resultingSet = new HashSet<T>();
 
             foreach (var set in setsToMerge)
             {
-                resultingSet.UnionWith(resultingSet);
+                resultingSet.UnionWith(set);
             }
 
             return resultingSet;

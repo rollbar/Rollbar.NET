@@ -63,6 +63,7 @@
         protected override string DoScrub(string inputString)
         {
             XmlDocument doc = new XmlDocument();
+            doc.XmlResolver = null;
             doc.LoadXml(inputString);
             string json = JsonConvert.SerializeXmlNode(doc);
             json = this._jsonStringScrubber.Scrub(json);
