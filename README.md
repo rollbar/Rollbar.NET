@@ -16,7 +16,9 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 ## Codebase status (code quality and CI build)
 
 ### [Rollbar.NET](https://github.com/rollbar/Rollbar.NET) repo
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/badd7f93cd7b4dc8b2c4261e7b23c880)](https://www.codacy.com/app/akornich/Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rollbar/Rollbar.NET&amp;utm_campaign=Badge_Grade) [![Build Status](https://dev.azure.com/rollbar/Rollbar.NET/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar/Rollbar.NET/_build/latest?definitionId=1&branchName=master) [![Sourcegraph](https://sourcegraph.com/github.com/Rollbar/Rollbar.NET/-/badge.svg)](https://sourcegraph.com/github.com/rollbar/Rollbar.NET?badge)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/badd7f93cd7b4dc8b2c4261e7b23c880)](https://www.codacy.com/app/akornich/Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rollbar/Rollbar.NET&amp;utm_campaign=Badge_Grade) 
+[![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=master)
+[![Sourcegraph](https://sourcegraph.com/github.com/Rollbar/Rollbar.NET/-/badge.svg)](https://sourcegraph.com/github.com/rollbar/Rollbar.NET?badge)
 
 ### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) repo (primary development fork)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9adf26abd5694ebb8fecf6d4925f1da7)](https://www.codacy.com/app/WideSpectrumComputing/WideSpectrumComputing-Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WideSpectrumComputing/Rollbar.NET&amp;utm_campaign=Badge_Grade)[![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
