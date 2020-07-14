@@ -93,7 +93,7 @@ steps:
 - task: SonarCloudPrepare@1
   displayName: 'Prepare SonarCloud analysis'
   inputs:
-    SonarCloud: 'WSC Rollbar.NET SonarCloud'
+    SonarCloud: 'Rollbar.NET SonarCloud'
     organization: '$(SonarOrganization)'
     scannerMode: 'MSBuild'
     projectKey: '$(SonarProjectKey)'
