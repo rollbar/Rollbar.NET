@@ -16,6 +16,9 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 ## Codebase status (code quality and CI build)
 
 ### [Rollbar.NET](https://github.com/rollbar/Rollbar.NET) repo
+
+![CI workflow on the master branch](https://github.com/rollbar/Rollbar.NET/workflows/CI%20workflow%20on%20the%20master%20branch/badge.svg)
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/badd7f93cd7b4dc8b2c4261e7b23c880)](https://www.codacy.com/app/akornich/Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rollbar/Rollbar.NET&amp;utm_campaign=Badge_Grade) 
 
 [![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=master)
