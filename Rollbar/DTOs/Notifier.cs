@@ -1,8 +1,6 @@
 ﻿namespace Rollbar.DTOs
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
     using Rollbar.Common;
 
     /// <summary>
@@ -35,11 +33,11 @@
         /// <summary>
         /// The notifier name
         /// </summary>
-        private const string notifierName = "Rollbar.NET";
+        private static readonly string notifierName = "Rollbar.NET";
         /// <summary>
         /// The notifier assembly version
         /// </summary>
-        private static readonly string NotifierAssemblyVersion;
+        private static readonly string notifierAssemblyVersion;
 
         /// <summary>
         /// Detects the notifier assembly version.
@@ -50,6 +48,14 @@
             return RuntimeEnvironmentUtility.GetTypeAssemblyVersion(typeof(Data));
         }
 
+        /// <summary>
+        /// Detects the name of the notifier.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        private static string DetectNotifierProduct()
+        {
+            return RuntimeEnvironmentUtility.GetTypeAssemblyProduct(typeof(Data));
+        }
 
         /// <summary>
         /// Gets the name.
@@ -85,7 +91,12 @@
         /// </summary>
         static Notifier()
         {
-            Notifier.NotifierAssemblyVersion = Notifier.DetectNotifierAssemblyVersion();
+            string product = Notifier.DetectNotifierProduct();
+            if (!string.IsNullOrWhiteSpace(product))
+            {
+                Notifier.notifierName = $"{Notifier.notifierName} ({product})";
+            }
+            Notifier.notifierAssemblyVersion = Notifier.DetectNotifierAssemblyVersion();
         }
 
         /// <summary>
@@ -103,8 +114,8 @@
         public Notifier(IDictionary<string, object> arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
-            this.Name = notifierName;
-            this.Version = Notifier.NotifierAssemblyVersion;
+            this.Name = Notifier.notifierName;
+            this.Version = Notifier.notifierAssemblyVersion;
         }
     }
 }

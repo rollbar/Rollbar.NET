@@ -5,17 +5,14 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
   
-  <PropertyGroup Label="SDK Common NuGet Packaging Info" >
-
-    <SdkVersion>3.12.1</SdkVersion>
-    <SdkVersionSuffix></SdkVersionSuffix>
-    <PackageReleaseNotes>
-      - chore: resolve #538: Fix VisualStudio build warnings.
-      - chore: resolve #537: .NET SDK SonarCloud "issues and vulnerabilities" cleanup.
-      - chore: resolve #535: Investigate .NET SDK SonarCloud code coverage by unit tests in Azure DevOps.
-      - chore: resolve #536: Integrate the CI with SonarCloud.
-      - chore: resolve #542: Setup CI Github Workflow for master.
-    </PackageReleaseNotes>
+  <PropertyGroup Label="SDK Release Essential Info">
+    <SdkVersion>3.12.2</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersionSuffix>beta</SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
+    <SdkLtsRelease>true</SdkLtsRelease> <!-- Optional. Examples: false (default) or true. -->
+    <SdkReleaseNotes>
+      - feat: resolve #546: Add reporting of LTS releases within payloads (the notifier element).
+      - chore: resolve #544: Add support for explicit LTS releases of the SDK.
+    </SdkReleaseNotes>                   <!-- Required -->
 
     <!--
     Release Notes Tagging Conventions:
@@ -40,10 +37,15 @@
         "ref #GITHUB_ISSUE_NUMBER:" - meaning relevant to the GitHub issue
         depending on what is more appropriate in each case.
     -->
-    
-    <Version>$(SdkVersion)$(SdkVersionSuffix)</Version>
-    <AssemblyVersion>$(SdkVersion)</AssemblyVersion>
-    <FileVersion>$(SdkVersion)</FileVersion>
+   
+  </PropertyGroup>
+
+  
+  <PropertyGroup Label="SDK Common Assembly Info and NuGet Packaging Info" >
+
+    <PackageReleaseNotes>$(SdkReleaseNotes)</PackageReleaseNotes>
+    <VersionPrefix>$(SdkVersion)</VersionPrefix>
+    <VersionSuffix>$(SdkVersionSuffix)</VersionSuffix>
     <Company>Rollbar Inc</Company>
     <Owners>Andrey Kornich (Wide Spectrum Computing LLC), Rollbar Inc.</Owners>
     <Authors>Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
@@ -52,15 +54,30 @@
     <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
     <CurrentYear>$([System.DateTime]::Now.ToString(yyyy))</CurrentYear>
     <Copyright>Copyright (c) 2015-$(CurrentYear) Rollbar Inc</Copyright>
-    <PackageTags>rollbar;error;exception;crash;tracking;reporting;log;analysis;monitoring;aggregation</PackageTags>
     <RepositoryUrl>https://github.com/rollbar/Rollbar.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageTags>rollbar;error;exception;crash;tracking;reporting;log;analysis;monitoring;aggregation</PackageTags>
     <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
     <PackageIcon>rollbar-logo.png</PackageIcon>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <PropertyGroup 
+    Label="SDK Common Assembly Info and NuGet Packaging Info for non-LTS releases" 
+    Condition="'$(SdkLtsRelease)'=='true'">
+      <InformationalVersion>LTS-$(SdkVersion)-$(SdkVersionSuffix)</InformationalVersion>
+      <ProductVersion>LTS-$(SdkVersion)-$(SdkVersionSuffix)</ProductVersion>
+      <Product>LTS $(Product)</Product>
+      <ProductName>LTS $(ProductName)</ProductName>
+      <PackageId>LTS.$(AssemblyName)</PackageId>
+  </PropertyGroup>
+
+      <Choose>
+    <When Condition="'$(SdkLtsRelease)'=='false'">
+    </When>
+  </Choose>
 
   <ItemGroup>
     <None Include="..\rollbar-logo.png" Pack="true" Visible="false" PackagePath=""/>

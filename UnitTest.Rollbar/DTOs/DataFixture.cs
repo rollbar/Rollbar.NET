@@ -54,9 +54,13 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.IsTrue(_basicData.Notifier.Keys.Contains("name"));
             Assert.IsTrue(_basicData.Notifier.Keys.Contains("version"));
-            Assert.AreEqual(_basicData.Notifier["name"], "Rollbar.NET");
+            Assert.IsTrue(_basicData.Notifier["name"].ToString().StartsWith("Rollbar.NET"));
             var version = typeof(Data).Assembly.GetName().Version.ToString(3);
-            Assert.AreEqual(string.Format("{{`name`:`Rollbar.NET`,`version`:`{0}`}}", version), WhiteSpace.Replace(JsonConvert.SerializeObject(_basicData.Notifier), "").Replace('"', '`'));
+            string[] expected = string.Format("{{`name`:`Rollbar.NET`,`version`:`{0}`}}", version).TrimEnd('}').TrimEnd('`').Split(',');
+            string[] actual = WhiteSpace.Replace(JsonConvert.SerializeObject(_basicData.Notifier), "").Replace('"', '`').Split(',');
+            Assert.AreEqual(2, actual.Length);
+            Assert.IsTrue(actual[0].StartsWith(expected[0].TrimEnd('`'))); // for name:
+            Assert.IsTrue(actual[1].StartsWith(expected[1])); // for version:
         }
 
         [TestMethod]
