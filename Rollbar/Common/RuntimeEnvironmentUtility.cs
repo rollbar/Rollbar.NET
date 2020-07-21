@@ -5,6 +5,7 @@
     using System.Reflection;
     using System.Runtime.InteropServices;
     using System.Runtime.Versioning;
+    using System.Text;
 
     /// <summary>
     /// A utility class aiding discovery of the current runtime environment.
@@ -12,13 +13,34 @@
     public static class RuntimeEnvironmentUtility
     {
         /// <summary>
+        /// Gets the type assembly product.
+        /// </summary>
+        /// <param name="theType">The type.</param>
+        /// <returns>System.String.</returns>
+        public static string GetTypeAssemblyProduct(Type theType)
+        {
+            var product = theType.Assembly.GetCustomAttribute(typeof(AssemblyProductAttribute)) as AssemblyProductAttribute;
+            if (product != null)
+            {
+                return product.Product;
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
         /// Gets the type assembly version.
         /// </summary>
         /// <param name="theType">The type.</param>
         /// <returns></returns>
         public static string GetTypeAssemblyVersion(Type theType)
         {
-            return theType.Assembly.GetName().Version.ToString(3);
+            StringBuilder result = new StringBuilder(theType.Assembly.GetName().Version.ToString(3));
+            //var infoVersion = theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
+            //if (infoVersion != null && infoVersion.InformationalVersion.StartsWith("LTS"))
+            //{
+            //    result.Append($" ({infoVersion.InformationalVersion.TrimEnd('-')})");
+            //}
+            return result.ToString();
         }
 
         /// <summary>
