@@ -15,11 +15,7 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 ## Codebase status (code quality and CI build)
 
-### [Rollbar.NET](https://github.com/rollbar/Rollbar.NET) repo
-
 ![CI workflow on the master branch](https://github.com/rollbar/Rollbar.NET/workflows/CI%20workflow%20on%20the%20master%20branch/badge.svg)
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/badd7f93cd7b4dc8b2c4261e7b23c880)](https://www.codacy.com/app/akornich/Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=rollbar/Rollbar.NET&amp;utm_campaign=Badge_Grade) 
 
 [![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=master)
 
@@ -27,30 +23,7 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=rollbar-net)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=rollbar-net)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=bugs)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=ncloc)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=rollbar-net)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?id=rollbar-net)
-
-[![Sourcegraph](https://sourcegraph.com/github.com/Rollbar/Rollbar.NET/-/badge.svg)](https://sourcegraph.com/github.com/rollbar/Rollbar.NET?badge)
-
-
-### [Rollbar.NET @ Wide Spectrum Computing](https://github.com/WideSpectrumComputing/Rollbar.NET) repo (primary development fork)
-
-![CI workflow on the master branch](https://github.com/WideSpectrumComputing/Rollbar.NET/workflows/CI%20workflow%20on%20the%20master%20branch/badge.svg)
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9adf26abd5694ebb8fecf6d4925f1da7)](https://www.codacy.com/app/WideSpectrumComputing/WideSpectrumComputing-Rollbar.NET?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=WideSpectrumComputing/Rollbar.NET&amp;utm_campaign=Badge_Grade)
-
-[![Build Status](https://dev.azure.com/wsc0610/wsc/_apis/build/status/WideSpectrumComputing.Rollbar.NET?branchName=master)](https://dev.azure.com/wsc0610/wsc/_build/latest?definitionId=1?branchName=master)
-
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=bugs)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=ncloc)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=wsc-rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?id=wsc-rollbar-net)
 
 ## Available as NuGet packages
 - `Rollbar (the core)....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
