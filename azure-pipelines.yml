@@ -97,8 +97,8 @@ steps:
     SonarCloud: 'Rollbar SDKs SonarCloud'
     organization: '$(SonarOrganization)'
     scannerMode: 'MSBuild'
-    projectKey: '$(SonarCloudProjectKey)'
-    projectName: '$(SonarCloudProjectName)'
+    projectKey: '$(SonarProjectKey)'
+    projectName: '$(SonarProjectName)'
     projectVersion: '$(Build.BuildNumber)'
     extraProperties: 
 #     sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml
