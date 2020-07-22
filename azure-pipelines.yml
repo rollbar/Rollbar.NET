@@ -6,7 +6,7 @@
 trigger:
     branches:
         include:
-            - master
+            - LTS-3.12.0
     tags:
         include:
             - v*
