@@ -6,7 +6,8 @@
 trigger:
     branches:
         include:
-            - LTS-3.12.0
+            - master
+            - LTS-*
     tags:
         include:
             - v*
@@ -96,8 +97,8 @@ steps:
     SonarCloud: 'Rollbar SDKs SonarCloud'
     organization: '$(SonarOrganization)'
     scannerMode: 'MSBuild'
-    projectKey: '$(SonarCloudProjectKey_LTS_3_12_0)'
-    projectName: '$(SonarCloudProjectName_LTS_3_12_0)'
+    projectKey: '$(SonarCloudProjectKey)'
+    projectName: '$(SonarCloudProjectName)'
     projectVersion: '$(Build.BuildNumber)'
     extraProperties: 
 #     sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml
