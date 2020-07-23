@@ -17,7 +17,7 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 ![CI workflow on the master branch](https://github.com/rollbar/Rollbar.NET/workflows/CI%20workflow%20on%20the%20master%20branch/badge.svg)
 
-[![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=LTS-3.12.0)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=LTS-3.12.0)
 
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
