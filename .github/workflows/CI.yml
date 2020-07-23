@@ -45,11 +45,7 @@ on:
   pull_request:
     branches: [ master, LTS-* ]
     tags: [ v* ]
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> master
 jobs:
 
   build:
