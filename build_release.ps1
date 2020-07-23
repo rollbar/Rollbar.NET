@@ -131,7 +131,7 @@ foreach($project in $sdkProjects) {
     Write-Host "Package:" $nugetPackage
     $nugetPackageNameComponents =  $nugetPackage.Split('.')
     $releaseBinName = ""
-    for($i=0;$i -lt ($nugetPackageNameComponents.Count - 3); $i++) {
+    for($i=0; $i -lt ($nugetPackageNameComponents.Count - 3); $i++) {
         $releaseBinName = $releaseBinName + $nugetPackageNameComponents[$i]
         if ($i -lt ($nugetPackageNameComponents.Count - 3 - 1)) {
             $releaseBinName = $releaseBinName + "."
@@ -142,9 +142,32 @@ foreach($project in $sdkProjects) {
     # release bin version based on the NuGet package version suffix:
     [array]::Reverse($nugetPackageNameComponents)
     Write-Host "Package components:" $nugetPackageNameComponents
-    $releaseBinVersion = 
-        'v' + $nugetPackageNameComponents[2] + '.' + $nugetPackageNameComponents[1] + '.' + $nugetPackageNameComponents[0]
-    Write-Host "Package version:" $releaseBinVersion
+
+    if($nugetPackageNameComponents[$nugetPackageNameComponents.Count - 1] -eq "LTS") {
+        Write-Host "Dealing with an LTS realease..."
+        $patchAndSuffix = $nugetPackageNameComponents[0]
+        $patchAndSuffixComponents = $patchAndSuffix.Split('-')
+        Write-Host "   Patch and Suffix components:" $patchAndSuffixComponents
+        if ($patchAndSuffixComponents.Count -gt 1) {
+            $releaseBinVersion = 
+            'v' + $nugetPackageNameComponents[2] + '.' + $nugetPackageNameComponents[1] + '.' + $patchAndSuffixComponents[0] + '-LTS'
+            Write-Host "   Release bin version (in progress):" $releaseBinVersion
+            for($i=1; $i -lt $patchAndSuffixComponents.Count; $i++) {
+                $releaseBinVersion = $releaseBinVersion + '-' + $patchAndSuffixComponents[$i]
+                Write-Host "   Release bin version (in progress):" $releaseBinVersion
+            }
+        }
+        else {
+            Write-Host "Dealing with a non-LTS realease..."
+            $releaseBinVersion = 
+            'v' + $nugetPackageNameComponents[2] + '.' + $nugetPackageNameComponents[1] + '.' + $nugetPackageNameComponents[0] + "-LTS"
+        }
+    }
+    else {
+        $releaseBinVersion = 
+            'v' + $nugetPackageNameComponents[2] + '.' + $nugetPackageNameComponents[1] + '.' + $nugetPackageNameComponents[0]
+    }
+    Write-Host "Release bin version:" $releaseBinVersion
 
     # release folder path:
     $releaseFolder = Join-Path -Path $releasesPath  -ChildPath $releaseBinVersion 
