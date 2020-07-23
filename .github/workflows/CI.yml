@@ -40,9 +40,11 @@ name: CI workflow on the master branch
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, LTS-* ]
+    tags: [ v* ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, LTS-* ]
+    tags: [ v* ]
 
 jobs:
 
