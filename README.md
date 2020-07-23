@@ -15,7 +15,7 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 ## Codebase status (code quality and CI build)
 
-![CI workflow on the master branch](https://github.com/rollbar/Rollbar.NET/workflows/CI%20workflow%20on%20the%20master%20branch/badge.svg)
+![CI workflow on the master branch](https://github.com/rollbar/Rollbar.NET/workflows/CI%20workflow%20on%20the%20master%20branch/badge.svg?branch=LTS-3.12.0)
 
 [![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=LTS-3.12.0)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=LTS-3.12.0)
 
