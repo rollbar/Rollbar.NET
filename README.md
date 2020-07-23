@@ -19,11 +19,11 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 [![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=master)
 
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?id=rollbar-net)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
 
 ## Available as NuGet packages
 - `Rollbar (the core)....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
