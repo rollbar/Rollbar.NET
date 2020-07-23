@@ -7,7 +7,7 @@
   
   <PropertyGroup Label="SDK Release Essential Info">
     <SdkVersion>3.12.0</SdkVersion>           <!-- Required: major.minor.patch -->
-    <SdkVersionSuffix>beta</SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
+    <SdkVersionSuffix>beta1</SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>true</SdkLtsRelease> <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>
       - feat: resolve #546: Add reporting of LTS releases within payloads (the notifier element).
