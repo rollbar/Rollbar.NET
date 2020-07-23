@@ -36,14 +36,16 @@
 # For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
-name: CI workflow on the master branch
+name: CI workflow
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, LTS-* ]
+    tags: [ v* ]
   pull_request:
-    branches: [ master ]
-
+    branches: [ master, LTS-* ]
+    tags: [ v* ]
+    
 jobs:
 
   build:

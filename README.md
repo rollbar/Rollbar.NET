@@ -15,28 +15,50 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 ## Codebase status (code quality and CI build)
 
-![CI workflow on the master branch](https://github.com/rollbar/Rollbar.NET/workflows/CI%20workflow%20on%20the%20master%20branch/badge.svg)
+![CI workflow on the LTS-3.12.0 branch](https://github.com/rollbar/Rollbar.NET/workflows/CI%20workflow/badge.svg?branch=LTS-3.12.0)
 
-[![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=master)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=master)
+[![Build Status](https://dev.azure.com/rollbar-account/SDKs/_apis/build/status/rollbar.Rollbar.NET?branchName=LTS-3.12.0)](https://dev.azure.com/rollbar-account/SDKs/_build/latest?definitionId=1&branchName=LTS-3.12.0)
 
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=rollbar-net)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?id=rollbar-net)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=security_rating)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=reliability_rating)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=sqale_rating)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=vulnerabilities)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rollbar-net&metric=coverage)](https://sonarcloud.io/dashboard?branch=LTS-3.12.0&id=rollbar-net)
 
 ## Available as NuGet packages
-- `Rollbar (the core)....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
-- `Rollbar.Deploys.......................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar.Deploys/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Deploys.svg)](http://www.nuget.org/packages/Rollbar.Deploys/)
-- `Rollbar.NetPlatformExtensions.........`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/)
-- `Rollbar.NetCore.AspNet................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/)
-- `Rollbar.Net.AspNet....................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/)
-- `Rollbar.Net.AspNet.Mvc................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.Mvc/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.Mvc/)
-- `Rollbar.Net.AspNet.WebApi.............`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/Rollbar/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.WebApi/)
-- `Rollbar.PlugIns.Log4net...............`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Log4net/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Log4net/)
-- `Rollbar.PlugIns.MSEnterpriseLibrary...`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.MSEnterpriseLibrary/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.MSEnterpriseLibrary/)
-- `Rollbar.PlugIns.NLog..................`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.NLog/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.NLog/)
-- `Rollbar.PlugIns.Serilog...............`[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.Serilog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Serilog/) [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.Serilog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Serilog/)
+- `LTS.Rollbar (the core)....................`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.svg)](http://www.nuget.org/packages/LTS.Rollbar/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.svg)](http://www.nuget.org/packages/LTS.Rollbar/)
+- `LTS.Rollbar.Deploys.......................`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.svg)](http://www.nuget.org/packages/LTS.Rollbar.Deploys/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.Deploys.svg)](http://www.nuget.org/packages/LTS.Rollbar.Deploys/)
+- `LTS.Rollbar.NetPlatformExtensions.........`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/LTS.Rollbar.NetPlatformExtensions/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/LTS.Rollbar.NetPlatformExtensions/)
+- `LTS.Rollbar.NetCore.AspNet................`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/LTS.Rollbar.NetCore.AspNet/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/LTS.Rollbar.NetCore.AspNet/)
+- `LTS.Rollbar.Net.AspNet....................`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/LTS.Rollbar.Net.AspNet/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/LTS.Rollbar.Net.AspNet/)
+- `LTS.Rollbar.Net.AspNet.Mvc................`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/LTS.Rollbar.Net.AspNet.Mvc/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/LTS.Rollbar.Net.AspNet.Mvc/)
+- `LTS.Rollbar.Net.AspNet.WebApi.............`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/LTS.Rollbar.Net.AspNet.WebApi/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/LTS.Rollbar.Net.AspNet.WebApi/)
+- `LTS.Rollbar.PlugIns.Log4net...............`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/LTS.Rollbar.PlugIns.Log4net/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/LTS.Rollbar.PlugIns.Log4net/)
+- `LTS.Rollbar.PlugIns.MSEnterpriseLibrary...`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/LTS.Rollbar.PlugIns.MSEnterpriseLibrary/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/LTS.Rollbar.PlugIns.MSEnterpriseLibrary/)
+- `LTS.Rollbar.PlugIns.NLog..................`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/LTS.Rollbar.PlugIns.NLog/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/LTS.Rollbar.PlugIns.NLog/)
+- `LTS.Rollbar.PlugIns.Serilog...............`
+[![NuGet version](http://img.shields.io/nuget/v/LTS.Rollbar.PlugIns.Serilog.svg)](http://www.nuget.org/packages/LTS.Rollbar.PlugIns.Serilog/) 
+[![Nuget downloads](http://img.shields.io/nuget/dt/LTS.Rollbar.PlugIns.Serilog.svg)](http://www.nuget.org/packages/LTS.Rollbar.PlugIns.Serilog/)
 
 ## Install
 
