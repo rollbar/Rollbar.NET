@@ -42,8 +42,14 @@ on:
   push:
     branches: [ master ]
   pull_request:
+<<<<<<< HEAD
     branches: [ master ]
 
+=======
+    branches: [ master, LTS-* ]
+    tags: [ v* ]
+    
+>>>>>>> parent of 112adc2... Merge remote-tracking branch 'upstream/master' into LTS-3.12.0
 jobs:
 
   build:
