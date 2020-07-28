@@ -108,6 +108,13 @@
                     : rollbarConfigSection.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
             }
             
+            if (rollbarConfigSection.ScrubSafelistFields != null && rollbarConfigSection.ScrubSafelistFields.Length > 0)
+            {
+                rollbarConfig.ScrubSafelistFields =
+                    string.IsNullOrEmpty(rollbarConfigSection.ScrubSafelistFields) ? new string[0]
+                    : rollbarConfigSection.ScrubSafelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
+            }
+
             if (rollbarConfigSection.ScrubWhitelistFields != null && rollbarConfigSection.ScrubWhitelistFields.Length > 0)
             {
                 rollbarConfig.ScrubWhitelistFields =

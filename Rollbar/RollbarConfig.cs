@@ -93,7 +93,7 @@
             this.CaptureUncaughtExceptions = true;
             this.LogLevel = ErrorLevel.Debug;
             this.ScrubFields = RollbarDataScrubbingHelper.Instance.GetDefaultFields().ToArray();
-            this.ScrubWhitelistFields = new string[] {};
+            this.ScrubSafelistFields = new string[] {};
             this.EndPoint = "https://api.rollbar.com/api/1/";
             this.ProxyAddress = null;
             this.ProxyUsername = null;
@@ -168,16 +168,29 @@
         }
 
         /// <summary>
-        /// Gets the scrub white-list fields.
+        /// Gets or sets the scrub safelist fields.
         /// </summary>
-        /// <value>
-        /// The scrub white-list fields.
-        /// </value>
+        /// <value>The scrub safelist fields.</value>
         /// <remarks>
         /// The fields mentioned in this list are guaranteed to be excluded
         /// from the ScrubFields list in cases when the lists overlap.
         /// </remarks>
-        public string[] ScrubWhitelistFields { get; set; }
+        public string[] ScrubSafelistFields { get; set; }
+
+        /// <summary>
+        /// Gets or sets the scrub whitelist fields.
+        /// </summary>
+        /// <value>The scrub whitelist fields.</value>
+        /// <remarks>
+        /// The fields mentioned in this list are guaranteed to be excluded
+        /// from the ScrubFields list in cases when the lists overlap.
+        /// </remarks>
+        [Obsolete("Use the ScrubSafelistFields property instead.")]
+        public string[] ScrubWhitelistFields 
+        { 
+            get { return this.ScrubSafelistFields; }
+            set { this.ScrubSafelistFields = value; }
+        }
 
         /// <summary>
         /// Gets or sets the log level.
@@ -410,7 +423,7 @@
             sb.AppendLine(indent + "  AccessToken: " + this.AccessToken);
             sb.AppendLine(indent + "  EndPoint: " + this.EndPoint);
             sb.AppendLine(indent + "  ScrubFields: " + this.ScrubFields);
-            sb.AppendLine(indent + "  ScrubWhitelistFields: " + this.ScrubWhitelistFields);
+            sb.AppendLine(indent + "  ScrubSafelistFields: " + this.ScrubSafelistFields);
             sb.AppendLine(indent + "  Enabled: " + this.Enabled);
             sb.AppendLine(indent + "  Environment: " + this.Environment);
             sb.AppendLine(indent + "  Server: " + this.Server);
@@ -443,12 +456,12 @@
                 return new string[0];
             }
 
-            if (this.ScrubWhitelistFields == null || this.ScrubWhitelistFields.Length == 0)
+            if (this.ScrubSafelistFields == null || this.ScrubSafelistFields.Length == 0)
             {
                 return this.ScrubFields.ToArray();
             }
 
-            var whitelist = this.ScrubWhitelistFields.ToArray();
+            var whitelist = this.ScrubSafelistFields.ToArray();
             return this.ScrubFields.Where(i => !whitelist.Contains(i)).ToArray();
         }
 

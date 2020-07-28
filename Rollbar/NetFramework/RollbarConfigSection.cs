@@ -80,7 +80,15 @@
         /// </value>
         [ConfigurationProperty("scrubWhitelistFields", IsRequired = false)]
         public string ScrubWhitelistFields 
-            => this["scrubWhitelistFields"] as string;
+            => this.ScrubSafelistFields;
+
+        /// <summary>
+        /// Gets the scrub safelist fields.
+        /// </summary>
+        /// <value>The scrub safelist fields.</value>
+        [ConfigurationProperty("scrubSafelistFields", IsRequired = false)]
+        public string ScrubSafelistFields 
+            => this["scrubSafelistFields"] as string;
 
         /// <summary>
         /// Gets or sets the log level.

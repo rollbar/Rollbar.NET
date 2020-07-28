@@ -76,7 +76,7 @@
                 {
                     Environment = RollbarUnitTestSettings.Environment,
                     ScrubFields = scrubFields,
-                    ScrubWhitelistFields = scrubWhitelistFields,
+                    ScrubSafelistFields = scrubWhitelistFields,
                 };
 
             var result = loggerConfig.GetFieldsToScrub();
