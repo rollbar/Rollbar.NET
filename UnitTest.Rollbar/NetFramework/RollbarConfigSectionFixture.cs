@@ -38,7 +38,7 @@ namespace UnitTest.Rollbar.NetFramework
             // environment = "unit-tests"
             // enabled="true"
             // scrubFields="ThePassword, Secret"
-            // scrubWhitelistFields="ThePassword"
+            // scrubSafelistFields="ThePassword"
             // personDataCollectionPolicies = "Username | Email"
             // ipAddressCollectionPolicy = "CollectAnonymized"
             // />

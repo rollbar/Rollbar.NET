@@ -78,6 +78,7 @@
         /// <value>
         /// The scrub fields.
         /// </value>
+        [Obsolete("Use the ScrubSafelistFields property instead.")]
         [ConfigurationProperty("scrubWhitelistFields", IsRequired = false)]
         public string ScrubWhitelistFields 
             => this.ScrubSafelistFields;

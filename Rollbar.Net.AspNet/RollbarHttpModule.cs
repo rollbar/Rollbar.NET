@@ -21,7 +21,7 @@
     ///       environment="unit-tests"
     ///       enabled="true"
     ///       scrubFields="ThePassword, Secret"
-    ///       scrubWhitelistFields="ThePassword"
+    ///       scrubSafelistFields="ThePassword"
     ///       logLevel="Info"
     ///       maxReportsPerMinute="160"
     ///       reportingQueueDepth="120"

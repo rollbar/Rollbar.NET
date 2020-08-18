@@ -188,7 +188,7 @@
         /// Gets the fields to scrub.
         /// </summary>
         /// <returns>
-        /// Actual fields to be scrubbed based on combining the ScrubFields with the ScrubWhitelistFields.
+        /// Actual fields to be scrubbed based on combining the ScrubFields with the ScrubSafelistFields.
         /// </returns>
         IReadOnlyCollection<string> GetFieldsToScrub();
 
