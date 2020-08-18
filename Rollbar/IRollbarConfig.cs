@@ -162,6 +162,16 @@
         string[] ScrubFields { get; }
 
         /// <summary>
+        /// Gets the scrub safelist fields.
+        /// </summary>
+        /// <value>The scrub safelist fields.</value>
+        /// <remarks>
+        /// The fields mentioned in this list are guaranteed to be excluded
+        /// from the ScrubFields list in cases when the lists overlap.
+        /// </remarks>
+        string[] ScrubSafelistFields { get; }
+
+        /// <summary>
         /// Gets the scrub white-list fields.
         /// </summary>
         /// <value>
@@ -171,13 +181,14 @@
         /// The fields mentioned in this list are guaranteed to be excluded 
         /// from the ScrubFields list in cases when the lists overlap.
         /// </remarks>
+        [Obsolete("Use the ScrubSafelistFields property instead.")]
         string[] ScrubWhitelistFields { get; }
 
         /// <summary>
         /// Gets the fields to scrub.
         /// </summary>
         /// <returns>
-        /// Actual fields to be scrubbed based on combining the ScrubFields with the ScrubWhitelistFields.
+        /// Actual fields to be scrubbed based on combining the ScrubFields with the ScrubSafelistFields.
         /// </returns>
         IReadOnlyCollection<string> GetFieldsToScrub();
 

@@ -68,7 +68,7 @@
         public void TestGetSafeScrubFields()
         {
             var scrubFields = new string[] { "one", "two", "three", };
-            var scrubWhitelistFields = new string[] { "two", };
+            var scrubSafelistFields = new string[] { "two", };
             var expectedSafeScrubFields = new string[] { "one", "three", };
 
             var loggerConfig =
@@ -76,7 +76,7 @@
                 {
                     Environment = RollbarUnitTestSettings.Environment,
                     ScrubFields = scrubFields,
-                    ScrubWhitelistFields = scrubWhitelistFields,
+                    ScrubSafelistFields = scrubSafelistFields,
                 };
 
             var result = loggerConfig.GetFieldsToScrub();
