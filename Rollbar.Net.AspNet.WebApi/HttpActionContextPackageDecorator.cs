@@ -75,7 +75,7 @@
             {
                 rollbarData.Request.Url = this._httpActionContext.Request.RequestUri?.PathAndQuery;
                 rollbarData.Request.Method = this._httpActionContext.Request.Method?.ToString().ToUpper();
-                rollbarData.Response.Headers = Convert(this._httpActionContext.Request.Headers);
+                rollbarData.Request.Headers = Convert(this._httpActionContext.Request.Headers);
                 rollbarData.Request.PostBody = ReadInHttpMessageBody(this._httpActionContext.Request.Content);
                 rollbarData.Request["request_properties"] = this._httpActionContext.Request.Properties;
             }
