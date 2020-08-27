@@ -100,7 +100,7 @@
             set
             {
                 Assumption.AssertTrue(
-                    !this._keyedValues.ContainsKey(key)                               // no such key preset yet
+                    !this._keyedValues.ContainsKey(key)                                         // no such key preset yet
                     || this._keyedValues[key] == null                                           // OR its not initialized yet
                     || value != null                                                            // OR no-null value
                     || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),    // OR not about reserved property/key
@@ -134,7 +134,7 @@
                 if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
                 {
                     // we are setting a reserved key when calling Bind(...) on an IConfigurationSection 
-                    // that treats this instance of ExtendableDtoBase as a dictionary while binding to the targeted deserialization onject:
+                    // that treats this instance of ExtendableDtoBase as a dictionary while binding to the targeted deserialization object:
                     this._keyedValues[lowCaseKey] = value;
                 }
                 else
