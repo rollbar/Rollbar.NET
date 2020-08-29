@@ -100,13 +100,14 @@
             set
             {
                 Assumption.AssertTrue(
-                    !this._keyedValues.ContainsKey(key)                               // no such key preset yet
+                    !this._keyedValues.ContainsKey(key)                                         // no such key preset yet
                     || this._keyedValues[key] == null                                           // OR its not initialized yet
                     || value != null                                                            // OR no-null value
                     || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),    // OR not about reserved property/key
                     "conditional " + nameof(value) + " assessment"
                     );
-//
+
+                var lowCaseKey = key.ToLower();
                 var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
                 if (concreteDtoMetadata
                     .ReservedPropertyInfoByReservedKey
@@ -116,7 +117,7 @@
                     var valueType = value?.GetType();
                     Assumption.AssertTrue(
                         //we are not dealing with a reserved property, hence, anything works:
-                        !concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(key)
+                        !(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(key) || concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
                         //OR we are dealing with a reserved property and the value and its type should make sense:  
                         || value == null
                         || reservedPropertyType == valueType
@@ -129,8 +130,17 @@
                         nameof(value)
                     );
                 }
-//
-            this._keyedValues[key] = value;
+
+                if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
+                {
+                    // we are setting a reserved key when calling Bind(...) on an IConfigurationSection 
+                    // that treats this instance of ExtendableDtoBase as a dictionary while binding to the targeted deserialization object:
+                    this._keyedValues[lowCaseKey] = value;
+                }
+                else
+                {
+                    this._keyedValues[key] = value;
+                }
             }
         }
 

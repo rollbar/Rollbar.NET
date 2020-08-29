@@ -8,10 +8,12 @@
   <PropertyGroup Label="SDK Release Essential Info">
     <SdkVersion>3.12.3</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
-    <SdkLtsRelease>false</SdkLtsRelease> <!-- Optional. Examples: false (default) or true. -->
-    <SdkReleaseNotes>
+    <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
+    <SdkReleaseNotes>                         <!-- Required -->
+      - fix: resolve #554: rollbarData.Response is null on this line.
+      - fix: resolve #553: RollbarConfig.Server's properties do not properly deserialize from appsettings.json.
       - chore: resolve #549: Replace Blacklist and Whitelist with Safelist and Blocklist.
-    </SdkReleaseNotes>                   <!-- Required -->
+    </SdkReleaseNotes>                        
 
     <!--
     Release Notes Tagging Conventions:

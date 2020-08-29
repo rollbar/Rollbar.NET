@@ -31,7 +31,12 @@ namespace UnitTest.Rollbar.NetCore
         [TestMethod]
         public void LoadRollbarAppSettingsTest()
         {
+            var sever = new Server();
+
             RollbarConfig config = new RollbarConfig("default=none");
+            Assert.IsNull(config.Person);
+            Assert.IsNull(config.Server);
+
             AppSettingsUtility.LoadAppSettings(config, Path.Combine(Environment.CurrentDirectory, "TestData"), "appsettings.json");
 
             // The test data looks like this:
@@ -47,6 +52,10 @@ namespace UnitTest.Rollbar.NetCore
             //      "ThePassword",
             //      "TheSecret"
             //    ],
+            //    "Server": {
+            //      "Root": "C://Blah/Blah",
+            //      "Cpu": "x64"
+            //    },
             //    "Person": {
             //      "UserName": "jbond"
             //    },
@@ -70,6 +79,16 @@ namespace UnitTest.Rollbar.NetCore
                 IpAddressCollectionPolicy.CollectAnonymized
                 , config.IpAddressCollectionPolicy
                 );
+
+            Assert.IsNotNull(config.Server);
+            Assert.IsTrue(config.Server.ContainsKey("cpu"));
+            Assert.IsTrue(config.Server.ContainsKey("root"));
+            Assert.IsFalse(config.Server.ContainsKey("Cpu"));
+            Assert.IsFalse(config.Server.ContainsKey("Root"));
+            Assert.AreEqual(config.Server["cpu"], config.Server.Cpu);
+            Assert.AreEqual(config.Server["root"], config.Server.Root);
+            Assert.AreEqual("x64", config.Server.Cpu);
+            Assert.AreEqual("C://Blah/Blah", config.Server.Root);
         }
 
         [TestMethod]
