@@ -9,7 +9,7 @@
     /// <summary>
     /// Class Destination.
     /// </summary>
-    public class Destination 
+    public class Destination : IDestination
     {
         /// <summary>
         /// Gets or sets the identifier.
@@ -33,7 +33,7 @@
         /// Gets or sets the payload records.
         /// </summary>
         /// <value>The payload records.</value>
-        public ICollection<PayloadRecord> PayloadRecords { get; set; } 
+        public ICollection<PayloadRecord> PayloadRecords { get; set; }
             = new List<PayloadRecord>();
     }
 }

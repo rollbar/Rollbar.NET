@@ -85,15 +85,15 @@
             this.Transmit = true;
             this.RethrowExceptionsAfterReporting = false;
             this.EnableLocalPayloadStore = false;
-            this.LocalPayloadStoreFileName = StoreContext.DefaultRollbarStoreDbFile;
-            this.LocalPayloadStoreLocationPath = StoreContext.DefaultRollbarStoreDbFileLocation;
+            this.LocalPayloadStoreFileName = PayloadStoreConstants.DefaultRollbarStoreDbFile;
+            this.LocalPayloadStoreLocationPath = PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
             this.MaxReportsPerMinute = null; //5000;
             this.ReportingQueueDepth = 20;
             this.MaxItems = 0;
             this.CaptureUncaughtExceptions = true;
             this.LogLevel = ErrorLevel.Debug;
             this.ScrubFields = RollbarDataScrubbingHelper.Instance.GetDefaultFields().ToArray();
-            this.ScrubSafelistFields = new string[] {};
+            this.ScrubSafelistFields = new string[] { };
             this.EndPoint = "https://api.rollbar.com/api/1/";
             this.ProxyAddress = null;
             this.ProxyUsername = null;
@@ -186,8 +186,8 @@
         /// from the ScrubFields list in cases when the lists overlap.
         /// </remarks>
         [Obsolete("Use the ScrubSafelistFields property instead.")]
-        public string[] ScrubWhitelistFields 
-        { 
+        public string[] ScrubWhitelistFields
+        {
             get { return this.ScrubSafelistFields; }
             set { this.ScrubSafelistFields = value; }
         }
@@ -295,7 +295,7 @@
         /// <value>
         /// The person.
         /// </value>
-        public Person Person { get;set; }
+        public Person Person { get; set; }
 
         /// <summary>
         /// Gets or sets the proxy address.
@@ -385,16 +385,16 @@
         /// <returns>System.String.</returns>
         internal string GetLocalPayloadStoreFullPathName()
         {
-            string dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath) 
-                ? StoreContext.DefaultRollbarStoreDbFileLocation
-                : this.LocalPayloadStoreLocationPath ;
+            string dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath)
+                ? PayloadStoreConstants.DefaultRollbarStoreDbFileLocation
+                : this.LocalPayloadStoreLocationPath;
 
-            string dbFile = string.IsNullOrWhiteSpace(this.LocalPayloadStoreFileName) 
-                ? StoreContext.DefaultRollbarStoreDbFile
+            string dbFile = string.IsNullOrWhiteSpace(this.LocalPayloadStoreFileName)
+                ? PayloadStoreConstants.DefaultRollbarStoreDbFile
                 : this.LocalPayloadStoreFileName;
 
-            string result = string.IsNullOrWhiteSpace(dbLocation) 
-                ? dbFile 
+            string result = string.IsNullOrWhiteSpace(dbLocation)
+                ? dbFile
                 : Path.Combine(dbLocation, dbFile);
 
             return result;

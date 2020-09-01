@@ -1,4 +1,4 @@
-﻿namespace Rollbar.PayloadStore 
+﻿namespace Rollbar.PayloadStore
 {
     using System;
     using System.Collections.Generic;
@@ -13,37 +13,26 @@
     /// Implements the <see cref="Microsoft.EntityFrameworkCore.DbContext" />
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
-    public class StoreContext 
+    public class StoreContext
         : DbContext
     {
-        static StoreContext() 
+        static StoreContext()
         {
-            #if (!NETFX || NETFX_461nNewer)
+#if (!NETFX || NETFX_461nNewer)
             SQLitePCL.Batteries_V2.Init();
-            #endif
-
-            if(!Environment.OSVersion.VersionString.Contains("Windows")) 
-            {
-                StoreContext.DefaultRollbarStoreDbFileLocation = 
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            }
+#endif
         }
-
-        /// <summary>
-        /// The default rollbar store database file
-        /// </summary>
-        public const string DefaultRollbarStoreDbFile = "RollbarPayloadsStore.db";
 
         /// <summary>
         /// The default rollbar store database file location
         /// </summary>
-        public static readonly string DefaultRollbarStoreDbFileLocation = null;
+        public static readonly string DefaultRollbarStoreDbFileLocation = PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
 
         /// <summary>
         /// Gets or sets the full name of the rollbar store database.
         /// </summary>
         /// <value>The full name of the rollbar store database.</value>
-        public static string RollbarStoreDbFullName { get; set; } = StoreContext.DefaultRollbarStoreDbFile;
+        public static string RollbarStoreDbFullName { get; set; } = PayloadStoreConstants.DefaultRollbarStoreDbFile;
 
         /// <summary>
         /// The sqlite connection string
@@ -119,10 +108,10 @@
         {
             modelBuilder.Entity<Destination>()
                 .ToTable("Destinations")
-                .HasIndex(d => new {d.Endpoint, d.AccessToken})
+                .HasIndex(d => new { d.Endpoint, d.AccessToken })
                 ;
             modelBuilder.Entity<Destination>()
-                .HasKey(d=>d.ID)
+                .HasKey(d => d.ID)
                 ;
             modelBuilder.Entity<Destination>()
                 .Property(d => d.Endpoint)

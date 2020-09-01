@@ -7,7 +7,7 @@
     /// <summary>
     /// Class PayloadRecord.
     /// </summary>
-    public class PayloadRecord
+    public class PayloadRecord : IPayloadRecord
     {
         /// <summary>
         /// Gets or sets the identifier.
