@@ -76,7 +76,7 @@ namespace Rollbar
             }
 
             // let's figure out where to keep the local payloads store:
-            StoreContext.RollbarStoreDbFullName = ((RollbarConfig) this._config).GetLocalPayloadStoreFullPathName(); 
+            PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarConfig)this._config).GetLocalPayloadStoreFullPathName();
 
             // let's init proper Rollbar client:
             var rollbarClient = new RollbarClient(this);
@@ -226,7 +226,7 @@ namespace Rollbar
         /// <returns>ILogger.</returns>
         public ILogger Log(DTOs.Data rollbarData)
         {
-            return this.Enqueue(rollbarData, rollbarData.Level??ErrorLevel.Debug, null);
+            return this.Enqueue(rollbarData, rollbarData.Level ?? ErrorLevel.Debug, null);
         }
 
         /// <summary>
@@ -592,7 +592,7 @@ namespace Rollbar
                         config.Reconfigure(this._config);
                         config.RethrowExceptionsAfterReporting = false;
                         using var rollbar = RollbarFactory.CreateNew(config);
-                        rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level,dataObject,custom);
+                        rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level, dataObject, custom);
                     }
 #pragma warning disable CA1031 // Do not catch general exception types
                     catch
@@ -630,10 +630,10 @@ namespace Rollbar
             catch (System.Exception exception)
             {
                 RollbarErrorUtility.Report(
-                    this, 
-                    dataObject, 
-                    InternalRollbarError.BundlingError, 
-                    null, 
+                    this,
+                    dataObject,
+                    InternalRollbarError.BundlingError,
+                    null,
                     exception,
                     payloadBundle
                     );
@@ -649,10 +649,10 @@ namespace Rollbar
             catch (System.Exception exception)
             {
                 RollbarErrorUtility.Report(
-                    this, 
-                    dataObject, 
-                    InternalRollbarError.EnqueuingError, 
-                    null, 
+                    this,
+                    dataObject,
+                    InternalRollbarError.EnqueuingError,
+                    null,
                     exception,
                     payloadBundle
                     );
@@ -685,7 +685,7 @@ namespace Rollbar
                 timeoutAt = DateTime.Now.Add(timeout.Value);
             }
 
-            switch(dataObject)
+            switch (dataObject)
             {
                 case IRollbarPackage package:
                     if (package.MustApplySynchronously)
@@ -704,7 +704,7 @@ namespace Rollbar
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         internal virtual void OnRollbarEvent(RollbarEventArgs e)
         {
-            InternalEvent?.Invoke(this,e);
+            InternalEvent?.Invoke(this, e);
         }
 
         /// <summary>
@@ -713,7 +713,7 @@ namespace Rollbar
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         private void ValidateConfiguration(IRollbarConfig rollbarConfig)
         {
-            switch(rollbarConfig)
+            switch (rollbarConfig)
             {
                 case IValidatable v:
                     var failedValidationRules = v.Validate();

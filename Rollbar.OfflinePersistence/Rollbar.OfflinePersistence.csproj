@@ -1,10 +1,10 @@
-﻿<Project ToolsVersion="16.0">
+<Project ToolsVersion="16.0">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks>
     <!--TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461</TargetFrameworks-->
-    <AssemblyName>Rollbar</AssemblyName>
-    <RootNamespace>Rollbar</RootNamespace>
+    <AssemblyName>Rollbar.OfflinePersistence</AssemblyName>
+    <RootNamespace>Rollbar.OfflinePersistence</RootNamespace>
     <Configurations>Debug;Release;Instrumented</Configurations>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
@@ -14,95 +14,35 @@
   <PropertyGroup Label="Any build">
     <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
   </PropertyGroup>
-  
+
   <PropertyGroup Label="Instrumented build" Condition="'$(Configuration)'=='Instrumented' And '$(Platform)' == 'AnyCPU'">
     <DefineConstants>$(DefineConstants);INSTRUMENT</DefineConstants>
   </PropertyGroup>
 
   <!--TargetFramework dependent settings-->
-  
+
   <Choose>
-    
+
     <!--.Net Standard-->
     <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
       <PropertyGroup Label=".NetStandard build">
         <NetVariant>NET_STANDARD</NetVariant>
         <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
       </PropertyGroup>
-      <ItemGroup>
-        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-      </ItemGroup>
-      <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.1" />
-      </ItemGroup>
     </When>
     <When Condition="$(TargetFramework.StartsWith('netstandard'))">
       <PropertyGroup Label=".NetStandard build">
         <NetVariant>NET_STANDARD</NetVariant>
         <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
       </PropertyGroup>
-      <ItemGroup>
-        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-      </ItemGroup>
-      <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-      </ItemGroup>
     </When>
-    
+
     <!--.Net Core-->
     <When Condition="$(TargetFramework.StartsWith('netcoreapp'))">
       <PropertyGroup Label=".NetCore build">
         <NetVariant>NET_CORE</NetVariant>
         <DefineConstants>$(DefineConstants);NETCOREAPP</DefineConstants>
       </PropertyGroup>
-      <ItemGroup>
-        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-      </ItemGroup>
-      <Choose>
-        <When Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-          <ItemGroup>
-            <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
-            <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-          </ItemGroup>
-        </When>
-        <When Condition="$(TargetFramework.StartsWith('netcoreapp2.')) And ('$(TargetFramework)' != 'netcoreapp2.0')">
-          <ItemGroup>
-            <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
-            <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
-            <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.1.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
-          </ItemGroup>
-        </When>
-        <When Condition="$(TargetFramework.StartsWith('netcoreapp3.'))">
-          <ItemGroup>
-            <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-            <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-            <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
-          </ItemGroup>
-        </When>
-      </Choose>
     </When>
 
     <!--.NET Framework-->
@@ -124,28 +64,19 @@
       <PropertyGroup Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net471')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
         <DefineConstants>$(DefineConstants);NETFX_461nNewer</DefineConstants>
       </PropertyGroup>
-      <Choose>
-        <When Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net471')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
-          <ItemGroup>
-            <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-            <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-          </ItemGroup>
-        </When>
-      </Choose>
     </When>
     <Otherwise>
       <!--NOTHING-->
     </Otherwise>
   </Choose>
 
-    
+
   <!--EF Core specific settings dependent on TargetFramework-->
   <Choose>
     <When Condition="'$(TargetFramework)' == 'net46' Or $(TargetFramework.StartsWith('net45'))">
       <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets.">
         <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-        <!--<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />-->
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />
       </ItemGroup>
     </When>
     <When Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
@@ -159,11 +90,11 @@
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
 
-        <!--
+        
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
-        -->
+        
 
         <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
@@ -172,19 +103,55 @@
     <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
       <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-        <!--<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.1" />-->
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.1" />
       </ItemGroup>
     </When>
     <Otherwise>
       <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-        <!--<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />-->
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
       </ItemGroup>
     </Otherwise>
   </Choose>
-  
+
+  <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp3.0')">
+    <Compile Remove="Migrations\20190916220704_Initial.cs" />
+    <Compile Remove="Migrations\20190916220704_Initial.Designer.cs" />
+    <Compile Remove="Migrations\StoreContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp2.2')">
+    <None Include="Migrations\20190916220704_Initial.cs" />
+    <None Include="Migrations\20190916220704_Initial.Designer.cs" />
+    <None Include="Migrations\StoreContextModelSnapshot.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="RollbarPayloadsStore.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="RollbarPayloadsStore.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
 
   <Target Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')" Name="IncludeNativeBinariesAsOutput" BeforeTargets="GetCopyToOutputDirectoryItems">
+    <ItemGroup>
+      <Content Include="$(OutputPath)\x64\e_sqlite3.dll">
+        <Link>x64\e_sqlite3.dll</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="$(OutputPath)\x86\e_sqlite3.dll">
+        <Link>x86\e_sqlite3.dll</Link>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
     <AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)">
       <Output TaskParameter="AssignedFiles" ItemName="ContentWithTargetPath" />
     </AssignTargetPath>
