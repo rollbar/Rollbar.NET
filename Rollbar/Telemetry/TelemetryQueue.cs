@@ -1,6 +1,4 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
-
-namespace Rollbar.Telemetry
+﻿namespace Rollbar.Telemetry
 {
     using System.Collections.Generic;
     using Rollbar.Diagnostics;

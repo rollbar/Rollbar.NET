@@ -1,6 +1,4 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
-
-namespace Rollbar.Serialization.Json
+﻿namespace Rollbar.Serialization.Json
 {
     using Newtonsoft.Json.Linq;
     using Rollbar.Diagnostics;

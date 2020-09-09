@@ -1,6 +1,4 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
-
-namespace Rollbar.PayloadScrubbing
+﻿namespace Rollbar.PayloadScrubbing
 {
     using System;
     using System.Diagnostics;

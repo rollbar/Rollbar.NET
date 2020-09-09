@@ -3,16 +3,17 @@
   <PropertyGroup Label="Toolset Related">
     <LangVersion>latest</LangVersion>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
   
-  <!--
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>UnitTest.$(AssemblyName)</_Parameter1>
     </AssemblyAttribute>  
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>UnitTest.RollbarTestCommon</_Parameter1>
+    </AssemblyAttribute>  
   </ItemGroup>
-  -->
   
   <PropertyGroup Label="SDK Release Essential Info">
     <SdkVersion>3.13.0</SdkVersion>           <!-- Required: major.minor.patch -->

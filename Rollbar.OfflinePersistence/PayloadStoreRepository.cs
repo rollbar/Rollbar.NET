@@ -1,6 +1,4 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar.OfflinePersistence")]
-
-namespace Rollbar.OfflinePersistence
+﻿namespace Rollbar.OfflinePersistence
 {
     using Rollbar.DTOs;
     using Rollbar.PayloadStore;
