@@ -18,7 +18,7 @@
   <PropertyGroup Label="Instrumented build" Condition="'$(Configuration)'=='Instrumented' And '$(Platform)' == 'AnyCPU'">
     <DefineConstants>$(DefineConstants);INSTRUMENT</DefineConstants>
   </PropertyGroup>
-
+  
   <!--TargetFramework dependent settings-->
   
   <Choose>
@@ -139,40 +139,13 @@
     </Otherwise>
   </Choose>
 
-    
+
   <!--EF Core specific settings dependent on TargetFramework-->
   <Choose>
     <When Condition="'$(TargetFramework)' == 'net46' Or $(TargetFramework.StartsWith('net45'))">
       <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets.">
         <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
         <!--<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />-->
-      </ItemGroup>
-    </When>
-    <When Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
-      <ItemGroup Label="EF Core relatively recent tools">
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-
-        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
-
-        <!--
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
-        -->
-
-        <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
-      </ItemGroup>
-    </When>
-    <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
-      <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-        <!--<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.1" />-->
       </ItemGroup>
     </When>
     <Otherwise>
@@ -182,11 +155,15 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
-  
 
-  <Target Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')" Name="IncludeNativeBinariesAsOutput" BeforeTargets="GetCopyToOutputDirectoryItems">
-    <AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)">
-      <Output TaskParameter="AssignedFiles" ItemName="ContentWithTargetPath" />
+
+  <Target Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')" 
+          Name="IncludeNativeBinariesAsOutput" 
+          BeforeTargets="GetCopyToOutputDirectoryItems">
+    <AssignTargetPath Files="@(Content)" 
+                      RootFolder="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="AssignedFiles" 
+              ItemName="ContentWithTargetPath" />
     </AssignTargetPath>
   </Target>
 
