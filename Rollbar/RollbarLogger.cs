@@ -12,8 +12,6 @@ namespace Rollbar
     using System.Linq;
     using System.Runtime.ExceptionServices;
     using Rollbar.PayloadStore;
-    using System.IO;
-
 
     /// <summary>
     /// Implements disposable implementation of IRollbar.

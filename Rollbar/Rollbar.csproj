@@ -140,22 +140,19 @@
   </Choose>
 
 
-  <!--EF Core specific settings dependent on TargetFramework-->
+  <!--EF Core specific settings dependent on TargetFramework (to keep Rollbar.OfflinePersistence's dependencies happy)-->
   <Choose>
     <When Condition="'$(TargetFramework)' == 'net46' Or $(TargetFramework.StartsWith('net45'))">
       <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets.">
         <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-        <!--<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />-->
       </ItemGroup>
     </When>
     <Otherwise>
       <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-        <!--<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />-->
       </ItemGroup>
     </Otherwise>
   </Choose>
-
 
   <Target Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')" 
           Name="IncludeNativeBinariesAsOutput" 
