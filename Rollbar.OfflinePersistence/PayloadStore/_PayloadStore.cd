@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.PayloadStore.Destination">
+    <Position X="3.5" Y="1.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAEAAAAAAEAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>PayloadStore\Destination.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.PayloadStore.PayloadRecord">
+    <Position X="3.5" Y="3.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAACAAAAAAAAAAAEAAAAYAAQAAA=</HashCode>
+      <FileName>PayloadStore\PayloadRecord.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.PayloadStore.StoreContext">
+    <Position X="3.5" Y="6.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQBAAAAAAAAABAAAEAAAAABEAAAAAAAACBA=</HashCode>
+      <FileName>PayloadStore\StoreContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

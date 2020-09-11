@@ -1,19 +1,13 @@
 ﻿namespace Rollbar.PayloadStore
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
-    using Common;
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Migrations;
 
     /// <summary>
     /// Class StoreContext.
     /// Implements the <see cref="Microsoft.EntityFrameworkCore.DbContext" />
     /// </summary>
     /// <seealso cref="Microsoft.EntityFrameworkCore.DbContext" />
-    public class StoreContext
+    internal class StoreContext
         : DbContext
     {
         static StoreContext()
@@ -26,18 +20,21 @@
         /// <summary>
         /// The default rollbar store database file location
         /// </summary>
-        public static readonly string DefaultRollbarStoreDbFileLocation = PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
+        public static readonly string DefaultRollbarStoreDbFileLocation = 
+            PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
 
         /// <summary>
         /// Gets or sets the full name of the rollbar store database.
         /// </summary>
         /// <value>The full name of the rollbar store database.</value>
-        public static string RollbarStoreDbFullName { get; set; } = PayloadStoreConstants.DefaultRollbarStoreDbFile;
+        public static string RollbarStoreDbFullName { get; set; } = 
+            PayloadStoreConstants.DefaultRollbarStoreDbFile;
 
         /// <summary>
         /// The sqlite connection string
         /// </summary>
-        private static string sqliteConnectionString { get; set; } = $"Filename={StoreContext.RollbarStoreDbFullName};";
+        private static string sqliteConnectionString { get; set; } = 
+            $"Filename={StoreContext.RollbarStoreDbFullName};";
 
         /// <summary>
         /// Gets or sets the destinations.

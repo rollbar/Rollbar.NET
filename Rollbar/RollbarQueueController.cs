@@ -1,5 +1,4 @@
 ﻿#define TRACE
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest.Rollbar")]
 
 namespace Rollbar
 {

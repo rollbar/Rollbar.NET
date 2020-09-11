@@ -3,13 +3,12 @@
 
     using System;
     using System.Collections.Generic;
-    using System.Text;
-    using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
     /// <summary>
     /// Class Destination.
     /// </summary>
-    public class Destination : IDestination
+    internal class Destination 
+        : IDestination
     {
         /// <summary>
         /// Gets or sets the identifier.

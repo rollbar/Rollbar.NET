@@ -1,13 +1,12 @@
 ﻿namespace Rollbar.PayloadStore 
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Class PayloadRecord.
     /// </summary>
-    public class PayloadRecord : IPayloadRecord
+    internal class PayloadRecord 
+        : IPayloadRecord
     {
         /// <summary>
         /// Gets or sets the identifier.
