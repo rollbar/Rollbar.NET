@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.NetPlatformExtensions.ConverterUtil">
+    <Position X="7.75" Y="0.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>ConverterUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.NetPlatformExtensions.RollbarLogger">
+    <Position X="1.25" Y="2" Width="8.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAACAAAAAAAAEAAAQAAAiAAAAQAAAIAgEAAAA=</HashCode>
+      <FileName>RollbarLogger.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.NetPlatformExtensions.RollbarLoggerFactory">
+    <Position X="1.25" Y="6.75" Width="8.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIEAACAAAAAEAAAAAAAAAAAAgAAIAAAAAgAAAAA=</HashCode>
+      <FileName>RollbarLoggerFactory.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.NetPlatformExtensions.RollbarLoggerProvider">
+    <Position X="1.25" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAIAAACAAAAAAAAAAAAAAAACBAAAAAAACAgAAAAA=</HashCode>
+      <FileName>RollbarLoggerProvider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.NetPlatformExtensions.RollbarOptions">
+    <Position X="10.25" Y="2" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RollbarOptions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.NetPlatformExtensions.RollbarScope">
+    <Position X="10.25" Y="3.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AgAAIAAAACAAAAAAAACECAQAAAAIBAAAAAAABAAACAI=</HashCode>
+      <FileName>RollbarScope.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.NetPlatformExtensions.RollbarServiceCollectionExtensions">
+    <Position X="5.75" Y="11.25" Width="7.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RollbarServiceCollectionExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -15,7 +15,16 @@
   </PropertyGroup>
 
   <ItemGroup Label="Project References">
+    <ProjectReference Include="..\Rollbar.NetPlatformExtensions\Rollbar.NetPlatformExtensions.csproj" />
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="Unconditional Package References">
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
   </ItemGroup>
 
   <Choose>
@@ -23,33 +32,33 @@
       <ItemGroup Label="Package References">
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
       </ItemGroup>
     </When>
     <When Condition="$(TargetFramework.StartsWith('netcoreapp2.')) And '$(TargetFramework)' != 'netcoreapp2.0'">
       <ItemGroup Label="Package References">
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.1.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
       </ItemGroup>
     </When>
     <Otherwise>
       <ItemGroup Label="Package References">
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.3" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.3" />
       </ItemGroup>
     </Otherwise>
   </Choose>

@@ -22,7 +22,7 @@
         public static ILoggerFactory AddRollbar(
                     this ILoggerFactory factory
                     , IConfiguration configuration
-                    , IOptions<RollbarOptions> rollbarOptions
+                    , IOptions<Rollbar.NetPlatformExtensions.RollbarOptions> rollbarOptions
                     , IHttpContextAccessor httpContextAccessor
                     )
         {
