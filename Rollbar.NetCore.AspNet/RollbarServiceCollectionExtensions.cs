@@ -2,9 +2,6 @@
 {
     using System;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.DependencyInjection.Extensions;
-    using Microsoft.Extensions.Logging;
-    using Rollbar.Diagnostics;
     using Rollbar.NetPlatformExtensions;
 
     /// <summary>
@@ -38,7 +35,7 @@
         /// <param name="services">The services.</param>
         /// <param name="rollbarOptionsConfigAction">The rollbar options configuration action.</param>
         /// <returns></returns>
-        public static IServiceCollection AddRollbarLogger(this IServiceCollection services, Action<NetPlatformExtensions.RollbarOptions> rollbarOptionsConfigAction)
+        public static IServiceCollection AddRollbarLogger(this IServiceCollection services, Action<RollbarOptions> rollbarOptionsConfigAction)
         {
             services.Add<RollbarLoggerProvider>();
             services.Configure(rollbarOptionsConfigAction);

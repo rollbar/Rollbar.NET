@@ -20,7 +20,7 @@
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - feat: ref #564: Add ILogger LoggerName to details in Rollbar.
+      - feat: resolve #564: Add ILogger LoggerName to details in Rollbar.
       - refactor: resolve #565: Factor out code duplication between the NetPlatformExtensions and NetCore.AspNET modules.
     </SdkReleaseNotes>                        
 

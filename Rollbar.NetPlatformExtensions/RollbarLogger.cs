@@ -178,6 +178,10 @@
             {
                 customProperties.Add("LogMessage", message);
             }
+            if (!string.IsNullOrWhiteSpace(this._name))
+            {
+                customProperties.Add("RollbarLoggerName", this._name);
+            }
             if (customProperties.Count > 0)
             {
                 rollbarPackage = new CustomKeyValuePackageDecorator(rollbarPackage, customProperties);
