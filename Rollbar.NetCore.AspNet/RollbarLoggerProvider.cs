@@ -12,7 +12,8 @@
     /// <seealso cref="Microsoft.Extensions.Logging.ILoggerProvider" />
     [ProviderAlias("Rollbar")]
     public class RollbarLoggerProvider
-            : NetPlatformExtensions.RollbarLoggerProvider
+        : NetPlatformExtensions.RollbarLoggerProvider
+        , ILoggerProvider
     {
 
         private readonly IHttpContextAccessor _httpContextAccessor;
