@@ -5,6 +5,7 @@
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Logging;
     using Rollbar.Diagnostics;
+    using Rollbar.NetPlatformExtensions;
 
     /// <summary>
     /// Implements hooks for Rollbar specific services.
@@ -18,10 +19,7 @@
         /// <returns></returns>
         public static IServiceCollection AddRollbarLoggerProvider(this IServiceCollection services)
         {
-            services.AddOptions();
-            services.TryAddSingleton<RollbarLoggerProvider>();
-
-            return services;
+            return services.Add<RollbarLoggerProvider>();
         }
 
         /// <summary>
@@ -31,12 +29,7 @@
         /// <returns></returns>
         public static IServiceCollection AddRollbarLogger(this IServiceCollection services)
         {
-            services.AddRollbarLogger(loggerOptions =>
-            {
-                loggerOptions.Filter = (loggerName, loglevel) => loglevel >= LogLevel.Trace;
-            });
-
-            return services;
+            return services.Add<RollbarLogger,RollbarLoggerProvider>();
         }
 
         /// <summary>
@@ -47,9 +40,7 @@
         /// <returns></returns>
         public static IServiceCollection AddRollbarLogger(this IServiceCollection services, Action<NetPlatformExtensions.RollbarOptions> rollbarOptionsConfigAction)
         {
-            Assumption.AssertNotNull(rollbarOptionsConfigAction, nameof(rollbarOptionsConfigAction));
-
-            services.AddRollbarLoggerProvider();
+            services.Add<RollbarLoggerProvider>();
             services.Configure(rollbarOptionsConfigAction);
 
             return services;
