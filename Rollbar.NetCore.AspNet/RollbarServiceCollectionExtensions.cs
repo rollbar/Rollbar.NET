@@ -26,7 +26,7 @@
         /// <returns></returns>
         public static IServiceCollection AddRollbarLogger(this IServiceCollection services)
         {
-            return services.Add<RollbarLogger,RollbarLoggerProvider>();
+            return services.Add<RollbarLoggerProvider>();
         }
 
         /// <summary>

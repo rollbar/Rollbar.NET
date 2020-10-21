@@ -25,8 +25,6 @@
         /// <value>The HTTP context.</value>
         public RollbarHttpContext HttpContext { get; set; }
 
-        //public RollbarScope Next { get; set; }
-
         private static AsyncLocal<RollbarScope> currentScope =
             new AsyncLocal<RollbarScope>();
 
@@ -41,19 +39,6 @@
                 return currentScope.Value;
             }
         }
-
-        //public static IDisposable Push(RollbarScope scope)
-        //{
-        //    Assumption.AssertNotNull(scope, nameof(scope));
-
-        //    var temp = Current;
-        //    Current = scope;
-        //    Current.Next = temp;
-
-        //    return new DisposableAction(
-        //        () => { RollbarScope.Current = RollbarScope.Current.Next; }
-        //        );
-        //}
 
     }
 }
