@@ -22,6 +22,7 @@
     <SdkReleaseNotes>                         <!-- Required -->
       - feat: resolve #564: Add ILogger LoggerName to details in Rollbar.
       - refactor: resolve #565: Factor out code duplication between the NetPlatformExtensions and NetCore.AspNET modules.
+      - docs: resolve #567: Fix dependencies of Sample.NetCore.ConsoleApp.
     </SdkReleaseNotes>                        
 
     <!--
