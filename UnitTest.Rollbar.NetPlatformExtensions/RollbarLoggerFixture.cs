@@ -44,7 +44,7 @@ namespace UnitTest.Rollbar.NetPlatformExtensions
             }
 
             var payload = this.GetAllEvents<CommunicationEventArgs>().First().Payload;
-            Assert.IsTrue(payload.Contains("\"custom\":{\"LogEventID\":\"0\"}"));
+            Assert.IsTrue(payload.Contains("\"custom\":{\"LogEventID\":\"0\",\"RollbarLoggerName\":\"RollbarLoggerExtension\""));
         }
     }
 }
