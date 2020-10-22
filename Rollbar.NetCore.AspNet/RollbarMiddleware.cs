@@ -52,7 +52,7 @@ namespace Rollbar.NetCore.AspNet
 
         private readonly ILogger _logger;
 
-        private readonly RollbarOptions _rollbarOptions;
+        private readonly NetPlatformExtensions.RollbarOptions _rollbarOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarMiddleware" /> class.
@@ -65,7 +65,7 @@ namespace Rollbar.NetCore.AspNet
             RequestDelegate nextRequestProcessor
             , IConfiguration configuration
             , ILoggerFactory loggerFactory
-            , IOptions<RollbarOptions> rollbarOptions
+            , IOptions<NetPlatformExtensions.RollbarOptions> rollbarOptions
             )
         {
             this._nextRequestProcessor = nextRequestProcessor;

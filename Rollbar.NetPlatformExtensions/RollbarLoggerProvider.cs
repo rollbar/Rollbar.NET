@@ -3,11 +3,11 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Rollbar.Diagnostics;
     using Rollbar.NetCore;
     using Rollbar.Telemetry;
+
+    using System;
     using System.Collections.Concurrent;
-    using System.Linq;
 
     /// <summary>
     /// Implements Rollbar version of Microsoft.Extensions.Logging.ILoggerProvider.
@@ -17,12 +17,18 @@
     public class RollbarLoggerProvider
             : ILoggerProvider
     {
-        private readonly ConcurrentDictionary<string, RollbarLogger> _loggers =
-            new ConcurrentDictionary<string, RollbarLogger>();
+        private readonly ConcurrentDictionary<string, ILogger> _loggers =
+            new ConcurrentDictionary<string, ILogger>();
 
-        private readonly IRollbarConfig _rollbarConfig;
+        /// <summary>
+        /// The rollbar options
+        /// </summary>
+        protected readonly RollbarOptions _rollbarOptions;
 
-        private readonly RollbarOptions _rollbarOptions;
+        /// <summary>
+        /// The rollbar configuration
+        /// </summary>
+        protected readonly IRollbarConfig _rollbarConfig;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.
@@ -65,7 +71,12 @@
             return _loggers.GetOrAdd(categoryName, CreateLoggerImplementation);
         }
 
-        private RollbarLogger CreateLoggerImplementation(string name)
+        /// <summary>
+        /// Creates the logger implementation.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns>ILogger.</returns>
+        protected virtual ILogger CreateLoggerImplementation(string name)
         {
             return new RollbarLogger(
                 name
@@ -92,7 +103,7 @@
                     // TODO: dispose managed state (managed objects).
                     foreach(var item in this._loggers?.Values)
                     {
-                        item?.Dispose();
+                        (item as IDisposable)?.Dispose();
                     }
                     this._loggers?.Clear();
                 }
@@ -103,7 +114,6 @@
                 disposedValue = true;
             }
         }
-
 
         // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
         // ~RollbarLoggerProvider() {
