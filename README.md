@@ -1,3 +1,5 @@
+![Rollbar Logo](https://github.com/rollbar/rollbar.net/blob/master/rollbar-logo.png)
+
 # Rollbar.NET Notifier SDK
 
 A .NET Rollbar Client/Notifier that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, .NET Full Framework 4.5+, Mono, Xamarin, and, in general, any implementation of the .NET Standard 2.0+.
