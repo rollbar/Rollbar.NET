@@ -229,13 +229,13 @@
             }
 
             //to deal with the possible dotted data element name we need to perform some acrobatics here:
-            int indxLimit = scrubPath.LastIndexOf('.');
-            int startingIndx = 0;
-            int dotIndx = scrubPath.IndexOf('.', startingIndx);
-            while(dotIndx > 0 && dotIndx < indxLimit)
+            const int startingIndex = 0;
+            int indexLimit = scrubPath.LastIndexOf('.');
+            int dotIndex = scrubPath.IndexOf('.', startingIndex);
+            while (dotIndex > 0 && dotIndex < indexLimit)
             {
-                string dottedFieldPath = scrubPath.Substring(0, dotIndx);
-                string dottedFieldName = scrubPath.Substring(dotIndx + 1);
+                string dottedFieldPath = scrubPath.Substring(0, dotIndex);
+                string dottedFieldName = scrubPath.Substring(dotIndex + 1);
                 jToken = jsonData.SelectToken(dottedFieldPath);
                 jToken = jToken[dottedFieldName];
                 if (jToken != null)
@@ -248,7 +248,7 @@
                         return;
                     }
                 }
-                dotIndx = scrubPath.IndexOf('.', dotIndx + 1);
+                dotIndex = scrubPath.IndexOf('.', dotIndex + 1);
             }
         }
 
