@@ -62,7 +62,7 @@
         public RollbarPayloadScrubber(IEnumerable<string> scrubFields)
         {
             this._payloadFieldNames = 
-                scrubFields.Where(n => !n.Contains('.'))
+                scrubFields.Where(n => !( n.StartsWith(fieldPathRoot) || n.StartsWith(httpRequestBodyPath) || n.StartsWith(httpResponseBodyPath)))
                     .ToArray();
             this._payloadFieldPaths = 
                 scrubFields.Where(n => n.StartsWith(fieldPathRoot) && !(n.StartsWith(httpRequestBodyPath) || n.StartsWith(httpResponseBodyPath)))
