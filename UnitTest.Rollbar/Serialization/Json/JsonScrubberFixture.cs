@@ -104,6 +104,84 @@ namespace UnitTest.Rollbar.Serialization.Json
         }
 
         [TestMethod]
+        public void CustomDottedDataScrubByNameTest()
+        {
+            var jsonString = @"{'results' : [
+              {
+                 'address_components' : 'abc' ,
+                 'formatted_address' : 'eedfdfdfdfdfdfdf',
+                 'geometry' : {
+                    'bounds' : {
+                       'northeast.n' : {
+                          'lat' : 56.88225340,
+                          'lng' : 7.34169940
+                       },
+                       'southwest' : {
+                          'lat' : 2.4792219750,
+                          'lng' : 6.85382840
+                       }}}},
+              {
+                 'address_components' : 'abc1' ,
+                 'formatted_address' : 'ffdfdfdfdfdfdfdf',
+                 'geometry' : {
+                    'bounds' : {
+                       'northeast' : {
+                          'lat' : 6.88225340,
+                          'lng.y' : 17.34169940
+                       },
+                       'southwest' : {
+                          'lat' : 22.4792219750,
+                          'lng.y' : 16.85382840
+                       }}}}
+               ]}";
+
+            string[] scrubFields = new string[] {
+                "northeast.n",
+                "lng.y",
+            };
+
+            string scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByName(jsonString, scrubFields, "***");
+
+            var expectedResult = @"{'results' : [
+              {
+                 'address_components' : 'abc' ,
+                 'formatted_address' : 'eedfdfdfdfdfdfdf',
+                 'geometry' : {
+                    'bounds' : {
+                       'northeast.n' : '***',
+                       'southwest' : {
+                          'lat' : 2.4792219750,
+                          'lng' : 6.85382840
+                       }}}},
+              {
+                 'address_components' : 'abc1' ,
+                 'formatted_address' : 'ffdfdfdfdfdfdfdf',
+                 'geometry' : {
+                    'bounds' : {
+                       'northeast' : {
+                          'lat' : 6.88225340,
+                          'lng.y' : '***'
+                       },
+                       'southwest' : {
+                          'lat' : 22.4792219750,
+                          'lng.y' : '***'
+                       }}}}
+               ]}";
+
+            string expected = JObject.Parse(expectedResult).ToString();
+            Console.WriteLine("EXPECTED:");
+            Console.WriteLine(expected);
+            Console.WriteLine(string.Empty);
+
+            string actual = JObject.Parse(scrubbedJsonString).ToString();
+            Console.WriteLine("ACTUAL:");
+            Console.WriteLine(actual);
+            Console.WriteLine(string.Empty);
+
+            Assert.AreEqual(expected, JObject.Parse(scrubbedJsonString).ToString());
+        }
+
+        [TestMethod]
         public void BasicScrubByPathTest()
         {
             var jsonString = @"{'results' : [
@@ -291,7 +369,6 @@ namespace UnitTest.Rollbar.Serialization.Json
             var scrubbedJsonString = JsonScrubber.ScrubJsonFieldsByPaths(jsonString, scrubFields, "***");
 
             Assert.AreEqual(JObject.Parse(expectedResult).ToString(), JObject.Parse(scrubbedJsonString).ToString());
-
         }
     }
 }
