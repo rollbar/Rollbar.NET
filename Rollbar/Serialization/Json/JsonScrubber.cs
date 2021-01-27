@@ -217,8 +217,39 @@
                 return;
             }
 
-            var jProperty = jsonData.SelectToken(scrubPath)?.Parent as JProperty;
-            jProperty?.Replace(new JProperty(jProperty.Name, scrubMask));
+            var jToken = jsonData.SelectToken(scrubPath);
+            if (jToken != null)
+            {
+                var jProperty = jToken.Parent as JProperty;
+                if (jProperty != null)
+                {
+                    jProperty.Replace(new JProperty(jProperty.Name, scrubMask));
+                    return;
+                }
+            }
+
+            //to deal with the possible dotted data element name we need to perform some acrobatics here:
+            int indxLimit = scrubPath.LastIndexOf('.');
+            int startingIndx = 0;
+            int dotIndx = scrubPath.IndexOf('.', startingIndx);
+            while(dotIndx > 0 && dotIndx < indxLimit)
+            {
+                string dottedFieldPath = scrubPath.Substring(0, dotIndx);
+                string dottedFieldName = scrubPath.Substring(dotIndx + 1);
+                jToken = jsonData.SelectToken(dottedFieldPath);
+                jToken = jToken[dottedFieldName];
+                if (jToken != null)
+                {
+                    //we found the dotted data element name, let's mask its value and return:
+                    var jProperty = jToken.Parent as JProperty;
+                    if (jProperty != null)
+                    {
+                        jProperty.Replace(new JProperty(jProperty.Name, scrubMask));
+                        return;
+                    }
+                }
+                dotIndx = scrubPath.IndexOf('.', dotIndx + 1);
+            }
         }
 
     }
