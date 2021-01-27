@@ -2,15 +2,18 @@
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="Rollbar.Telemetry.TelemetryCollector">
     <Position X="0.5" Y="4" Width="5.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
     <NestedTypes>
-      <Class Name="Rollbar.Telemetry.TelemetryCollector.NestedSingleInstance" Collapsed="true">
+      <Class Name="Rollbar.Telemetry.TelemetryCollector.NestedSingleInstance">
         <TypeIdentifier>
           <NewMemberFileName>Telemetry\TelemetryCollector.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAIAYAAEgAgAgAAAAAAUACAAAAIgAIASBBQACIAAAA=</HashCode>
+      <HashCode>AAAIAYAAEiAgAgABAAAAUACAAAAIgAIASBBQAiIAAAA=</HashCode>
       <FileName>Telemetry\TelemetryCollector.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -18,7 +21,7 @@
   <Class Name="Rollbar.Telemetry.TelemetryConfig">
     <Position X="6.25" Y="4" Width="9.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAABAAAAACAAAAAAAAAAAQAAACABAAAAA=</HashCode>
+      <HashCode>AAAAAAAAQAAAABAAAAACAAACAAAAAAAQAAACABAAAAA=</HashCode>
       <FileName>Telemetry\TelemetryConfig.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -30,11 +33,11 @@
       <FileName>Telemetry\TelemetryQueue.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.Telemetry.TelemetryUtil">
-    <Position X="13.25" Y="0.5" Width="2.5" />
+  <Class Name="Rollbar.Telemetry.TelemetryUtility">
+    <Position X="3.25" Y="13.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
-      <FileName>Telemetry\TelemetryUtil.cs</FileName>
+      <FileName>Telemetry\TelemetryUtility.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="Rollbar.Telemetry.ITelemetryCollector">
@@ -52,10 +55,17 @@
     </TypeIdentifier>
   </Interface>
   <Enum Name="Rollbar.Telemetry.TelemetryAutoCollectionSettings">
-    <Position X="10.75" Y="0.5" Width="2.25" />
+    <Position X="0.5" Y="13.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAAAABAAAAAAgAAAAAAAAAgAAAAAEAAAA=</HashCode>
       <FileName>Telemetry\TelemetryAutoCollectionSettings.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Rollbar.DTOs.TelemetryType">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAQAAAAAAAAAACAgAAAAAAAAAAAUAQAA=</HashCode>
+      <FileName>DTOs\TelemetryType.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />
