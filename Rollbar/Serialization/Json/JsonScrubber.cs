@@ -217,7 +217,7 @@
                 return;
             }
 
-            var jToken = jsonData.SelectToken(scrubPath);
+            JToken jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, scrubPath);            
             if (jToken != null)
             {
                 var jProperty = jToken.Parent as JProperty;
@@ -236,8 +236,8 @@
             {
                 string dottedFieldPath = scrubPath.Substring(0, dotIndex);
                 string dottedFieldName = scrubPath.Substring(dotIndex + 1);
-                jToken = jsonData.SelectToken(dottedFieldPath);
-                jToken = jToken[dottedFieldName];
+                jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, dottedFieldPath);//jsonData.SelectToken(dottedFieldPath);
+                jToken = jToken?[dottedFieldName];
                 if (jToken != null)
                 {
                     //we found the dotted data element name, let's mask its value and return:
@@ -250,6 +250,22 @@
                 }
                 dotIndex = scrubPath.IndexOf('.', dotIndex + 1);
             }
+        }
+
+        private static JToken FindJsonTokenSafelyUsingPath(JObject jsonData, string tokenPath)
+        {
+            JToken jToken = null;
+            try
+            {
+                jToken = jsonData.SelectToken(tokenPath);
+            }
+            catch
+            {
+                //that is expected in some scenarios, let's just make sure jToken is still null:
+                jToken = null;
+            }
+
+            return jToken;
         }
 
     }

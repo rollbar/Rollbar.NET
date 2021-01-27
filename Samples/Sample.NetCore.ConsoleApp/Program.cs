@@ -201,6 +201,8 @@ namespace Sample.NetCore.ConsoleApp
                 {
                     "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
                     "username",
+                    "criticalObj[Sample.NetCore.ConsoleApp.Program+InstanceType]._baseNullField",
+                    "data.custom.criticalObj[Sample.NetCore.ConsoleApp.Program+InstanceType].<TypeName>k__BackingField",
                 },
                 EnableLocalPayloadStore = true,
                 //ProxyAddress = "http://something.com",
