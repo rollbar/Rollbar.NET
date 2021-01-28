@@ -16,14 +16,11 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>3.14.0</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>3.14.1</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - feat: resolve #564: Add ILogger LoggerName to details in Rollbar.
-      - refactor: resolve #565: Factor out code duplication between the NetPlatformExtensions and NetCore.AspNET modules.
-      - refactor: resolve #568: Remove unused legacy dependencies of Rollbar.NetCore.AspNet.
-      - docs: resolve #567: Fix dependencies of Sample.NetCore.ConsoleApp.
+      - fix: resolve #571: Custom data fields having `.` char(s) in their name do not get scrubbed.
     </SdkReleaseNotes>                        
 
     <!--

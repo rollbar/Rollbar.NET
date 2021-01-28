@@ -217,8 +217,55 @@
                 return;
             }
 
-            var jProperty = jsonData.SelectToken(scrubPath)?.Parent as JProperty;
-            jProperty?.Replace(new JProperty(jProperty.Name, scrubMask));
+            JToken jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, scrubPath);            
+            if (jToken != null)
+            {
+                var jProperty = jToken.Parent as JProperty;
+                if (jProperty != null)
+                {
+                    jProperty.Replace(new JProperty(jProperty.Name, scrubMask));
+                    return;
+                }
+            }
+
+            //to deal with the possible dotted data element name we need to perform some acrobatics here:
+            const int startingIndex = 0;
+            int indexLimit = scrubPath.LastIndexOf('.');
+            int dotIndex = scrubPath.IndexOf('.', startingIndex);
+            while (dotIndex > 0 && dotIndex < indexLimit)
+            {
+                string dottedFieldPath = scrubPath.Substring(0, dotIndex);
+                string dottedFieldName = scrubPath.Substring(dotIndex + 1);
+                jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, dottedFieldPath);//jsonData.SelectToken(dottedFieldPath);
+                jToken = jToken?[dottedFieldName];
+                if (jToken != null)
+                {
+                    //we found the dotted data element name, let's mask its value and return:
+                    var jProperty = jToken.Parent as JProperty;
+                    if (jProperty != null)
+                    {
+                        jProperty.Replace(new JProperty(jProperty.Name, scrubMask));
+                        return;
+                    }
+                }
+                dotIndex = scrubPath.IndexOf('.', dotIndex + 1);
+            }
+        }
+
+        private static JToken FindJsonTokenSafelyUsingPath(JObject jsonData, string tokenPath)
+        {
+            JToken jToken = null;
+            try
+            {
+                jToken = jsonData.SelectToken(tokenPath);
+            }
+            catch
+            {
+                //that is expected in some scenarios, let's just make sure jToken is still null:
+                jToken = null;
+            }
+
+            return jToken;
         }
 
     }
