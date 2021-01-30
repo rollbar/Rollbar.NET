@@ -1,7 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="16.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
   <PropertyGroup Label="Toolset Related">
     <LangVersion>latest</LangVersion>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Default</AnalysisMode>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
@@ -104,4 +109,8 @@
     <!--ADD here-->
   </ItemGroup>
 
+  <!--REFERENCES:
+  https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props
+  
+  -->
 </Project>
