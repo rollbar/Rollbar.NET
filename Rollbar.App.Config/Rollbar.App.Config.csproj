@@ -1,0 +1,22 @@
+<Project ToolsVersion="Current">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <!--TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks-->
+    <AssemblyName>Rollbar.App.Config</AssemblyName>
+    <RootNamespace>Rollbar.App.Config</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="Append or Override SDK Common NuGet Packaging Info">
+    <Title>$(Title) SDK: an extension for managing SDK configuration based on an app.config file.</Title>
+    <Description>An extension for managing SDK configuration based on an app.config file. $(Description)</Description>
+    <PackageTags>$(PackageTags);app.config;microsoft;.net;platform;extensions</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+</Project>

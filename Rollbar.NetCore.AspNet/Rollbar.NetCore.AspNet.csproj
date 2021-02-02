@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="Project References">
+    <ProjectReference Include="..\Rollbar.AppSettings.Json\Rollbar.AppSettings.Json.csproj" />
     <ProjectReference Include="..\Rollbar.NetPlatformExtensions\Rollbar.NetPlatformExtensions.csproj" />
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
