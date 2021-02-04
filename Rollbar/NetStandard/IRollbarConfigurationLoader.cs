@@ -6,6 +6,9 @@
 
     using Rollbar.Telemetry;
 
+    /// <summary>
+    /// Interface IRollbarConfigurationLoader
+    /// </summary>
     public interface IRollbarConfigurationLoader
     {
         /// <summary>

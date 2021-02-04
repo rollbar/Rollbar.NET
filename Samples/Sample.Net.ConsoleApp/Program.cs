@@ -4,20 +4,12 @@ namespace Sample.Net.ConsoleApp
     using Rollbar;
     using Rollbar.DTOs;
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
 
     class Program
     {
         static void Main(string[] args)
         {
-            // NOTE: when the next line is commented out, 
-            // the Rollbar notifier will still be properly configured 
-            // via either app.config or appsettings.json (in priority order):
-            //ConfigureRollbarSingleton();
+            ConfigureRollbarSingleton();
 
             // ConfigureRollbarSingleton() is called above,
             // the next code line could be commented out:

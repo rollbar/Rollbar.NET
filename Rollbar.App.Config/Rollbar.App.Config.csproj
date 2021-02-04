@@ -5,6 +5,7 @@
     <!--TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks-->
     <AssemblyName>Rollbar.App.Config</AssemblyName>
     <RootNamespace>Rollbar.App.Config</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <Import Project="..\SdkCommon.csproj" />
@@ -17,6 +18,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
+    -->
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
   </ItemGroup>
 
 </Project>
