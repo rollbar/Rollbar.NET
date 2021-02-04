@@ -53,6 +53,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\RollbarSamplesSettings.cs">
+      <Link>RollbarSamplesSettings.cs</Link>
+    </Compile>
     <Compile Include="GameDomainModel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,6 +3,9 @@ namespace Sample.Net.ConsoleApp
     using GameDomainModel;
     using Rollbar;
     using Rollbar.DTOs;
+
+    using Samples;
+
     using System;
 
     class Program
@@ -40,8 +43,8 @@ namespace Sample.Net.ConsoleApp
         /// </summary>
         private static void ConfigureRollbarSingleton()
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
+            const string rollbarAccessToken = RollbarSamplesSettings.AccessToken;
+            const string rollbarEnvironment = RollbarSamplesSettings.Environment;
 
             var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
             {
