@@ -1,14 +1,18 @@
 ﻿namespace Rollbar.NetStandard
 {
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Reflection;
 
+    using Rollbar.Common;
     using Rollbar.Telemetry;
 
     public class RollbarConfigurationLoader 
         : IRollbarConfigurationLoader
     {
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarConfigurationLoader).FullName);
+
         private readonly static string[] knownAssemblyNames = {
             "Rollbar.App.Config",
             "Rollbar.AppSettings.Json",
@@ -25,22 +29,28 @@
         /// </summary>
         static RollbarConfigurationLoader()
         {
+            string sdkAssembliesPath = RuntimeEnvironmentUtility.GetSdkRuntimeLocationPath();
+            traceSource.TraceInformation($"Rollbar SDK runtime location: {sdkAssembliesPath}");
             Assembly assembly = null;
             foreach(var name in RollbarConfigurationLoader.knownAssemblyNames)
             {
                 string dllName = $"{name}.dll";
-                if (!File.Exists(dllName))
+                string dllFullPath = Path.Combine(sdkAssembliesPath, dllName);
+                if (!File.Exists(dllFullPath))
                 {
                     continue;
                 }
 
-                assembly = Assembly.LoadFrom(dllName);
+                traceSource.TraceInformation($"Located optional Rollbar SDK assembly: {dllFullPath}");
+                assembly = Assembly.LoadFrom(dllFullPath);
                 if (assembly != null)
                 {
+                    traceSource.TraceInformation($"Loaded optional Rollbar SDK assembly: {dllFullPath}");
                     string loaderTypeFullName = $"{name}.{RollbarConfigurationLoader.knownLoaderTypeName}";
                     RollbarConfigurationLoader.configurationLoaderType = assembly.GetType(loaderTypeFullName, false);
                     if (RollbarConfigurationLoader.configurationLoaderType != null)
                     {
+                        traceSource.TraceInformation($"Using optional Rollbar SDK configuration loader: {RollbarConfigurationLoader.configurationLoaderType.FullName}");
                         // We assume our users prefer one of the known ways to store configurations (if any). 
                         // So, we only need the first known loader found (if any):
                         break;
