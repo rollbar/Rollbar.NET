@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Rollbar.AppSettings.Json\Rollbar.AppSettings.Json.csproj" />
     <ProjectReference Include="..\..\..\Rollbar.PlugIns.Log4net\Rollbar.PlugIns.Log4net.csproj" />
   </ItemGroup>
 

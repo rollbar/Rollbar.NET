@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Rollbar.AppSettings.Json\Rollbar.AppSettings.Json.csproj" />
     <ProjectReference Include="..\..\..\Rollbar.PlugIns.NLog\Rollbar.PlugIns.NLog.csproj" />
   </ItemGroup>
 
