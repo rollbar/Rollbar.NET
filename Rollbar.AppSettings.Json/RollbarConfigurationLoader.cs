@@ -13,7 +13,7 @@
         : IRollbarConfigurationLoader
     {
         /// <summary>
-        /// Loads the povided configuration object based on found configuration store (if any).
+        /// Loads the provided configuration object based on found configuration store (if any).
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Loads the povided configuration object based on found configuration store (if any).
+        /// Loads the provided configuration object based on found configuration store (if any).
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
