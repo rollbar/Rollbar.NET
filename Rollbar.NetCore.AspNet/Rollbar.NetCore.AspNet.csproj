@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="16.0">
+﻿<Project ToolsVersion="Current">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;netstandard2.1;netstandard2.0</TargetFrameworks>
@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="Project References">
+    <ProjectReference Include="..\Rollbar.AppSettings.Json\Rollbar.AppSettings.Json.csproj" />
     <ProjectReference Include="..\Rollbar.NetPlatformExtensions\Rollbar.NetPlatformExtensions.csproj" />
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>

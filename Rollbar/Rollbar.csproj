@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="16.0">
+﻿<Project ToolsVersion="Current">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks>
@@ -30,16 +30,21 @@
         <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
       </PropertyGroup>
       <ItemGroup>
+        <!--
         <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+        -->
       </ItemGroup>
       <ItemGroup>
+        <!--
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+        
         <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.1" />
+        -->
       </ItemGroup>
     </When>
     <When Condition="$(TargetFramework.StartsWith('netstandard'))">
@@ -48,16 +53,21 @@
         <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
       </PropertyGroup>
       <ItemGroup>
+        <!--
         <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+        -->
       </ItemGroup>
       <ItemGroup>
+        <!--
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
+
         <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+        -->
       </ItemGroup>
     </When>
     
@@ -68,38 +78,49 @@
         <DefineConstants>$(DefineConstants);NETCOREAPP</DefineConstants>
       </PropertyGroup>
       <ItemGroup>
+        <!--
         <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+        -->
       </ItemGroup>
       <Choose>
         <When Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
           <ItemGroup>
+            <!--
             <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
             <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
+            
             <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+            -->
           </ItemGroup>
         </When>
         <When Condition="$(TargetFramework.StartsWith('netcoreapp2.')) And ('$(TargetFramework)' != 'netcoreapp2.0')">
           <ItemGroup>
+            <!--
             <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
             <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
+            
             <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.1.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.0" />
+            -->
           </ItemGroup>
         </When>
         <When Condition="$(TargetFramework.StartsWith('netcoreapp3.'))">
           <ItemGroup>
+            <!--
             <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
             <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+            
             <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+            -->
           </ItemGroup>
         </When>
       </Choose>
@@ -121,15 +142,18 @@
       <PropertyGroup Condition="'$(TargetFramework)' == 'net47' Or $(TargetFramework.StartsWith('net46')) Or $(TargetFramework.StartsWith('net45'))">
         <DefineConstants>$(DefineConstants);NETFX_47nOlder</DefineConstants>
       </PropertyGroup>
-      <PropertyGroup Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net471')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
+      <PropertyGroup Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net47')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
         <DefineConstants>$(DefineConstants);NETFX_461nNewer</DefineConstants>
       </PropertyGroup>
       <Choose>
-        <When Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net471')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
+        <When Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net47')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
+          <!--When  Condition="'$(TargetFrameworkIdentifier)' == '.NetFramework' AND '$(TargetFrameworkVersion)' >= '4.6.1'"-->
           <ItemGroup>
+            <!--
             <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
+            -->
           </ItemGroup>
         </When>
       </Choose>

@@ -23,7 +23,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="TelemetryConfig"/> class.
         /// </summary>
-        internal TelemetryConfig()
+        public TelemetryConfig()
         {
             this.SetDefaults();
         }

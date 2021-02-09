@@ -5,7 +5,6 @@
     using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
-    using Rollbar.NetFramework;
     using Rollbar.PayloadStore;
     using System;
     using System.Collections.Generic;

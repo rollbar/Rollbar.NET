@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar", "..\Rollbar\Rollb
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rollbar.NET SDK", "Rollbar.NET SDK", "{F0E40742-7197-45A5-83D0-B0219D580E8D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.AppSettings.Json", "..\Rollbar.AppSettings.Json\Rollbar.AppSettings.Json.csproj", "{3CCEF080-A5D1-4D7E-A616-D166E8795BEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,6 +38,12 @@ Global
 		{A75E8E4B-CE29-4FFB-9F92-C8C224800068}.Instrumented|Any CPU.Build.0 = Instrumented|Any CPU
 		{A75E8E4B-CE29-4FFB-9F92-C8C224800068}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A75E8E4B-CE29-4FFB-9F92-C8C224800068}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CCEF080-A5D1-4D7E-A616-D166E8795BEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CCEF080-A5D1-4D7E-A616-D166E8795BEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CCEF080-A5D1-4D7E-A616-D166E8795BEF}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CCEF080-A5D1-4D7E-A616-D166E8795BEF}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{3CCEF080-A5D1-4D7E-A616-D166E8795BEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CCEF080-A5D1-4D7E-A616-D166E8795BEF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +51,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9C73176F-C254-4948-B3F8-2630B3B9E2C7} = {F0E40742-7197-45A5-83D0-B0219D580E8D}
 		{A75E8E4B-CE29-4FFB-9F92-C8C224800068} = {F0E40742-7197-45A5-83D0-B0219D580E8D}
+		{3CCEF080-A5D1-4D7E-A616-D166E8795BEF} = {F0E40742-7197-45A5-83D0-B0219D580E8D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0CE0A662-6C9D-48E7-AB09-5459A657194B}

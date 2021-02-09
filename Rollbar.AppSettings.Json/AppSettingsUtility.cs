@@ -1,6 +1,5 @@
-﻿#if NETCOREAPP || NETSTANDARD || NETFX_461nNewer
-
-namespace Rollbar.NetCore
+﻿//namespace Rollbar.NetCore
+namespace Rollbar.AppSettings.Json
 {
     using System.Diagnostics;
     using System.IO;
@@ -258,5 +257,3 @@ namespace Rollbar.NetCore
         }
     }
 }
-
-#endif

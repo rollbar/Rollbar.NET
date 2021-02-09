@@ -1,12 +1,10 @@
-﻿#if NETCOREAPP
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
-namespace UnitTest.Rollbar.NetCore
+namespace UnitTest.Rollbar.AppSettings.Json
 {
     using global::Rollbar;
     using global::Rollbar.DTOs;
-    using global::Rollbar.NetCore;
+    using global::Rollbar.AppSettings.Json;
     using global::Rollbar.Telemetry;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
@@ -121,5 +119,3 @@ namespace UnitTest.Rollbar.NetCore
         }
     }
 }
-
-#endif

@@ -1,4 +1,5 @@
-﻿namespace Rollbar.NetFramework
+﻿//namespace Rollbar.NetFramework
+namespace Rollbar.App.Config
 {
     using Rollbar.Telemetry;
     using System;

@@ -34,22 +34,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="TestData\appsettings.json" Condition="'$(NetVariant)' == 'NET_FX'" />
-    <None Remove="TestData\app.config" Condition="'$(NetVariant)' == 'NET_STANDARD' Or '$(NetVariant)' == 'NET_CORE'" />
-  </ItemGroup>  
-
-  <ItemGroup>
-    <Content Include="TestData\appsettings.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestData\appTest.config">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.0" />
     <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.1" />
