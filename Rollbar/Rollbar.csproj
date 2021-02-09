@@ -36,9 +36,10 @@
         -->
       </ItemGroup>
       <ItemGroup>
+        <!--
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <!--
+        
         <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.1" />
@@ -58,9 +59,10 @@
         -->
       </ItemGroup>
       <ItemGroup>
+        <!--
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-        <!--
+
         <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
@@ -84,9 +86,10 @@
       <Choose>
         <When Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
           <ItemGroup>
+            <!--
             <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
             <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-            <!--
+            
             <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
@@ -96,9 +99,10 @@
         </When>
         <When Condition="$(TargetFramework.StartsWith('netcoreapp2.')) And ('$(TargetFramework)' != 'netcoreapp2.0')">
           <ItemGroup>
+            <!--
             <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
             <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
-            <!--
+            
             <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.1.0" />
@@ -108,9 +112,10 @@
         </When>
         <When Condition="$(TargetFramework.StartsWith('netcoreapp3.'))">
           <ItemGroup>
+            <!--
             <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
             <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-            <!--
+            
             <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
             <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
