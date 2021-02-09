@@ -1,9 +1,5 @@
 ﻿namespace Rollbar.NetStandard
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     using Rollbar.Telemetry;
 
     /// <summary>
@@ -37,24 +33,5 @@
         /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
         ITelemetryConfig LoadTelemetryConfig();
 
-        /// <summary>
-        /// Loads the rollbar configuration.
-        /// </summary>
-        /// <param name="configFileName">Name of the configuration file.</param>
-        /// <param name="configFilePath">The configuration file path.</param>
-        /// <returns>IRollbarConfig or null if no configuration store was found.</returns>
-        //IRollbarConfig LoadRollbarConfig(string configFileName, string configFilePath = null);
-
-        /// <summary>
-        /// Loads the telemetry configuration.
-        /// </summary>
-        /// <param name="configFileName">Name of the configuration file.</param>
-        /// <param name="configFilePath">The configuration file path.</param>
-        /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        //ITelemetryConfig LoadTelemetryConfig(string configFileName, string configFilePath = null);
-
-
-        //bool Load(RollbarConfig config, string configFileName, string configFilePath);
-        //bool Load(TelemetryConfig config, string configFileName, string configFilePath);
     }
 }
