@@ -8,24 +8,44 @@
     using Rollbar.Common;
     using Rollbar.Telemetry;
 
+    /// <summary>
+    /// Class RollbarConfigurationLoader.
+    /// Implements the <see cref="Rollbar.NetStandard.IRollbarConfigurationLoader" />
+    /// </summary>
+    /// <seealso cref="Rollbar.NetStandard.IRollbarConfigurationLoader" />
     public class RollbarConfigurationLoader 
         : IRollbarConfigurationLoader
     {
+        /// <summary>
+        /// The trace source
+        /// </summary>
         private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarConfigurationLoader).FullName);
 
+        /// <summary>
+        /// The known assembly names
+        /// </summary>
         private readonly static string[] knownAssemblyNames = {
             "Rollbar.App.Config",
             "Rollbar.AppSettings.Json",
             };
 
+        /// <summary>
+        /// The known loader type name
+        /// </summary>
         private readonly static string knownLoaderTypeName = nameof(RollbarConfigurationLoader);
 
+        /// <summary>
+        /// The configuration loader type
+        /// </summary>
         private readonly static Type configurationLoaderType = null;
 
+        /// <summary>
+        /// The loader
+        /// </summary>
         private readonly IRollbarConfigurationLoader _loader = null;
 
         /// <summary>
-        /// Initializes static members of the <see cref="RollbarConfigurationLoader"/> class.
+        /// Initializes static members of the <see cref="RollbarConfigurationLoader" /> class.
         /// </summary>
         static RollbarConfigurationLoader()
         {
@@ -60,7 +80,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarConfigurationLoader"/> class.
+        /// Initializes a new instance of the <see cref="RollbarConfigurationLoader" /> class.
         /// </summary>
         public RollbarConfigurationLoader()
         {
@@ -114,33 +134,5 @@
             else
                 return null;
         }
-
-        /// <summary>
-        /// Loads the rollbar configuration.
-        /// </summary>
-        /// <param name="configFileName">Name of the configuration file.</param>
-        /// <param name="configFilePath">The configuration file path.</param>
-        /// <returns>IRollbarConfig or null if no configuration store was found.</returns>
-        //public IRollbarConfig LoadRollbarConfig(string configFileName,string configFilePath = null)
-        //{
-        //    if (this._loader != null) 
-        //        return this._loader.LoadRollbarConfig(configFileName, configFilePath);
-        //    else
-        //        return null;
-        //}
-
-        /// <summary>
-        /// Loads the telemetry configuration.
-        /// </summary>
-        /// <param name="configFileName">Name of the configuration file.</param>
-        /// <param name="configFilePath">The configuration file path.</param>
-        /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        //public ITelemetryConfig LoadTelemetryConfig(string configFileName,string configFilePath = null)
-        //{
-        //    if (this._loader != null) 
-        //        return this._loader.LoadTelemetryConfig(configFileName, configFilePath);
-        //    else
-        //        return null;
-        //}
     }
 }

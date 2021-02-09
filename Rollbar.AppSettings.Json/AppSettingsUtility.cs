@@ -1,5 +1,4 @@
-﻿//namespace Rollbar.NetCore
-namespace Rollbar.AppSettings.Json
+﻿namespace Rollbar.AppSettings.Json
 {
     using System.Diagnostics;
     using System.IO;

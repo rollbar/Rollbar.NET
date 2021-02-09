@@ -1,5 +1,4 @@
-﻿//namespace Rollbar.NetFramework
-namespace Rollbar.App.Config
+﻿namespace Rollbar.App.Config
 {
     using System;
     using System.Configuration;

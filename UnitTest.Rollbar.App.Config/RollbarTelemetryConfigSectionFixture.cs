@@ -1,16 +1,12 @@
-﻿//#if NETFX
-
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace UnitTest.Rollbar.App.Config
 {
-    using global::Rollbar;
-    using global::Rollbar.App.Config;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
-    using System.IO;
-    using System.Threading;
     using System.Configuration;
+    using global::Rollbar;
+    using global::Rollbar.App.Config;
     using global::Rollbar.DTOs;
 
     [TestClass]
@@ -56,6 +52,4 @@ namespace UnitTest.Rollbar.App.Config
 
     }
 }
-
-//#endif
 
