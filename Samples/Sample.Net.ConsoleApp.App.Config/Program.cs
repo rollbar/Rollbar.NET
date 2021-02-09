@@ -15,7 +15,7 @@ namespace Sample.Net.ConsoleApp.App.Config
             // The Rollbar Notifier is configured within the app.config.
             // Let's just start using it:
             RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(3))
-                .Info($"{typeof(Program).Namespace} sample: Rollbar is alive based on the app.config settings!.");
+                .Info($"{typeof(Program).Namespace} sample: Rollbar is alive based on the app.config settings!");
         }
     }
 }
