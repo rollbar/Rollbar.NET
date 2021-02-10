@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
 
+    using Rollbar.NetStandard;
+
     /// <summary>
     /// Defines PlugInCoreBase abstraction.
     /// Implements the <see cref="System.IDisposable" />
@@ -42,10 +44,8 @@
         {
             if (rollbarConfig == null)
             {
-                IRollbarConfig config =
-                    NetStandard.RollbarConfigUtility.LoadRollbarConfig();
-
-                rollbarConfig = config;
+                var configLoader = new RollbarConfigurationLoader();
+                rollbarConfig = configLoader.LoadRollbarConfig();
             }
 
             this._rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig);

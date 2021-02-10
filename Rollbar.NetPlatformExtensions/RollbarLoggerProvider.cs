@@ -3,7 +3,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Rollbar.NetCore;
+    using Rollbar.AppSettings.Json;
     using Rollbar.Telemetry;
 
     using System;

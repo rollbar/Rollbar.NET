@@ -1,7 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="16.0">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
 
   <PropertyGroup Label="Toolset Related">
     <LangVersion>latest</LangVersion>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Default</AnalysisMode>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
@@ -16,11 +21,13 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>3.14.1</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>4.0.0</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - fix: resolve #571: Custom data fields having `.` char(s) in their name do not get scrubbed.
+      - refactor: resolve GH#577 - Remove unnecessary explicit dependencies from the core Rollbar module
+      - refactor: resolve GH#576 - Move appsettings.json support into its own new module Rollbar.AppSettings.Json
+      - refactor: resolve GH#575 - Move app.config support into its own new module Rollbar.App.Config
     </SdkReleaseNotes>                        
 
     <!--
@@ -104,4 +111,8 @@
     <!--ADD here-->
   </ItemGroup>
 
+  <!--REFERENCES:
+  https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props
+  
+  -->
 </Project>

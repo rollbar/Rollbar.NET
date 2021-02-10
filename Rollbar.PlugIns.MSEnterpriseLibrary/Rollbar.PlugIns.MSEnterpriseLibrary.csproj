@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="16.0">
+﻿<Project ToolsVersion="Current">
 
   <PropertyGroup>
     <TargetFrameworks>net461</TargetFrameworks>

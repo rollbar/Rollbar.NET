@@ -36,7 +36,7 @@
             if (ctor == null)
                 return RaiseTypeLoadException();
 
-            return (IPayloadStoreRepository)ctor.Invoke(new object[0]); ;
+            return (IPayloadStoreRepository)ctor.Invoke(new object[0]);
         }
 
         /// <summary>

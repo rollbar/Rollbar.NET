@@ -2,6 +2,8 @@
 {
     using Rollbar.Common;
     using Rollbar.DTOs;
+    using Rollbar.NetStandard;
+
     using System;
 
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
@@ -23,7 +25,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="TelemetryConfig"/> class.
         /// </summary>
-        internal TelemetryConfig()
+        public TelemetryConfig()
         {
             this.SetDefaults();
         }
@@ -122,7 +124,8 @@
             this.TelemetryAutoCollectionInterval = TimeSpan.Zero;
 
             // initialize based on application configuration file (if any):
-            NetStandard.RollbarConfigUtility.Load(this);
+            var configLoader = new RollbarConfigurationLoader();
+            configLoader.Load(this);
         }
 
         /// <summary>

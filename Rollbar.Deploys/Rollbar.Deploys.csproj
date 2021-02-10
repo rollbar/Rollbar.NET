@@ -1,4 +1,4 @@
-<Project ToolsVersion="16.0">
+<Project ToolsVersion="Current">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
@@ -31,10 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

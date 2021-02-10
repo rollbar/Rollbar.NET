@@ -5,7 +5,7 @@
     using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
-    using Rollbar.NetFramework;
+    using Rollbar.NetStandard;
     using Rollbar.PayloadStore;
     using System;
     using System.Collections.Generic;
@@ -63,7 +63,8 @@
             else
             {
                 // initialize based on application configuration file (if any):
-                NetStandard.RollbarConfigUtility.Load(this);
+                var configLoader = new RollbarConfigurationLoader();
+                configLoader.Load(this);
             }
         }
 
@@ -74,7 +75,8 @@
             this.SetDefaults();
 
             // initialize based on application configuration file (if any):
-            NetStandard.RollbarConfigUtility.Load(this);
+            var configLoader = new RollbarConfigurationLoader();
+            configLoader.Load(this);
         }
 
         private void SetDefaults()

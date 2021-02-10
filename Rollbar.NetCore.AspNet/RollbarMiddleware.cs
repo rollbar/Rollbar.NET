@@ -8,6 +8,7 @@ namespace Rollbar.NetCore.AspNet
     using Microsoft.Extensions.Options;
     using Rollbar.DTOs;
     using Rollbar.Telemetry;
+    using Rollbar.AppSettings.Json;
     using System;
     using System.Threading.Tasks;
 

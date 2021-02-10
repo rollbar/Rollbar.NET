@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Rollbar.AppSettings.Json\Rollbar.AppSettings.Json.csproj" />
     <ProjectReference Include="..\..\Rollbar.NetPlatformExtensions\Rollbar.NetPlatformExtensions.csproj" />
     <ProjectReference Include="..\..\Rollbar\Rollbar.csproj" />
   </ItemGroup>

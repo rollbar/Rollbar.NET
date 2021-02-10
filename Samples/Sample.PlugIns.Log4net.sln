@@ -1,12 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RollbarLog4net", "RollbarLog4net", "{3635FA93-6994-4CE4-9923-BF330DF1A439}"
-	ProjectSection(SolutionItems) = preProject
-		SolutionCommon.csproj = SolutionCommon.csproj
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar", "..\Rollbar\Rollbar.csproj", "{FA70AC31-5CD9-4947-8D5F-624D9A1FB510}"
 EndProject
@@ -18,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 	ProjectSection(SolutionItems) = preProject
 		Sample.PlugIns.Log4net\ReadMe.md = Sample.PlugIns.Log4net\ReadMe.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.AppSettings.Json", "..\Rollbar.AppSettings.Json\Rollbar.AppSettings.Json.csproj", "{E8958049-BE8E-4409-A0D8-45F93E2AEBA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +43,12 @@ Global
 		{3ABEF49C-DEFD-40D3-8461-37D2B967DB8D}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
 		{3ABEF49C-DEFD-40D3-8461-37D2B967DB8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3ABEF49C-DEFD-40D3-8461-37D2B967DB8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8958049-BE8E-4409-A0D8-45F93E2AEBA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8958049-BE8E-4409-A0D8-45F93E2AEBA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8958049-BE8E-4409-A0D8-45F93E2AEBA3}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8958049-BE8E-4409-A0D8-45F93E2AEBA3}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{E8958049-BE8E-4409-A0D8-45F93E2AEBA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8958049-BE8E-4409-A0D8-45F93E2AEBA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +56,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{FA70AC31-5CD9-4947-8D5F-624D9A1FB510} = {3635FA93-6994-4CE4-9923-BF330DF1A439}
 		{2F38C4D8-6B95-4458-9028-C0C2F5646C84} = {3635FA93-6994-4CE4-9923-BF330DF1A439}
+		{E8958049-BE8E-4409-A0D8-45F93E2AEBA3} = {3635FA93-6994-4CE4-9923-BF330DF1A439}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB9E5CFE-0437-4312-99E5-1EBF60FB8157}

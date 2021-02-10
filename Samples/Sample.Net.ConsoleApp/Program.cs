@@ -3,21 +3,16 @@ namespace Sample.Net.ConsoleApp
     using GameDomainModel;
     using Rollbar;
     using Rollbar.DTOs;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
+    using Samples;
+
+    using System;
 
     class Program
     {
         static void Main(string[] args)
         {
-            // NOTE: when the next line is commented out, 
-            // the Rollbar notifier will still be properly configured 
-            // via either app.config or appsettings.json (in priority order):
-            //ConfigureRollbarSingleton();
+            ConfigureRollbarSingleton();
 
             // ConfigureRollbarSingleton() is called above,
             // the next code line could be commented out:
@@ -48,8 +43,8 @@ namespace Sample.Net.ConsoleApp
         /// </summary>
         private static void ConfigureRollbarSingleton()
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
+            const string rollbarAccessToken = RollbarSamplesSettings.AccessToken;
+            const string rollbarEnvironment = RollbarSamplesSettings.Environment;
 
             var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
             {

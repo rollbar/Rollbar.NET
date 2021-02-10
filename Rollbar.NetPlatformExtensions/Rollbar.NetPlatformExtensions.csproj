@@ -1,4 +1,4 @@
-﻿<Project ToolsVersion="16.0">
+﻿<Project ToolsVersion="Current">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
@@ -9,7 +9,7 @@
   <Import Project="..\SdkCommon.csproj" />
 
   <PropertyGroup Label="Append or Override SDK Common NuGet Packaging Info">
-    <Title>$(Title) for the MIcrosoft .NET PlatformExtensions.</Title>
+    <Title>$(Title) for the Microsoft .NET PlatformExtensions.</Title>
     <Description>Implements Rollbar Notifier integration with the Microsoft .NET Platform Extensions. $(Description)</Description>
     <PackageTags>$(PackageTags);microsoft-.net-platform-extensions;microsoft;.net;platform;extensions</PackageTags>
   </PropertyGroup>
@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Rollbar.AppSettings.Json\Rollbar.AppSettings.Json.csproj" />
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 
