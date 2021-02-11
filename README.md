@@ -132,7 +132,7 @@ All the public types related to configuring the SDK based on either app.config o
  
 All the public types related to configuring the SDK based on appsettings.json file were moved to their own dedicated module/package `Rollbar.AppSettings.Json`. The types namespace changed from `Rollbar.NetCore` to `Rollbar.AppSettings.Json`.
 
-Both new modules are optional alternatives. When either is needed, just reference a corresponding module/package from the application already hosting the Rollbar core module. Assuming you already using the application config file in your application for other reasons than just configuring Rollbar, all the dependencies needed for accessing the file should be already established by your application codebase.
+Both new modules are optional alternatives. When either is needed, just reference a corresponding module/package from the application already hosting the Rollbar core module. Assuming you are already using the application config file in your application for other reasons than just configuring Rollbar, all the dependencies needed for accessing the file should be already established by your application codebase.
 
 ## Upgrading to v3.x.x from v2.x.x versions
 
