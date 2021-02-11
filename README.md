@@ -124,6 +124,16 @@ In case of a timeout, all the blocking log methods throw `System.TimeoutExceptio
 *   Send errors (asynchronously) to Rollbar with `RollbarLocator.RollbarInstance.Error(Exception)`
 *   Send messages (synchronously) to Rollbar with `RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(5)).Info(string)`
 
+## Upgrading to 4.x.x from v3.x.x versions
+
+The only area of the SDK APIs that changed between v3 and v4 is the one related to the file-based configuration of Rollbar infrastructure.
+
+All the public types related to configuring the SDK based on either app.config or web.config files were moved to their own dedicated module/package `Rollbar.App.Config`. The types namespace changed from `Rollbar.NetFramework` to `Rollbar.App.Config`.
+ 
+All the public types related to configuring the SDK based on appsettings.json file were moved to their own dedicated module/package `Rollbar.AppSettings.Json`. The types namespace changed from `Rollbar.NetCore` to `Rollbar.AppSettings.Json`.
+
+Both new modules are optional alternatives. When either is needed, just reference a corresponding module/package from the application already hosting the Rollbar core module. Assuming you already using the application config file in your application for other reasons than just configuring Rollbar, all the dependencies needed for accessing the file should be already established by your application codebase.
+
 ## Upgrading to v3.x.x from v2.x.x versions
 
 Some Rollbar functionality and API types related to specific more narrow .NET sub-technology
