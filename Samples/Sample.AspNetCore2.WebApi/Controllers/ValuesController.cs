@@ -9,6 +9,8 @@
     using Microsoft.Extensions.Logging;
     using dto = Rollbar.DTOs;
     using Rollbar.Telemetry;
+    using System.IO;
+    using System.Text;
 
     [Route("api/[controller]")]
     public class ValuesController 
@@ -38,9 +40,20 @@
 
         // GET api/values
         [HttpGet]
+        //public Task<IEnumerable<string>> GetAsync()
         public IEnumerable<string> Get()
         {
             this._logger.LogCritical(nameof(ValuesController) + ".Get() is called...");
+
+            //StreamWriter streamWriter = new StreamWriter(this._httpContextAccessor.HttpContext.Response.Body);
+            //streamWriter.WriteLine($"{DateTime.Now} Adding response body");
+            //streamWriter.Flush();
+
+            //await streamWriter.WriteLineAsync($"{DateTime.Now} Adding response body");
+            //await streamWriter.FlushAsync();
+            
+            //await this._httpContextAccessor.HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes("Adding response body"));
+            //await this._httpContextAccessor.HttpContext.Response.BodyWriter.FlushAsync();
 
             try
             {

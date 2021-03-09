@@ -1,11 +1,7 @@
 ﻿namespace Rollbar.NetCore.AspNet
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
     using Microsoft.AspNetCore.Http;
-    using Newtonsoft.Json;
     using Rollbar.Common;
     using Rollbar.DTOs;
     using Rollbar.Serialization.Json;
@@ -92,12 +88,12 @@
             {
                 return;
             }
-            rollbarData.Request.PostBody = jsonString;
+            rollbarData.Response.Body = jsonString;
 
             object requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
             if (requesBodyObject != null)
             {
-                rollbarData.Request.PostBody = requesBodyObject;
+                rollbarData.Response.Body = requesBodyObject;
             }
         }
 

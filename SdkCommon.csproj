@@ -21,13 +21,11 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>4.0.0</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>4.0.1</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - refactor: resolve GH#577 - Remove unnecessary explicit dependencies from the core Rollbar module
-      - refactor: resolve GH#576 - Move appsettings.json support into its own new module Rollbar.AppSettings.Json
-      - refactor: resolve GH#575 - Move app.config support into its own new module Rollbar.App.Config
+      - fix: Rollbar.NetCore.AspNet module: fixed incorrect assignment of captured HTTP response body 
     </SdkReleaseNotes>                        
 
     <!--
