@@ -92,12 +92,12 @@
             {
                 return;
             }
-            rollbarData.Request.PostBody = jsonString;
+            rollbarData.Response.Body = jsonString;
 
             object requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
             if (requesBodyObject != null)
             {
-                rollbarData.Request.PostBody = requesBodyObject;
+                rollbarData.Response.Body = requesBodyObject;
             }
         }
 
