@@ -1,11 +1,7 @@
 ﻿namespace Rollbar.NetCore.AspNet
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
-    using System.Text;
     using Microsoft.AspNetCore.Http;
-    using Newtonsoft.Json;
     using Rollbar.Common;
     using Rollbar.DTOs;
     using Rollbar.Serialization.Json;
