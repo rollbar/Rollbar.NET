@@ -29,6 +29,10 @@
             //{"Endpoint Routing does not support 'IApplicationBuilder.UseMvc(...)'. To use 'IApplicationBuilder.UseMvc' set 'MvcOptions.EnableEndpointRouting = false' inside 'ConfigureServices(...)."}
             services.AddMvc(options => options.EnableEndpointRouting = false);
             services.AddOptions();
+            //services.Configure<IISServerOptions>(options =>
+            //{
+            //    options.AllowSynchronousIO = true;
+            //});
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
