@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.ExceptionPackage">
+    <Position X="0.5" Y="9.5" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAAAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>ExceptionPackage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.RollbarPackageBase">
+    <Position X="4.5" Y="0.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAgAAAAAAgAAAEAAAACBAIAAAAAAQAAQAAA=</HashCode>
+      <FileName>RollbarPackageBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarPackageDecoratorBase">
+    <Position X="8" Y="5.5" Width="7.75" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAgAAAAAAAAAAAAAAgAAAQACwAAA=</HashCode>
+      <FileName>RollbarPackageDecoratorBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.PersonPackageDecorator">
+    <Position X="8" Y="10" Width="9" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>PersonPackageDecorator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.MessagePackage">
+    <Position X="0.5" Y="5.5" Width="6" />
+    <TypeIdentifier>
+      <HashCode>IAAAJAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>MessagePackage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.BodyPackage">
+    <Position X="0.5" Y="14" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAACAAAAAAAAAQAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>BodyPackage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DataPackage">
+    <Position X="0.5" Y="17.25" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>DataPackage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.CustomKeyValuePackageDecorator">
+    <Position X="8" Y="12.75" Width="9" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>CustomKeyValuePackageDecorator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.ObjectPackage">
+    <Position X="0.5" Y="19.5" Width="8" />
+    <TypeIdentifier>
+      <HashCode>AAAAJAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>ObjectPackage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.HttpRequestMessagePackageDecorator">
+    <Position X="8" Y="15.75" Width="9" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAAACAAAgABA=</HashCode>
+      <FileName>HttpRequestMessagePackageDecorator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Rollbar.IRollbarPackage">
+    <Position X="1" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAQAAQAAA=</HashCode>
+      <FileName>IRollbarPackage.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -11,7 +11,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Collections.Generic;
 
     [TestClass]
-    [TestCategory("ServerFixture")]
+    [TestCategory(nameof(ServerFixture))]
     public class ServerFixture
     {
         private Server _server;

@@ -7,7 +7,7 @@ namespace UnitTest.Rollbar
     using System.Threading;
 
     [TestClass]
-    [TestCategory("PayloadQueueFixture")]
+    [TestCategory(nameof(PayloadQueueFixture))]
     public class PayloadQueueFixture
     {
         [TestInitialize]
@@ -27,9 +27,13 @@ namespace UnitTest.Rollbar
         {
             using (var logger = new RollbarLogger(false))
             {
-                PayloadQueue pq = new PayloadQueue(logger);
+                RollbarClient client = new RollbarClient(logger);
+                PayloadQueue pq = new PayloadQueue(logger, client);
                 Assert.IsNotNull(pq.Logger);
                 Assert.AreSame(logger, pq.Logger);
+                Assert.AreSame(client, pq.Client);
+                Assert.AreSame(client.Config, pq.Client.Config);
+                Assert.AreSame(client.Config, logger.Config);
             }
         }
     }

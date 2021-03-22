@@ -3,7 +3,7 @@
     using System;
     using System.Collections;
     using System.Diagnostics;
-    using System.Linq;
+    using System.Globalization;
 
     /// <summary>
     /// Utility class aiding in validating assumptions about arguments and their values.
@@ -178,13 +178,17 @@
             {
                 string msg = "Argument should not be NULL.";
                 FailValidation(msg, parameterName);
+                return null;
             }
 
             bool any = false;
             foreach(var i in value)
             {
-                any = true;
-                break;
+                if (i != null)
+                {
+                    any = true;
+                    break;
+                }
             }
             if (!any)
             {
@@ -206,13 +210,16 @@
         public static string AssertEqual(string value, string expectedValue, bool ignoreCase, string parameterName)
         {
             if (value == null && expectedValue == null)
+            {
                 return null;
+            }
+
             if (value == null || expectedValue == null)
             {
                 string msg = $"Argument is expected to be equal to {expectedValue}, while it is actually: {value}.";
                 FailValidation(msg, parameterName);
             }
-            if (string.Compare(value, expectedValue, ignoreCase) != 0)
+            if (string.Compare(value, expectedValue, ignoreCase, CultureInfo.InvariantCulture) != 0)
             {
                 string msg = $"Argument is expected to be equal to {expectedValue}, while it is actually: {value}.";
                 FailValidation(msg, parameterName);
@@ -374,7 +381,7 @@
         /// <returns></returns>
         public static int AssertLessThan(int value, int expectedValue, string parameterName)
         {
-            if (value < expectedValue)
+            if (value >= expectedValue)
             {
                 string msg = "Argument should be less than " + expectedValue;
                 FailValidation(msg, parameterName);
@@ -392,7 +399,7 @@
         /// <returns></returns>
         public static double AssertLessThan(double value, double expectedValue, string parameterName)
         {
-            if (value < expectedValue)
+            if (value >= expectedValue)
             {
                 string msg = "Argument should be less than " + expectedValue;
                 FailValidation(msg, parameterName);
@@ -428,7 +435,7 @@
         /// <returns></returns>
         public static int AssertLessThanOrEqual(int value, int expectedValue, string parameterName)
         {
-            if (value <= expectedValue)
+            if (value > expectedValue)
             {
                 string msg = "Argument should be less than or equal to " + expectedValue;
                 FailValidation(msg, parameterName);
@@ -446,7 +453,7 @@
         /// <returns></returns>
         public static double AssertLessThanOrEqual(double value, double expectedValue, string parameterName)
         {
-            if (value <= expectedValue)
+            if (value > expectedValue)
             {
                 string msg = "Argument should be less than or equal to " + expectedValue;
                 FailValidation(msg, parameterName);
@@ -492,6 +499,7 @@
             {
                 string msg = string.Format("Expected argument '{0}' can not be NULL.", parameterName);
                 FailValidation(msg, parameterName);
+                return null;
             }
 
             var result = value as T;

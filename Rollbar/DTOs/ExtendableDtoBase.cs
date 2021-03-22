@@ -5,6 +5,9 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
+    using System.Text;
+    using Common;
 
 #pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
 #pragma warning disable CS1658 // Warning is overriding an error
@@ -25,14 +28,14 @@
     {
         internal const string reservedPropertiesNestedTypeName = "ReservedProperties";
 
-        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType = null;
+        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType;
 
-        private readonly ExtendableDtoMetadata _metadata = null;
+        private readonly ExtendableDtoMetadata _metadata;
 
         /// <summary>
         /// The keyed values
         /// </summary>
-        protected readonly IDictionary<string, object> _keyedValues = 
+        private readonly IDictionary<string, object> _keyedValues = 
             new Dictionary<string, object>();
 
         static ExtendableDtoBase()
@@ -73,24 +76,71 @@
         /// <returns></returns>
         public object this[string key]
         {
-            get => this._keyedValues[key];
+            get
+            {
+                if (this._keyedValues.TryGetValue(key, out object result))
+                {
+                    return result;
+                }
+
+                var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
+                if (concreteDtoMetadata
+                    .ReservedPropertyInfoByReservedKey
+                    .TryGetValue(key, out PropertyInfo reservedPropertyInfo))
+                {
+                    //if we have matching reserved property of value type - return default for it:   
+                    if(reservedPropertyInfo.PropertyType.IsValueType)
+                    {
+                        return Activator.CreateInstance(reservedPropertyInfo.PropertyType);
+                    }
+                }
+
+                return null;
+            }
             set
             {
                 Assumption.AssertTrue(
                     !this._keyedValues.ContainsKey(key)                                         // no such key preset yet
                     || this._keyedValues[key] == null                                           // OR its not initialized yet
                     || value != null                                                            // OR no-null value
-                    || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),   // OR not about reserved property/key
+                    || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),    // OR not about reserved property/key
                     "conditional " + nameof(value) + " assessment"
                     );
 
-                Assumption.AssertTrue(
-                    !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key)                       // not about reserved property/key
-                    || value.GetType() == this._metadata.ReservedPropertyInfoByReservedKey[key].PropertyType,  // OR new value type matches reserved property type
-                    "conditional " + nameof(value) + " assessment"
+                var lowCaseKey = key.ToLower();
+                var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
+                if (concreteDtoMetadata
+                    .ReservedPropertyInfoByReservedKey
+                    .TryGetValue(key, out PropertyInfo reservedPropertyInfo))
+                {
+                    var reservedPropertyType = reservedPropertyInfo.PropertyType;
+                    var valueType = value?.GetType();
+                    Assumption.AssertTrue(
+                        //we are not dealing with a reserved property, hence, anything works:
+                        !(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(key) || concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
+                        //OR we are dealing with a reserved property and the value and its type should make sense:  
+                        || value == null
+                        || reservedPropertyType == valueType
+                        || (reservedPropertyType.IsInterface 
+                            && ReflectionUtility.DoesTypeImplementInterface(valueType, reservedPropertyType))
+                        || (reservedPropertyType.IsGenericType                                // dealing with nullable type
+                            && reservedPropertyType.GenericTypeArguments.Length == 1
+                            && reservedPropertyType.GenericTypeArguments[0] == valueType)
+                        || valueType.IsSubclassOf(reservedPropertyType),
+                        nameof(value)
                     );
+                }
 
-                this._keyedValues[key] = value;
+                if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
+                {
+                    // we are setting a reserved key when calling Bind(...) on an IConfigurationSection 
+                    // that treats this instance of ExtendableDtoBase as a dictionary while binding to the targeted deserialization object:
+                    this._keyedValues[lowCaseKey] = value;
+                }
+                else
+                {
+                    this._keyedValues[key] = value;
+                }
             }
         }
 
@@ -286,5 +336,23 @@
             }
         }
 
+        #region strings truncation support
+
+        /// <summary>
+        /// Truncates the strings.
+        /// </summary>
+        /// <param name="encoding">The encoding.</param>
+        /// <param name="stringBytesLimit">The string bytes limit.</param>
+        /// <returns></returns>
+        public override DtoBase TruncateStrings(Encoding encoding, int stringBytesLimit)
+        {
+            base.TruncateStrings(encoding, stringBytesLimit);
+
+            this.TruncateStringValues(this, encoding, stringBytesLimit);
+
+            return this;
+        }
+
+        #endregion strings truncation support
     }
 }

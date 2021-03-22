@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.DTOs.Telemetry">
+    <Position X="0.75" Y="7.75" Width="8.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.Telemetry.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Telemetry.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Enum Name="Rollbar.DTOs.Telemetry.TelemetryValidationRule">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Telemetry.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAgAAAAAAAAADAAAAAAAAAAABAQAAAAAAAAA=</HashCode>
+      <FileName>DTOs\Telemetry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.TelemetryBody">
+    <Position X="10.25" Y="7.75" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>DTOs\TelemetryBody.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.ExtendableDtoBase">
+    <Position X="8.25" Y="0.5" Width="7" />
+    <TypeIdentifier>
+      <HashCode>OQIAAAAEIAAEABAQCAAABAQAAAAgAAAEAAAgAABQIAA=</HashCode>
+      <FileName>DTOs\ExtendableDtoBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.DTOs.DtoBase">
+    <Position X="0.75" Y="0.5" Width="7" />
+    <TypeIdentifier>
+      <HashCode>IAAiACAAAMCAAAAAAASAAAAAAAAwAAAwAAAABAAACAE=</HashCode>
+      <FileName>DTOs\DtoBase.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.DTOs.ManualTelemetry">
+    <Position X="7.5" Y="20" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\ManualTelemetry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.LogTelemetry">
+    <Position X="1" Y="15.25" Width="5.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.LogTelemetry.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\LogTelemetry.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>DTOs\LogTelemetry.cs</FileName>
+      <NewMemberFileName>DTOs\NetworkTelemetry.cs</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.ErrorTelemetry">
+    <Position X="1" Y="20" Width="5.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\ErrorTelemetry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.DomTelemetry">
+    <Position X="7.25" Y="15.25" Width="5.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.DomTelemetry.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\DomTelemetry.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\DomTelemetry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.NavigationTelemetry">
+    <Position X="13.75" Y="17.25" Width="6" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.NavigationTelemetry.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\NavigationTelemetry.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DTOs\NavigationTelemetry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.NetworkTelemetry">
+    <Position X="13.75" Y="10.25" Width="6" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.NetworkTelemetry.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\NetworkTelemetry.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAgAACAAAAAAAAAKAAAAAAQABA=</HashCode>
+      <FileName>DTOs\NetworkTelemetry.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Rollbar.DTOs.TelemetryLevel">
+    <Position X="17.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAYAAAAAAABAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>DTOs\TelemetryLevel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Rollbar.DTOs.TelemetrySource">
+    <Position X="17.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAQ=</HashCode>
+      <FileName>DTOs\TelemetrySource.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Rollbar.DTOs.TelemetryType">
+    <Position X="17.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAQAAAAAAAAAACAgAAAAAAAAAAAUAQAA=</HashCode>
+      <FileName>DTOs\TelemetryType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -11,7 +11,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Linq;
 
     [TestClass]
-    [TestCategory("TraceFixture")]
+    [TestCategory(nameof(TraceFixture))]
     public class TraceFixture
     {
         [TestInitialize]
@@ -30,10 +30,29 @@ namespace UnitTest.Rollbar.DTOs
             var trace = new dto.Trace(GetException());
             Assert.IsNotNull(trace.Frames);
             Assert.IsTrue(trace.Frames.Length > 0);
-            Assert.AreEqual(2, trace.Frames.Length);
-            Assert.AreEqual("UnitTest.Rollbar.DTOs.TraceFixture.ThrowException()", trace.Frames[0].Method);
-            Assert.AreEqual("UnitTest.Rollbar.DTOs.TraceFixture.GetException()", trace.Frames[1].Method);
-            Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs")));
+
+            int[] platformDependentFrameCount = new int[]
+            {
+                2,
+                1,
+            };
+            Assert.IsTrue(platformDependentFrameCount.Contains(trace.Frames.Length));
+
+            string[] platformDependentTopFrameMethods = new string[]
+            {
+                "UnitTest.Rollbar.DTOs.TraceFixture.ThrowException()",
+                "UnitTest.Rollbar.DTOs.TraceFixture.GetException()",
+            };
+            Assert.IsTrue(
+                platformDependentTopFrameMethods.Contains(trace.Frames[0].Method), 
+                trace.Frames[0].Method
+                );
+
+            //Assert.IsTrue(trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture")), "file names");
+            Assert.IsTrue(
+                trace.Frames.All(frame => frame.FileName.EndsWith("TraceFixture.cs") || frame.FileName.EndsWith("TraceFixture") || (string.Compare(frame.FileName, "(unknown)") == 0)),
+                trace.Frames.Select(frame => frame.FileName).Aggregate((fileName, next) => next + ", " + fileName)
+                );
         }
 
         [TestMethod]
@@ -76,8 +95,30 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                new dto.Trace(null);
+                new dto.Trace(null as Exception);
             });
+        }
+
+        [TestMethod]
+        public void TraceFromCallStackString()
+        {
+            string sampleCallStackString = @"
+   at System.Environment.GetStackTrace(Exception e, Boolean needFileInfo)
+   at System.Environment.get_StackTrace()
+   at System.Diagnostics.TraceEventCache.get_Callstack()
+   at System.Diagnostics.TraceListener.WriteFooter(TraceEventCache eventCache)
+   at System.Diagnostics.TraceListener.TraceEvent(TraceEventCache eventCache, String source, TraceEventType eventType, Int32 id, String message)
+   at System.Diagnostics.TraceInternal.TraceEvent(TraceEventType eventType, Int32 id, String format, Object[] args)
+   at System.Diagnostics.Trace.TraceError(String message)
+   at Prototype.RollbarTraceListener.Program.Main(String[] args) in C:\GitHub\WSCLLC\Rollbar.NET\Prototype.RollbarTraceListener\Prototype.RollbarTraceListener\Program.cs:line 17
+";
+            dto.Trace trace = new dto.Trace(sampleCallStackString, "System.Exception: Azohen-way!");
+
+            Assert.AreEqual(8, trace.Frames.Length);
+            Assert.IsNotNull(trace.Exception);
+            Assert.AreEqual("System.Exception", trace.Exception.Class);
+            Assert.AreEqual("Azohen-way!", trace.Exception.Message);
+            Assert.IsNull(trace.Exception.Description);
         }
 
         private static System.Exception GetException()

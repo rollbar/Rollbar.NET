@@ -1,5 +1,6 @@
 ﻿namespace Rollbar
 {
+
     /// <summary>
     /// Singleton-like locator of the single shared instance of IRollbar component.
     /// </summary>
@@ -21,7 +22,7 @@
 
         private sealed class NestedSingleInstance
         {
-            static NestedSingleInstance()
+            private NestedSingleInstance()
             {
             }
 

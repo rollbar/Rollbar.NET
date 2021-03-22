@@ -10,24 +10,27 @@ namespace UnitTest.Rollbar.DTOs
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("PayloadFixture")]
+    [TestCategory(nameof(PayloadFixture))]
     public class PayloadFixture
     {
-        private Payload _exceptionExample;
-        private Payload _messageException;
-        private Payload _crashException;
-        private Payload _aggregateExample;
+        private readonly RollbarConfig _config;
+
+        public PayloadFixture()
+        {
+            this._config = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
+            {
+                Environment = "test",
+            };
+
+        }
 
         [TestInitialize]
         public void SetupFixture()
         {
-            this._exceptionExample = new Payload("access-token", new Data("test", new Body(GetException())));
-            this._messageException = new Payload("access-token", new Data("test", new Body(new Message("A message I wish to send to the rollbar overlords"))));
-            this._crashException = new Payload("access-token", new Data("test", new Body("A terrible crash!")));
-            this._aggregateExample = new Payload("access-token", new Data("test", new Body(GetAggregateException())));
         }
 
         [TestCleanup]
@@ -36,9 +39,65 @@ namespace UnitTest.Rollbar.DTOs
         }
 
         [TestMethod]
+        public void TestStringPropertiesTruncation()
+        {
+
+            Payload[] testPayloads = new Payload[]
+            {
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body("A terrible crash!"),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(GetException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.AccessToken, new Data(
+                    this._config,
+                    new Body(GetAggregateException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+            };
+
+            string truncated = null;
+            foreach (var testPayload in testPayloads)
+            {
+                string original = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Original payload ({original.Length}): " + original);
+                System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+                testPayload.TruncateStrings(Encoding.UTF8, 10);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                testPayload.TruncateStrings(Encoding.UTF8, 7);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                testPayload.TruncateStrings(Encoding.UTF8, 0);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                sw.Stop();
+                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedMilliseconds} [msec] or {sw.ElapsedTicks} [ticks].");
+
+                Assert.IsTrue(truncated.Length < original.Length);
+            }
+        }
+
+        [TestMethod]
         public void BasicExceptionCreatesValidRollbarObject()
         {
-            var asJson = JObject.Parse(JsonConvert.SerializeObject(_exceptionExample));
+            var exceptionExample = new Payload("access-token", new Data(this._config, new Body(GetException())));
+
+            var asJson = JObject.Parse(JsonConvert.SerializeObject(exceptionExample));
 
             Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
 
@@ -61,7 +120,13 @@ namespace UnitTest.Rollbar.DTOs
             Assert.IsNotNull(frames);
 
             Assert.IsTrue(frames.All( token => token["filename"] != null));
-            Assert.AreEqual("UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()", frames[0]["method"].Value<string>());
+
+            string[] platformDependentTopFrameMethods = new string[]
+            {
+                "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()",
+                "UnitTest.Rollbar.DTOs.PayloadFixture.GetException()",
+            };
+            Assert.IsTrue(platformDependentTopFrameMethods.Contains(frames[0]["method"].Value<string>()));
 
             var exception = trace["exception"] as JObject;
             Assert.IsNotNull(exception);
@@ -69,10 +134,10 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("Test", exception["message"].Value<string>());
             Assert.AreEqual("System.Exception", exception["class"].Value<string>());
 
-            Assert.AreEqual("windows", data["platform"].Value<string>());
+            Assert.AreNotEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
-            var left = _exceptionExample.Data.Notifier.ToArray();
+            var left = exceptionExample.Data.Notifier.ToArray();
             var right = data["notifier"].ToObject<Dictionary<string, string>>();
 
             Assert.AreEqual(left.Length, right.Count);
@@ -86,24 +151,45 @@ namespace UnitTest.Rollbar.DTOs
 
             IEnumerable<string> keys = data.Properties().Select(p => p.Name).ToArray();
 
-            Assert.IsFalse(keys.Contains("level"), "level should not be present");
-            Assert.IsFalse(keys.Contains("code_version"), "code_version should not be present");
-            Assert.IsFalse(keys.Contains("framework"), "framework should not be present");
-            Assert.IsFalse(keys.Contains("context"), "context should not be present");
-            Assert.IsFalse(keys.Contains("request"), "request should not be present");
-            Assert.IsFalse(keys.Contains("person"), "person should not be present");
-            Assert.IsFalse(keys.Contains("server"), "server should not be present");
-            Assert.IsFalse(keys.Contains("client"), "client should not be present");
-            Assert.IsFalse(keys.Contains("custom"), "custom should not be present");
-            Assert.IsFalse(keys.Contains("fingerprint"), "fingerprint should not be present");
-            Assert.IsFalse(keys.Contains("title"), "title should not be present");
-            Assert.IsFalse(keys.Contains("uuid"), "uuid should not be present");
+            var expectedProperties = new string[] {
+                "environment",
+                "level",
+                "body",
+                "timestamp",
+                "platform",
+                "language",
+                "framework",
+                "notifier",
+                "uuid",
+            };
+            foreach(var property in expectedProperties)
+            {
+                Assert.IsTrue(keys.Contains(property), $"{property} should be present");
+            }
+
+            var notExpectedProperties = new string[] {
+                "code_version",
+                "context",
+                "request",
+                "person",
+                "server",
+                "client",
+                "custom",
+                "fingerprint",
+                "title",
+            };
+            foreach (var property in notExpectedProperties)
+            {
+                Assert.IsFalse(keys.Contains(property), $"{property} should not be present");
+            }
         }
 
         [TestMethod]
         public void MessageCreatesValidRollbarObject()
         {
-            var asJson = JObject.Parse(JsonConvert.SerializeObject(_messageException));
+            var messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords"))));
+
+            var asJson = JObject.Parse(JsonConvert.SerializeObject(messageException));
 
             Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
 
@@ -128,10 +214,10 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("A message I wish to send to the rollbar overlords", message["body"].Value<string>());
             Assert.AreEqual(1, message.Properties().Count());
 
-            Assert.AreEqual("windows", data["platform"].Value<string>());
+            Assert.AreNotEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
-            var left = _exceptionExample.Data.Notifier.ToArray();
+            var left = messageException.Data.Notifier.ToArray();
             var right = data["notifier"].ToObject<Dictionary<string, string>>();
 
             Assert.AreEqual(left.Length, right.Count);
@@ -145,24 +231,45 @@ namespace UnitTest.Rollbar.DTOs
 
             IEnumerable<string> keys = data.Properties().Select(p => p.Name).ToArray();
 
-            Assert.IsFalse(keys.Contains("level"), "level should not be present");
-            Assert.IsFalse(keys.Contains("code_version"), "code_version should not be present");
-            Assert.IsFalse(keys.Contains("framework"), "framework should not be present");
-            Assert.IsFalse(keys.Contains("context"), "context should not be present");
-            Assert.IsFalse(keys.Contains("request"), "request should not be present");
-            Assert.IsFalse(keys.Contains("person"), "person should not be present");
-            Assert.IsFalse(keys.Contains("server"), "server should not be present");
-            Assert.IsFalse(keys.Contains("client"), "client should not be present");
-            Assert.IsFalse(keys.Contains("custom"), "custom should not be present");
-            Assert.IsFalse(keys.Contains("fingerprint"), "fingerprint should not be present");
-            Assert.IsFalse(keys.Contains("title"), "title should not be present");
-            Assert.IsFalse(keys.Contains("uuid"), "uuid should not be present");
+            var expectedProperties = new string[] {
+                "environment",
+                "level",
+                "body",
+                "timestamp",
+                "platform",
+                "language",
+                "framework",
+                "notifier",
+                "uuid",
+            };
+            foreach (var property in expectedProperties)
+            {
+                Assert.IsTrue(keys.Contains(property), $"{property} should be present");
+            }
+
+            var notExpectedProperties = new string[] {
+                "code_version",
+                "context",
+                "request",
+                "person",
+                "server",
+                "client",
+                "custom",
+                "fingerprint",
+                "title",
+            };
+            foreach (var property in notExpectedProperties)
+            {
+                Assert.IsFalse(keys.Contains(property), $"{property} should not be present");
+            }
         }
 
         [TestMethod]
         public void TraceChainCreatesValidRollbarObject()
         {
-            var asJson = JObject.Parse(JsonConvert.SerializeObject(_aggregateExample));
+            var aggregateExample = new Payload("access-token", new Data(this._config, new Body(GetAggregateException())));
+
+            var asJson = JObject.Parse(JsonConvert.SerializeObject(aggregateExample));
 
             Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
 
@@ -184,16 +291,23 @@ namespace UnitTest.Rollbar.DTOs
             Assert.IsNull(body["message"]);
             Assert.IsNull(body["crash_report"]);
 
-            Action<JToken> traceFunc = trace =>
+            void traceFunc(JToken trace)
             {
                 Assert.IsInstanceOfType(trace["frames"], typeof(JArray));
                 var frames = trace["frames"] as JArray;
                 Assert.IsNotNull(frames);
 
                 Assert.IsTrue(frames.All(frame => frame["filename"] != null));
-                Assert.AreEqual(
-                    "UnitTest.Rollbar.DTOs.PayloadFixture.ThrowAnException()", 
-                    frames[0]["method"].Value<string>()
+
+                string[] platformDependentTopFrameMethods = new string[]
+                {
+                    "ThrowAnException",
+                    "GetAggregateException",
+                };
+                string firstFrameMethod = frames[0]["method"].Value<string>();
+                Assert.IsTrue(
+                    firstFrameMethod.Contains(platformDependentTopFrameMethods[0]) || firstFrameMethod.Contains(platformDependentTopFrameMethods[1]),
+                    firstFrameMethod
                     );
 
                 Assert.IsInstanceOfType(trace["exception"], typeof(JObject));
@@ -202,18 +316,18 @@ namespace UnitTest.Rollbar.DTOs
 
                 Assert.AreEqual("Test", exception["message"].Value<string>());
                 Assert.AreEqual("System.Exception", exception["class"].Value<string>());
-            };
+            }
 
-            foreach(var t in traceChain)
+            foreach (var t in traceChain)
             {
                 traceFunc(t);
             }
 
-            Assert.AreEqual("windows", data["platform"].Value<string>());
+            Assert.AreNotEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             //Assert.AreEqual(_exceptionExample.Data.Notifier.ToArray(), data["notifier"].ToObject<Dictionary<string, string>>());
-            var left = _exceptionExample.Data.Notifier.ToArray();
+            var left = aggregateExample.Data.Notifier.ToArray();
             var right = data["notifier"].ToObject<Dictionary<string, string>>();
 
             Assert.AreEqual(left.Length, right.Count);
@@ -227,24 +341,46 @@ namespace UnitTest.Rollbar.DTOs
 
             IEnumerable<string> keys = data.Properties().Select(p => p.Name).ToArray();
 
-            Assert.IsFalse(keys.Contains("level"), "level should not be present");
-            Assert.IsFalse(keys.Contains("code_version"), "code_version should not be present");
-            Assert.IsFalse(keys.Contains("framework"), "framework should not be present");
-            Assert.IsFalse(keys.Contains("context"), "context should not be present");
-            Assert.IsFalse(keys.Contains("request"), "request should not be present");
-            Assert.IsFalse(keys.Contains("person"), "person should not be present");
-            Assert.IsFalse(keys.Contains("server"), "server should not be present");
-            Assert.IsFalse(keys.Contains("client"), "client should not be present");
-            Assert.IsFalse(keys.Contains("custom"), "custom should not be present");
-            Assert.IsFalse(keys.Contains("fingerprint"), "fingerprint should not be present");
-            Assert.IsFalse(keys.Contains("title"), "title should not be present");
-            Assert.IsFalse(keys.Contains("uuid"), "uuid should not be present");
+            var expectedProperties = new string[] {
+                "environment",
+                "level",
+                "body",
+                "timestamp",
+                "platform",
+                "language",
+                "framework",
+                "notifier",
+                "uuid",
+            };
+            foreach (var property in expectedProperties)
+            {
+                Assert.IsTrue(keys.Contains(property), $"{property} should be present");
+            }
+
+            var notExpectedProperties = new string[] {
+                "code_version",
+                "context",
+                "request",
+                "person",
+                "server",
+                "client",
+                "custom",
+                "fingerprint",
+                "title",
+            };
+            foreach (var property in notExpectedProperties)
+            {
+                Assert.IsFalse(keys.Contains(property), $"{property} should not be present");
+            }
         }
 
         [TestMethod]
         public void CrashReportCreatesValidRollbarObject()
         {
-            var asJson = JObject.Parse(JsonConvert.SerializeObject(_crashException));
+            var crashException = new Payload("access-token", new Data(this._config, new Body("A terrible crash!")));
+
+
+            var asJson = JObject.Parse(JsonConvert.SerializeObject(crashException));
 
             Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
 
@@ -268,10 +404,10 @@ namespace UnitTest.Rollbar.DTOs
 
             Assert.AreEqual("A terrible crash!", crashReport["raw"].Value<string>());
 
-            Assert.AreEqual("windows", data["platform"].Value<string>());
+            Assert.AreNotEqual("windows", data["platform"].Value<string>());
             Assert.AreEqual("c#", data["language"].Value<string>());
 
-            var left = _exceptionExample.Data.Notifier.ToArray();
+            var left = crashException.Data.Notifier.ToArray();
             var right = data["notifier"].ToObject<Dictionary<string, string>>();
 
             Assert.AreEqual(left.Length, right.Count);
@@ -285,18 +421,37 @@ namespace UnitTest.Rollbar.DTOs
 
             IEnumerable<string> keys = data.Properties().Select(p => p.Name).ToArray();
 
-            Assert.IsFalse(keys.Contains("level"), "level should not be present");
-            Assert.IsFalse(keys.Contains("code_version"), "code_version should not be present");
-            Assert.IsFalse(keys.Contains("framework"), "framework should not be present");
-            Assert.IsFalse(keys.Contains("context"), "context should not be present");
-            Assert.IsFalse(keys.Contains("request"), "request should not be present");
-            Assert.IsFalse(keys.Contains("person"), "person should not be present");
-            Assert.IsFalse(keys.Contains("server"), "server should not be present");
-            Assert.IsFalse(keys.Contains("client"), "client should not be present");
-            Assert.IsFalse(keys.Contains("custom"), "custom should not be present");
-            Assert.IsFalse(keys.Contains("fingerprint"), "fingerprint should not be present");
-            Assert.IsFalse(keys.Contains("title"), "title should not be present");
-            Assert.IsFalse(keys.Contains("uuid"), "uuid should not be present");
+            var expectedProperties = new string[] {
+                "environment",
+                "level",
+                "body",
+                "timestamp",
+                "platform",
+                "language",
+                "framework",
+                "notifier",
+                "uuid",
+            };
+            foreach (var property in expectedProperties)
+            {
+                Assert.IsTrue(keys.Contains(property), $"{property} should be present");
+            }
+
+            var notExpectedProperties = new string[] {
+                "code_version",
+                "context",
+                "request",
+                "person",
+                "server",
+                "client",
+                "custom",
+                "fingerprint",
+                "title",
+            };
+            foreach (var property in notExpectedProperties)
+            {
+                Assert.IsFalse(keys.Contains(property), $"{property} should not be present");
+            }
         }
 
         [TestMethod]
@@ -304,7 +459,7 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                var x = new Payload(null, new Data("test", new Body("test")));
+                var x = new Payload(null, new Data(this._config, new Body("test")));
             });
         }
 
@@ -313,7 +468,7 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                var x = new Payload("test", null);
+                var x = new Payload(RollbarUnitTestSettings.AccessToken, null);
             });
         }
 

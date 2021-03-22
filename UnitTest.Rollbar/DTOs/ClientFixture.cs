@@ -11,7 +11,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("ClientFixture")]
+    [TestCategory(nameof(ClientFixture))]
     public class ClientFixture
     {
         private Client _client;
@@ -28,16 +28,24 @@ namespace UnitTest.Rollbar.DTOs
         }
 
         [TestMethod]
-        public void ClientRenderedAsDictWhenEmpty()
+        public void ClientRenderedWithCpuValue()
         {
-            Assert.AreEqual("{}", JsonConvert.SerializeObject(_client));
+            string cpuValue = this._client.Cpu ?? "null";
+            string expectedNetFx = "{\"cpu\":" + cpuValue + "}";
+            string expectedNetCore = "{\"cpu\":\"" + cpuValue + "\"}";
+            string actual = JsonConvert.SerializeObject(_client);
+
+            Assert.IsTrue(
+                actual.Equals(expectedNetFx) 
+                || actual.Equals(expectedNetCore)
+                );
         }
 
         [TestMethod]
         public void ClientRendersArbitraryKeysCorrectly()
         {
             _client["test-key"] = "test-value";
-            Assert.AreEqual("{\"test-key\":\"test-value\"}", JsonConvert.SerializeObject(_client));
+            Assert.IsTrue(JsonConvert.SerializeObject(_client).Contains("\"test-key\":\"test-value\""));
         }
 
     }

@@ -1,0 +1,146 @@
+# .NET Standard/Framework/Core
+# Build and test .NET projects targeting the .NET Standard/Framework/Core.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+    branches:
+        include:
+            - master
+            - LTS-*
+    tags:
+        include:
+            - v*
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/Rollbar.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+
+# .NET Core SDK Installer
+# Acquires a specific version of the .NET Core SDK from the Internet or the local cache and adds it to the PATH. 
+# Use this task to change the version of .NET Core used in subsequent tasks.
+# - task: DotNetCoreInstaller@0
+#   inputs:
+#     packageType: 'runtime' # 'sdk' or 'runtime'
+#     version: '2.2.2' # replace this value with the version that you need for your project
+# - task: DotNetCoreInstaller@0
+#   inputs:
+#     packageType: 'runtime' # 'sdk' or 'runtime'
+#     version: '2.1.8' # replace this value with the version that you need for your project
+# - task: DotNetCoreInstaller@0
+#   inputs:
+#     packageType: 'runtime' # 'sdk' or 'runtime'
+#     version: '2.0.9' # replace this value with the version that you need for your project
+# - task: DotNetCoreInstaller@0
+#   inputs:
+#     packageType: 'sdk' # 'sdk' or 'runtime'
+#     version: '2.2.104' # replace this value with the version that you need for your project
+
+#- task: UseDotNet@2
+#  displayName: 'Use .NET Core sdk'
+#  inputs:
+#    packageType: sdk
+#    version: 3.x
+#    includePreviewVersions: true
+#    installationPath: $(Agent.ToolsDirectory)/dotnet
+    
+- script: dotnet --version
+  displayName: 'Show .NET Core Version...'
+
+- script: dotnet --info
+  displayName: 'Show .NET Core Info...'
+
+# NuGet Tool Installer
+# Acquires a specific version of NuGet from the Internet or the tools cache and adds it to the PATH. 
+# Use this task to change the version of NuGet used in the NuGet tasks.
+- task: NuGetToolInstaller@1
+  displayName: 'Installing NuGet...'
+  inputs:
+    versionSpec: '5.x' 
+    checkLatest: true
+    #checkLatest: true # Optional
+
+# Visual Studio Test Platform Installer
+# Acquires the test platform from nuget.org or the tools cache. Satisfies the ‘vstest’ demand and can be used for running tests and collecting diagnostic data using the Visual Studio Test task.
+- task: VisualStudioTestPlatformInstaller@1
+  displayName: 'Installing VisualStudio Test Platform...'
+  inputs:
+    packageFeedSelector: 'nugetOrg' # Options: nugetOrg, customFeed, netShare
+    versionSelector: 'latestStable' # Required when packageFeedSelector == NugetOrg || PackageFeedSelector == CustomFeed# Options: latestPreRelease, latestStable, specificVersion
+    #testPlatformVersion: '15.9.0' # Required when versionSelector == SpecificVersion
+    #customFeed: # Required when packageFeedSelector == CustomFeed
+    #username: # Optional
+    #password: # Optional
+    #netShare: # Required when packageFeedSelector == NetShare
+
+- task: NuGetCommand@2
+  displayName: 'Restoring solution packages...'
+  inputs:
+    restoreSolution: '$(solution)'
+
+- script: dotnet restore Rollbar.sln
+  displayName: 'Restore Rollbar.sln package dependencies...'
+
+# Run: dotnet tool install --global dotnet-sonarscanner --version 4.7.1
+- script: dotnet tool install --global dotnet-sonarscanner
+  displayName: 'Installing SonarScanner for MSBuild'
+
+- task: SonarCloudPrepare@1
+  displayName: 'Prepare SonarCloud analysis'
+  inputs:
+    SonarCloud: 'Rollbar SDKs SonarCloud'
+    organization: '$(SonarOrganization)'
+    scannerMode: 'MSBuild'
+    projectKey: '$(SonarProjectKey)'
+    projectName: '$(SonarProjectName)'
+    projectVersion: '$(Build.BuildNumber)'
+    extraProperties: 
+#     sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml
+     sonar.exclusions=UnitTest.*/**/*, Samples/**/*, Benchmarker.Common/**/*, Rollbar.Benchmarker/**/*
+
+
+- task: VSBuild@1
+  displayName: 'Building the solution...'
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:PackageAsSingleFile=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\RollbarNetSdkBin.zip"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+# DISABLED UNTIL FAILING UNIT-TEST ON CI SERVER ARE FIXED 
+- task: VSTest@2
+  displayName: 'Unit-testing build results...'
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+    vsTestVersion: toolsInstaller
+    codeCoverageEnabled: true
+
+# Publish Test Results
+# Publish test results to Azure Pipelines
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: VSTest
+    #testResultsFormat: 'JUnit' # Options: JUnit, NUnit, VSTest, xUnit, cTest
+    #testResultsFiles: '**/TEST-*.xml' 
+    #searchFolder: '$(System.DefaultWorkingDirectory)' # Optional
+    #mergeTestResults: false # Optional
+    failTaskOnFailedTests: false # Optional
+    #failTaskOnFailedTests: false # Optional
+    #testRunTitle: # Optional
+    #buildPlatform: # Optional
+    #buildConfiguration: # Optional
+    #publishRunAttachments: true # Optional
+
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud code analysis'
+
+- task: SonarCloudPublish@1
+  displayName: 'Publish SonarCloud quality gate results'
+

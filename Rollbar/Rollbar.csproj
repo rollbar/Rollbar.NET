@@ -1,23 +1,100 @@
-<Project>
-
-  <Import Project="..\SolutionCommon.csproj" />
+﻿<Project ToolsVersion="Current">
 
   <PropertyGroup>
-    
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <!--TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461</TargetFrameworks-->
     <AssemblyName>Rollbar</AssemblyName>
     <RootNamespace>Rollbar</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.1</Version>
-    
+    <Configurations>Debug;Release;Instrumented</Configurations>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectCapability Include="CSharp;Managed;ClassDesigner" />
-  </ItemGroup>
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="Any build">
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
+  </PropertyGroup>
   
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-  </ItemGroup>
+  <PropertyGroup Label="Instrumented build" Condition="'$(Configuration)'=='Instrumented' And '$(Platform)' == 'AnyCPU'">
+    <DefineConstants>$(DefineConstants);INSTRUMENT</DefineConstants>
+  </PropertyGroup>
+  
+  <!--TargetFramework dependent settings-->
+  
+  <Choose>
+    
+    <!--.Net Standard-->
+    <When Condition="'$(TargetFramework)' == 'netstandard2.1'">
+      <PropertyGroup Label=".NetStandard build">
+        <NetVariant>NET_STANDARD</NetVariant>
+        <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
+      </PropertyGroup>
+    </When>
+    <When Condition="$(TargetFramework.StartsWith('netstandard'))">
+      <PropertyGroup Label=".NetStandard build">
+        <NetVariant>NET_STANDARD</NetVariant>
+        <DefineConstants>$(DefineConstants);NETSTANDARD</DefineConstants>
+      </PropertyGroup>
+    </When>
+    
+    <!--.Net Core-->
+    <When Condition="$(TargetFramework.StartsWith('netcoreapp'))">
+      <PropertyGroup Label=".NetCore build">
+        <NetVariant>NET_CORE</NetVariant>
+        <DefineConstants>$(DefineConstants);NETCOREAPP</DefineConstants>
+      </PropertyGroup>
+    </When>
+
+    <!--.NET Framework-->
+    <When Condition="$(TargetFramework.StartsWith('net4'))">
+      <PropertyGroup Label=".NET Framework build">
+        <NetVariant>NET_FX</NetVariant>
+        <DefineConstants>$(DefineConstants);NETFX</DefineConstants>
+      </PropertyGroup>
+      <ItemGroup Label=".NET Framework build">
+        <Reference Include="System.Configuration" />
+        <Reference Include="System.Net" />
+        <Reference Include="System.Net.Http" />
+        <Reference Include="System.Web" />
+        <Reference Include="System.ServiceModel" />
+      </ItemGroup>
+      <PropertyGroup Condition="'$(TargetFramework)' == 'net47' Or $(TargetFramework.StartsWith('net46')) Or $(TargetFramework.StartsWith('net45'))">
+        <DefineConstants>$(DefineConstants);NETFX_47nOlder</DefineConstants>
+      </PropertyGroup>
+      <PropertyGroup Condition="$(TargetFramework.StartsWith('net48')) Or $(TargetFramework.StartsWith('net47')) Or ($(TargetFramework.StartsWith('net46')) And ('$(TargetFramework)' != 'net46'))">
+        <DefineConstants>$(DefineConstants);NETFX_461nNewer</DefineConstants>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <!--NOTHING-->
+    </Otherwise>
+  </Choose>
+
+
+  <!--EF Core specific settings dependent on TargetFramework (to keep Rollbar.OfflinePersistence's dependencies happy)-->
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net46' Or $(TargetFramework.StartsWith('net45'))">
+      <ItemGroup Label="EF Core for Legacy NetStandard 2.0 non-copmliant framework targets.">
+        <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
+        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+
+  <Target Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')" 
+          Name="IncludeNativeBinariesAsOutput" 
+          BeforeTargets="GetCopyToOutputDirectoryItems">
+    <AssignTargetPath Files="@(Content)" 
+                      RootFolder="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="AssignedFiles" 
+              ItemName="ContentWithTargetPath" />
+    </AssignTargetPath>
+  </Target>
+
+  <!-- REFERENCE: https://docs.microsoft.com/en-us/visualstudio/msbuild/otherwise-element-msbuild?view=vs-2019 -->
 
 </Project>

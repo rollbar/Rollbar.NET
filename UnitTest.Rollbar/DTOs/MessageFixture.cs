@@ -10,7 +10,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Collections.Generic;
 
     [TestClass]
-    [TestCategory("MessageFixture")]
+    [TestCategory(nameof(MessageFixture))]
     public class MessageFixture
     {
         private Message _message;

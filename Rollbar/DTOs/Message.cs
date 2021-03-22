@@ -1,6 +1,7 @@
 ﻿namespace Rollbar.DTOs
 {
     using System.Collections.Generic;
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
 
     /// <summary>
@@ -18,7 +19,17 @@
             /// <summary>
             /// The body
             /// </summary>
-            public const string Body = "body";
+            public static readonly string Body = "body";
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Message"/> class.
+        /// </summary>
+        /// <param name="body">The body.</param>
+        public Message(string body)
+            : this(body, null)
+        {
+
         }
 
         /// <summary>
@@ -26,7 +37,10 @@
         /// </summary>
         /// <param name="body">The body.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Message(string body, IDictionary<string, object> arbitraryKeyValuePairs = null)
+        public Message(
+            string body, 
+            IDictionary<string, object> arbitraryKeyValuePairs
+            )
             : base(arbitraryKeyValuePairs)
         {
             Body = body;
@@ -42,16 +56,35 @@
         /// </value>
         public string Body
         {
-            get { return this._keyedValues[ReservedProperties.Body] as string; }
-            private set { this._keyedValues[ReservedProperties.Body] = value; }
+            get { return this[ReservedProperties.Body] as string; }
+            private set { this[ReservedProperties.Body] = value; }
         }
 
         /// <summary>
-        /// Validates this instance.
+        /// Gets the proper validator.
         /// </summary>
-        public override void Validate()
+        /// <returns>Validator.</returns>
+        public override Validator GetValidator()
         {
-            Assumption.AssertNotNullOrWhiteSpace(this.Body, nameof(this.Body));
+            var validator = new Validator<Message, Message.MessageValidationRule>()
+                    .AddValidation(
+                        Message.MessageValidationRule.BodyRequired,
+                        (message) => { return !string.IsNullOrWhiteSpace(message.Body); }
+                        )
+               ;
+
+            return validator;
+        }
+
+        /// <summary>
+        /// Enum MessageValidationRule
+        /// </summary>
+        public enum MessageValidationRule
+        {
+            /// <summary>
+            /// The body required
+            /// </summary>
+            BodyRequired,
         }
 
     }

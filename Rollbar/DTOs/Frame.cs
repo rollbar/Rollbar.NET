@@ -1,10 +1,12 @@
 ﻿namespace Rollbar.DTOs
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
     using Newtonsoft.Json;
+    using Rollbar.Diagnostics;
 
     /// <summary>
     /// Models Rollbar Frame DTO.
@@ -16,10 +18,51 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Frame"/> class.
         /// </summary>
-        /// <param name="filename">The filename.</param>
-        public Frame(string filename)
+        public Frame()
         {
-            FileName = filename;
+            this.FileName = @"(unknown)";
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Frame" /> class.
+        /// </summary>
+        /// <param name="frameString">The frame string.</param>
+        public Frame(string frameString)
+        {
+            if (string.IsNullOrWhiteSpace(frameString))
+            {
+                return;
+            }
+
+            string token = @"at ";
+            int tokenIndex = frameString.IndexOf(token, StringComparison.InvariantCulture);
+            frameString = frameString.Remove(tokenIndex, token.Length);
+            frameString = frameString.Trim();
+            string[] components = frameString.Split(new [] { " in ", }, StringSplitOptions.None);
+            if (components.Length > 0)
+            {
+                this.Method = components[0];
+            }
+            if (components.Length > 1)
+            {
+                components = components[1].Split(new [] { ":line ", }, StringSplitOptions.None);
+                if (components.Length > 0)
+                {
+                    this.FileName = components[0];
+                }
+                if (components.Length > 1)
+                {
+                    if (int.TryParse(components[1], out int lineNumber))
+                    {
+                        this.LineNo = lineNumber;
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(this.FileName))
+            {
+                this.FileName = @"(unknown)";
+            }
         }
 
         /// <summary>
@@ -28,13 +71,15 @@
         /// <param name="frame">The frame.</param>
         public Frame(StackFrame frame)
         {
-            var method = frame.GetMethod();
+            if (frame == null)
+            {
+                return;
+            }
 
-            FileName = GetFileName(frame, method);
+            Method = GetMethod(frame);
+            FileName = GetFileName(frame);
             LineNo = GetLineNumber(frame);
             ColNo = LineNo.HasValue ? GetFileColumnNumber(frame) : null;
-
-            Method = GetMethod(method);
         }
 
         /// <summary>
@@ -74,6 +119,7 @@
         public string Method { get; set; }
 
         #region Unautomatable
+
         // These properties cannot be automated w/ normal C# StackFrames.
         // You may be able to fill this out from another .NET language.
         // They're there in case you're awesome.
@@ -112,23 +158,46 @@
         /// The kwargs.
         /// </value>
         [JsonProperty("kwargs", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Dictionary<string, object> Kwargs { get; set; }
+        public IDictionary<string, object> Kwargs { get; set; }
 
         #endregion Unautomatable
 
-        private static string GetFileName(StackFrame frame, MethodBase method)
+        private const string defaultFileName = @"(unknown)";
+
+        private static string GetFileName(StackFrame frame)
         {
-            var returnVal = frame.GetFileName();
+            Assumption.AssertNotNull(frame, nameof(frame));
+
+            string returnVal = defaultFileName;
+
+            if (frame == null)
+            {
+                return returnVal;
+            }
+
+            returnVal = frame.GetFileName();
             if (!string.IsNullOrWhiteSpace(returnVal))
             {
                 return returnVal;
             }
 
-            return method.ReflectedType != null ? method.ReflectedType.FullName : "(unknown)";
+            MethodBase method = frame.GetMethod();
+            if (method != null && method.ReflectedType != null)
+            {
+                returnVal = method.ReflectedType.FullName ;
+            }
+            if (!string.IsNullOrWhiteSpace(returnVal))
+            {
+                return returnVal;
+            }
+
+            return defaultFileName;
         }
 
         private static int? GetLineNumber(StackFrame frame)
         {
+            Assumption.AssertNotNull(frame, nameof(frame));
+
             var lineNo = frame.GetFileLineNumber();
             if (lineNo != 0)
             {
@@ -147,11 +216,21 @@
 
         private static int? GetFileColumnNumber(StackFrame frame)
         {
+            Assumption.AssertNotNull(frame, nameof(frame));
+
             return frame.GetFileColumnNumber();
         }
 
-        private static string GetMethod(MethodBase method)
+        private static string GetMethod(StackFrame frame)
         {
+            Assumption.AssertNotNull(frame, nameof(frame));
+
+            MethodBase method = frame.GetMethod();
+            if (method == null)
+            {
+                return frame.ToString();
+            }
+
             var methodName = method.Name;
             if (method.ReflectedType != null)
             {

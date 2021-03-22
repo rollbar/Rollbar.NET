@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.CommunicationErrorEventArgs">
+    <Position X="2" Y="7.5" Width="6.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAACAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>CommunicationErrorEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.CommunicationEventArgs">
+    <Position X="10.75" Y="4.75" Width="6.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>CommunicationEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.InternalErrorEventArgs">
+    <Position X="2" Y="4.75" Width="6.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAQAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>InternalErrorEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.PayloadDropEventArgs">
+    <Position X="2" Y="12.25" Width="6.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Rollbar.PayloadDropEventArgs.DropReason">
+        <TypeIdentifier>
+          <NewMemberFileName>PayloadDropEventArgs.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>PayloadDropEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.TransmissionOmittedEventArgs">
+    <Position X="2" Y="10.25" Width="6.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>TransmissionOmittedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.RollbarApiErrorEventArgs">
+    <Position X="10.75" Y="7.5" Width="6.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Rollbar.RollbarApiErrorEventArgs.RollbarError">
+        <TypeIdentifier>
+          <NewMemberFileName>RollbarApiErrorEventArgs.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Class Name="Rollbar.RollbarApiErrorEventArgs.RollbarErrorDetails">
+        <TypeIdentifier>
+          <NewMemberFileName>RollbarApiErrorEventArgs.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAgCAAEQBAAAAAAAAAA=</HashCode>
+      <FileName>RollbarApiErrorEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.RollbarEventArgs">
+    <Position X="8.5" Y="0.5" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgIAAAAAAAAQAAAAIAAAAAAQAAAQgAAAAAA=</HashCode>
+      <FileName>RollbarEventArgs.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

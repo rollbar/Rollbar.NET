@@ -1,110 +1,221 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="Rollbar.DTOs.Body" Collapsed="true">
-    <Position X="5.25" Y="3.25" Width="1.5" />
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.DTOs.Body">
+    <Position X="11.5" Y="7" Width="3.75" />
+    <NestedTypes>
+      <Enum Name="Rollbar.DTOs.Body.BodyValidationRule" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Body.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAABAAAAIIIAAAAAA=</HashCode>
+      <HashCode>AAAAACAAAAAAAAAAAAAAQAAAAAAgABAAAAIIIAAAAAA=</HashCode>
       <FileName>DTOs\Body.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.Client" Collapsed="true">
-    <Position X="1.25" Y="4.5" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Client">
+    <Position X="8.5" Y="18.25" Width="4" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.Client.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Client.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\Client.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.CodeContext" Collapsed="true">
-    <Position X="5.25" Y="6.25" Width="1.5" />
+  <Class Name="Rollbar.DTOs.CodeContext">
+    <Position X="9" Y="1.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAEAAAAAAAA=</HashCode>
       <FileName>DTOs\CodeContext.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.CrashReport" Collapsed="true">
-    <Position X="5.25" Y="4.25" Width="1.5" />
+  <Class Name="Rollbar.DTOs.CrashReport">
+    <Position X="17.5" Y="4.25" Width="2.25" />
+    <NestedTypes>
+      <Enum Name="Rollbar.DTOs.CrashReport.CrashReportValidationRule" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\CrashReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAACACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAACAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\CrashReport.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.Data" Collapsed="true">
-    <Position X="5.25" Y="7.25" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Data">
+    <Position X="5.5" Y="6.25" Width="5.75" />
+    <NestedTypes>
+      <Enum Name="Rollbar.DTOs.Data.DataValidationRule" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Data.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AIAAAAAiCgAAAMAwAAADCAAAAIAAgAABCAAAAggRAAQ=</HashCode>
+      <HashCode>AIAAgCAmCgBAAMAwAAADCAAAAIAAgAABCAAAAggRAAQ=</HashCode>
       <FileName>DTOs\Data.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.DtoBase" Collapsed="true">
-    <Position X="4.5" Y="0.5" Width="1.5" />
+  <Class Name="Rollbar.DTOs.DtoBase">
+    <Position X="0.5" Y="0.5" Width="4.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <HashCode>IAAiACAAAMCAAAAAAASAAAAAAAAwAAAwAAAABAAACAE=</HashCode>
       <FileName>DTOs\DtoBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Rollbar.DTOs.Exception" Collapsed="true">
-    <Position X="5.25" Y="5.25" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Exception">
+    <Position X="6" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAAAAAAIAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>DTOs\Exception.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.ExtendableDtoBase" Collapsed="true">
-    <Position X="1.5" Y="1.75" Width="1.5" />
+  <Class Name="Rollbar.DTOs.ExtendableDtoBase">
+    <Position X="0.5" Y="6.25" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>OQIAAAAEIAAEABAQCAAABAQAAAAAAAAEAAAgAABQIAA=</HashCode>
+      <HashCode>OQIAAAAEIAAEABAQCAAABAQAAAAgAAAEAAAgAABQIAA=</HashCode>
       <FileName>DTOs\ExtendableDtoBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Rollbar.DTOs.Frame" Collapsed="true">
-    <Position X="5.25" Y="9.25" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Frame">
+    <Position X="15.5" Y="7" Width="4.25" />
     <TypeIdentifier>
-      <HashCode>AAAIAAAAAoCAAAAAAAAgAAAAQAAAAAAIAAQAAABEAAg=</HashCode>
+      <HashCode>AAAIAAAAAoCAAAAAAAAgAAAAQAAAAAAIAQQAAABEAAg=</HashCode>
       <FileName>DTOs\Frame.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.Message" Collapsed="true">
-    <Position X="1.25" Y="3.5" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Message">
+    <Position X="7.25" Y="13.5" Width="4.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.Message.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Message.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Enum Name="Rollbar.DTOs.Message.MessageValidationRule" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Message.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAACAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAACAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\Message.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.Payload" Collapsed="true">
-    <Position X="5.25" Y="2.25" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Payload">
+    <Position X="12" Y="0.5" Width="6.25" />
+    <NestedTypes>
+      <Enum Name="Rollbar.DTOs.Payload.PayloadValidationRule" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Payload.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAEAAAABAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAACAAAAAAAIAAAAAAAAAAkAAAABAAAAAAAAAAAAA=</HashCode>
       <FileName>DTOs\Payload.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.Person" Collapsed="true">
-    <Position X="5.25" Y="10.25" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Person">
+    <Position X="14.75" Y="4.25" Width="2.5" />
+    <NestedTypes>
+      <Enum Name="Rollbar.DTOs.Person.PersonValidationRule" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Person.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAACAAAAACAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>AAAKACAAAKAAAAAAAABAAAAAAAAAAAAAAQYAAAAAAAE=</HashCode>
       <FileName>DTOs\Person.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.Request" Collapsed="true">
-    <Position X="1.25" Y="6.5" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Request">
+    <Position X="0.5" Y="13.25" Width="4.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.Request.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Request.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAIAAAAAAAACAAAgAAgBCAAAgAAECAAAAAAAAAA=</HashCode>
       <FileName>DTOs\Request.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.Server" Collapsed="true">
-    <Position X="1.25" Y="5.5" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Server">
+    <Position X="13" Y="18.25" Width="4" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.Server.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Server.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAACAgAAAAAAAgAAAA=</HashCode>
       <FileName>DTOs\Server.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.DTOs.Trace" Collapsed="true">
-    <Position X="5.25" Y="8.25" Width="1.5" />
+  <Class Name="Rollbar.DTOs.Trace">
+    <Position X="11.5" Y="4.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAE=</HashCode>
       <FileName>DTOs\Trace.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.HostBase">
+    <Position X="12" Y="13.5" Width="5.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.HostBase.ReservedProperties">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\HostBase.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>DTOs\HostBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.DTOs.Notifier">
+    <Position X="3.5" Y="21.25" Width="4.75" />
+    <NestedTypes>
+      <Class Name="Rollbar.DTOs.Notifier.ReservedProperties" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>DTOs\Notifier.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAACAAQAAAAAAAAAoAAAAEAAAAA=</HashCode>
+      <FileName>DTOs\Notifier.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

@@ -5,14 +5,24 @@ namespace UnitTest.Rollbar.DTOs
     using global::Rollbar;
     using global::Rollbar.DTOs;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Moq;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Linq;
+    using System.Net.Http;
+    using System.Security.Principal;
+
+#if NETFX
+    using System.ServiceModel.Channels;
+    using System.Web;
+    using System.Web.SessionState;
+#endif
 
     [TestClass]
-    [TestCategory("RequestFixture")]
+    [TestCategory(nameof(RequestFixture))]
     public class RequestFixture
     {
         private Request _request;
@@ -124,7 +134,7 @@ namespace UnitTest.Rollbar.DTOs
             var json = JsonConvert.SerializeObject(_request);
             Assert.IsTrue(json.Contains("\"One\":1"));
             Assert.IsTrue(json.Contains("\"Name\":\"Chris\""));
-            var jObject = JObject.Parse(json)["get_params"] as JObject;
+            var jObject = JObject.Parse(json)["GET"] as JObject;
             Assert.IsNotNull(jObject);
 
             var keys = getParams.Keys.OrderBy(x => x);
@@ -166,7 +176,7 @@ namespace UnitTest.Rollbar.DTOs
             var json = JsonConvert.SerializeObject(_request);
             Assert.IsTrue(json.Contains("\"One\":1"));
             Assert.IsTrue(json.Contains("\"Name\":\"Chris\""));
-            var jObject = JObject.Parse(json)["post_params"] as JObject;
+            var jObject = JObject.Parse(json)["POST"] as JObject;
             Assert.IsNotNull(jObject);
 
             var left = postParams.Keys.OrderBy(x => x);
@@ -193,7 +203,7 @@ namespace UnitTest.Rollbar.DTOs
             var json = JsonConvert.SerializeObject(_request);
             Assert.IsTrue(json.Contains(postBody));
             var jObject = JObject.Parse(json);
-            Assert.AreEqual(postBody, jObject["post_body"]);
+            Assert.AreEqual(postBody, jObject["body"]);
         }
 
         [TestMethod]
@@ -215,5 +225,6 @@ namespace UnitTest.Rollbar.DTOs
             var json = JsonConvert.SerializeObject(_request);
             Assert.IsTrue(json.Contains("\"whatever\":\"value\""));
         }
+
     }
 }

@@ -8,8 +8,13 @@
     /// Models Rollbar Server DTO.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.ExtendableDtoBase" />
+    /// <remarks>
+    /// Optional: server
+    /// Data about the server related to this event.
+    /// Can contain any arbitrary keys.
+    /// </remarks>
     public class Server 
-        : ExtendableDtoBase
+        : HostBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Server"/> class.
@@ -32,24 +37,24 @@
         /// <summary>
         /// The DTO reserved properties.
         /// </summary>
-        public static class ReservedProperties
+        public new static class ReservedProperties
         {
             /// <summary>
             /// The host
             /// </summary>
-            public const string Host = "host";
+            public static readonly string Host = "host";
             /// <summary>
             /// The root
             /// </summary>
-            public const string Root = "root";
+            public static readonly string Root = "root";
             /// <summary>
             /// The branch
             /// </summary>
-            public const string Branch = "branch";
+            public static readonly string Branch = "branch";
             /// <summary>
             /// The code version
             /// </summary>
-            public const string CodeVersion = "code_version";
+            public static readonly string CodeVersion = "code_version";
         }
 
         /// <summary>
@@ -58,10 +63,13 @@
         /// <value>
         /// The host.
         /// </value>
+        /// <remarks>
+        /// host: The server hostname. Will be indexed.
+        /// </remarks>
         public string Host
         {
-            get { return this._keyedValues[ReservedProperties.Host] as string; }
-            set { this._keyedValues[ReservedProperties.Host] = value; }
+            get { return this[ReservedProperties.Host] as string; }
+            set { this[ReservedProperties.Host] = value; }
         }
 
         /// <summary>
@@ -70,10 +78,14 @@
         /// <value>
         /// The root.
         /// </value>
+        /// <remarks>
+        /// root: Path to the application code root, not including the final slash.
+        /// Used to collapse non-project code when displaying tracebacks.
+        /// </remarks>
         public string Root
         {
-            get { return this._keyedValues[ReservedProperties.Root] as string; }
-            set { this._keyedValues[ReservedProperties.Root] = value; }
+            get { return this[ReservedProperties.Root] as string; }
+            set { this[ReservedProperties.Root] = value; }
         }
 
         /// <summary>
@@ -82,22 +94,29 @@
         /// <value>
         /// The branch.
         /// </value>
+        /// <remarks>
+        /// branch: Name of the checked-out source control branch. Defaults to "master"
+        /// </remarks>
         public string Branch
         {
-            get { return this._keyedValues[ReservedProperties.Branch] as string; }
-            set { this._keyedValues[ReservedProperties.Branch] = value; }
+            get { return this[ReservedProperties.Branch] as string; }
+            set { this[ReservedProperties.Branch] = value; }
         }
 
         /// <summary>
-        /// Gets or sets the code version.
+        /// Gets or sets the code version (OPTIONAL).
         /// </summary>
         /// <value>
         /// The code version.
         /// </value>
+        /// <remarks>
+        /// Optional: code_version
+        /// String describing the running code version on the server
+        /// </remarks>
         public string CodeVersion
         {
-            get { return this._keyedValues[ReservedProperties.CodeVersion] as string; }
-            set { this._keyedValues[ReservedProperties.CodeVersion] = value; }
+            get { return this[ReservedProperties.CodeVersion] as string; }
+            set { this[ReservedProperties.CodeVersion] = value; }
         }
     }
 }

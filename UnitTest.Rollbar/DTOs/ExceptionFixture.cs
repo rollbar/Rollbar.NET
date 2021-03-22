@@ -11,7 +11,7 @@ namespace UnitTest.Rollbar.DTOs
     using System.Threading.Tasks;
 
     [TestClass]
-    [TestCategory("ExceptionFixture")]
+    [TestCategory(nameof(ExceptionFixture))]
     public class ExceptionFixture
     {
         [TestMethod]

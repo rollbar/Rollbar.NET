@@ -1,0 +1,29 @@
+﻿<Project ToolsVersion="Current">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Rollbar.PlugIns.NLog</AssemblyName>
+    <RootNamespace>Rollbar.PlugIns.NLog</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="Appned or Override SDK Common NuGet Packaging Info">
+    <Title>$(Title) plug-in for NLog.</Title>
+    <Description>Rollbar.NET Notifier as a nlog Target. $(Description)</Description>
+    <PackageTags>$(PackageTags);nlog;nlog-target</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Label=".NET Global References">
+    <!--ADD here-->
+  </ItemGroup>
+
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="Package References">
+    <PackageReference Include="NLog" Version="4.5.11" />
+  </ItemGroup>
+
+</Project>

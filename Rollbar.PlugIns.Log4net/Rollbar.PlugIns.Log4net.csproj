@@ -1,0 +1,29 @@
+﻿<Project ToolsVersion="Current">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <AssemblyName>Rollbar.PlugIns.Log4net</AssemblyName>
+    <RootNamespace>Rollbar.PlugIns.Log4net</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="Appned or Override SDK Common NuGet Packaging Info">
+    <Title>$(Title) plug-in for log4net.</Title>
+    <Description>Rollbar.NET Notifier as a log4net Appender. $(Description)</Description>
+    <PackageTags>$(PackageTags);log4net;log4net-appender</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Label=".NET Global References">
+    <!--ADD here-->
+  </ItemGroup>
+
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label="Package References">
+    <PackageReference Include="log4net" Version="2.0.10" />
+  </ItemGroup>
+
+</Project>

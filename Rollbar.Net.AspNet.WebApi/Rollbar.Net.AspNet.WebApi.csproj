@@ -1,0 +1,30 @@
+﻿<Project ToolsVersion="Current">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;net472;net471;net47;net462;net461;net46;net452;net451</TargetFrameworks>
+    <AssemblyName>Rollbar.Net.AspNet.WebApi</AssemblyName>
+    <RootNamespace>Rollbar.Net.AspNet.WebApi</RootNamespace>
+  </PropertyGroup>
+
+  <Import Project="..\SdkCommon.csproj" />
+
+  <PropertyGroup Label="Append or Override SDK Common NuGet Packaging Info">
+    <Title>$(Title) for a .NET Framework ASP.NET WebAPI based application.</Title>
+    <Description>Implements Rollbar Notifier integration with .NET Framework ASP.NET WebAPI based application. $(Description)</Description>
+    <PackageTags>$(PackageTags);.net-framework;asp.net;webapi</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Label="Project References">
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Label=".NET Global References">
+    <!--Reference Include="System.Web" />
+    <Reference Include="System.Web.Http" /-->
+  </ItemGroup>
+
+  <ItemGroup Label="Package References">
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="4.0.20505" />
+  </ItemGroup>
+
+</Project>
