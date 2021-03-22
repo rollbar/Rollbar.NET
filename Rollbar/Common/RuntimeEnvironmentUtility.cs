@@ -1,7 +1,6 @@
-﻿namespace Rollbar.Common
+namespace Rollbar.Common
 {
     using System;
-    using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
@@ -19,9 +18,7 @@
         /// <returns>System.String.</returns>
         public static string GetSdkRuntimeLocationPath()
         {
-            Assembly thisAssembly = Assembly.GetExecutingAssembly();
-            string sdkAssembliesPath = Path.GetDirectoryName(thisAssembly.Location);
-            return sdkAssembliesPath;
+            return AppContext.BaseDirectory;
         }
 
         /// <summary>
