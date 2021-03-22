@@ -6,6 +6,9 @@ namespace Rollbar.Common
     using System.Runtime.InteropServices;
     using System.Runtime.Versioning;
     using System.Text;
+#if (NETFX)
+    using System.IO;
+#endif
 
     /// <summary>
     /// A utility class aiding discovery of the current runtime environment.
@@ -18,7 +21,13 @@ namespace Rollbar.Common
         /// <returns>System.String.</returns>
         public static string GetSdkRuntimeLocationPath()
         {
+#if (NETFX)
+            Assembly thisAssembly = Assembly.GetExecutingAssembly();
+            string sdkAssembliesPath = Path.GetDirectoryName(thisAssembly.Location);
+            return sdkAssembliesPath;
+#else
             return AppContext.BaseDirectory;
+#endif
         }
 
         /// <summary>
