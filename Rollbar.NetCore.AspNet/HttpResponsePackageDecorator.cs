@@ -90,10 +90,10 @@
             }
             rollbarData.Response.Body = jsonString;
 
-            object requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
-            if (requesBodyObject != null)
+            object responseBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
+            if (responseBodyObject != null)
             {
-                rollbarData.Response.Body = requesBodyObject;
+                rollbarData.Response.Body = responseBodyObject;
             }
         }
 

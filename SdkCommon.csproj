@@ -21,11 +21,11 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>4.0.2</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>4.0.3</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - fix: merge PR resolve #581 - Single file app fix
+      - fix: merge PR resolve #583 - Rollbar 4.0.2 crashes Xamarin.Forms-App
     </SdkReleaseNotes>                        
 
     <!--
