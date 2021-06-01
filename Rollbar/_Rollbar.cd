@@ -30,7 +30,7 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AIACCCBCSAKAQYCAAAAAkAUCMAJAAAKaIAAEhgCAAAA=</HashCode>
+      <HashCode>AIACCCBCSAKAQYCAAAAAkAUCMgJAAAKaIAAEhgCAAAA=</HashCode>
       <FileName>RollbarConfig.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -91,7 +91,7 @@
       </Enum>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAKIAACAUAAgDUgEIAAICCMUJhAEAYCJQAgIAEBA=</HashCode>
+      <HashCode>AAAAAKIAACAEAAgDUgUIAAICCMUJhAEAYCZQAgIAEBA=</HashCode>
       <FileName>RollbarQueueController.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -117,18 +117,19 @@
       <FileName>ITraceable.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Rollbar.IRollbarConfig">
-    <Position X="0.5" Y="2.5" Width="2.75" />
-    <TypeIdentifier>
-      <HashCode>AIACCABCCAAAQYCAAAAAEAUCEAJAAAIKIAAEhgCAAAA=</HashCode>
-      <FileName>IRollbarConfig.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="Rollbar.IRollbarPackage">
     <Position X="7.75" Y="10.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAQAAQAAA=</HashCode>
       <FileName>IRollbarPackage.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.IRollbarConfig">
+    <Position X="0.5" Y="2.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAICAAAAAAAAAAAAAAAAIAAAAAACAAAA=</HashCode>
+      <FileName>IRollbarConfig.cs</FileName>
+      <NewMemberFileName>IRollbarLoggerConfig.cs</NewMemberFileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="Rollbar.ErrorLevel">
