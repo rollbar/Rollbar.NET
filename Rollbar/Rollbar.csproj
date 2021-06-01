@@ -85,13 +85,9 @@
     </Otherwise>
   </Choose>
 
-  <Target Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')" 
-          Name="IncludeNativeBinariesAsOutput" 
-          BeforeTargets="GetCopyToOutputDirectoryItems">
-    <AssignTargetPath Files="@(Content)" 
-                      RootFolder="$(MSBuildProjectDirectory)">
-      <Output TaskParameter="AssignedFiles" 
-              ItemName="ContentWithTargetPath" />
+  <Target Condition="!($(TargetFramework.StartsWith('netcoreapp')) Or $(TargetFramework.StartsWith('netstandard')) Or $(TargetFramework.StartsWith('net45')) Or '$(TargetFramework)' == 'net46')" Name="IncludeNativeBinariesAsOutput" BeforeTargets="GetCopyToOutputDirectoryItems">
+    <AssignTargetPath Files="@(Content)" RootFolder="$(MSBuildProjectDirectory)">
+      <Output TaskParameter="AssignedFiles" ItemName="ContentWithTargetPath" />
     </AssignTargetPath>
   </Target>
 
