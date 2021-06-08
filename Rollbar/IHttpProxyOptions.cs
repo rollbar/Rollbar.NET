@@ -4,7 +4,10 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Rollbar.Common;
+
     public interface IHttpProxyOptions
+        : IReconfigurable<IHttpProxyOptions, IHttpProxyOptions>
     {
         /// <summary>
         /// Gets the proxy address.

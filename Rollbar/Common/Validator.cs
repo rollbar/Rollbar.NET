@@ -35,7 +35,6 @@
             [Description("A validation subject must match the expected type to be validated as such.")]
             MatchValidationSubjectType,
         }
-
     }
 
     /// <summary>

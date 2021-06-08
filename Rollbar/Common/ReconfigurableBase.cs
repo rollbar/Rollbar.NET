@@ -7,6 +7,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
+
     using Xamarin.iOS.Foundation;
 
     /// <summary>
@@ -160,6 +162,8 @@
     /// <seealso cref="Rollbar.Common.IReconfigurable{T}" />
     /// <seealso cref="System.IEquatable{T}" />
     public abstract class ReconfigurableBase
+        : ITraceable
+        , IValidatable
     {
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType
             = new ConcurrentDictionary<Type, PropertyInfo[]>();
@@ -379,6 +383,99 @@
         {
             Reconfigured?.Invoke(this,e);
         }
-    }
 
+        #region ITraceable
+
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public string TraceAsString()
+        {
+            return this.TraceAsString(string.Empty);
+        }
+
+        /// <summary>
+        /// Traces as a string.
+        /// </summary>
+        /// <param name="indent">The indent.</param>
+        /// <returns>String rendering of this instance.</returns>
+        public virtual string TraceAsString(string indent)
+        {
+            StringBuilder sb = new StringBuilder();
+            string traceString = this.RenderAsString(indent);
+            sb.AppendLine(indent + this._thisInstanceType.Name + ":");
+
+            PropertyInfo[] properties
+                = ReconfigurableBase.ListInstancePublicProperties(this._thisInstanceType);
+
+            foreach(var property in properties)
+            {
+                object propertyValue = property.GetValue(this);
+                string propertyValueTrace = "<null>";
+                switch(propertyValue)
+                {
+                    case ICollection collection:
+                        StringBuilder collectionTrace = new StringBuilder();
+                        collectionTrace.AppendLine("[");
+                        foreach(var item in collection)
+                        {
+                            switch(item)
+                            {
+                                case ITraceable traceable:
+                                    collectionTrace.AppendLine($"{indent}  {traceable.TraceAsString()},");
+                                    break;
+                                default:
+                                    collectionTrace.AppendLine($"{indent}  {item.RenderAsString()},");
+                                    break;
+                            }
+                        }
+                        collectionTrace.AppendLine($"{indent}]");
+                        propertyValueTrace = collectionTrace.ToString();
+                        break;
+                    case ITraceable traceable:
+                        propertyValueTrace = traceable.TraceAsString();
+                        break;
+                    default:
+                        propertyValueTrace = propertyValue.RenderAsString();
+                        break;
+                }
+                sb.AppendLine(indent + $"  {property.Name}: {propertyValueTrace}");
+            }
+
+            return sb.ToString();
+        }
+
+        #endregion ITraceable
+
+        #region IValidatable
+
+        /// Validates this instance.
+        /// </summary>
+        /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>
+        public IReadOnlyCollection<ValidationResult> Validate()
+        {
+            var validator = this.GetValidator();
+
+            if(validator != null)
+            {
+                var failedValidations = validator.Validate(this);
+
+                return failedValidations;
+            }
+            else
+            {
+                return Array.Empty<ValidationResult>();
+            }
+
+        }
+
+        /// <summary>
+        /// Gets the proper validator.
+        /// </summary>
+        /// <returns>Validator.</returns>
+        public abstract Validator GetValidator();
+
+        #endregion IValidatable
+    }
 }
