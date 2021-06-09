@@ -4,9 +4,11 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Rollbar.Common;
     using Rollbar.DTOs;
 
     public interface IRollbarPayloadManipulationOptions
+        : IReconfigurable<IRollbarPayloadManipulationOptions, IRollbarPayloadManipulationOptions>
     {
         /// <summary>
         /// Gets the transform.

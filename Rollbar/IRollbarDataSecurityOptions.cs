@@ -4,7 +4,10 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Rollbar.Common;
+
     public interface IRollbarDataSecurityOptions
+        :IReconfigurable<IRollbarDataSecurityOptions, IRollbarDataSecurityOptions>
     {
         /// <summary>
         /// Gets the scrub fields.

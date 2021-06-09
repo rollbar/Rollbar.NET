@@ -4,9 +4,11 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Rollbar.Common;
     using Rollbar.DTOs;
 
     public interface IRollbarPayloadAdditionOptions
+        : IReconfigurable<IRollbarPayloadAdditionOptions, IRollbarPayloadAdditionOptions>
     {
         /// <summary>
         /// Gets or sets the person.
@@ -16,7 +18,8 @@
         /// </value>
         Person Person
         {
-            get; set;
+            get; 
+            set;
         }
 
         /// <summary>
@@ -27,7 +30,8 @@
         /// </value>
         Server Server
         {
-            get; set;
+            get; 
+            set;
         }
     }
 }

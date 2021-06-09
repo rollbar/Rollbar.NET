@@ -40,9 +40,9 @@
             set;
         }
 
-        IHttpProxyOptions IReconfigurable<IHttpProxyOptions,IHttpProxyOptions>.Reconfigure(IHttpProxyOptions likeMe)
+        public IHttpProxyOptions Reconfigure(IHttpProxyOptions likeMe)
         {
-            return this.Reconfigure(likeMe);
+            return base.Reconfigure(likeMe);
         }
 
         public override Validator GetValidator()

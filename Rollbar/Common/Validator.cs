@@ -38,6 +38,87 @@
     }
 
     /// <summary>
+    /// Class CompositeValidator.
+    /// Implements the <see cref="Rollbar.Common.Validator" />
+    /// </summary>
+    /// <seealso cref="Rollbar.Common.Validator" />
+    public class CompositeValidator
+        : Validator
+    {
+        private readonly List<IValidatable> _validatables = null;
+        private readonly List<Validator> _validators = null;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompositeValidator"/> class.
+        /// </summary>
+        /// <param name="validators">The validators.</param>
+        /// <param name="validatables">The validatables.</param>
+        public CompositeValidator(IEnumerable<Validator> validators, IEnumerable<IValidatable> validatables = null)
+        {
+            this._validators =
+                (validators != null) ? new List<Validator>(validators) : new List<Validator>();
+
+            this._validatables = 
+                (validatables != null) ? new List<IValidatable>(validatables) : new List<IValidatable>();
+        }
+
+        /// <summary>
+        /// Adds the specified validatable.
+        /// </summary>
+        /// <param name="validatable">The validatable.</param>
+        /// <returns>CompositeValidator.</returns>
+        public CompositeValidator Add(IValidatable validatable)
+        {
+            if(validatable != null)
+            {
+                this._validatables.Add(validatable);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds the specified validatables.
+        /// </summary>
+        /// <param name="validatables">The validatables.</param>
+        /// <returns>CompositeValidator.</returns>
+        public CompositeValidator Add(IEnumerable<IValidatable> validatables)
+        {
+            if(validatables != null)
+            {
+                this._validatables.AddRange(validatables);
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Validates the specified validation subject.
+        /// </summary>
+        /// <param name="validationSubject">The validation subject.</param>
+        /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
+        public override IReadOnlyCollection<ValidationResult> Validate(object validationSubject)
+        {
+            List<ValidationResult> results = new List<ValidationResult>();
+
+            if(validationSubject != null)
+            {
+                foreach(var validator in this._validators)
+                {
+                    results.AddRange(validator.Validate(validationSubject));
+                }
+            }
+
+            foreach(var validatable in this._validatables)
+            {
+                results.AddRange(validatable.Validate());
+            }
+
+            return results;
+        }
+    }
+
+    /// <summary>
     /// Class Validator (with generic validation subject type).
     /// Implements the <see cref="Rollbar.Common.Validator" />
     /// </summary>

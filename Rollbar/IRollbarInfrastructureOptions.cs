@@ -4,7 +4,10 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Rollbar.Common;
+
     public interface IRollbarInfrastructureOptions
+        : IReconfigurable<IRollbarInfrastructureOptions, IRollbarInfrastructureOptions>
     {
         /// <summary>
         /// Gets the maximum reports per minute.

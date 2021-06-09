@@ -4,7 +4,10 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Rollbar.Common;
+
     public interface IRollbarDeveloperOptions
+        : IReconfigurable<IRollbarDeveloperOptions, IRollbarDeveloperOptions>
     {
         /// <summary>
         /// Gets or sets the log level.
@@ -12,7 +15,7 @@
         /// <value>
         /// The log level.
         /// </value>
-        ErrorLevel? LogLevel
+        ErrorLevel LogLevel
         {
             get; set;
         }

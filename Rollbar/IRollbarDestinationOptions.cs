@@ -4,7 +4,10 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Rollbar.Common;
+
     public interface IRollbarDestinationOptions
+        : IReconfigurable<IRollbarDestinationOptions, IRollbarDestinationOptions>
     {
         /// <summary>
         /// Gets the access token.
