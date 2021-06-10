@@ -46,5 +46,10 @@
         {
             return null;
         }
+
+        public override string TraceAsString(string indent)
+        {
+            return base.TraceAsString(indent);
+        }
     }
 }

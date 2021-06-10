@@ -437,7 +437,9 @@
                         propertyValueTrace = collectionTrace.ToString();
                         break;
                     case ITraceable traceable:
-                        propertyValueTrace = traceable.TraceAsString("  ");
+                        propertyValueTrace = traceable.TraceAsString(indent + "  ");
+                        int newLineSuffixIndex = propertyValueTrace.LastIndexOf(Environment.NewLine);
+                        propertyValueTrace = propertyValueTrace.Remove(newLineSuffixIndex, Environment.NewLine.Length);
                         break;
                     default:
                         propertyValueTrace = propertyValue.ToString();

@@ -11,5 +11,14 @@
         , IEquatable<IRollbarInfrastructureConfig>
         , ITraceable
     {
+        IRollbarLoggerConfig RollbarLoggerConfig
+        {
+            get;
+        }
+
+        IRollbarInfrastructureOptions RollbarInfrastructureOptions
+        {
+            get;
+        }
     }
 }

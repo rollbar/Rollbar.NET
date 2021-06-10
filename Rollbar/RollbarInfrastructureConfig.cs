@@ -12,19 +12,78 @@
         , IRollbarInfrastructureConfig
 
     {
-        public override Validator GetValidator()
-        {
-            return null;
-        }
+        private RollbarLoggerConfig _rollbarLoggerConfig = null;
+        private RollbarInfrastructureOptions _rollbarInfrastructureOptions = null;
 
-        public IRollbarLoggerConfig Reconfigure(IRollbarLoggerConfig likeMe)
+        public IRollbarLoggerConfig RollbarLoggerConfig
         {
-            throw new NotImplementedException();
+            get
+            {
+                if(this._rollbarLoggerConfig == null)
+                {
+                    this._rollbarLoggerConfig =new RollbarLoggerConfig();
+                }
+
+                return this._rollbarLoggerConfig;
+            }
+        }
+        public IRollbarInfrastructureOptions RollbarInfrastructureOptions
+        {
+            get
+            {
+                if(this._rollbarInfrastructureOptions == null)
+                {
+                    this._rollbarInfrastructureOptions = new RollbarInfrastructureOptions();
+                }
+
+                return this._rollbarInfrastructureOptions;
+            }
         }
 
         public IRollbarInfrastructureConfig Reconfigure(IRollbarInfrastructureConfig likeMe)
         {
             return base.Reconfigure(likeMe);
         }
+
+        public override Validator GetValidator()
+        {
+            var validator =
+                new Validator<RollbarInfrastructureConfig, RollbarInfrastructureConfig.RollbarInfrastructureConfigValidationRule>()
+                    .AddValidation(
+                        RollbarInfrastructureConfig.RollbarInfrastructureConfigValidationRule.LoggerConfigRequired,
+                        (config) => { return this.RollbarLoggerConfig != null; }
+                        )
+                    .AddValidation(
+                        RollbarInfrastructureConfig.RollbarInfrastructureConfigValidationRule.InfrastructureOptionsRequred,
+                        (config) => { return this.RollbarInfrastructureOptions != null; }
+                        )
+               ;
+
+            List<IValidatable> validatableComponents =
+                new List<IValidatable>();
+            if(this._rollbarLoggerConfig != null)
+            {
+                validatableComponents.Add(this._rollbarLoggerConfig);
+            }
+            if(this._rollbarInfrastructureOptions != null)
+            {
+                validatableComponents.Add(this._rollbarInfrastructureOptions);
+            }
+
+            CompositeValidator compositeValidator =
+                new CompositeValidator(
+                    new Validator[] { validator },
+                    validatableComponents
+                    );
+
+            return compositeValidator;
+        }
+
+        public enum RollbarInfrastructureConfigValidationRule
+        {
+            LoggerConfigRequired,
+            InfrastructureOptionsRequred,
+        }
+
     }
 }
