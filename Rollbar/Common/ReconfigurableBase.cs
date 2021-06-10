@@ -465,7 +465,7 @@
             }
             else
             {
-                return Array.Empty<ValidationResult>();
+                return new ValidationResult[0];
             }
 
         }

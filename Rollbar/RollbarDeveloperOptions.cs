@@ -68,7 +68,7 @@
             get;
         }
 
-        IRollbarDeveloperOptions Reconfigure(IRollbarDeveloperOptions likeMe)
+        public IRollbarDeveloperOptions Reconfigure(IRollbarDeveloperOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }

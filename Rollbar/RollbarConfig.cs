@@ -494,7 +494,7 @@
         /// Gets the proper validator.
         /// </summary>
         /// <returns>Validator.</returns>
-        public Validator GetValidator()
+        public override Validator GetValidator()
         {
             var validator = new Validator<RollbarConfig, RollbarConfig.RollbarConfigValidationRule>()
                     .AddValidation(

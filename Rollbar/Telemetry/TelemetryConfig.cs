@@ -137,5 +137,10 @@
         {
             return this.Reconfigure(likeMe);
         }
+
+        public override Validator GetValidator()
+        {
+            return null;
+        }
     }
 }
