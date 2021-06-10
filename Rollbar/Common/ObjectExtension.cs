@@ -52,6 +52,12 @@
 
             Type objType = obj.GetType();
 
+            if(objType.IsPrimitive)
+            {
+                stringBuilder.AppendLine($"{indentation ?? string.Empty}{obj}");
+                return stringBuilder.ToString();
+            }
+
             stringBuilder.AppendLine($"{indentation ?? string.Empty}{objType.FullName}:");
 
             string propertiesIndentation = 

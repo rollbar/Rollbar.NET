@@ -403,9 +403,10 @@
         public virtual string TraceAsString(string indent)
         {
             StringBuilder sb = new StringBuilder();
-            string traceString = this.RenderAsString(indent);
-            sb.AppendLine(indent + this._thisInstanceType.Name + ":");
+            //string traceString = this.RenderAsString(indent);
+            sb.AppendLine("{" + this._thisInstanceType.FullName + "}");
 
+            //indent += "  ";
             PropertyInfo[] properties
                 = ReconfigurableBase.ListInstancePublicProperties(this._thisInstanceType);
 
@@ -415,6 +416,8 @@
                 string propertyValueTrace = "<null>";
                 switch(propertyValue)
                 {
+                    case null:
+                        break;
                     case ICollection collection:
                         StringBuilder collectionTrace = new StringBuilder();
                         collectionTrace.AppendLine("[");
@@ -423,24 +426,24 @@
                             switch(item)
                             {
                                 case ITraceable traceable:
-                                    collectionTrace.AppendLine($"{indent}  {traceable.TraceAsString()},");
+                                    collectionTrace.AppendLine($"{indent}    {traceable.TraceAsString()},");
                                     break;
                                 default:
-                                    collectionTrace.AppendLine($"{indent}  {item.RenderAsString()},");
+                                    collectionTrace.AppendLine($"{indent}    {item},");
                                     break;
                             }
                         }
-                        collectionTrace.AppendLine($"{indent}]");
+                        collectionTrace.Append($"{indent}  ]");
                         propertyValueTrace = collectionTrace.ToString();
                         break;
                     case ITraceable traceable:
-                        propertyValueTrace = traceable.TraceAsString();
+                        propertyValueTrace = traceable.TraceAsString("  ");
                         break;
                     default:
-                        propertyValueTrace = propertyValue.RenderAsString();
+                        propertyValueTrace = propertyValue.ToString();
                         break;
                 }
-                sb.AppendLine(indent + $"  {property.Name}: {propertyValueTrace}");
+                sb.AppendLine($"{indent}  {property.Name}: {propertyValueTrace}");
             }
 
             return sb.ToString();

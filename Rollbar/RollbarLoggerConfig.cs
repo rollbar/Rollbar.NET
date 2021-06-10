@@ -163,7 +163,7 @@
                     validatableComponents
                     );
 
-            return validator;
+            return compositeValidator;
         }
 
         public enum RollbarLoggerConfigValidationRule
