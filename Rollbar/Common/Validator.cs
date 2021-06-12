@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Linq.Expressions;
     using System.Reflection;
 
@@ -105,12 +106,14 @@
             {
                 foreach(var validator in this._validators)
                 {
+                    Debug.Assert(validator != null);
                     results.AddRange(validator.Validate(validationSubject));
                 }
             }
 
             foreach(var validatable in this._validatables)
             {
+                Debug.Assert(validatable != null);
                 results.AddRange(validatable.Validate());
             }
 
@@ -262,6 +265,18 @@
             }
 
             return this.Validate(typeSafeValidationSubject);
+        }
+
+        /// <summary>
+        /// Gets the total validation rules.
+        /// </summary>
+        /// <value>The total validation rules.</value>
+        public int TotalValidationRules
+        {
+            get
+            {
+                return (this._validationFunctionsByRule.Keys.Count + this._validatorsByRule.Keys.Count);
+            }
         }
     }
 }

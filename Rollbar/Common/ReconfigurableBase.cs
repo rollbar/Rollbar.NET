@@ -142,13 +142,7 @@
         /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
-            switch(this)
-            {
-                case TBase baseInstance:
-                    return baseInstance.GetHashCode();
-                default:
-                    return (this as T)?.GetHashCode() ?? 0;
-            }
+            return base.GetHashCode();
         }
     }
 

@@ -17,5 +17,6 @@
         IRollbarDataSecurityOptions RollbarDataSecurityOptions { get; }
         IRollbarPayloadAdditionOptions RollbarPayloadAdditionOptions { get; }
         IRollbarPayloadManipulationOptions RollbarPayloadManipulationOptions { get; }
+        IRollbarInfrastructureOptions RollbarInfrastructureOptions { get; }
     }
 }

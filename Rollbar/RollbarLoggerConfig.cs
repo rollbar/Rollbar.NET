@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Text;
 
     using Rollbar.Common;
@@ -16,6 +17,7 @@
         private RollbarDataSecurityOptions _rollbarDataSecurityOptions = null;
         private RollbarPayloadAdditionOptions _rollbarPayloadAdditionOptions = null;
         private RollbarPayloadManipulationOptions _rollbarPayloadManipulationOptions = null;
+        private RollbarInfrastructureOptions _rollbarInfrastructureOptions = null;
 
         public IRollbarDestinationOptions RollbarDestinationOptions
         {
@@ -95,6 +97,19 @@
             }
         }
 
+        public IRollbarInfrastructureOptions RollbarInfrastructureOptions
+        {
+            get
+            {
+                if(this._rollbarInfrastructureOptions == null)
+                {
+                    this._rollbarInfrastructureOptions = new RollbarInfrastructureOptions();
+                }
+
+                return this._rollbarInfrastructureOptions;
+            }
+        }
+
         public IRollbarLoggerConfig Reconfigure(IRollbarLoggerConfig likeMe)
         {
             return base.Reconfigure(likeMe);
@@ -128,35 +143,24 @@
                         RollbarLoggerConfig.RollbarLoggerConfigValidationRule.PayloadManipulationOptionsRequired,
                         (config) => { return this.RollbarPayloadManipulationOptions != null; }
                         )
+                    .AddValidation(
+                        RollbarLoggerConfig.RollbarLoggerConfigValidationRule.InfrastructureOptionsRequired,
+                        (config) => { return this.RollbarInfrastructureOptions != null; }
+                        )
                ;
 
-            List<IValidatable> validatableComponents = 
-                new List<IValidatable>();
-            if(this._rollbarDestinationOptions != null)
+            IValidatable[] validatableComponents =
             {
-                validatableComponents.Add(this._rollbarDestinationOptions);
-            }
-            if(this._httpProxyOptions != null)
-            {
-                validatableComponents.Add(this._httpProxyOptions);
-            }
-            if(this._rollbarDeveloperOptions != null)
-            {
-                validatableComponents.Add(this._rollbarDeveloperOptions);
-            }
-            if(this._rollbarDataSecurityOptions != null)
-            {
-                validatableComponents.Add(this._rollbarDataSecurityOptions);
-            }
-            if(this._rollbarPayloadAdditionOptions != null)
-            {
-                validatableComponents.Add(this._rollbarPayloadAdditionOptions);
-            }
-            if(this._rollbarPayloadManipulationOptions != null)
-            {
-                validatableComponents.Add(this._rollbarPayloadManipulationOptions);
-            }
+                this._rollbarDestinationOptions,
+                this._httpProxyOptions,
+                this._rollbarDeveloperOptions,
+                this._rollbarDataSecurityOptions,
+                this._rollbarPayloadAdditionOptions,
+                this._rollbarPayloadManipulationOptions,
+                this._rollbarInfrastructureOptions,
+            };
 
+            Debug.Assert(validator.TotalValidationRules == (new HashSet<IValidatable>(validatableComponents)).Count);
             CompositeValidator compositeValidator = 
                 new CompositeValidator(
                     new Validator[] { validator },
@@ -174,6 +178,7 @@
             DataSecurityOptionsRequired,
             PayloadAdditionOptionsRequired,
             PayloadManipulationOptionsRequired,
+            InfrastructureOptionsRequired,
         }
 
     }

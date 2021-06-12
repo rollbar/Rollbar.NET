@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Text;
 
@@ -59,17 +60,13 @@
                         )
                ;
 
-            List<IValidatable> validatableComponents =
-                new List<IValidatable>();
-            if(this._rollbarLoggerConfig != null)
+            IValidatable[] validatableComponents =
             {
-                validatableComponents.Add(this._rollbarLoggerConfig);
-            }
-            if(this._rollbarInfrastructureOptions != null)
-            {
-                validatableComponents.Add(this._rollbarInfrastructureOptions);
-            }
+                this._rollbarLoggerConfig,
+                this._rollbarInfrastructureOptions,
+            };
 
+            Debug.Assert(validator.TotalValidationRules == (new HashSet<IValidatable>(validatableComponents)).Count);
             CompositeValidator compositeValidator =
                 new CompositeValidator(
                     new Validator[] { validator },
