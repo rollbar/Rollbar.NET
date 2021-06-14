@@ -209,6 +209,16 @@
 
             foreach (var property in properties)
             {
+                // Let's see first if the property value is a Reconfigurable object:
+                ReconfigurableBase targetPropertyValue = property.GetValue(this) as ReconfigurableBase;
+                if(targetPropertyValue != null)
+                {
+                    object sourcePropertyValue = property.GetValue(likeMe);
+                    targetPropertyValue.Reconfigure(sourcePropertyValue, property.PropertyType);
+                    continue;
+                }
+
+                // For non-Reconfigurable properties, let's clone the property value:
                 if (property.CanWrite)
                 {
                     property.SetValue(this, property.GetValue(likeMe));

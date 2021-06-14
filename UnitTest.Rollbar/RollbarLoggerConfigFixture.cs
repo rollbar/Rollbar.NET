@@ -38,6 +38,28 @@ namespace UnitTest.Rollbar
             Console.WriteLine();
         }
 
+        [TestMethod]
+        public void TestReconfiguration()
+        {
+            RollbarLoggerConfig config = new RollbarLoggerConfig();
+            Assert.IsNull(config.RollbarDestinationOptions.AccessToken);
+            Console.WriteLine(config.TraceAsString());
+
+
+            RollbarDestinationOptions destinationOptions = new RollbarDestinationOptions();
+            destinationOptions.AccessToken = "CUSTOM";
+            config.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            Assert.AreEqual("CUSTOM", config.RollbarDestinationOptions.AccessToken, "Options reconfig works!");
+            Console.WriteLine(config.TraceAsString());
+
+            RollbarLoggerConfig newConfig = new RollbarLoggerConfig();
+            Assert.IsNull(newConfig.RollbarDestinationOptions.AccessToken);
+            Console.WriteLine(newConfig.TraceAsString());
+
+            newConfig.Reconfigure(config);
+            Assert.AreEqual("CUSTOM", newConfig.RollbarDestinationOptions.AccessToken, "Structured config's reconfig works!");
+            Console.WriteLine(newConfig.TraceAsString());
+        }
     }
 
 }
