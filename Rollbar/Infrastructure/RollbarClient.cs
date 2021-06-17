@@ -69,27 +69,27 @@
             this._rollbarLogger = rollbarLogger;
 
             this._payloadTruncationStrategy = new IterativeTruncationStrategy();
-            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.GetFieldsToScrub());
+            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.RollbarDataSecurityOptions.GetFieldsToScrub());
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarClient"/> class.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        public RollbarClient(IRollbarConfig rollbarConfig)
+        public RollbarClient(IRollbarLoggerConfig rollbarConfig)
         {
             Assumption.AssertNotNull(rollbarConfig, nameof(rollbarConfig));
 
             this._payloadPostUri = 
-                new Uri($"{rollbarConfig.EndPoint}item/");
+                new Uri($"{rollbarConfig.RollbarDestinationOptions.EndPoint}item/");
             this._httpClient = 
                 RollbarQueueController.Instance.ProvideHttpClient(
-                    rollbarConfig.ProxyAddress,
-                    rollbarConfig.ProxyUsername,
-                    rollbarConfig.ProxyPassword
+                    rollbarConfig.HttpProxyOptions.ProxyAddress,
+                    rollbarConfig.HttpProxyOptions.ProxyUsername,
+                    rollbarConfig.HttpProxyOptions.ProxyPassword
                 );
 
-            this._expectedPostToApiTimeout = rollbarConfig.PayloadPostTimeout;
+            this._expectedPostToApiTimeout = rollbarConfig.RollbarInfrastructureOptions.PayloadPostTimeout;
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
             if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
@@ -97,7 +97,7 @@
                 this._httpClient.DefaultRequestHeaders.Accept.Add(header);
             }
 
-            var sp = ServicePointManager.FindServicePoint(new Uri(rollbarConfig.EndPoint));
+            var sp = ServicePointManager.FindServicePoint(new Uri(rollbarConfig.RollbarDestinationOptions.EndPoint));
             try
             {
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
@@ -119,7 +119,7 @@
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public IRollbarConfig Config { get { return this._rollbarLogger.Config; } }
+        public IRollbarLoggerConfig Config { get { return this._rollbarLogger.Config; } }
 
         /// <summary>
         /// Ensures the HTTP content to send.
@@ -174,7 +174,7 @@
                 new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
 
             Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
-            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.AccessToken), nameof(payload.AccessToken));
+            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken), nameof(payload.AccessToken));
 
             return true;
         }
@@ -288,7 +288,7 @@
             }
 
             return await PostAsJsonAsync(
-                this._rollbarLogger.Config.AccessToken,
+                this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken,
                 payloadBundle.AsHttpContentToSend,
                 cancellationToken
                 );

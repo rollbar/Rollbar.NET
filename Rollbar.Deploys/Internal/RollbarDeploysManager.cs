@@ -47,8 +47,10 @@
         {
             Assumption.AssertNotNullOrWhiteSpace(this._writeAccessToken, nameof(this._writeAccessToken));
 
-            var config =
-               new RollbarConfig(this._writeAccessToken) { Environment = deployment.Environment, };
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(this._writeAccessToken, deployment.Environment);
+            var config = new RollbarLoggerConfig();
+            config.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
             using HttpClient httpClient = new HttpClient();
             RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
@@ -65,7 +67,7 @@
             Assumption.AssertNotNullOrWhiteSpace(deploymentID, nameof(deploymentID));
             Assumption.AssertNotNullOrWhiteSpace(this._readAccessToken, nameof(this._readAccessToken));
 
-            var config = new RollbarConfig(this._readAccessToken);
+            var config = new RollbarLoggerConfig(this._readAccessToken);
 
             using HttpClient httpClient = new HttpClient();
             RollbarDeployClient rollbarClient = new RollbarDeployClient(config,httpClient);
@@ -83,7 +85,7 @@
         {
             Assumption.AssertNotNullOrWhiteSpace(this._readAccessToken, nameof(this._readAccessToken));
 
-            var config = new RollbarConfig(this._readAccessToken);
+            var config = new RollbarLoggerConfig(this._readAccessToken);
 
             using HttpClient httpClient = new HttpClient();
             RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);

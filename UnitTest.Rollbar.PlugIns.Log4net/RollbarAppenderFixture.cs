@@ -104,21 +104,24 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
          
             log.Info("Via log4net");
 
-            RollbarConfig newConfig = new RollbarConfig();
+            RollbarLoggerConfig newConfig = new RollbarLoggerConfig();
             newConfig.Reconfigure(appender.RollbarConfig);
-            newConfig.Person = expectedPersons[1];
+            newConfig.RollbarPayloadAdditionOptions.Person = expectedPersons[1];
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
 
-            newConfig = new RollbarConfig();
+            newConfig = new RollbarLoggerConfig();
             newConfig.Reconfigure(appender.RollbarConfig);
-            newConfig.Person = expectedPersons[2];
-            newConfig.ScrubFields = new string[]
+            newConfig.RollbarPayloadAdditionOptions.Person = expectedPersons[2];
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            dataSecurityOptions.ScrubFields = new string[]
             {
                 "log4net:UserName",
                 "log4net:HostName",
                 "log4net:Identity",
             };
+            newConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
             appender.RollbarConfig.Reconfigure(newConfig);
             log.Info("Via log4net");
 

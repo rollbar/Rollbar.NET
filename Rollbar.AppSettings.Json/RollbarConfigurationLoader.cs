@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        public bool Load(RollbarConfig config)
+        public bool Load(RollbarLoggerConfig config)
         {
             return AppSettingsUtility.LoadAppSettings(config);
         }
@@ -36,9 +36,9 @@
         /// Loads the rollbar configuration.
         /// </summary>
         /// <returns>IRollbarConfig or null if no configuration store was found.</returns>
-        public IRollbarConfig LoadRollbarConfig()
+        public IRollbarLoggerConfig LoadRollbarConfig()
         {
-            RollbarConfig config = new RollbarConfig("seedToken");
+            RollbarLoggerConfig config = new RollbarLoggerConfig("seedToken");
             if(this.Load(config))
             {
                 return config;

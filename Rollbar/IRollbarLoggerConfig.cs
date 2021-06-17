@@ -18,5 +18,23 @@
         IRollbarPayloadAdditionOptions RollbarPayloadAdditionOptions { get; }
         IRollbarPayloadManipulationOptions RollbarPayloadManipulationOptions { get; }
         IRollbarInfrastructureOptions RollbarInfrastructureOptions { get; }
+
+        //TODO: RollbarConfig!!!
+
+        bool EnableLocalPayloadStore
+        {
+            get;
+        }
+
+        string LocalPayloadStoreFileName
+        {
+            get;
+        }
+
+        string LocalPayloadStoreLocationPath
+        {
+            get;
+        }
+
     }
 }

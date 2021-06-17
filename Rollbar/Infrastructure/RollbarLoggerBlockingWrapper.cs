@@ -152,7 +152,7 @@
         /// <returns>ILogger.</returns>
         public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
         {
-            if (this._asyncLogger.Config.LogLevel.HasValue && level < this._asyncLogger.Config.LogLevel.Value)
+            if (level < this._asyncLogger.Config.RollbarDeveloperOptions.LogLevel)
             {
                 // nice shortcut:
                 return this;

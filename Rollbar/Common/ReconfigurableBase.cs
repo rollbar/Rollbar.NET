@@ -443,7 +443,10 @@
                     case ITraceable traceable:
                         propertyValueTrace = traceable.TraceAsString(indent + "  ");
                         int newLineSuffixIndex = propertyValueTrace.LastIndexOf(Environment.NewLine);
-                        propertyValueTrace = propertyValueTrace.Remove(newLineSuffixIndex, Environment.NewLine.Length);
+                        if(newLineSuffixIndex >= 0)
+                        {
+                            propertyValueTrace = propertyValueTrace.Remove(newLineSuffixIndex, Environment.NewLine.Length);
+                        }
                         break;
                     default:
                         propertyValueTrace = propertyValue.ToString();

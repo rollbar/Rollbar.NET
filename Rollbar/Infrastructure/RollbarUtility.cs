@@ -22,13 +22,18 @@
         /// <returns>Data.</returns>
         public static Data PackageAsPayloadData(
             DateTime utcTimestamp,
-            IRollbarConfig rollbarConfig, 
+            IRollbarLoggerConfig rollbarConfig, 
             ErrorLevel level, 
             object obj, 
             IDictionary<string, object> custom = null
             )
         {
-            if (rollbarConfig.LogLevel.HasValue && level < rollbarConfig.LogLevel.Value)
+            //if (rollbarConfig.RollbarDeveloperOptions.LogLevel.HasValue && level < rollbarConfig.RollbarDeveloperOptions.LogLevel.Value)
+            //{
+            //    // nice shortcut:
+            //    return null;
+            //}
+            if(!rollbarConfig.RollbarDeveloperOptions.Enabled)
             {
                 // nice shortcut:
                 return null;
@@ -50,7 +55,7 @@
                 data = rollbarPackagingStrategy.PackageAsRollbarData();
                 if (data != null)
                 {
-                    data.Environment = rollbarConfig?.Environment;
+                    data.Environment = rollbarConfig?.RollbarDestinationOptions.Environment;
                     data.Level = level;
                     //update the data timestamp from the data creation timestamp to the passed
                     //object-to-log capture timestamp:

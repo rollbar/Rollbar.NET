@@ -304,13 +304,13 @@
                     //object-to-log capture timestamp:
                     data.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(this._timeStamp);
 
-                    this._payload = new Payload(this._rollbarLogger.Config.AccessToken, data);
+                    this._payload = new Payload(this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken, data);
                     this._payload.PayloadBundle = this;
 
                     try // payload check-ignore:
                     {
-                        if (this._rollbarLogger.Config.CheckIgnore != null
-                            && this._rollbarLogger.Config.CheckIgnore.Invoke(this._payload)
+                        if (this._rollbarLogger.Config.RollbarPayloadManipulationOptions.CheckIgnore != null
+                            && this._rollbarLogger.Config.RollbarPayloadManipulationOptions.CheckIgnore.Invoke(this._payload)
                             )
                         {
                             this._ignorable = true;
@@ -332,7 +332,7 @@
 
                     try // payload transformation:
                     {
-                        this._rollbarLogger.Config.Transform?.Invoke(this._payload);
+                        this._rollbarLogger.Config.RollbarPayloadManipulationOptions.Transform?.Invoke(this._payload);
                     }
                     catch (System.Exception exception)
                     {
@@ -348,7 +348,7 @@
 
                     try // payload truncation:
                     {
-                        this._rollbarLogger.Config.Truncate?.Invoke(this._payload);
+                        this._rollbarLogger.Config.RollbarPayloadManipulationOptions.Truncate?.Invoke(this._payload);
                     }
                     catch (System.Exception exception)
                     {

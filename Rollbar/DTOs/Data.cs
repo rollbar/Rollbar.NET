@@ -78,7 +78,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="body">The body.</param>
         public Data(
-            IRollbarConfig config,
+            IRollbarLoggerConfig config,
             Body body
             )
             : this(config, body, null, null)
@@ -93,7 +93,7 @@
         /// <param name="body">The body.</param>
         /// <param name="request">The request.</param>
         public Data(
-            IRollbarConfig config,
+            IRollbarLoggerConfig config,
             Body body,
             Request request
             )
@@ -109,7 +109,7 @@
         /// <param name="body">The body.</param>
         /// <param name="custom">The custom.</param>
         public Data(
-            IRollbarConfig config,
+            IRollbarLoggerConfig config,
             Body body,
             IDictionary<string, object> custom
             )
@@ -126,7 +126,7 @@
         /// <param name="custom">The custom.</param>
         /// <param name="request">The request.</param>
         public Data(
-            IRollbarConfig config, 
+            IRollbarLoggerConfig config, 
             Body body, 
             IDictionary<string, object> custom, 
             Request request
@@ -137,10 +137,10 @@
             // snap config values:
             if (config != null)
             {
-                this.Environment = config.Environment;
-                this.Level = config.LogLevel;
-                this.Person = config.Person;
-                this.Server = config.Server;
+                this.Environment = config.RollbarDestinationOptions.Environment;
+                this.Level = config.RollbarDeveloperOptions.LogLevel;
+                this.Person = config.RollbarPayloadAdditionOptions.Person;
+                this.Server = config.RollbarPayloadAdditionOptions.Server;
             }
 
             // set explicit values:

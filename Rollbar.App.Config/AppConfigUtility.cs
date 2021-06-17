@@ -18,7 +18,7 @@
         /// </summary>
         /// <param name="rollbarConfig">The Rollbar configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarConfig rollbarConfig)
+        public static bool LoadAppSettings(RollbarLoggerConfig rollbarConfig)
         {
             return AppConfigUtility.LoadAppSettings(rollbarConfig, RollbarConfigSection.GetConfiguration());
         }
@@ -29,133 +29,135 @@
         /// <param name="rollbarConfig">The configuration.</param>
         /// <param name="rollbarConfigSection">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarConfig rollbarConfig, RollbarConfigSection rollbarConfigSection)
+        public static bool LoadAppSettings(RollbarLoggerConfig rollbarConfig, RollbarConfigSection rollbarConfigSection)
         {
             if (rollbarConfigSection == null)
             {
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.AccessToken))
-            {
-                rollbarConfig.AccessToken = rollbarConfigSection.AccessToken;
-            }
+            //TODO: RollbarConfig!!!
 
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.Environment))
-            {
-                rollbarConfig.Environment = rollbarConfigSection.Environment;
-            }
-            
-            if (rollbarConfigSection.Enabled.HasValue)
-            {
-                rollbarConfig.Enabled = rollbarConfigSection.Enabled.Value;
-            }
-            
-            if (rollbarConfigSection.Transmit.HasValue)
-            {
-                rollbarConfig.Transmit = rollbarConfigSection.Transmit.Value;
-            }
-            
-            if (rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
-            {
-                rollbarConfig.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
-            }
-            
-            if (rollbarConfigSection.EnableLocalPayloadStore.HasValue)
-            {
-                rollbarConfig.EnableLocalPayloadStore = rollbarConfigSection.EnableLocalPayloadStore.Value;
-            }
-            
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreFileName))
-            {
-                rollbarConfig.LocalPayloadStoreFileName = rollbarConfigSection.LocalPayloadStoreFileName;
-            }
-            
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreLocationPath))
-            {
-                rollbarConfig.LocalPayloadStoreLocationPath = rollbarConfigSection.LocalPayloadStoreLocationPath;
-            }
-            
-            if (rollbarConfigSection.MaxReportsPerMinute.HasValue)
-            {
-                rollbarConfig.MaxReportsPerMinute = rollbarConfigSection.MaxReportsPerMinute.Value;
-            }
-            
-            if (rollbarConfigSection.ReportingQueueDepth.HasValue)
-            {
-                rollbarConfig.ReportingQueueDepth = rollbarConfigSection.ReportingQueueDepth.Value;
-            }
-            
-            if (rollbarConfigSection.MaxItems.HasValue)
-            {
-                rollbarConfig.MaxItems = rollbarConfigSection.MaxItems.Value;
-            }
-            
-            if (rollbarConfigSection.CaptureUncaughtExceptions.HasValue)
-            {
-                rollbarConfig.CaptureUncaughtExceptions = rollbarConfigSection.CaptureUncaughtExceptions.Value;
-            }
-            
-            if (rollbarConfigSection.LogLevel.HasValue)
-            {
-                rollbarConfig.LogLevel = rollbarConfigSection.LogLevel.Value;
-            }
-            
-            if (rollbarConfigSection.ScrubFields != null && rollbarConfigSection.ScrubFields.Length > 0)
-            {
-                rollbarConfig.ScrubFields =
-                    string.IsNullOrEmpty(rollbarConfigSection.ScrubFields) ? new string[0]
-                    : rollbarConfigSection.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            }
-            
-            if (rollbarConfigSection.ScrubSafelistFields != null && rollbarConfigSection.ScrubSafelistFields.Length > 0)
-            {
-                rollbarConfig.ScrubSafelistFields =
-                    string.IsNullOrEmpty(rollbarConfigSection.ScrubSafelistFields) ? new string[0]
-                    : rollbarConfigSection.ScrubSafelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            }
+            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.AccessToken))
+            //{
+            //    rollbarConfig.AccessToken = rollbarConfigSection.AccessToken;
+            //}
 
-            if (rollbarConfigSection.ScrubWhitelistFields != null && rollbarConfigSection.ScrubWhitelistFields.Length > 0)
-            {
-                rollbarConfig.ScrubWhitelistFields =
-                    string.IsNullOrEmpty(rollbarConfigSection.ScrubWhitelistFields) ? new string[0]
-                    : rollbarConfigSection.ScrubWhitelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            }
+            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.Environment))
+            //{
+            //    rollbarConfig.Environment = rollbarConfigSection.Environment;
+            //}
             
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.EndPoint))
-            {
-                rollbarConfig.EndPoint = rollbarConfigSection.EndPoint;
-            }
+            //if (rollbarConfigSection.Enabled.HasValue)
+            //{
+            //    rollbarConfig.Enabled = rollbarConfigSection.Enabled.Value;
+            //}
             
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyAddress))
-            {
-                rollbarConfig.ProxyAddress = rollbarConfigSection.ProxyAddress;
-            }
+            //if (rollbarConfigSection.Transmit.HasValue)
+            //{
+            //    rollbarConfig.Transmit = rollbarConfigSection.Transmit.Value;
+            //}
             
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyUsername))
-            {
-                rollbarConfig.ProxyUsername = rollbarConfigSection.ProxyUsername;
-            }
+            //if (rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
+            //{
+            //    rollbarConfig.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
+            //}
             
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyPassword))
-            {
-                rollbarConfig.ProxyPassword = rollbarConfigSection.ProxyPassword;
-            }
+            //if (rollbarConfigSection.EnableLocalPayloadStore.HasValue)
+            //{
+            //    rollbarConfig.EnableLocalPayloadStore = rollbarConfigSection.EnableLocalPayloadStore.Value;
+            //}
             
-            if (rollbarConfigSection.PayloadPostTimeout.HasValue)
-            {
-                rollbarConfig.PayloadPostTimeout = rollbarConfigSection.PayloadPostTimeout.Value;
-            }
+            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreFileName))
+            //{
+            //    rollbarConfig.LocalPayloadStoreFileName = rollbarConfigSection.LocalPayloadStoreFileName;
+            //}
+            
+            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreLocationPath))
+            //{
+            //    rollbarConfig.LocalPayloadStoreLocationPath = rollbarConfigSection.LocalPayloadStoreLocationPath;
+            //}
+            
+            //if (rollbarConfigSection.MaxReportsPerMinute.HasValue)
+            //{
+            //    rollbarConfig.MaxReportsPerMinute = rollbarConfigSection.MaxReportsPerMinute.Value;
+            //}
+            
+            //if (rollbarConfigSection.ReportingQueueDepth.HasValue)
+            //{
+            //    rollbarConfig.ReportingQueueDepth = rollbarConfigSection.ReportingQueueDepth.Value;
+            //}
+            
+            //if (rollbarConfigSection.MaxItems.HasValue)
+            //{
+            //    rollbarConfig.MaxItems = rollbarConfigSection.MaxItems.Value;
+            //}
+            
+            //if (rollbarConfigSection.CaptureUncaughtExceptions.HasValue)
+            //{
+            //    rollbarConfig.CaptureUncaughtExceptions = rollbarConfigSection.CaptureUncaughtExceptions.Value;
+            //}
+            
+            //if (rollbarConfigSection.LogLevel.HasValue)
+            //{
+            //    rollbarConfig.LogLevel = rollbarConfigSection.LogLevel.Value;
+            //}
+            
+            //if (rollbarConfigSection.ScrubFields != null && rollbarConfigSection.ScrubFields.Length > 0)
+            //{
+            //    rollbarConfig.ScrubFields =
+            //        string.IsNullOrEmpty(rollbarConfigSection.ScrubFields) ? new string[0]
+            //        : rollbarConfigSection.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
+            //}
+            
+            //if (rollbarConfigSection.ScrubSafelistFields != null && rollbarConfigSection.ScrubSafelistFields.Length > 0)
+            //{
+            //    rollbarConfig.ScrubSafelistFields =
+            //        string.IsNullOrEmpty(rollbarConfigSection.ScrubSafelistFields) ? new string[0]
+            //        : rollbarConfigSection.ScrubSafelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
+            //}
 
-            if (rollbarConfigSection.PersonDataCollectionPolicies.HasValue)
-            {
-                rollbarConfig.PersonDataCollectionPolicies = rollbarConfigSection.PersonDataCollectionPolicies.Value;
-            }
+            //if (rollbarConfigSection.ScrubWhitelistFields != null && rollbarConfigSection.ScrubWhitelistFields.Length > 0)
+            //{
+            //    rollbarConfig.ScrubWhitelistFields =
+            //        string.IsNullOrEmpty(rollbarConfigSection.ScrubWhitelistFields) ? new string[0]
+            //        : rollbarConfigSection.ScrubWhitelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
+            //}
             
-            if (rollbarConfigSection.IpAddressCollectionPolicy.HasValue)
-            {
-                rollbarConfig.IpAddressCollectionPolicy = rollbarConfigSection.IpAddressCollectionPolicy.Value;
-            }
+            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.EndPoint))
+            //{
+            //    rollbarConfig.EndPoint = rollbarConfigSection.EndPoint;
+            //}
+            
+            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyAddress))
+            //{
+            //    rollbarConfig.ProxyAddress = rollbarConfigSection.ProxyAddress;
+            //}
+            
+            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyUsername))
+            //{
+            //    rollbarConfig.ProxyUsername = rollbarConfigSection.ProxyUsername;
+            //}
+            
+            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyPassword))
+            //{
+            //    rollbarConfig.ProxyPassword = rollbarConfigSection.ProxyPassword;
+            //}
+            
+            //if (rollbarConfigSection.PayloadPostTimeout.HasValue)
+            //{
+            //    rollbarConfig.PayloadPostTimeout = rollbarConfigSection.PayloadPostTimeout.Value;
+            //}
+
+            //if (rollbarConfigSection.PersonDataCollectionPolicies.HasValue)
+            //{
+            //    rollbarConfig.PersonDataCollectionPolicies = rollbarConfigSection.PersonDataCollectionPolicies.Value;
+            //}
+            
+            //if (rollbarConfigSection.IpAddressCollectionPolicy.HasValue)
+            //{
+            //    rollbarConfig.IpAddressCollectionPolicy = rollbarConfigSection.IpAddressCollectionPolicy.Value;
+            //}
 
             return true;
         }

@@ -28,7 +28,7 @@
         /// <summary>
         /// The rollbar configuration
         /// </summary>
-        protected readonly IRollbarConfig _rollbarConfig;
+        protected readonly IRollbarLoggerConfig _rollbarConfig;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.

@@ -80,9 +80,9 @@
         /// Gets or sets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public IRollbarConfig Configuration
+        public IRollbarLoggerConfig Configuration
         {
-            get { return this[ReservedProperties.Configuration] as IRollbarConfig; }
+            get { return this[ReservedProperties.Configuration] as IRollbarLoggerConfig; }
             set { this[ReservedProperties.Configuration] = value; }
         }
 

@@ -24,7 +24,7 @@
         /// <param name="rollbarOptions">The options.</param>
         /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public RollbarLogger(string name
-            , IRollbarConfig rollbarConfig
+            , IRollbarLoggerConfig rollbarConfig
             ,NetPlatformExtensions.RollbarOptions rollbarOptions
             , IHttpContextAccessor httpContextAccessor
             )

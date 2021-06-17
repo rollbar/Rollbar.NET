@@ -15,7 +15,7 @@
         /// <summary>
         /// The rollbar configuration
         /// </summary>
-        private readonly IRollbarConfig _rollbarConfig;
+        private readonly IRollbarLoggerConfig _rollbarConfig;
         /// <summary>
         /// The captured telemetry records
         /// </summary>
@@ -28,7 +28,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         public ConfigAttributesPackageDecorator(
             IRollbarPackage packageToDecorate, 
-            IRollbarConfig rollbarConfig
+            IRollbarLoggerConfig rollbarConfig
             )
             : this(packageToDecorate, rollbarConfig, false)
         {
@@ -42,7 +42,7 @@
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ConfigAttributesPackageDecorator(
             IRollbarPackage packageToDecorate, 
-            IRollbarConfig rollbarConfig, 
+            IRollbarLoggerConfig rollbarConfig, 
             bool mustApplySynchronously
             ) 
             : base(packageToDecorate, mustApplySynchronously)
@@ -71,7 +71,7 @@
                 return; //nothing to decorate...
             }
 
-            rollbarData.Notifier.Configuration = new RollbarConfig().Reconfigure(this._rollbarConfig);
+            rollbarData.Notifier.Configuration = new RollbarLoggerConfig().Reconfigure(this._rollbarConfig);
 
             // telemetry data is based on the configuration,
             // so let's include it if applicable:
@@ -80,19 +80,19 @@
                 rollbarData.Body.Telemetry = this._capturedTelemetryRecords;
             }
 
-            if (this._rollbarConfig.Server != null)
+            if (this._rollbarConfig.RollbarPayloadAdditionOptions.Server != null)
             {
-                rollbarData.Server = this._rollbarConfig.Server;
+                rollbarData.Server = this._rollbarConfig.RollbarPayloadAdditionOptions.Server;
             }
 
-            if (!string.IsNullOrWhiteSpace(this._rollbarConfig.Environment))
+            if (!string.IsNullOrWhiteSpace(this._rollbarConfig.RollbarDestinationOptions.Environment))
             {
-                rollbarData.Environment = this._rollbarConfig.Environment;
+                rollbarData.Environment = this._rollbarConfig.RollbarDestinationOptions.Environment;
             }
 
-            if(this._rollbarConfig.Person != null)
+            if(this._rollbarConfig.RollbarPayloadAdditionOptions.Person != null)
             {
-                rollbarData.Person = this._rollbarConfig.Person;
+                rollbarData.Person = this._rollbarConfig.RollbarPayloadAdditionOptions.Person;
             }
         }
     }

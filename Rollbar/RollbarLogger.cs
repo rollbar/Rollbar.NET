@@ -27,7 +27,7 @@
         /// <summary>
         /// The configuration
         /// </summary>
-        private readonly IRollbarConfig _config;
+        private readonly IRollbarLoggerConfig _config;
         /// <summary>
         /// The payload queue
         /// </summary>
@@ -52,7 +52,7 @@
         /// </summary>
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        internal RollbarLogger(bool isSingleton, IRollbarConfig rollbarConfig)
+        internal RollbarLogger(bool isSingleton, IRollbarLoggerConfig rollbarConfig)
         {
             if (!TelemetryCollector.Instance.IsAutocollecting)
             {
@@ -64,15 +64,15 @@
             if (rollbarConfig != null)
             {
                 ValidateConfiguration(rollbarConfig);
-                this._config = new RollbarConfig(this).Reconfigure(rollbarConfig);
+                this._config = new RollbarLoggerConfig(this).Reconfigure(rollbarConfig);
             }
             else
             {
-                this._config = new RollbarConfig(this);
+                this._config = new RollbarLoggerConfig(this);
             }
 
             // let's figure out where to keep the local payloads store:
-            PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarConfig)this._config).GetLocalPayloadStoreFullPathName();
+            PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig)this._config).GetLocalPayloadStoreFullPathName();
 
             // let's init proper Rollbar client:
             var rollbarClient = new RollbarClient(this);
@@ -109,7 +109,7 @@
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public IRollbarConfig Config
+        public IRollbarLoggerConfig Config
         {
             get { return this._config; }
         }
@@ -119,7 +119,7 @@
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <returns>IRollbar.</returns>
-        public IRollbar Configure(IRollbarConfig settings)
+        public IRollbar Configure(IRollbarLoggerConfig settings)
         {
             ValidateConfiguration(settings);
 
@@ -135,7 +135,7 @@
         /// <returns>IRollbar.</returns>
         public IRollbar Configure(string accessToken)
         {
-            return this.Configure(new RollbarConfig(accessToken));
+            return this.Configure(new RollbarLoggerConfig(accessToken));
         }
 
         #endregion IRollbar
@@ -301,7 +301,7 @@
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        IRollbarConfig IRollbar.Config { get { return this.Config; } }
+        IRollbarLoggerConfig IRollbar.Config { get { return this.Config; } }
 
         /// <summary>
         /// Gets the logger.
@@ -314,7 +314,7 @@
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <returns>IRollbar.</returns>
-        IRollbar IRollbar.Configure(IRollbarConfig settings)
+        IRollbar IRollbar.Configure(IRollbarLoggerConfig settings)
         {
             return this.Configure(settings);
         }
@@ -554,9 +554,9 @@
         {
             // here is the last chance to decide if we need to actually send this payload
             // based on the current config settings and rate-limit conditions:
-            if (string.IsNullOrWhiteSpace(this._config.AccessToken)
-                || this._config.Enabled == false
-                || (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+            if (string.IsNullOrWhiteSpace(this._config.RollbarDestinationOptions.AccessToken)
+                || this._config.RollbarDeveloperOptions.Enabled == false
+                || (level < this._config.RollbarDeveloperOptions.LogLevel)
                 || ((this._payloadQueue.AccessTokenQueuesMetadata != null) && this._payloadQueue.AccessTokenQueuesMetadata.IsTransmissionSuspended)
                 )
             {
@@ -564,7 +564,7 @@
                 return null;
             }
 
-            if (this._config.RethrowExceptionsAfterReporting)
+            if (this._config.RollbarDeveloperOptions.RethrowExceptionsAfterReporting)
             {
                 System.Exception exception = dataObject as System.Exception;
                 if (exception == null)
@@ -584,9 +584,9 @@
                         // Because we will be re-throwing the exception after reporting, let's report it fully-synchronously.
                         // This logic is on a heavy side. But, fortunately, RethrowExceptionsAfterReporting is intended to be
                         // a development time option:
-                        var config = new RollbarConfig();
+                        var config = new RollbarLoggerConfig();
                         config.Reconfigure(this._config);
-                        config.RethrowExceptionsAfterReporting = false;
+                        config.RollbarDeveloperOptions.RethrowExceptionsAfterReporting = false;
                         using var rollbar = RollbarFactory.CreateNew(config);
                         rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level, dataObject, custom);
                     }
@@ -707,7 +707,7 @@
         /// Validates the configuration.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        private void ValidateConfiguration(IRollbarConfig rollbarConfig)
+        private void ValidateConfiguration(IRollbarLoggerConfig rollbarConfig)
         {
             switch (rollbarConfig)
             {

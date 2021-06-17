@@ -29,7 +29,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// The logger configuration
         /// </summary>
-        private RollbarConfig _loggerConfig;
+        private RollbarLoggerConfig _loggerConfig;
 
         /// <summary>
         /// The disposable rollbar instances
@@ -48,12 +48,17 @@ namespace UnitTest.Rollbar
         {
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
 
-            this._loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-                {
-                    Environment = RollbarUnitTestSettings.Environment, 
-                    ScrubFields = new string[] { "secret", "super_secret", }
-                };
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
+
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
+
+            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            loggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+            this._loggerConfig = loggerConfig;
         }
 
         /// <summary>
@@ -318,7 +323,7 @@ namespace UnitTest.Rollbar
         /// Provides the live rollbar configuration.
         /// </summary>
         /// <returns>IRollbarConfig.</returns>
-        protected IRollbarConfig ProvideLiveRollbarConfig()
+        protected IRollbarLoggerConfig ProvideLiveRollbarConfig()
         {
             return this.ProvideLiveRollbarConfig(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
         }
@@ -329,12 +334,21 @@ namespace UnitTest.Rollbar
         /// <param name="rollbarAccessToken">The rollbar access token.</param>
         /// <param name="rollbarEnvironment">The rollbar environment.</param>
         /// <returns>IRollbarConfig.</returns>
-        protected IRollbarConfig ProvideLiveRollbarConfig(string rollbarAccessToken, string rollbarEnvironment)
+        protected IRollbarLoggerConfig ProvideLiveRollbarConfig(string rollbarAccessToken, string rollbarEnvironment)
         {
             if (this._loggerConfig == null)
             {
-                this._loggerConfig =
-                    new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment, ScrubFields = new string[] {"secret", "super_secret", } };
+                RollbarDestinationOptions destinationOptions = 
+                    new RollbarDestinationOptions(rollbarAccessToken, rollbarEnvironment);
+
+                RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+                dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
+
+                RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+                loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+                loggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+                this._loggerConfig = loggerConfig;
             }
             return this._loggerConfig;
         }

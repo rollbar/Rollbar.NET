@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Text;
 
+    using Newtonsoft.Json;
+
     using Rollbar.Common;
     using Rollbar.DTOs;
 
@@ -21,16 +23,21 @@
             CheckIgnore = checkIgnore;
         }
 
+        [JsonIgnore]
         public Action<Payload> Transform
         {
             get;
             set;
         }
+
+        [JsonIgnore]
         public Action<Payload> Truncate
         {
             get;
             set;
         }
+
+        [JsonIgnore]
         public Func<Payload, bool> CheckIgnore
         {
             get;

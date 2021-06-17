@@ -31,62 +31,75 @@ namespace UnitTest.Rollbar.AppSettings.Json
         {
             var sever = new Server();
 
-            RollbarConfig config = new RollbarConfig("default=none");
-            Assert.IsNull(config.Person);
-            Assert.IsNull(config.Server);
+            RollbarLoggerConfig config = new RollbarLoggerConfig("default=none");
+            Assert.IsNull(config.RollbarPayloadAdditionOptions.Person);
+            Assert.IsNull(config.RollbarPayloadAdditionOptions.Server);
 
             AppSettingsUtility.LoadAppSettings(config, Path.Combine(Environment.CurrentDirectory, "TestData"), "appsettings.json");
 
             // The test data looks like this:
             //===============================
             //"Rollbar": {
-            //    "AccessToken": "17965fa5041749b6bf7095a190001ded",
-            //    "Environment": "unit-tests",
-            //    "Enabled": true,
-            //    "MaxReportsPerMinute": 160,
-            //    "ReportingQueueDepth": 120,
-            //    "LogLevel": "Info",
+            //    "RollbarDestinationOptions": {
+            //        "AccessToken": "17965fa5041749b6bf7095a190001ded",
+            //        "Environment": "unit-tests"
+            //    },
+            //    "RollbarDeveloperOptions": {
+            //        "Enabled": true,
+            //        "LogLevel": "Info"
+            //    },
+            //    "RollbarPayloadAdditionOptions": {
+            //        "Server": {
+            //            "Root": "C://Blah/Blah",
+            //            "Cpu": "x64"
+            //        },
+            //        "Person": {
+            //            "UserName": "jbond"
+            //        }
+            //    },
+            //    "RollbarDataSecurityOptions": {
             //    "ScrubFields": [
-            //      "ThePassword",
-            //      "TheSecret"
+            //        "ThePassword",
+            //        "TheSecret"
             //    ],
-            //    "Server": {
-            //      "Root": "C://Blah/Blah",
-            //      "Cpu": "x64"
-            //    },
-            //    "Person": {
-            //      "UserName": "jbond"
-            //    },
             //    "PersonDataCollectionPolicies": "Username, Email",
-            //    "IpAddressCollectionPolicy": "CollectAnonymized",
-            //  }
+            //    "IpAddressCollectionPolicy": "CollectAnonymized"
+            //    },
+            //    "RollbarInfrastructureOptions": {
+            //        "MaxReportsPerMinute": 160,
+            //        "ReportingQueueDepth": 120
+            //    }
+            //}
 
-            Assert.AreEqual("17965fa5041749b6bf7095a190001ded", config.AccessToken);
-            Assert.AreEqual("unit-tests", config.Environment);
-            Assert.AreEqual(true, config.Enabled);
-            Assert.AreEqual(160, config.MaxReportsPerMinute);
-            Assert.AreEqual(120, config.ReportingQueueDepth);
-            Assert.AreEqual(ErrorLevel.Info, config.LogLevel.Value);
-            Assert.IsTrue(config.ScrubFields.Length >= 2);
-            Assert.AreEqual("jbond", config.Person.UserName);
+            Assert.AreEqual("17965fa5041749b6bf7095a190001ded", config.RollbarDestinationOptions.AccessToken);
+            Assert.AreEqual("unit-tests", config.RollbarDestinationOptions.Environment);
+
+            Assert.AreEqual(true, config.RollbarDeveloperOptions.Enabled);
+            Assert.AreEqual(ErrorLevel.Info, config.RollbarDeveloperOptions.LogLevel);
+
+            Assert.AreEqual(160, config.RollbarInfrastructureOptions.MaxReportsPerMinute);
+            Assert.AreEqual(120, config.RollbarInfrastructureOptions.ReportingQueueDepth);
+
+            Assert.IsTrue(config.RollbarDataSecurityOptions.ScrubFields.Length >= 2);
             Assert.AreEqual(
                 PersonDataCollectionPolicies.Username | PersonDataCollectionPolicies.Email
-                , config.PersonDataCollectionPolicies
+                , config.RollbarDataSecurityOptions.PersonDataCollectionPolicies
                 );
             Assert.AreEqual(
                 IpAddressCollectionPolicy.CollectAnonymized
-                , config.IpAddressCollectionPolicy
+                , config.RollbarDataSecurityOptions.IpAddressCollectionPolicy
                 );
 
-            Assert.IsNotNull(config.Server);
-            Assert.IsTrue(config.Server.ContainsKey("cpu"));
-            Assert.IsTrue(config.Server.ContainsKey("root"));
-            Assert.IsFalse(config.Server.ContainsKey("Cpu"));
-            Assert.IsFalse(config.Server.ContainsKey("Root"));
-            Assert.AreEqual(config.Server["cpu"], config.Server.Cpu);
-            Assert.AreEqual(config.Server["root"], config.Server.Root);
-            Assert.AreEqual("x64", config.Server.Cpu);
-            Assert.AreEqual("C://Blah/Blah", config.Server.Root);
+            Assert.AreEqual("jbond", config.RollbarPayloadAdditionOptions.Person.UserName);
+            Assert.IsNotNull(config.RollbarPayloadAdditionOptions.Server);
+            Assert.IsTrue(config.RollbarPayloadAdditionOptions.Server.ContainsKey("cpu"));
+            Assert.IsTrue(config.RollbarPayloadAdditionOptions.Server.ContainsKey("root"));
+            Assert.IsFalse(config.RollbarPayloadAdditionOptions.Server.ContainsKey("Cpu"));
+            Assert.IsFalse(config.RollbarPayloadAdditionOptions.Server.ContainsKey("Root"));
+            Assert.AreEqual(config.RollbarPayloadAdditionOptions.Server["cpu"], config.RollbarPayloadAdditionOptions.Server.Cpu);
+            Assert.AreEqual(config.RollbarPayloadAdditionOptions.Server["root"], config.RollbarPayloadAdditionOptions.Server.Root);
+            Assert.AreEqual("x64", config.RollbarPayloadAdditionOptions.Server.Cpu);
+            Assert.AreEqual("C://Blah/Blah", config.RollbarPayloadAdditionOptions.Server.Root);
         }
 
         [TestMethod]

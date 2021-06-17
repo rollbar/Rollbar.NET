@@ -30,7 +30,7 @@
         /// <summary>
         /// The rollbar configuration
         /// </summary>
-        private readonly IRollbarConfig _rollbarConfig;
+        private readonly IRollbarLoggerConfig _rollbarConfig;
         /// <summary>
         /// The arbitrary key value pairs
         /// </summary>
@@ -45,7 +45,7 @@
         public HttpRequestMessagePackageDecorator(
             IRollbarPackage packageToDecorate,
             HttpRequestMessage httpRequestMessage,
-            IRollbarConfig rollbarConfig
+            IRollbarLoggerConfig rollbarConfig
             )
             : this(packageToDecorate, httpRequestMessage, rollbarConfig, null, false)
         {
@@ -62,7 +62,7 @@
         public HttpRequestMessagePackageDecorator(
             IRollbarPackage packageToDecorate,
             HttpRequestMessage httpRequestMessage,
-            IRollbarConfig rollbarConfig,
+            IRollbarLoggerConfig rollbarConfig,
             IDictionary<string, object> arbitraryKeyValuePairs
             )
             : this(packageToDecorate, httpRequestMessage, rollbarConfig, arbitraryKeyValuePairs, false)
@@ -80,7 +80,7 @@
         public HttpRequestMessagePackageDecorator(
             IRollbarPackage packageToDecorate,
             HttpRequestMessage httpRequestMessage,
-            IRollbarConfig rollbarConfig,
+            IRollbarLoggerConfig rollbarConfig,
             bool mustApplySynchronously
             )
             : this(packageToDecorate, httpRequestMessage, rollbarConfig, null, mustApplySynchronously)
@@ -99,7 +99,7 @@
         public HttpRequestMessagePackageDecorator(
             IRollbarPackage packageToDecorate, 
             HttpRequestMessage  httpRequestMessage, 
-            IRollbarConfig rollbarConfig,
+            IRollbarLoggerConfig rollbarConfig,
             IDictionary<string, object> arbitraryKeyValuePairs,
             bool mustApplySynchronously
             ) 
@@ -187,7 +187,7 @@
             }
 
             rollbarData.Request.UserIp =
-                HttpRequestMessagePackageDecorator.DecideCollectableUserIPValue(userIP, this._rollbarConfig.IpAddressCollectionPolicy);
+                HttpRequestMessagePackageDecorator.DecideCollectableUserIPValue(userIP, this._rollbarConfig.RollbarDataSecurityOptions.IpAddressCollectionPolicy);
 #endif
 
         }

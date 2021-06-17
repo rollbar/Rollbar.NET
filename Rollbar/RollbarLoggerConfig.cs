@@ -3,9 +3,15 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
     using System.Text;
 
+    using Newtonsoft.Json;
+
     using Rollbar.Common;
+    using Rollbar.NetStandard;
+    using Rollbar.PayloadStore;
 
     public class RollbarLoggerConfig
         : ReconfigurableBase<RollbarLoggerConfig, IRollbarLoggerConfig>
@@ -18,6 +24,120 @@
         private RollbarPayloadAdditionOptions _rollbarPayloadAdditionOptions = null;
         private RollbarPayloadManipulationOptions _rollbarPayloadManipulationOptions = null;
         private RollbarInfrastructureOptions _rollbarInfrastructureOptions = null;
+
+        private readonly RollbarLogger _logger;
+
+        public RollbarLoggerConfig()
+            : this(null as string)
+        {
+        }
+
+        public RollbarLoggerConfig(string accessToken)
+        {
+            this.SetDefaults();
+
+            if(!string.IsNullOrWhiteSpace(accessToken))
+            {
+                this._rollbarDestinationOptions.AccessToken = accessToken;
+            }
+            else
+            {
+                // initialize based on application configuration file (if any):
+                var configLoader = new RollbarConfigurationLoader();
+                configLoader.Load(this);
+            }
+        }
+
+        internal RollbarLoggerConfig(RollbarLogger logger)
+        {
+            this._logger = logger;
+
+            this.SetDefaults();
+
+            // initialize based on application configuration file (if any):
+            var configLoader = new RollbarConfigurationLoader();
+            configLoader.Load(this);
+        }
+
+        private void SetDefaults()
+        {
+            // let's set some default values:
+            this._rollbarDestinationOptions = 
+                new RollbarDestinationOptions();
+            this._rollbarDestinationOptions.EndPoint = "https://api.rollbar.com/api/1/";
+            this._rollbarDestinationOptions.Environment = "production";
+
+            this._rollbarDeveloperOptions = 
+                new RollbarDeveloperOptions();
+            this._rollbarDeveloperOptions.LogLevel = ErrorLevel.Debug;
+            this._rollbarDeveloperOptions.Enabled = true;
+            this._rollbarDeveloperOptions.Transmit = true;
+            this._rollbarDeveloperOptions.RethrowExceptionsAfterReporting = false;
+
+            this._httpProxyOptions = 
+                new HttpProxyOptions();
+            this._httpProxyOptions.ProxyAddress = null;
+            this._httpProxyOptions.ProxyUsername = null;
+            this._httpProxyOptions.ProxyPassword = null;
+
+            this._rollbarPayloadManipulationOptions = 
+                new RollbarPayloadManipulationOptions();
+            this._rollbarPayloadManipulationOptions.CheckIgnore = null;
+            this._rollbarPayloadManipulationOptions.Transform = null;
+            this._rollbarPayloadManipulationOptions.Truncate = null;
+
+            this._rollbarPayloadAdditionOptions = 
+                new RollbarPayloadAdditionOptions();
+            this._rollbarPayloadAdditionOptions.Server = null;
+            this._rollbarPayloadAdditionOptions.Person = null;
+
+            this._rollbarDataSecurityOptions = 
+                new RollbarDataSecurityOptions();
+            this._rollbarDataSecurityOptions.ScrubFields = RollbarDataScrubbingHelper.Instance.GetDefaultFields().ToArray();
+            this._rollbarDataSecurityOptions.ScrubSafelistFields = new string[] { };
+            this._rollbarDataSecurityOptions.PersonDataCollectionPolicies = PersonDataCollectionPolicies.None;
+            this._rollbarDataSecurityOptions.IpAddressCollectionPolicy = IpAddressCollectionPolicy.Collect;
+
+            this._rollbarInfrastructureOptions = 
+                new RollbarInfrastructureOptions();
+            this._rollbarInfrastructureOptions.PayloadPostTimeout = TimeSpan.FromSeconds(30);
+            this._rollbarInfrastructureOptions.MaxReportsPerMinute = null; //5000;
+            this._rollbarInfrastructureOptions.ReportingQueueDepth = 20;
+
+            //TODO: RollbarConfig!!!
+
+            //this._rollbarInfrastructureOptions.EnableLocalPayloadStore = false;
+            //this._rollbarInfrastructureOptions.LocalPayloadStoreFileName = PayloadStoreConstants.DefaultRollbarStoreDbFile;
+            //this._rollbarInfrastructureOptions.LocalPayloadStoreLocationPath = PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
+
+            //this._rollbarInfrastructureOptions.MaxItems = 0;
+            //this._rollbarInfrastructureOptions.CaptureUncaughtExceptions = true;
+        }
+
+        internal RollbarLogger Logger
+        {
+            get
+            {
+                return this._logger;
+            }
+        }
+
+        public override RollbarLoggerConfig Reconfigure(IRollbarLoggerConfig likeMe)
+        {
+            base.Reconfigure(likeMe);
+
+            if(this.Logger != null && this.Logger.Queue != null)
+            {
+                var rollbarClient = new RollbarClient(this.Logger);
+                // reset the queue to use the new RollbarClient:
+                this.Logger.Queue.Flush();
+                this.Logger.Queue.UpdateClient(rollbarClient);
+            }
+
+            return this;
+        }
+
+
 
         public IRollbarDestinationOptions RollbarDestinationOptions
         {
@@ -84,6 +204,7 @@
             }
         }
 
+        [JsonIgnore]
         public IRollbarPayloadManipulationOptions RollbarPayloadManipulationOptions
         {
             get
@@ -110,10 +231,6 @@
             }
         }
 
-        public IRollbarLoggerConfig Reconfigure(IRollbarLoggerConfig likeMe)
-        {
-            return base.Reconfigure(likeMe);
-        }
 
         public override Validator GetValidator()
         {
@@ -180,6 +297,114 @@
             PayloadManipulationOptionsRequired,
             InfrastructureOptionsRequired,
         }
+
+        IRollbarDestinationOptions IRollbarLoggerConfig.RollbarDestinationOptions
+        {
+            get
+            {
+                return this.RollbarDestinationOptions;
+            }
+        }
+        IHttpProxyOptions IRollbarLoggerConfig.HttpProxyOptions
+        {
+            get
+            {
+                return this.HttpProxyOptions;
+            }
+        }
+        IRollbarDeveloperOptions IRollbarLoggerConfig.RollbarDeveloperOptions
+        {
+            get
+            {
+                return this.RollbarDeveloperOptions;
+            }
+        }
+        IRollbarDataSecurityOptions IRollbarLoggerConfig.RollbarDataSecurityOptions
+        {
+            get
+            {
+                return this.RollbarDataSecurityOptions;
+            }
+        }
+        IRollbarPayloadAdditionOptions IRollbarLoggerConfig.RollbarPayloadAdditionOptions
+        {
+            get
+            {
+                return this.RollbarPayloadAdditionOptions;
+            }
+        }
+        IRollbarPayloadManipulationOptions IRollbarLoggerConfig.RollbarPayloadManipulationOptions
+        {
+            get
+            {
+                return this.RollbarPayloadManipulationOptions;
+            }
+        }
+        IRollbarInfrastructureOptions IRollbarLoggerConfig.RollbarInfrastructureOptions
+        {
+            get
+            {
+                return this.RollbarInfrastructureOptions;
+            }
+        }
+
+        IRollbarLoggerConfig IReconfigurable<IRollbarLoggerConfig, IRollbarLoggerConfig>.Reconfigure(IRollbarLoggerConfig likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
+
+        event EventHandler IReconfigurable<IRollbarLoggerConfig, IRollbarLoggerConfig>.Reconfigured
+        {
+            add
+            {
+                this.Reconfigured += value;
+            }
+
+            remove
+            {
+                this.Reconfigured -= value;
+            }
+        }
+
+
+
+
+
+        #region 
+        //TODO: RollbarConfig!!!
+        public bool EnableLocalPayloadStore
+        {
+            get; set;
+        }
+
+        public string LocalPayloadStoreFileName
+        {
+            get; set;
+        }
+
+        public string LocalPayloadStoreLocationPath
+        {
+            get; set;
+        }
+
+        internal string GetLocalPayloadStoreFullPathName()
+        {
+            string dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath)
+                ? PayloadStoreConstants.DefaultRollbarStoreDbFileLocation
+                : this.LocalPayloadStoreLocationPath;
+
+            string dbFile = string.IsNullOrWhiteSpace(this.LocalPayloadStoreFileName)
+                ? PayloadStoreConstants.DefaultRollbarStoreDbFile
+                : this.LocalPayloadStoreFileName;
+
+            string result = string.IsNullOrWhiteSpace(dbLocation)
+                ? dbFile
+                : Path.Combine(dbLocation, dbFile);
+
+            return result;
+        }
+
+        #endregion
 
     }
 }

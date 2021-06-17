@@ -14,18 +14,19 @@ namespace UnitTest.Rollbar
     public class RollbarClientFixture
     {
 
-        private RollbarConfig _loggerConfig;
+        private RollbarLoggerConfig _loggerConfig;
 
         [TestInitialize]
         public void SetupFixture()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-            this._loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) 
-                { 
-                    Environment = RollbarUnitTestSettings.Environment, 
-                };
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
+
+            this._loggerConfig = new RollbarLoggerConfig();
+            this._loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
         }
 
         [TestCleanup]
@@ -40,7 +41,7 @@ namespace UnitTest.Rollbar
 
             // [DO]: let's send a payload with default config settings (including default value for the PayloadPostTimeout)
             // [EXPECT]: under all the good networking conditions sending a payload should succeed
-            RollbarConfig config = new RollbarConfig();
+            RollbarLoggerConfig config = new RollbarLoggerConfig();
             config.Reconfigure(this._loggerConfig);
             using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
             {
@@ -53,9 +54,12 @@ namespace UnitTest.Rollbar
                 Assert.AreEqual(0, bundle.Exceptions.Count);
             }
 
+            RollbarInfrastructureOptions infrastructureOptions = new RollbarInfrastructureOptions();
+
             // [DO]: let's send a payload using unreasonably short PayloadPostTimeout
             // [EXPECT]: even under all the good networking conditions sending a payload should not succeed
-            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(10); // too short
+            infrastructureOptions.PayloadPostTimeout = TimeSpan.FromMilliseconds(10); // too short
+            config.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
             using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
             {
                 var client = new RollbarClient(logger);
@@ -71,7 +75,8 @@ namespace UnitTest.Rollbar
 
             // [DO]: let's send a payload using reasonably long PayloadPostTimeout
             // [EXPECT]: even under all the good networking conditions sending a payload should succeed
-            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(1000); // long enough
+            infrastructureOptions.PayloadPostTimeout = TimeSpan.FromMilliseconds(1000); // long enough
+            config.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
             using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
             {
                 var client = new RollbarClient(logger);

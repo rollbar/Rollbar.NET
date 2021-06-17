@@ -78,7 +78,7 @@
         /// <value>
         /// The configuration.
         /// </value>
-        public IRollbarConfig Config { get { return this._logger?.Config; } }
+        public IRollbarLoggerConfig Config { get { return this._logger?.Config; } }
 
         /// <summary>
         /// Gets the payload.

@@ -25,8 +25,15 @@ namespace UnitTest.Rollbar
             RollbarQueueController.Instance.FlushQueues();
             //RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
 
-            RollbarConfig loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig =
+                new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
             _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
 
         }
@@ -120,7 +127,7 @@ namespace UnitTest.Rollbar
         {
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
 
-            RollbarConfig badConfig = new RollbarConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
+            RollbarLoggerConfig badConfig = new RollbarLoggerConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
             using (IRollbar logger = RollbarFactory.CreateNew(badConfig))
             {
                 try
@@ -154,12 +161,16 @@ namespace UnitTest.Rollbar
                 acctualLogLevel = payload.Data.Level.Value;
             }
 
-            var loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = RollbarUnitTestSettings.Environment,
-                Transform = Transform,
-
-            };
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarPayloadManipulationOptions payloadManipulationOptions = 
+                new RollbarPayloadManipulationOptions(Transform);
+            var loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            loggerConfig.RollbarPayloadManipulationOptions.Reconfigure(payloadManipulationOptions);
             using (var logger = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
                 try

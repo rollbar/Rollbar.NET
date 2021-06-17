@@ -138,11 +138,14 @@
         {
             if (!string.IsNullOrWhiteSpace(rollbarAccessToken))
             {
-                RollbarConfig config = new RollbarConfig(rollbarAccessToken);
+                RollbarDestinationOptions destinationOptions = new RollbarDestinationOptions(rollbarAccessToken);
                 if (!string.IsNullOrWhiteSpace(rollbarEnvironment))
                 {
-                    config.Environment = rollbarEnvironment;
+                    destinationOptions.Environment = rollbarEnvironment;
                 }
+                RollbarLoggerConfig config = new RollbarLoggerConfig();
+                config.RollbarDestinationOptions.Reconfigure(destinationOptions);
+                
                 this._rollbar = RollbarFactory.CreateNew();
                 this._rollbar.Configure(config);
             }
@@ -251,17 +254,22 @@
         /// Gets the Rollbar trace listener configuration.
         /// </summary>
         /// <returns>RollbarConfig.</returns>
-        private RollbarConfig GetRollbarTraceListenerConfig()
+        private RollbarLoggerConfig GetRollbarTraceListenerConfig()
         {
             if (string.IsNullOrWhiteSpace(this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()]))
             {
                 return null;
             }
 
-            var config = new RollbarConfig(this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()]) // minimally required Rollbar configuration
-            {
-                Environment = this.Attributes[RollbarTraceListenerAttributes.rollbarEnvironment.ToString()],
-            };
+            // minimally required Rollbar configuration
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(
+                    this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()],
+                    this.Attributes[RollbarTraceListenerAttributes.rollbarEnvironment.ToString()]
+                    );
+
+            var config = new RollbarLoggerConfig();
+            config.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
             return config;
         }

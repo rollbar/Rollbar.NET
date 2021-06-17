@@ -34,7 +34,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarOptions">The options.</param>
         public RollbarLogger(string name
-            ,IRollbarConfig rollbarConfig
+            ,IRollbarLoggerConfig rollbarConfig
             ,RollbarOptions rollbarOptions = default
             )
         {
@@ -92,17 +92,17 @@
             }
 
             if (RollbarScope.Current != null 
-                && RollbarLocator.RollbarInstance.Config.MaxItems > 0
+                && RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems > 0
                 )
             {
                 RollbarScope.Current.IncrementLogItemsCount();
-                if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.MaxItems)
+                if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems)
                 {
                     // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
                     RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
                     return;
                 }
-                else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.MaxItems)
+                else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems)
                 {
                     // the Rollbar SDK already exceeded MaxItems limit, do not log for this scope:
                     return;

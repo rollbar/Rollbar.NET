@@ -207,7 +207,7 @@ namespace Rollbar
                     Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Register) + ".");
                 }
 
-                ((RollbarConfig)queue.Logger.Config).Reconfigured += Config_Reconfigured;
+                ((RollbarLoggerConfig)queue.Logger.Config).Reconfigured += Config_Reconfigured;
 
                 // The following debug line causes stack overflow when RollbarTraceListener is activated:                
                 Debug.WriteLineIf(RollbarTraceListener.InstanceCount == 0, this.GetType().Name + ": Registered a queue. Total queues count: " + this._allQueues.Count + ".");
@@ -228,7 +228,7 @@ namespace Rollbar
                 this.DropIndexByToken(queue);
                 this._allQueues.Remove(queue);
                 this.ReevaluateUseOfLocalPayloadStore();
-                ((RollbarConfig)queue.Logger.Config).Reconfigured -= Config_Reconfigured;
+                ((RollbarLoggerConfig)queue.Logger.Config).Reconfigured -= Config_Reconfigured;
                 Debug.WriteLine(this.GetType().Name + ": Unregistered a queue. Total queues count: " + this._allQueues.Count + ".");
             }
         }
@@ -462,13 +462,13 @@ namespace Rollbar
         {
             //Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
             //IRollbarConfig config = payload.Data.Notifier.Configuration;
-            IRollbarConfig config = JsonConvert.DeserializeObject<RollbarConfig>(payloadRecord.ConfigJson);
+            IRollbarLoggerConfig config = JsonConvert.DeserializeObject<RollbarLoggerConfig>(payloadRecord.ConfigJson);
             RollbarClient rollbarClient = new RollbarClient(config);
 
             try
             {
                 RollbarResponse response =
-                    rollbarClient.PostAsJson(config.AccessToken, payloadRecord.PayloadJson);
+                    rollbarClient.PostAsJson(config.RollbarDestinationOptions.AccessToken, payloadRecord.PayloadJson);
                 return response;
             }
             catch (System.Exception ex)
@@ -632,7 +632,7 @@ namespace Rollbar
                 return;
             }
 
-            string endPoint = payloadQueue.Logger.Config.EndPoint;
+            string endPoint = payloadQueue.Logger.Config.RollbarDestinationOptions.EndPoint;
             string accessToken = payloadQueue.AccessTokenQueuesMetadata.AccessToken;
 
             var payloads = new List<IPayloadRecord>();
@@ -779,7 +779,7 @@ namespace Rollbar
                 return null;
             }
 
-            if (queue.Logger?.Config != null && !queue.Logger.Config.Transmit)
+            if (queue.Logger?.Config != null && !queue.Logger.Config.RollbarDeveloperOptions.Transmit)
             {
                 response = new RollbarResponse();
                 this.OnRollbarEvent(
@@ -823,7 +823,7 @@ namespace Rollbar
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         private void Config_Reconfigured(object sender, EventArgs e)
         {
-            RollbarConfig config = (RollbarConfig)sender;
+            RollbarLoggerConfig config = (RollbarLoggerConfig)sender;
             Assumption.AssertNotNull(config, nameof(config));
 
             string newStorePath = config.GetLocalPayloadStoreFullPathName();
@@ -854,7 +854,7 @@ namespace Rollbar
         /// <param name="queue">The queue.</param>
         private void IndexByToken(PayloadQueue queue)
         {
-            string queueToken = queue.Logger.Config.AccessToken;
+            string queueToken = queue.Logger.Config.RollbarDestinationOptions.AccessToken;
             if (queueToken == null)
             {
                 //this is a valid case for the RollbarLogger singleton instance,
@@ -975,7 +975,7 @@ namespace Rollbar
         /// <returns>System.Int32.</returns>
         public int GetPayloadCount(IRollbar rollbar)
         {
-            return this.GetPayloadCount(rollbar.Config.AccessToken);
+            return this.GetPayloadCount(rollbar.Config.RollbarDestinationOptions.AccessToken);
         }
 
         /// <summary>
@@ -996,8 +996,8 @@ namespace Rollbar
                     {
                         totalPayloads += queue.GetPayloadCount();
                         TimeSpan queueTimeout =
-                            queue.Logger.Config.MaxReportsPerMinute.HasValue ?
-                            TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / queue.Logger.Config.MaxReportsPerMinute.Value)
+                            queue.Logger.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue ?
+                            TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / queue.Logger.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value)
                             : TimeSpan.Zero;
                         if (payloadTimeout < queueTimeout)
                         {
@@ -1016,7 +1016,7 @@ namespace Rollbar
         /// <returns>TimeSpan.</returns>
         public TimeSpan GetRecommendedTimeout(IRollbar rollbar)
         {
-            return this.GetRecommendedTimeout(rollbar.Config.AccessToken);
+            return this.GetRecommendedTimeout(rollbar.Config.RollbarDestinationOptions.AccessToken);
         }
 
         /// <summary>

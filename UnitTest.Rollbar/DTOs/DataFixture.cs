@@ -20,15 +20,16 @@ namespace UnitTest.Rollbar.DTOs
     public class DataFixture
     {
         private static readonly Regex WhiteSpace = new Regex(@"\s");
-        private readonly RollbarConfig _config;
+        private readonly RollbarLoggerConfig _config;
         private readonly Data _basicData;  
 
         public DataFixture()
         {
-            this._config = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = "test",
-            };
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
+
+            this._config = new RollbarLoggerConfig();
+            this._config.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
             this._basicData = new Data(this._config,
             new Body("test"))

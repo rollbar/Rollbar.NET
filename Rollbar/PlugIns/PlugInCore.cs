@@ -38,7 +38,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarBlockingTimeout">The rollbar blocking timeout.</param>
         protected PlugInCoreBase(
-            IRollbarConfig rollbarConfig,
+            IRollbarLoggerConfig rollbarConfig,
             TimeSpan? rollbarBlockingTimeout
             )
         {
@@ -71,16 +71,22 @@
         /// <param name="rollbarAccessToken">The Rollbar access token.</param>
         /// <param name="rollbarEnvironment">The Rollbar environment.</param>
         /// <returns>IRollbarConfig.</returns>
-        public static IRollbarConfig CreateConfig(string rollbarAccessToken, string rollbarEnvironment)
+        public static IRollbarLoggerConfig CreateConfig(string rollbarAccessToken, string rollbarEnvironment)
         {
-            return new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment, };
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(rollbarAccessToken, rollbarEnvironment);
+
+            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            return loggerConfig;
         }
 
         /// <summary>
         /// Gets the rollbar configuration.
         /// </summary>
         /// <value>The rollbar configuration.</value>
-        public IRollbarConfig RollbarConfig
+        public IRollbarLoggerConfig RollbarConfig
         {
             get { return this._rollbar.Config; }
         }
@@ -200,7 +206,7 @@
         protected PlugInCore(
             IDictionary<TPlugInErrorLevel, ErrorLevel> rollbarErrorLevelByPlugInErrorLevel,
             string customPrefix,
-            IRollbarConfig rollbarConfig,
+            IRollbarLoggerConfig rollbarConfig,
             TimeSpan? rollbarBlockingTimeout
             )
             : base(rollbarConfig, rollbarBlockingTimeout)

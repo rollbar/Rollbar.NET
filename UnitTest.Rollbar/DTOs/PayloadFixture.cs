@@ -17,15 +17,15 @@ namespace UnitTest.Rollbar.DTOs
     [TestCategory(nameof(PayloadFixture))]
     public class PayloadFixture
     {
-        private readonly RollbarConfig _config;
+        private readonly RollbarLoggerConfig _config;
 
         public PayloadFixture()
         {
-            this._config = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = "test",
-            };
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
 
+            this._config = new RollbarLoggerConfig();
+            this._config.RollbarDestinationOptions.Reconfigure(destinationOptions);
         }
 
         [TestInitialize]
@@ -44,22 +44,22 @@ namespace UnitTest.Rollbar.DTOs
 
             Payload[] testPayloads = new Payload[]
             {
-                new Payload(this._config.AccessToken, new Data(
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
                     this._config,
                     new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.AccessToken, new Data(
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
                     this._config,
                     new Body("A terrible crash!"),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.AccessToken, new Data(
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
                     this._config,
                     new Body(GetException()),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.AccessToken, new Data(
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
                     this._config,
                     new Body(GetAggregateException()),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
@@ -95,16 +95,16 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void BasicExceptionCreatesValidRollbarObject()
         {
-            var exceptionExample = new Payload("access-token", new Data(this._config, new Body(GetException())));
+            var exceptionExample = new Payload(RollbarUnitTestSettings.AccessToken, new Data(this._config, new Body(GetException())));
 
             var asJson = JObject.Parse(JsonConvert.SerializeObject(exceptionExample));
 
-            Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
+            Assert.AreEqual(RollbarUnitTestSettings.AccessToken, asJson["access_token"].Value<string>());
 
             var data = asJson["data"] as JObject;
             Assert.IsNotNull(data);
 
-            Assert.AreEqual("test", data["environment"].Value<string>());
+            Assert.AreEqual(RollbarUnitTestSettings.Environment, data["environment"].Value<string>());
 
             var body = data["body"] as JObject;
             Assert.IsNotNull(body);
@@ -187,17 +187,17 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void MessageCreatesValidRollbarObject()
         {
-            var messageException = new Payload("access-token", new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords"))));
+            var messageException = new Payload(RollbarUnitTestSettings.AccessToken, new Data(this._config, new Body(new Message("A message I wish to send to the rollbar overlords"))));
 
             var asJson = JObject.Parse(JsonConvert.SerializeObject(messageException));
 
-            Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
+            Assert.AreEqual(RollbarUnitTestSettings.AccessToken, asJson["access_token"].Value<string>());
 
             Assert.IsInstanceOfType(asJson["data"], typeof(JObject));
             var data = asJson["data"] as JObject;
             Assert.IsNotNull(data);
 
-            Assert.AreEqual("test", data["environment"].Value<string>());
+            Assert.AreEqual(RollbarUnitTestSettings.Environment, data["environment"].Value<string>());
 
             Assert.IsInstanceOfType(data["body"], typeof(JObject));
             var body = data["body"] as JObject;
@@ -267,17 +267,17 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void TraceChainCreatesValidRollbarObject()
         {
-            var aggregateExample = new Payload("access-token", new Data(this._config, new Body(GetAggregateException())));
+            var aggregateExample = new Payload(RollbarUnitTestSettings.AccessToken, new Data(this._config, new Body(GetAggregateException())));
 
             var asJson = JObject.Parse(JsonConvert.SerializeObject(aggregateExample));
 
-            Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
+            Assert.AreEqual(RollbarUnitTestSettings.AccessToken, asJson["access_token"].Value<string>());
 
             Assert.IsInstanceOfType(asJson["data"], typeof(JObject));
             var data = asJson["data"] as JObject;
             Assert.IsNotNull(data);
 
-            Assert.AreEqual("test", data["environment"].Value<string>());
+            Assert.AreEqual(RollbarUnitTestSettings.Environment, data["environment"].Value<string>());
 
             Assert.IsInstanceOfType(data["body"], typeof(JObject));
             var body = data["body"] as JObject;
@@ -377,18 +377,18 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void CrashReportCreatesValidRollbarObject()
         {
-            var crashException = new Payload("access-token", new Data(this._config, new Body("A terrible crash!")));
+            var crashException = new Payload(RollbarUnitTestSettings.AccessToken, new Data(this._config, new Body("A terrible crash!")));
 
 
             var asJson = JObject.Parse(JsonConvert.SerializeObject(crashException));
 
-            Assert.AreEqual("access-token", asJson["access_token"].Value<string>());
+            Assert.AreEqual(RollbarUnitTestSettings.AccessToken, asJson["access_token"].Value<string>());
 
             Assert.IsInstanceOfType(asJson["data"], typeof(JObject));
             var data = asJson["data"] as JObject;
             Assert.IsNotNull(data);
 
-            Assert.AreEqual("test", data["environment"].Value<string>());
+            Assert.AreEqual(RollbarUnitTestSettings.Environment, data["environment"].Value<string>());
 
             Assert.IsInstanceOfType(data["body"], typeof(JObject));
             var body = data["body"] as JObject;

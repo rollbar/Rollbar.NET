@@ -40,7 +40,7 @@
             Assumption.AssertNotNull(configuration, nameof(configuration));
             Assumption.AssertNotNull(options, nameof(options));
             Assumption.AssertNotNull(this._rollbarConfig, nameof(this._rollbarConfig));
-            Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.AccessToken, nameof(this._rollbarConfig.AccessToken));
+            Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.RollbarDestinationOptions.AccessToken, nameof(this._rollbarConfig.RollbarDestinationOptions.AccessToken));
 
             this._httpContextAccessor = httpContextAccessor;
         }

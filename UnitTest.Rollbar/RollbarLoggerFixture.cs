@@ -63,7 +63,7 @@ namespace UnitTest.Rollbar
         {
             this.Reset();
 
-            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+            RollbarLoggerConfig config = this.ProvideLiveRollbarConfig() as RollbarLoggerConfig;
 
             using IRollbar rollbar = this.ProvideDisposableRollbar();
             rollbar.Configure(config);
@@ -74,7 +74,7 @@ namespace UnitTest.Rollbar
                 .Critical(ExceptionSimulator.GetExceptionWith(5,"Exception logged sync!"));
 
             int rethrowCount = 0;
-            config.RethrowExceptionsAfterReporting = true;
+            config.RollbarDeveloperOptions.RethrowExceptionsAfterReporting = true;
             rollbar.Configure(config);
             try
             {
@@ -97,7 +97,7 @@ namespace UnitTest.Rollbar
                 rethrowCount++;
             }
 
-            config.RethrowExceptionsAfterReporting = false;
+            config.RollbarDeveloperOptions.RethrowExceptionsAfterReporting = false;
             rollbar.Configure(config);
             this.IncrementCount<CommunicationEventArgs>();
             rollbar.Critical(ExceptionSimulator.GetExceptionWith(5,"Exception logged async!"));
@@ -113,7 +113,7 @@ namespace UnitTest.Rollbar
         {
             this.Reset();
 
-            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
+            RollbarLoggerConfig config = this.ProvideLiveRollbarConfig() as RollbarLoggerConfig;
 
             using IRollbar rollbar = this.ProvideDisposableRollbar();
             rollbar.Configure(config);
@@ -122,14 +122,14 @@ namespace UnitTest.Rollbar
             this.IncrementCount<CommunicationEventArgs>();
             rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to happen!");
 
-            config.Transmit = false;
+            config.RollbarDeveloperOptions.Transmit = false;
             rollbar.Configure(config);
             this.IncrementCount<TransmissionOmittedEventArgs>();
             rollbar.Critical("Transmission is expected to be omitted!");
             this.IncrementCount<TransmissionOmittedEventArgs>();
             rollbar.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical("Transmission is expected to be omitted!");
 
-            config.Transmit = true;
+            config.RollbarDeveloperOptions.Transmit = true;
             rollbar.Configure(config);
             this.IncrementCount<CommunicationEventArgs>();
             rollbar.Critical("Transmission is expected to happen!");
@@ -145,11 +145,13 @@ namespace UnitTest.Rollbar
         {
             this.Reset();
 
-            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
-            config.Transform = delegate (Payload payload)
+            RollbarLoggerConfig config = this.ProvideLiveRollbarConfig() as RollbarLoggerConfig;
+            RollbarPayloadManipulationOptions rollbarPayloadManipulationOptions = new RollbarPayloadManipulationOptions();
+            rollbarPayloadManipulationOptions.Transform = delegate (Payload payload)
             {
                 throw new Exception("Buggy transform delegate!");
             };
+            config.RollbarPayloadManipulationOptions.Reconfigure(rollbarPayloadManipulationOptions);
 
             using (IRollbar rollbar = this.ProvideDisposableRollbar())
             {
@@ -173,11 +175,13 @@ namespace UnitTest.Rollbar
         {
             this.Reset();
 
-            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
-            config.CheckIgnore = delegate (Payload payload)
+            RollbarLoggerConfig config = this.ProvideLiveRollbarConfig() as RollbarLoggerConfig;
+            RollbarPayloadManipulationOptions payloadManipulationOptions = new RollbarPayloadManipulationOptions();
+            payloadManipulationOptions.CheckIgnore = delegate (Payload payload)
             {
                 throw new Exception("Buggy check-ignore delegate!");
             };
+            config.RollbarPayloadManipulationOptions.Reconfigure(payloadManipulationOptions);
 
             using (IRollbar rollbar = this.ProvideDisposableRollbar())
             {
@@ -201,13 +205,15 @@ namespace UnitTest.Rollbar
         {
             this.Reset();
 
-            RollbarConfig config = this.ProvideLiveRollbarConfig() as RollbarConfig;
-            config.Truncate = delegate (Payload payload)
+            RollbarLoggerConfig config = this.ProvideLiveRollbarConfig() as RollbarLoggerConfig;
+            RollbarPayloadManipulationOptions payloadManipulationOptions = new RollbarPayloadManipulationOptions();
+            payloadManipulationOptions.Truncate = delegate (Payload payload)
             {
                 throw new Exception("Buggy truncate delegate!");
             };
+            config.RollbarPayloadManipulationOptions.Reconfigure(payloadManipulationOptions);
 
-            using (IRollbar rollbar = this.ProvideDisposableRollbar())
+            using(IRollbar rollbar = this.ProvideDisposableRollbar())
             {
                 rollbar.Configure(config);
 
@@ -315,17 +321,19 @@ namespace UnitTest.Rollbar
                 TimeSpan serverRateDuration = sw.Elapsed;
 
                 // reconfigure with locally defined reporting rate:
-                RollbarConfig rollbarConfig = new RollbarConfig();
+                RollbarLoggerConfig rollbarConfig = new RollbarLoggerConfig();
                 rollbarConfig.Reconfigure(rollbar.Config);
-                Assert.IsFalse(rollbarConfig.MaxReportsPerMinute.HasValue);
+                Assert.IsFalse(rollbarConfig.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
 
-                rollbarConfig.MaxReportsPerMinute = localReportingRate;
-                Assert.IsTrue(rollbarConfig.MaxReportsPerMinute.HasValue);
-                Assert.AreEqual(localReportingRate, rollbarConfig.MaxReportsPerMinute.Value);
+                RollbarInfrastructureOptions rollbarInfrastructureOptions = new RollbarInfrastructureOptions();
+                rollbarInfrastructureOptions.MaxReportsPerMinute = localReportingRate;
+                rollbarConfig.RollbarInfrastructureOptions.Reconfigure(rollbarInfrastructureOptions);
+                Assert.IsTrue(rollbarConfig.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
+                Assert.AreEqual(localReportingRate, rollbarConfig.RollbarInfrastructureOptions.MaxReportsPerMinute.Value);
 
                 rollbar.Config.Reconfigure(rollbarConfig);
-                Assert.IsTrue(rollbar.Config.MaxReportsPerMinute.HasValue);
-                Assert.AreEqual(localReportingRate, rollbar.Config.MaxReportsPerMinute.Value);
+                Assert.IsTrue(rollbar.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
+                Assert.AreEqual(localReportingRate, rollbar.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value);
 
                 // using local config defined reporting rate:
                 sw.Restart();
@@ -347,9 +355,8 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ThrowsExceptionWhenInitializedWithInvalidConfigInstance()
         {
-            RollbarConfig invalidConfig = new RollbarConfig(string.Empty) {
-                Person = new Person(),
-            };
+            RollbarLoggerConfig invalidConfig = new RollbarLoggerConfig(string.Empty);
+            invalidConfig.RollbarPayloadAdditionOptions.Person = new Person();
 
             try
             {
@@ -375,10 +382,8 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ThrowsExceptionWhenConfiguredWithInvalidConfigInstance()
         {
-            RollbarConfig invalidConfig = new RollbarConfig(string.Empty)
-            {
-                Person = new Person(),
-            };
+            RollbarLoggerConfig invalidConfig = new RollbarLoggerConfig(string.Empty);
+            invalidConfig.RollbarPayloadAdditionOptions.Person = new Person();
 
             var rollbar = RollbarFactory.CreateNew();
 
@@ -523,10 +528,13 @@ namespace UnitTest.Rollbar
                     RollbarQueueController.Instance.GetQueues(RollbarUnitTestSettings.AccessToken);
             }
 
-            RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = RollbarUnitTestSettings.Environment,
-            };
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
             int totalInitialQueues = RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken);
             using (var logger = RollbarFactory.CreateNew().Configure(loggerConfig))
@@ -637,11 +645,18 @@ namespace UnitTest.Rollbar
                 awaitAsyncSend.Set();
             }
 
-            var loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = RollbarUnitTestSettings.Environment,
-                Transform = Transform,
-            };
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken,
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            RollbarPayloadManipulationOptions payloadManipulationOptions = new RollbarPayloadManipulationOptions();
+            payloadManipulationOptions.Transform = Transform;
+            loggerConfig.RollbarPayloadManipulationOptions.Reconfigure(payloadManipulationOptions);
+
             this.IncrementCount<CommunicationEventArgs>();
             using (var logger = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
@@ -686,12 +701,22 @@ namespace UnitTest.Rollbar
         {
             const int maxCallLengthInMillisec = 50;
             TimeSpan payloadSubmissionDelay = TimeSpan.FromMilliseconds(3 * maxCallLengthInMillisec);
-            RollbarConfig loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            loggerConfig.Transform = delegate
+
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken,
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            RollbarPayloadManipulationOptions payloadManipulationOptions = new RollbarPayloadManipulationOptions();
+            payloadManipulationOptions.Transform = delegate
             {
                 Thread.Sleep(payloadSubmissionDelay);
             };
+            loggerConfig.RollbarPayloadManipulationOptions.Reconfigure(payloadManipulationOptions);
+
             using IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig);
             try
             {
@@ -717,9 +742,20 @@ namespace UnitTest.Rollbar
         {
             this._transformException = false;
 
-            RollbarConfig loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            loggerConfig.Transform = delegate { throw new NullReferenceException(); };
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken,
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            RollbarPayloadManipulationOptions payloadManipulationOptions = new RollbarPayloadManipulationOptions();
+            payloadManipulationOptions.Transform = delegate {
+                throw new NullReferenceException();
+            };
+            loggerConfig.RollbarPayloadManipulationOptions.Reconfigure(payloadManipulationOptions);
+
             using IRollbar logger = RollbarFactory.CreateNew().Configure(loggerConfig);
             logger.InternalEvent += Logger_InternalEvent;
 
@@ -773,13 +809,19 @@ namespace UnitTest.Rollbar
         {
             RollbarLoggerFixture.stressLogsCount = 0;
 
-            RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = RollbarUnitTestSettings.Environment,
-                ReportingQueueDepth = 200,
-            };
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken,
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
-            this.IncrementCount<CommunicationEventArgs>(loggerConfig.ReportingQueueDepth);
+            RollbarInfrastructureOptions infrastructureOptions = new RollbarInfrastructureOptions();
+            infrastructureOptions.ReportingQueueDepth = 200;
+            loggerConfig.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
+
+            this.IncrementCount<CommunicationEventArgs>(loggerConfig.RollbarInfrastructureOptions.ReportingQueueDepth);
 
             TimeSpan rollbarBlockingTimeout = TimeSpan.FromMilliseconds(55000);
 
@@ -823,14 +865,19 @@ namespace UnitTest.Rollbar
 
             //ConnectivityMonitor.Instance.Disable();
 
-            RollbarConfig loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = RollbarUnitTestSettings.Environment,
-                ReportingQueueDepth = 200,
-                //ProxyAddress = "proxy",
-            };
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken,
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
-            this.IncrementCount<CommunicationEventArgs>(loggerConfig.ReportingQueueDepth);
+            RollbarInfrastructureOptions infrastructureOptions = new RollbarInfrastructureOptions();
+            infrastructureOptions.ReportingQueueDepth = 200;
+            loggerConfig.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
+
+            this.IncrementCount<CommunicationEventArgs>(loggerConfig.RollbarInfrastructureOptions.ReportingQueueDepth);
 
             List<IRollbar> rollbars = 
                 new List<IRollbar>(MultithreadedStressTestParams.TotalThreads);

@@ -21,7 +21,7 @@
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <returns></returns>
-        public static IRollbar CreateNew(IRollbarConfig rollbarConfig)
+        public static IRollbar CreateNew(IRollbarLoggerConfig rollbarConfig)
         {
             return RollbarFactory.CreateNew(false, rollbarConfig);
         }
@@ -42,7 +42,7 @@
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <returns>IRollbar.</returns>
-        internal static IRollbar CreateNew(bool isSingleton, IRollbarConfig rollbarConfig)
+        internal static IRollbar CreateNew(bool isSingleton, IRollbarLoggerConfig rollbarConfig)
         {
             return new RollbarLogger(isSingleton, rollbarConfig);
         }
@@ -53,7 +53,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarBlockingLoggingTimeout">The rollbar blocking logging timeout.</param>
         public static ILogger CreateProper(
-            IRollbarConfig rollbarConfig,
+            IRollbarLoggerConfig rollbarConfig,
             TimeSpan? rollbarBlockingLoggingTimeout
             )
         {

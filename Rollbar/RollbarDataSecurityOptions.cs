@@ -5,13 +5,16 @@
     using System.Linq;
     using System.Text;
 
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
+
     using Rollbar.Common;
 
     public class RollbarDataSecurityOptions
         : ReconfigurableBase<RollbarDataSecurityOptions, IRollbarDataSecurityOptions>
         , IRollbarDataSecurityOptions
     {
-        internal RollbarDataSecurityOptions()
+        public RollbarDataSecurityOptions()
             : this(
                   PersonDataCollectionPolicies.None, 
                   IpAddressCollectionPolicy.Collect,
@@ -32,11 +35,14 @@
             this.ScrubSafelistFields = scrubSafeFields;
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
         public PersonDataCollectionPolicies PersonDataCollectionPolicies
         {
             get;
             set;
         }
+
+        [JsonConverter(typeof(StringEnumConverter))]
         public IpAddressCollectionPolicy IpAddressCollectionPolicy
         {
             get;

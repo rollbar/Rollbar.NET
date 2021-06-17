@@ -31,5 +31,20 @@
             get;
         }
 
+
+        TimeSpan PayloadPostTimeout
+        {
+            get;
+        }
+
+        int MaxItems
+        {
+            get; set;
+        }
+
+        bool CaptureUncaughtExceptions
+        {
+            get; set;
+        }
     }
 }

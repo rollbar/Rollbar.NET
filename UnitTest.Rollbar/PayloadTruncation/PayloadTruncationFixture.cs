@@ -19,15 +19,15 @@ namespace UnitTest.Rollbar.PayloadTruncation
     [TestCategory(nameof(PayloadTruncationFixture))]
     public class PayloadTruncationFixture
     {
-        private readonly RollbarConfig _config;
+        private readonly RollbarLoggerConfig _config;
 
         public PayloadTruncationFixture()
         {
-            this._config = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = RollbarUnitTestSettings.Environment,
-            };
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
 
+            this._config = new RollbarLoggerConfig();
+            this._config.RollbarDestinationOptions.Reconfigure(destinationOptions);
         }
 
         [TestInitialize]
@@ -47,22 +47,22 @@ namespace UnitTest.Rollbar.PayloadTruncation
 
             Payload[] testPayloads = new Payload[]
             {
-                new Payload(this._config.AccessToken, new Data(
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
                     this._config,
                     new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.AccessToken, new Data(
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
                     this._config, 
                     new Body("A terrible crash!"),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.AccessToken, new Data(
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
                     this._config,
                     new Body(GetException()),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.AccessToken, new Data(
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
                     this._config,
                     new Body(GetAggregateException()),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })

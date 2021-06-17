@@ -15,9 +15,9 @@
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns></returns>
-        public static IRollbarConfig DeduceRollbarConfig(IConfiguration configuration)
+        public static IRollbarLoggerConfig DeduceRollbarConfig(IConfiguration configuration)
         {
-            if (RollbarLocator.RollbarInstance.Config.AccessToken != null)
+            if (RollbarLocator.RollbarInstance.Config.RollbarDestinationOptions.AccessToken != null)
             {
                 return RollbarLocator.RollbarInstance.Config;
             }
@@ -29,10 +29,10 @@
             Assumption.AssertNotNull(configuration, nameof(configuration));
 
             const string defaultAccessToken = "none";
-            RollbarConfig rollbarConfig = new RollbarConfig(defaultAccessToken);
+            RollbarLoggerConfig rollbarConfig = new RollbarLoggerConfig(defaultAccessToken);
             AppSettingsUtility.LoadAppSettings(rollbarConfig, configuration);
 
-            if (rollbarConfig.AccessToken == defaultAccessToken)
+            if (rollbarConfig.RollbarDestinationOptions.AccessToken == defaultAccessToken)
             {
                 const string error = "Rollbar.NET notifier is not configured properly. A valid access token needs to be specified.";
                 throw new Exception(error);
