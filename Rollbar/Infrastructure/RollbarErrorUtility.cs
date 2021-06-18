@@ -18,7 +18,7 @@
         /// <param name="exception">The exception.</param>
         /// <param name="errorCollector">The error collector.</param>
         public static void Report(
-            RollbarLogger rollbarLogger, 
+            IRollbar rollbarLogger, 
             object dataObject, 
             InternalRollbarError rollbarError, 
             string message, 
@@ -31,9 +31,11 @@
 
             var rollbarEvent = new InternalErrorEventArgs(rollbarLogger, dataObject, rollbarException, rollbarException.Message);
 
-            if (rollbarLogger != null)
+            RollbarLogger specificRollbarLogger = rollbarLogger as RollbarLogger;
+
+            if (specificRollbarLogger != null)
             {
-                rollbarLogger.OnRollbarEvent(rollbarEvent);
+                specificRollbarLogger.OnRollbarEvent(rollbarEvent);
             }
             else
             {

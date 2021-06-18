@@ -26,7 +26,7 @@
         /// <summary>
         /// The rollbar logger
         /// </summary>
-        private readonly RollbarLogger _rollbarLogger;
+        private readonly IRollbar _rollbarLogger;
 
         /// <summary>
         /// The HTTP client
@@ -61,7 +61,7 @@
         /// Initializes a new instance of the <see cref="RollbarClient" /> class.
         /// </summary>
         /// <param name="rollbarLogger">The rollbar logger.</param>
-        public RollbarClient(RollbarLogger rollbarLogger)
+        public RollbarClient(IRollbar rollbarLogger)
             : this(rollbarLogger.Config)
         {
             Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));

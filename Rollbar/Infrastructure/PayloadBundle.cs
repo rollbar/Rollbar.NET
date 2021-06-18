@@ -37,7 +37,7 @@
         /// <summary>
         /// The rollbar logger
         /// </summary>
-        private readonly RollbarLogger _rollbarLogger;
+        private readonly IRollbar _rollbarLogger;
 
         /// <summary>
         /// The timeout at
@@ -122,7 +122,7 @@
         /// <param name="payloadPackage">The payload package.</param>
         /// <param name="level">The level.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level
             )
@@ -138,7 +138,7 @@
         /// <param name="level">The level.</param>
         /// <param name="custom">The custom.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
             IDictionary<string, object> custom
@@ -156,7 +156,7 @@
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
             DateTime? timeoutAt,
@@ -176,7 +176,7 @@
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
             IDictionary<string, object> custom,
@@ -199,7 +199,7 @@
         /// <param name="payloadObject">The payload object.</param>
         /// <param name="level">The level.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level
             )
@@ -215,7 +215,7 @@
         /// <param name="level">The level.</param>
         /// <param name="custom">The custom.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level,
             IDictionary<string, object> custom
@@ -233,7 +233,7 @@
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level,
             DateTime? timeoutAt,
@@ -253,7 +253,7 @@
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level,
             IDictionary<string, object> custom,

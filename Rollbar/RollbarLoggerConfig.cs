@@ -25,7 +25,7 @@
         private RollbarPayloadManipulationOptions _rollbarPayloadManipulationOptions = null;
         private RollbarInfrastructureOptions _rollbarInfrastructureOptions = null;
 
-        private readonly RollbarLogger _logger;
+        private readonly IRollbar _logger;
 
         public RollbarLoggerConfig()
             : this(null as string)
@@ -48,7 +48,7 @@
             }
         }
 
-        internal RollbarLoggerConfig(RollbarLogger logger)
+        internal RollbarLoggerConfig(IRollbar logger)
         {
             this._logger = logger;
 
@@ -114,7 +114,7 @@
             //this._rollbarInfrastructureOptions.CaptureUncaughtExceptions = true;
         }
 
-        internal RollbarLogger Logger
+        internal IRollbar Logger
         {
             get
             {
@@ -126,12 +126,14 @@
         {
             base.Reconfigure(likeMe);
 
-            if(this.Logger != null && this.Logger.Queue != null)
+            RollbarLogger rollbarLogger = this.Logger as RollbarLogger;
+
+            if(rollbarLogger != null && rollbarLogger.Queue != null)
             {
                 var rollbarClient = new RollbarClient(this.Logger);
                 // reset the queue to use the new RollbarClient:
-                this.Logger.Queue.Flush();
-                this.Logger.Queue.UpdateClient(rollbarClient);
+                rollbarLogger.Queue.Flush();
+                rollbarLogger.Queue.UpdateClient(rollbarClient);
             }
 
             return this;

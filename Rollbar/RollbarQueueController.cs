@@ -826,6 +826,9 @@ namespace Rollbar
             RollbarLoggerConfig config = (RollbarLoggerConfig)sender;
             Assumption.AssertNotNull(config, nameof(config));
 
+            RollbarLogger rollbarLogger = config.Logger as RollbarLogger;
+            Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
+
             string newStorePath = config.GetLocalPayloadStoreFullPathName();
             if (this._useLocalPayloadStore && this._storeRepository != null && string.Compare(newStorePath, this._storeRepository.GetRollbarStoreDbFullName(), false) != 0)
             {
@@ -838,7 +841,7 @@ namespace Rollbar
             {
                 this.ReevaluateUseOfLocalPayloadStore();
 
-                PayloadQueue queue = config.Logger.Queue;
+                PayloadQueue queue = rollbarLogger.Queue;
                 Assumption.AssertNotNull(queue, nameof(queue));
 
                 //refresh indexing:
@@ -900,7 +903,7 @@ namespace Rollbar
                 handler(this, e);
             }
 
-            e.Logger?.OnRollbarEvent(e);
+            (e.Logger as RollbarLogger)?.OnRollbarEvent(e);
 
             const string category = nameof(this.OnRollbarEvent);// "OnRollbarEvent(...)";
             const int id = 0;
