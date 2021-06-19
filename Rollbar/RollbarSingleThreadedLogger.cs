@@ -10,6 +10,7 @@
     using System.Linq;
     using System.Runtime.ExceptionServices;
     using Rollbar.PayloadStore;
+    using System.Net.Http;
 
     /// <summary>
     /// Implements disposable implementation of IRollbar.
@@ -31,7 +32,8 @@
         /// <summary>
         /// The payload queue
         /// </summary>
-        private readonly PayloadQueue _payloadQueue;
+        //private readonly PayloadQueue _payloadQueue;
+        private readonly RollbarBlazorClient _rollbarClient;
 
         /// <summary>
         /// Occurs when a Rollbar internal event happens.
@@ -72,10 +74,15 @@
             }
 
             // let's figure out where to keep the local payloads store:
-            PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig) this._config).GetLocalPayloadStoreFullPathName();
+            //PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig) this._config).GetLocalPayloadStoreFullPathName();
 
             // let's init proper Rollbar client:
-            var rollbarClient = new RollbarClient(this);
+            HttpClient httpClient = RollbarQueueController.Instance.ProvideHttpClient(
+                rollbarConfig.HttpProxyOptions.ProxyAddress,
+                rollbarConfig.HttpProxyOptions.ProxyUsername,
+                rollbarConfig.HttpProxyOptions.ProxyPassword
+                );
+            this._rollbarClient = new RollbarBlazorClient(this, httpClient);
 
             // let's init the corresponding queue and register it:
             //this._payloadQueue = new PayloadQueue(this, rollbarClient);
@@ -94,7 +101,7 @@
         /// <value>The queue.</value>
         internal PayloadQueue Queue
         {
-            get { return this._payloadQueue; }
+            get { return null; }//this._payloadQueue; }
         }
 
         #region IRollbar
@@ -152,7 +159,7 @@
         public ILogger AsBlockingLogger(TimeSpan timeout)
         {
             //return new RollbarLoggerBlockingWrapper(this, timeout);
-            return null;
+            return this;
         }
 
         /// <summary>
@@ -558,7 +565,7 @@
             if (string.IsNullOrWhiteSpace(this._config.RollbarDestinationOptions.AccessToken)
                 || this._config.RollbarDeveloperOptions.Enabled == false
                 || (level < this._config.RollbarDeveloperOptions.LogLevel)
-                || ((this._payloadQueue.AccessTokenQueuesMetadata != null) && this._payloadQueue.AccessTokenQueuesMetadata.IsTransmissionSuspended)
+                //|| ((this._payloadQueue.AccessTokenQueuesMetadata != null) && this._payloadQueue.AccessTokenQueuesMetadata.IsTransmissionSuspended)
                 )
             {
                 // nice shortcut:
@@ -640,7 +647,8 @@
 
             try
             {
-                this._payloadQueue.Enqueue(payloadBundle);
+                this._rollbarClient.PostAsJson(payloadBundle);
+                //this._payloadQueue.Enqueue(payloadBundle);
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (System.Exception exception)
@@ -747,7 +755,7 @@
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    this._payloadQueue.Release();
+                    //this._payloadQueue.Release();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
