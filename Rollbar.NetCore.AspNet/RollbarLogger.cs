@@ -25,7 +25,7 @@
         /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public RollbarLogger(string name
             , IRollbarLoggerConfig rollbarConfig
-            ,NetPlatformExtensions.RollbarOptions rollbarOptions
+            , NetPlatformExtensions.RollbarOptions rollbarOptions
             , IHttpContextAccessor httpContextAccessor
             )
             : base(name, rollbarConfig, rollbarOptions)

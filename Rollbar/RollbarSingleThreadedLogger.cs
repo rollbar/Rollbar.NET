@@ -56,10 +56,10 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         internal RollbarSingleThreadedLogger(bool isSingleton, IRollbarLoggerConfig rollbarConfig)
         {
-            if(!TelemetryCollector.Instance.IsAutocollecting)
-            {
-                TelemetryCollector.Instance.StartAutocollection();
-            }
+            //if(!TelemetryCollector.Instance.IsAutocollecting)
+            //{
+            //    TelemetryCollector.Instance.StartAutocollection();
+            //}
 
             this.IsSingleton = isSingleton;
 
@@ -77,11 +77,18 @@
             //PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig) this._config).GetLocalPayloadStoreFullPathName();
 
             // let's init proper Rollbar client:
-            HttpClient httpClient = RollbarQueueController.Instance.ProvideHttpClient(
-                rollbarConfig.HttpProxyOptions.ProxyAddress,
-                rollbarConfig.HttpProxyOptions.ProxyUsername,
-                rollbarConfig.HttpProxyOptions.ProxyPassword
-                );
+            //HttpClient httpClient = RollbarQueueController.Instance.ProvideHttpClient(
+            //    rollbarConfig.HttpProxyOptions.ProxyAddress,
+            //    rollbarConfig.HttpProxyOptions.ProxyUsername,
+            //    rollbarConfig.HttpProxyOptions.ProxyPassword
+            //    );
+
+            HttpClient httpClient = 
+                HttpClientUtility.CreateHttpClient(
+                    rollbarConfig.HttpProxyOptions.ProxyAddress, 
+                    rollbarConfig.HttpProxyOptions.ProxyUsername, 
+                    rollbarConfig.HttpProxyOptions.ProxyPassword
+                    );
             this._rollbarClient = new RollbarBlazorClient(this, httpClient);
 
             // let's init the corresponding queue and register it:
@@ -647,7 +654,7 @@
 
             try
             {
-                this._rollbarClient.PostAsJson(payloadBundle);
+                _ = this._rollbarClient.PostAsJsonAsync(payloadBundle);
                 //this._payloadQueue.Enqueue(payloadBundle);
             }
 #pragma warning disable CA1031 // Do not catch general exception types

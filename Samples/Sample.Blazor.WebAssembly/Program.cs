@@ -22,5 +22,6 @@ namespace Sample.Blazor.WebAssembly
 
             await builder.Build().RunAsync();
         }
+
     }
 }

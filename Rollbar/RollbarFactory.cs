@@ -1,6 +1,7 @@
 ﻿namespace Rollbar
 {
     using System;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     /// RollbarFactory utility class.
@@ -44,7 +45,16 @@
         /// <returns>IRollbar.</returns>
         internal static IRollbar CreateNew(bool isSingleton, IRollbarLoggerConfig rollbarConfig)
         {
-            return new RollbarLogger(isSingleton, rollbarConfig);
+#if !NETFX_47nOlder
+            if(RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
+            {
+                return new RollbarSingleThreadedLogger(isSingleton, rollbarConfig);
+            }
+            else
+#endif
+            {
+                return new RollbarLogger(isSingleton, rollbarConfig);
+            }
         }
 
         /// <summary>
