@@ -38,7 +38,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarBlockingTimeout">The rollbar blocking timeout.</param>
         protected PlugInCoreBase(
-            IRollbarLoggerConfig rollbarConfig,
+            IRollbarInfrastructureConfig rollbarConfig,
             TimeSpan? rollbarBlockingTimeout
             )
         {
@@ -48,8 +48,16 @@
                 rollbarConfig = configLoader.LoadRollbarConfig();
             }
 
-            this._rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig);
+            // first, initialize the infrastructure:
+            if(!RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructure.Instance.Init(rollbarConfig);
+            }
 
+            // create proper IRollbar instance:
+            this._rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig.RollbarLoggerConfig);
+
+            // create proper RollbarLogger instance:
             if (rollbarBlockingTimeout.HasValue)
             {
                 this._rollbarLogger = this._rollbar.AsBlockingLogger(rollbarBlockingTimeout.Value);
@@ -71,15 +79,15 @@
         /// <param name="rollbarAccessToken">The Rollbar access token.</param>
         /// <param name="rollbarEnvironment">The Rollbar environment.</param>
         /// <returns>IRollbarConfig.</returns>
-        public static IRollbarLoggerConfig CreateConfig(string rollbarAccessToken, string rollbarEnvironment)
+        public static IRollbarInfrastructureConfig CreateConfig(string rollbarAccessToken, string rollbarEnvironment)
         {
             RollbarDestinationOptions destinationOptions = 
                 new RollbarDestinationOptions(rollbarAccessToken, rollbarEnvironment);
 
-            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
-            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            IRollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
+            config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
-            return loggerConfig;
+            return config;
         }
 
         /// <summary>
@@ -206,7 +214,7 @@
         protected PlugInCore(
             IDictionary<TPlugInErrorLevel, ErrorLevel> rollbarErrorLevelByPlugInErrorLevel,
             string customPrefix,
-            IRollbarLoggerConfig rollbarConfig,
+            IRollbarInfrastructureConfig rollbarConfig,
             TimeSpan? rollbarBlockingTimeout
             )
             : base(rollbarConfig, rollbarBlockingTimeout)

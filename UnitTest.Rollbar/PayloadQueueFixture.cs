@@ -10,6 +10,16 @@ namespace UnitTest.Rollbar
     [TestCategory(nameof(PayloadQueueFixture))]
     public class PayloadQueueFixture
     {
+        private static readonly RollbarInfrastructureConfig infrastructureConfig;
+        static PayloadQueueFixture()
+        {
+            infrastructureConfig = new RollbarInfrastructureConfig();
+            if(!RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructure.Instance.Init(infrastructureConfig);
+            }
+        }
+
         [TestInitialize]
         public void SetupFixture()
         {

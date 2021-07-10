@@ -13,17 +13,28 @@
         , IRollbarInfrastructureConfig
 
     {
-        private RollbarLoggerConfig _rollbarLoggerConfig = null;
+        private readonly RollbarLoggerConfig _rollbarLoggerConfig = null;
         private RollbarInfrastructureOptions _rollbarInfrastructureOptions = null;
+        private RollbarOfflineStoreOptions _rollbarOfflineStoreOptions = null;
+
+        public RollbarInfrastructureConfig()
+            : this("seedToken")
+        {
+        }
+
+        public RollbarInfrastructureConfig(string accessToken)
+        {
+            this._rollbarLoggerConfig = new RollbarLoggerConfig(accessToken);
+        }
 
         public IRollbarLoggerConfig RollbarLoggerConfig
         {
             get
             {
-                if(this._rollbarLoggerConfig == null)
-                {
-                    this._rollbarLoggerConfig =new RollbarLoggerConfig();
-                }
+                //if(this._rollbarLoggerConfig == null)
+                //{
+                //    this._rollbarLoggerConfig =new RollbarLoggerConfig();
+                //}
 
                 return this._rollbarLoggerConfig;
             }
@@ -38,6 +49,19 @@
                 }
 
                 return this._rollbarInfrastructureOptions;
+            }
+        }
+
+        public IRollbarOfflineStoreOptions RollbarOfflineStoreOptions
+        {
+            get
+            {
+                if(this._rollbarOfflineStoreOptions == null)
+                {
+                    this._rollbarOfflineStoreOptions = new RollbarOfflineStoreOptions();
+                }
+
+                return this._rollbarOfflineStoreOptions;
             }
         }
 
@@ -58,12 +82,17 @@
                         RollbarInfrastructureConfig.RollbarInfrastructureConfigValidationRule.InfrastructureOptionsRequred,
                         (config) => { return this.RollbarInfrastructureOptions != null; }
                         )
+                    .AddValidation(
+                        RollbarInfrastructureConfig.RollbarInfrastructureConfigValidationRule.OfflineStoreOptionsRequired,
+                        (config) => { return this.RollbarOfflineStoreOptions != null; }
+                        )
                ;
 
             IValidatable[] validatableComponents =
             {
                 this._rollbarLoggerConfig,
                 this._rollbarInfrastructureOptions,
+                this._rollbarOfflineStoreOptions,
             };
 
             Debug.Assert(validator.TotalValidationRules == (new HashSet<IValidatable>(validatableComponents)).Count);
@@ -80,6 +109,7 @@
         {
             LoggerConfigRequired,
             InfrastructureOptionsRequred,
+            OfflineStoreOptionsRequired,
         }
 
     }

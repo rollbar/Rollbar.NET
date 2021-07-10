@@ -136,7 +136,7 @@
 
             lock (this._syncLock)
             {
-                if (this._logger.Config.RollbarInfrastructureOptions.ReportingQueueDepth == this._queue.Count)
+                if (RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.ReportingQueueDepth == this._queue.Count)
                 {
                     this._queue.Dequeue();
                 }
@@ -177,8 +177,8 @@
                 {
                     result = this._queue.Dequeue();
 
-                    TimeSpan delta = this.Logger.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue ? 
-                        TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / this.Logger.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value)
+                    TimeSpan delta = RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue ? 
+                        TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value)
                         : TimeSpan.Zero;
                     this.NextDequeueTime = DateTimeOffset.Now.Add(delta);
                 }

@@ -47,7 +47,7 @@ namespace UnitTest.Rollbar
         public void TestReconfiguration()
         {
             RollbarLoggerConfig config = new RollbarLoggerConfig();
-            Assert.IsNull(config.RollbarDestinationOptions.AccessToken);
+            Assert.AreEqual("seedToken", config.RollbarDestinationOptions.AccessToken);
             Console.WriteLine(config.TraceAsString());
 
 
@@ -58,7 +58,7 @@ namespace UnitTest.Rollbar
             Console.WriteLine(config.TraceAsString());
 
             RollbarLoggerConfig newConfig = new RollbarLoggerConfig();
-            Assert.IsNull(newConfig.RollbarDestinationOptions.AccessToken);
+            Assert.AreEqual("seedToken", newConfig.RollbarDestinationOptions.AccessToken);
             Console.WriteLine(newConfig.TraceAsString());
 
             newConfig.Reconfigure(config);

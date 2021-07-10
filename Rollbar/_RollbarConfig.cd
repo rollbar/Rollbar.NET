@@ -1,66 +1,80 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Interface Name="Rollbar.IHttpProxyOptions">
-    <Position X="26" Y="1.75" Width="2.75" />
+    <Position X="4" Y="6.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAIAAAACAAAAAAAAAAA=</HashCode>
       <FileName>IHttpProxyOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Rollbar.IRollbarConfig">
-    <Position X="4.5" Y="5.25" Width="5" />
-    <TypeIdentifier>
-      <HashCode>AAAACAAAAAAABICAAAAAAAAAAAAAAAAIAAAAAACAAAA=</HashCode>
-      <FileName>IRollbarConfig.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
   <Interface Name="Rollbar.IRollbarDataSecurityOptions">
-    <Position X="17.5" Y="1.75" Width="4.5" />
+    <Position X="0.5" Y="11" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AAAAAABACAAAAQAAAAAAAAAAAgAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>IRollbarDataSecurityOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarDestinationOptions">
-    <Position X="10.75" Y="1.75" Width="2.5" />
+    <Position X="0.5" Y="6.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAACAAAAQAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IRollbarDestinationOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarDeveloperOptions">
-    <Position X="22.25" Y="1.75" Width="3.5" />
+    <Position X="0.5" Y="8.5" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAIIAAAEBAAAAAA=</HashCode>
       <FileName>IRollbarDeveloperOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarInfrastructureOptions">
-    <Position X="1.25" Y="6.5" Width="2.75" />
+    <Position X="11" Y="5.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAEAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAACAAAAAAAAAAAAAAAEAAAAABAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>IRollbarInfrastructureOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarLoggerConfig">
-    <Position X="4.5" Y="1.75" Width="5" />
+    <Position X="0.5" Y="3" Width="5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAgQAAAAAQAACAgAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <HashCode>AAAAAAgQAAAABQAACAgAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>IRollbarLoggerConfig.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarPayloadAdditionOptions">
-    <Position X="13.75" Y="3.5" Width="2.5" />
+    <Position X="4.25" Y="8.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
       <FileName>IRollbarPayloadAdditionOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarPayloadManipulationOptions">
-    <Position X="13.75" Y="1.75" Width="3.25" />
+    <Position X="5.25" Y="11" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IRollbarPayloadManipulationOptions.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.ITraceable">
+    <Position X="1.5" Y="0.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>ITraceable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.IRollbarInfrastructureConfig">
+    <Position X="11" Y="3" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAABAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRollbarInfrastructureConfig.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.IRollbarOfflineStoreOptions">
+    <Position X="11" Y="7.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAICAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>IRollbarOfflineStoreOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

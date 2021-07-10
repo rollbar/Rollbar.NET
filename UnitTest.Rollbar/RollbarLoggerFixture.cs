@@ -321,19 +321,20 @@ namespace UnitTest.Rollbar
                 TimeSpan serverRateDuration = sw.Elapsed;
 
                 // reconfigure with locally defined reporting rate:
-                RollbarLoggerConfig rollbarConfig = new RollbarLoggerConfig();
-                rollbarConfig.Reconfigure(rollbar.Config);
-                Assert.IsFalse(rollbarConfig.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
+                //RollbarLoggerConfig rollbarConfig = new RollbarLoggerConfig();
+                //rollbarConfig.Reconfigure(rollbar.Config);
+                //Assert.IsFalse(rollbarConfig.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
+                Assert.IsFalse(RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
 
                 RollbarInfrastructureOptions rollbarInfrastructureOptions = new RollbarInfrastructureOptions();
                 rollbarInfrastructureOptions.MaxReportsPerMinute = localReportingRate;
-                rollbarConfig.RollbarInfrastructureOptions.Reconfigure(rollbarInfrastructureOptions);
-                Assert.IsTrue(rollbarConfig.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
-                Assert.AreEqual(localReportingRate, rollbarConfig.RollbarInfrastructureOptions.MaxReportsPerMinute.Value);
+                RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.Reconfigure(rollbarInfrastructureOptions);
+                Assert.IsTrue(RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
+                Assert.AreEqual(localReportingRate, RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value);
 
-                rollbar.Config.Reconfigure(rollbarConfig);
-                Assert.IsTrue(rollbar.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
-                Assert.AreEqual(localReportingRate, rollbar.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value);
+                //rollbar.Config.Reconfigure(rollbarConfig);
+                //Assert.IsTrue(rollbar.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue);
+                //Assert.AreEqual(localReportingRate, rollbar.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value);
 
                 // using local config defined reporting rate:
                 sw.Restart();
@@ -819,9 +820,9 @@ namespace UnitTest.Rollbar
 
             RollbarInfrastructureOptions infrastructureOptions = new RollbarInfrastructureOptions();
             infrastructureOptions.ReportingQueueDepth = 200;
-            loggerConfig.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
+            RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
 
-            this.IncrementCount<CommunicationEventArgs>(loggerConfig.RollbarInfrastructureOptions.ReportingQueueDepth);
+            this.IncrementCount<CommunicationEventArgs>(RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.ReportingQueueDepth);
 
             TimeSpan rollbarBlockingTimeout = TimeSpan.FromMilliseconds(55000);
 
@@ -875,9 +876,9 @@ namespace UnitTest.Rollbar
 
             RollbarInfrastructureOptions infrastructureOptions = new RollbarInfrastructureOptions();
             infrastructureOptions.ReportingQueueDepth = 200;
-            loggerConfig.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
+            RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
 
-            this.IncrementCount<CommunicationEventArgs>(loggerConfig.RollbarInfrastructureOptions.ReportingQueueDepth);
+            this.IncrementCount<CommunicationEventArgs>(RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.ReportingQueueDepth);
 
             List<IRollbar> rollbars = 
                 new List<IRollbar>(MultithreadedStressTestParams.TotalThreads);

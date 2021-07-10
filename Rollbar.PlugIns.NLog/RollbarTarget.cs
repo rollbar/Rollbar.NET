@@ -28,7 +28,7 @@
         /// Initializes a new instance of the <see cref="RollbarTarget"/> class.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        public RollbarTarget(IRollbarLoggerConfig rollbarConfig)
+        public RollbarTarget(IRollbarInfrastructureConfig rollbarConfig)
         {
             OptimizeBufferReuse = true;
             Layout = "${message}";
@@ -73,7 +73,7 @@
         /// <summary>
         /// Initializes a new <see cref="RollbarConfig"/> from app.config (NetFramework) / appsettings.json (NetCore)
         /// </summary>
-        private static IRollbarLoggerConfig CreateDefaultRollbarConfig()
+        private static IRollbarInfrastructureConfig CreateDefaultRollbarConfig()
         {
             var configLoader = new RollbarConfigurationLoader();
             return configLoader.LoadRollbarConfig();

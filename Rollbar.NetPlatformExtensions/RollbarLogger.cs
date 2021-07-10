@@ -92,17 +92,17 @@
             }
 
             if (RollbarScope.Current != null 
-                && RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems > 0
+                && RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems > 0
                 )
             {
                 RollbarScope.Current.IncrementLogItemsCount();
-                if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems)
+                if (RollbarScope.Current.LogItemsCount == RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems)
                 {
                     // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
                     RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
                     return;
                 }
-                else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems)
+                else if (RollbarScope.Current.LogItemsCount > RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems)
                 {
                     // the Rollbar SDK already exceeded MaxItems limit, do not log for this scope:
                     return;

@@ -36,7 +36,7 @@
         /// <summary>
         /// The expected post to API timeout
         /// </summary>
-        private readonly TimeSpan _expectedPostToApiTimeout;
+        //private readonly TimeSpan _expectedPostToApiTimeout;
 
         /// <summary>
         /// The payload post URI
@@ -134,7 +134,7 @@
                 //    rollbarConfig.HttpProxyOptions.ProxyPassword
                 //);
 
-            this._expectedPostToApiTimeout = logger.Config.RollbarInfrastructureOptions.PayloadPostTimeout;
+            //this._expectedPostToApiTimeout = logger.Config.RollbarInfrastructureOptions.PayloadPostTimeout;
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
             if(!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))

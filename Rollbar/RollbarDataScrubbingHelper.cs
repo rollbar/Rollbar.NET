@@ -30,7 +30,7 @@
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="RollbarQueueController" /> class from being created.
+        /// Prevents a default instance of the <see cref="RollbarDataScrubbingHelper" /> class from being created.
         /// </summary>
         private RollbarDataScrubbingHelper()
         {

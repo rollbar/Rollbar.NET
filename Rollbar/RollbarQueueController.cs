@@ -17,6 +17,7 @@ namespace Rollbar
     using Newtonsoft.Json;
     using PayloadStore;
     using Serialization.Json;
+    using System.IO;
 
 #if NETFX
     using System.Web.Hosting;
@@ -31,7 +32,7 @@ namespace Rollbar
     /// Implements the <see cref="System.IDisposable" />
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    public sealed class RollbarQueueController
+    internal sealed class RollbarQueueController
         : IDisposable
 #if NETFX
         , IRegisteredObject
@@ -56,9 +57,9 @@ namespace Rollbar
         /// </summary>
         private RollbarQueueController()
         {
-            this.ReevaluateUseOfLocalPayloadStore();
+            //this.ReevaluateUseOfLocalPayloadStore();
 
-            this.Start();
+            //this.Start();
         }
 
         /// <summary>
@@ -183,7 +184,75 @@ namespace Rollbar
         /// </summary>
         public event EventHandler<RollbarEventArgs> InternalEvent;
 
+        private IRollbarInfrastructureConfig _config = null;
 
+        internal void Init(IRollbarInfrastructureConfig config)
+        {
+            Assumption.AssertNotNull(config, nameof(config));
+
+            this._config = config;
+            this._config.Reconfigured += _config_Reconfigured;
+            //TODO: implement...
+            this.EvaluateUseOfLocalPayloadStoreOptions(this._config.RollbarOfflineStoreOptions);
+
+            //this.ReevaluateUseOfLocalPayloadStore();
+            this.Start();
+        }
+
+        private void _config_Reconfigured(object sender, EventArgs e)
+        {
+            //TODO: RollbarConfig - implement
+            //throw new NotImplementedException();
+        }
+
+        private void EvaluateUseOfLocalPayloadStoreOptions(IRollbarOfflineStoreOptions options)
+        {
+            Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + "...");
+
+            if(!options.EnableLocalPayloadStore)
+            {
+                if(this._storeRepository != null)
+                {
+                    this._storeRepository.Dispose();
+                    this._storeRepository = null;
+                }
+
+                return;
+            }
+
+            if(this._storeRepository == null)
+            {
+                this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
+            }
+
+            string storePath = this.GetLocalPayloadStoreFullPathName(options);
+            if(this._storeRepository != null && string.Compare(storePath, this._storeRepository.GetRollbarStoreDbFullName(), false) != 0)
+            {
+                this._storeRepository.SetRollbarStoreDbFullName(storePath);
+            }
+
+            //this._useLocalPayloadStore = true;
+            this._storeRepository.MakeSureDatabaseExistsAndReady();
+
+            Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + ".");
+        }
+
+        internal string GetLocalPayloadStoreFullPathName(IRollbarOfflineStoreOptions options)
+        {
+            string dbLocation = string.IsNullOrWhiteSpace(options.LocalPayloadStoreLocationPath)
+                ? PayloadStoreConstants.DefaultRollbarStoreDbFileLocation
+                : options.LocalPayloadStoreLocationPath;
+
+            string dbFile = string.IsNullOrWhiteSpace(options.LocalPayloadStoreFileName)
+                ? PayloadStoreConstants.DefaultRollbarStoreDbFile
+                : options.LocalPayloadStoreFileName;
+
+            string result = string.IsNullOrWhiteSpace(dbLocation)
+                ? dbFile
+                : Path.Combine(dbLocation, dbFile);
+
+            return result;
+        }
 
         /// <summary>
         /// Registers the specified queue.
@@ -193,21 +262,23 @@ namespace Rollbar
         {
             lock (this._syncLock)
             {
+                Assumption.AssertNotNull(this._config, nameof(this._config));
                 Assumption.AssertTrue(!this._allQueues.Contains(queue), nameof(queue));
 
                 this._allQueues.Add(queue);
                 this.IndexByToken(queue);
 
-                this._useLocalPayloadStore |= queue.Logger.Config.EnableLocalPayloadStore;
-                if (this._useLocalPayloadStore && this._storeRepository == null)
-                {
-                    Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.Register) + "...");
-                    this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
-                    this._storeRepository.MakeSureDatabaseExistsAndReady();
-                    Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Register) + ".");
-                }
+                //TODO: RollbarConfig - use only infrastructure related payload store settings
+                //this._useLocalPayloadStore |= queue.Logger.Config.EnableLocalPayloadStore;
+                //if (this._useLocalPayloadStore && this._storeRepository == null)
+                //{
+                //    Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.Register) + "...");
+                //    this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
+                //    this._storeRepository.MakeSureDatabaseExistsAndReady();
+                //    Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Register) + ".");
+                //}
 
-                ((RollbarLoggerConfig)queue.Logger.Config).Reconfigured += Config_Reconfigured;
+                ((RollbarLoggerConfig)queue.Logger.Config).Reconfigured += LoggerConfig_Reconfigured;
 
                 // The following debug line causes stack overflow when RollbarTraceListener is activated:                
                 Debug.WriteLineIf(RollbarTraceListener.InstanceCount == 0, this.GetType().Name + ": Registered a queue. Total queues count: " + this._allQueues.Count + ".");
@@ -222,37 +293,39 @@ namespace Rollbar
         {
             lock (this._syncLock)
             {
+                Assumption.AssertNotNull(this._config, nameof(this._config));
                 Assumption.AssertTrue(!queue.Logger.IsSingleton, nameof(queue.Logger.IsSingleton));
                 Assumption.AssertTrue(this._allQueues.Contains(queue), nameof(queue));
 
                 this.DropIndexByToken(queue);
                 this._allQueues.Remove(queue);
-                this.ReevaluateUseOfLocalPayloadStore();
-                ((RollbarLoggerConfig)queue.Logger.Config).Reconfigured -= Config_Reconfigured;
+                //this.ReevaluateUseOfLocalPayloadStore();
+                ((RollbarLoggerConfig)queue.Logger.Config).Reconfigured -= LoggerConfig_Reconfigured;
                 Debug.WriteLine(this.GetType().Name + ": Unregistered a queue. Total queues count: " + this._allQueues.Count + ".");
             }
         }
 
-        private void ReevaluateUseOfLocalPayloadStore()
-        {
-            foreach (var queue in _allQueues)
-            {
-                if (queue.Logger.Config.EnableLocalPayloadStore)
-                {
-                    this._useLocalPayloadStore = true;
-                    if (this._storeRepository == null)
-                    {
-                        Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.ReevaluateUseOfLocalPayloadStore) + "...");
-                        this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
-                        this._storeRepository.MakeSureDatabaseExistsAndReady();
-                        Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.ReevaluateUseOfLocalPayloadStore) + ".");
-                    }
-                    return;
-                }
-            }
+        //private void ReevaluateUseOfLocalPayloadStore()
+        //{
+        //    foreach (var queue in _allQueues)
+        //    {
+        //        //TODO: RollbarConfig - use the infrastructure related payload store settings...
+        //        //if (queue.Logger.Config.EnableLocalPayloadStore)
+        //        {
+        //            this._useLocalPayloadStore = true;
+        //            if (this._storeRepository == null)
+        //            {
+        //                Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.ReevaluateUseOfLocalPayloadStore) + "...");
+        //                this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
+        //                this._storeRepository.MakeSureDatabaseExistsAndReady();
+        //                Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.ReevaluateUseOfLocalPayloadStore) + ".");
+        //            }
+        //            return;
+        //        }
+        //    }
 
-            this._useLocalPayloadStore = false;
-        }
+        //    this._useLocalPayloadStore = false;
+        //}
 
         /// <summary>
         /// Gets the queues count.
@@ -261,7 +334,9 @@ namespace Rollbar
         /// <returns>System.Int32.</returns>
         internal int GetQueuesCount(string accessToken = null)
         {
-            if (!string.IsNullOrWhiteSpace(accessToken))
+            Assumption.AssertNotNull(this._config, nameof(this._config));
+
+            if(!string.IsNullOrWhiteSpace(accessToken))
             {
                 if (this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata metadata))
                 {
@@ -285,7 +360,9 @@ namespace Rollbar
         /// <returns>IEnumerable&lt;PayloadQueue&gt;.</returns>
         internal IEnumerable<PayloadQueue> GetQueues(string accessToken = null)
         {
-            if (!string.IsNullOrWhiteSpace(accessToken))
+            Assumption.AssertNotNull(this._config, nameof(this._config));
+
+            if(!string.IsNullOrWhiteSpace(accessToken))
             {
                 if (this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata metadata))
                 {
@@ -320,7 +397,7 @@ namespace Rollbar
         /// <summary>
         /// Flags the use of local payload store
         /// </summary>
-        private bool _useLocalPayloadStore = false;
+        //private bool _useLocalPayloadStore = false;
 
         /// <summary>
         /// Keeps the processing all queues.
@@ -378,7 +455,7 @@ namespace Rollbar
         /// </summary>
         private void ProcessPersistentStoreOnce()
         {
-            if (!this._useLocalPayloadStore)
+            if (this._storeRepository == null)
             {
                 return;
             }
@@ -621,7 +698,8 @@ namespace Rollbar
         /// <param name="payloadQueue">The payload queue.</param>
         private void Persist(PayloadQueue payloadQueue)
         {
-            if (!payloadQueue.Logger.Config.EnableLocalPayloadStore)
+            //if (!payloadQueue.Logger.Config.EnableLocalPayloadStore)
+            if (this._storeRepository == null)
             {
                 return;
             }
@@ -821,25 +899,25 @@ namespace Rollbar
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
-        private void Config_Reconfigured(object sender, EventArgs e)
+        private void LoggerConfig_Reconfigured(object sender, EventArgs e)
         {
-            RollbarLoggerConfig config = (RollbarLoggerConfig)sender;
+            RollbarLoggerConfig config = (RollbarLoggerConfig) sender;
             Assumption.AssertNotNull(config, nameof(config));
 
             RollbarLogger rollbarLogger = config.Logger as RollbarLogger;
             Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
 
-            string newStorePath = config.GetLocalPayloadStoreFullPathName();
-            if (this._useLocalPayloadStore && this._storeRepository != null && string.Compare(newStorePath, this._storeRepository.GetRollbarStoreDbFullName(), false) != 0)
-            {
-                this.Stop(true);
-                this._storeRepository.SetRollbarStoreDbFullName(newStorePath);
-                this.Start();
-            }
+            //string newStorePath = (config.RollbarOfflineStoreOptions as RollbarOfflineStoreOptions)?.GetLocalPayloadStoreFullPathName();
+            //if (this._useLocalPayloadStore && this._storeRepository != null && string.Compare(newStorePath, this._storeRepository.GetRollbarStoreDbFullName(), false) != 0)
+            //{
+            //    this.Stop(true);
+            //    this._storeRepository.SetRollbarStoreDbFullName(newStorePath);
+            //    this.Start();
+            //}
 
             lock (this._syncLock)
             {
-                this.ReevaluateUseOfLocalPayloadStore();
+                //this.ReevaluateUseOfLocalPayloadStore();
 
                 PayloadQueue queue = rollbarLogger.Queue;
                 Assumption.AssertNotNull(queue, nameof(queue));
@@ -894,6 +972,7 @@ namespace Rollbar
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         internal void OnRollbarEvent(RollbarEventArgs e)
         {
+            Assumption.AssertNotNull(this._config, nameof(this._config));
             Assumption.AssertNotNull(e, nameof(e));
 
             EventHandler<RollbarEventArgs> handler = InternalEvent;
@@ -940,6 +1019,8 @@ namespace Rollbar
         {
             lock (this._syncLock)
             {
+                Assumption.AssertNotNull(this._config, nameof(this._config));
+
                 int count = 0;
                 foreach (var queue in this._allQueues)
                 {
@@ -960,7 +1041,9 @@ namespace Rollbar
             AccessTokenQueuesMetadata tokenMetadata = null;
             lock (this._syncLock)
             {
-                if (this._queuesByAccessToken.TryGetValue(accessToken, out tokenMetadata))
+                Assumption.AssertNotNull(this._config, nameof(this._config));
+
+                if(this._queuesByAccessToken.TryGetValue(accessToken, out tokenMetadata))
                 {
                     foreach (var queue in tokenMetadata.PayloadQueues)
                     {
@@ -978,6 +1061,8 @@ namespace Rollbar
         /// <returns>System.Int32.</returns>
         public int GetPayloadCount(IRollbar rollbar)
         {
+            Assumption.AssertNotNull(this._config, nameof(this._config));
+
             return this.GetPayloadCount(rollbar.Config.RollbarDestinationOptions.AccessToken);
         }
 
@@ -993,14 +1078,16 @@ namespace Rollbar
             AccessTokenQueuesMetadata tokenMetadata = null;
             lock (this._syncLock)
             {
-                if (this._queuesByAccessToken.TryGetValue(accessToken, out tokenMetadata))
+                Assumption.AssertNotNull(this._config, nameof(this._config));
+
+                if(this._queuesByAccessToken.TryGetValue(accessToken, out tokenMetadata))
                 {
                     foreach (var queue in tokenMetadata.PayloadQueues)
                     {
                         totalPayloads += queue.GetPayloadCount();
                         TimeSpan queueTimeout =
-                            queue.Logger.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue ?
-                            TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / queue.Logger.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value)
+                            this._config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue ?
+                            TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / this._config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value)
                             : TimeSpan.Zero;
                         if (payloadTimeout < queueTimeout)
                         {
@@ -1019,6 +1106,8 @@ namespace Rollbar
         /// <returns>TimeSpan.</returns>
         public TimeSpan GetRecommendedTimeout(IRollbar rollbar)
         {
+            Assumption.AssertNotNull(this._config, nameof(this._config));
+
             return this.GetRecommendedTimeout(rollbar.Config.RollbarDestinationOptions.AccessToken);
         }
 
@@ -1032,6 +1121,8 @@ namespace Rollbar
             string[] accessTokens;
             lock (this._syncLock)
             {
+                Assumption.AssertNotNull(this._config, nameof(this._config));
+
                 accessTokens = this._queuesByAccessToken.Keys.ToArray();
             }
 
@@ -1059,7 +1150,9 @@ namespace Rollbar
         {
             lock (this._syncLock)
             {
-                foreach (var queue in this._allQueues)
+                Assumption.AssertNotNull(this._config, nameof(this._config));
+
+                foreach(var queue in this._allQueues)
                 {
                     foreach (var flushedBundle in queue.Flush())
                     {
@@ -1085,15 +1178,17 @@ namespace Rollbar
         /// </summary>
         public void Start()
         {
-            if (this._useLocalPayloadStore && this._storeRepository == null)
-            {
-                Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.Start) + "...");
-                this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
-                this._storeRepository.MakeSureDatabaseExistsAndReady();
-                Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Start) + ".");
-            }
+            //if (this._useLocalPayloadStore && this._storeRepository == null)
+            //{
+            //    Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.Start) + "...");
+            //    this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
+            //    this._storeRepository.MakeSureDatabaseExistsAndReady();
+            //    Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Start) + ".");
+            //}
 
-            if (this._rollbarCommThread == null)
+            Assumption.AssertNotNull(this._config, nameof(this._config));
+
+            if(this._rollbarCommThread == null)
             {
 #if NETFX
                 HostingEnvironment.RegisterObject(this);
@@ -1139,7 +1234,9 @@ namespace Rollbar
         /// </summary>
         public void Stop(bool immediate)
         {
-            if (!immediate && this._cancellationTokenSource != null)
+            Assumption.AssertNotNull(this._config, nameof(this._config));
+
+            if(!immediate && this._cancellationTokenSource != null)
             {
                 this._cancellationTokenSource.Cancel();
                 return;
@@ -1178,6 +1275,7 @@ namespace Rollbar
                 {
                     // TODO: dispose managed state (managed objects).
                     CompleteProcessing();
+                    this._config.Reconfigured -= _config_Reconfigured;
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

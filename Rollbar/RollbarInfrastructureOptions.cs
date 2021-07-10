@@ -1,8 +1,6 @@
 ﻿namespace Rollbar
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     using Rollbar.Common;
 
@@ -54,16 +52,6 @@
             set;
         }
 
-        public IRollbarInfrastructureOptions Reconfigure(IRollbarInfrastructureOptions likeMe)
-        {
-            return base.Reconfigure(likeMe);
-        }
-
-        public override Validator GetValidator()
-        {
-            return null;
-        }
-
         public TimeSpan PayloadPostTimeout
         {
             get;
@@ -79,5 +67,16 @@
         {
             get; set;
         }
+
+        public override Validator GetValidator()
+        {
+            return null;
+        }
+
+        public IRollbarInfrastructureOptions Reconfigure(IRollbarInfrastructureOptions likeMe)
+        {
+            return base.Reconfigure(likeMe);
+        }
+
     }
 }

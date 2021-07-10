@@ -69,7 +69,7 @@
         /// <param name="rollbarBlockingTimeout">The rollbar blocking timeout.</param>
         /// <param name="rollbarTarget">The rollbar target.</param>
         public RollbarPlugInCore(
-            IRollbarLoggerConfig rollbarConfig,
+            IRollbarInfrastructureConfig rollbarConfig,
             TimeSpan? rollbarBlockingTimeout,
             RollbarTarget rollbarTarget
             )

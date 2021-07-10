@@ -40,7 +40,7 @@
             Assumption.AssertNotNull(configuration, nameof(configuration));
             Assumption.AssertNotNull(options, nameof(options));
             Assumption.AssertNotNull(this._rollbarConfig, nameof(this._rollbarConfig));
-            Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.RollbarDestinationOptions.AccessToken, nameof(this._rollbarConfig.RollbarDestinationOptions.AccessToken));
+            Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken, nameof(this._rollbarConfig.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken));
 
             this._httpContextAccessor = httpContextAccessor;
         }
@@ -53,7 +53,7 @@
         {
             return new RollbarLogger(
                 name
-                ,this._rollbarConfig
+                ,this._rollbarConfig.RollbarLoggerConfig
                 ,this._rollbarOptions
                 ,this._httpContextAccessor
                 );

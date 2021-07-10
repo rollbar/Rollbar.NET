@@ -28,7 +28,7 @@
         /// <summary>
         /// The rollbar configuration
         /// </summary>
-        protected readonly IRollbarLoggerConfig _rollbarConfig;
+        protected readonly IRollbarInfrastructureConfig _rollbarConfig;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.
@@ -53,6 +53,14 @@
                 RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
                 TelemetryCollector.Instance.StartAutocollection();
                 this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
+                if(RollbarInfrastructure.Instance.IsInitialized)
+                {
+                    RollbarInfrastructure.Instance.Config.Reconfigure(this._rollbarConfig);
+                }
+                else
+                {
+                    RollbarInfrastructure.Instance.Init(this._rollbarConfig);
+                }
             }
 
             if(options != null)
@@ -80,7 +88,7 @@
         {
             return new RollbarLogger(
                 name
-                , this._rollbarConfig
+                , this._rollbarConfig.RollbarLoggerConfig
                 , this._rollbarOptions
                 );
         }

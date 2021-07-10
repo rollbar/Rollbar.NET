@@ -89,7 +89,7 @@
                     rollbarConfig.HttpProxyOptions.ProxyPassword
                 );
 
-            this._expectedPostToApiTimeout = rollbarConfig.RollbarInfrastructureOptions.PayloadPostTimeout;
+            this._expectedPostToApiTimeout = RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.PayloadPostTimeout;
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
             if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))

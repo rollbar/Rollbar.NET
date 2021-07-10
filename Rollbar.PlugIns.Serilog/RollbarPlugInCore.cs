@@ -68,7 +68,7 @@
         /// <param name="rollbarBlockingTimeout">The rollbar blocking timeout.</param>
         /// <param name="formatProvider">The format provider.</param>
         public RollbarPlugInCore(
-            IRollbarLoggerConfig rollbarConfig, 
+            IRollbarInfrastructureConfig rollbarConfig, 
             TimeSpan? rollbarBlockingTimeout,
             IFormatProvider formatProvider
             ) 

@@ -44,7 +44,7 @@
         /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
         /// <param name="formatProvider">The format provider.</param>
         public RollbarSink(
-            IRollbarLoggerConfig rollbarConfig,
+            IRollbarInfrastructureConfig rollbarConfig,
             TimeSpan? rollbarBlockingLoggingTimeout,
             IFormatProvider formatProvider
             )

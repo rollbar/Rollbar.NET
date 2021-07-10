@@ -1,8 +1,6 @@
 ﻿namespace Rollbar
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     using Rollbar.Common;
 
@@ -11,14 +9,20 @@
         , IEquatable<IRollbarInfrastructureConfig>
         , ITraceable
     {
+        IRollbarInfrastructureOptions RollbarInfrastructureOptions
+        {
+            get;
+        }
+
+        IRollbarOfflineStoreOptions RollbarOfflineStoreOptions
+        {
+            get;
+        }
+
         IRollbarLoggerConfig RollbarLoggerConfig
         {
             get;
         }
 
-        IRollbarInfrastructureOptions RollbarInfrastructureOptions
-        {
-            get;
-        }
     }
 }

@@ -1,8 +1,6 @@
 ﻿namespace Rollbar
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     using Rollbar.Common;
 
@@ -17,24 +15,6 @@
         IRollbarDataSecurityOptions RollbarDataSecurityOptions { get; }
         IRollbarPayloadAdditionOptions RollbarPayloadAdditionOptions { get; }
         IRollbarPayloadManipulationOptions RollbarPayloadManipulationOptions { get; }
-        IRollbarInfrastructureOptions RollbarInfrastructureOptions { get; }
-
-        //TODO: RollbarConfig!!!
-
-        bool EnableLocalPayloadStore
-        {
-            get;
-        }
-
-        string LocalPayloadStoreFileName
-        {
-            get;
-        }
-
-        string LocalPayloadStoreLocationPath
-        {
-            get;
-        }
-
+        //IRollbarInfrastructureOptions RollbarInfrastructureOptions { get; }
     }
 }

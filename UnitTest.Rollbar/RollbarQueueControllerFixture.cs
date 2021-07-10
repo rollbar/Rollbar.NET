@@ -22,6 +22,8 @@ namespace UnitTest.Rollbar
             //    new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
             //_logger = RollbarFactory.CreateNew().Configure(loggerConfig);
 
+            RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
+            RollbarInfrastructure.Instance.Init(config);
         }
 
         [TestCleanup]

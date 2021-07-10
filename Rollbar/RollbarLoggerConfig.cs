@@ -23,7 +23,7 @@
         private RollbarDataSecurityOptions _rollbarDataSecurityOptions = null;
         private RollbarPayloadAdditionOptions _rollbarPayloadAdditionOptions = null;
         private RollbarPayloadManipulationOptions _rollbarPayloadManipulationOptions = null;
-        private RollbarInfrastructureOptions _rollbarInfrastructureOptions = null;
+        //private RollbarInfrastructureOptions _rollbarInfrastructureOptions = null;
 
         private readonly IRollbar _logger;
 
@@ -44,7 +44,9 @@
             {
                 // initialize based on application configuration file (if any):
                 var configLoader = new RollbarConfigurationLoader();
-                configLoader.Load(this);
+                RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
+                configLoader.Load(config);
+                this.Reconfigure(config.RollbarLoggerConfig);
             }
         }
 
@@ -56,7 +58,9 @@
 
             // initialize based on application configuration file (if any):
             var configLoader = new RollbarConfigurationLoader();
-            configLoader.Load(this);
+            RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
+            configLoader.Load(config);
+            this.Reconfigure(config.RollbarLoggerConfig);
         }
 
         private void SetDefaults()
@@ -98,20 +102,14 @@
             this._rollbarDataSecurityOptions.PersonDataCollectionPolicies = PersonDataCollectionPolicies.None;
             this._rollbarDataSecurityOptions.IpAddressCollectionPolicy = IpAddressCollectionPolicy.Collect;
 
-            this._rollbarInfrastructureOptions = 
-                new RollbarInfrastructureOptions();
-            this._rollbarInfrastructureOptions.PayloadPostTimeout = TimeSpan.FromSeconds(30);
-            this._rollbarInfrastructureOptions.MaxReportsPerMinute = null; //5000;
-            this._rollbarInfrastructureOptions.ReportingQueueDepth = 20;
-
-            //TODO: RollbarConfig!!!
-
-            //this._rollbarInfrastructureOptions.EnableLocalPayloadStore = false;
-            //this._rollbarInfrastructureOptions.LocalPayloadStoreFileName = PayloadStoreConstants.DefaultRollbarStoreDbFile;
-            //this._rollbarInfrastructureOptions.LocalPayloadStoreLocationPath = PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
-
-            //this._rollbarInfrastructureOptions.MaxItems = 0;
+            //this._rollbarInfrastructureOptions = 
+            //    new RollbarInfrastructureOptions();
+            //this._rollbarInfrastructureOptions.PayloadPostTimeout = TimeSpan.FromSeconds(30);
+            //this._rollbarInfrastructureOptions.MaxReportsPerMinute = null; //5000;
+            //this._rollbarInfrastructureOptions.ReportingQueueDepth = 20;
+            ////TODO: RollbarConfig!!!
             //this._rollbarInfrastructureOptions.CaptureUncaughtExceptions = true;
+            //this._rollbarInfrastructureOptions.MaxItems = 0;
         }
 
         internal IRollbar Logger
@@ -220,18 +218,18 @@
             }
         }
 
-        public IRollbarInfrastructureOptions RollbarInfrastructureOptions
-        {
-            get
-            {
-                if(this._rollbarInfrastructureOptions == null)
-                {
-                    this._rollbarInfrastructureOptions = new RollbarInfrastructureOptions();
-                }
+        //public IRollbarInfrastructureOptions RollbarInfrastructureOptions
+        //{
+        //    get
+        //    {
+        //        if(this._rollbarInfrastructureOptions == null)
+        //        {
+        //            this._rollbarInfrastructureOptions = new RollbarInfrastructureOptions();
+        //        }
 
-                return this._rollbarInfrastructureOptions;
-            }
-        }
+        //        return this._rollbarInfrastructureOptions;
+        //    }
+        //}
 
 
         public override Validator GetValidator()
@@ -262,10 +260,10 @@
                         RollbarLoggerConfig.RollbarLoggerConfigValidationRule.PayloadManipulationOptionsRequired,
                         (config) => { return this.RollbarPayloadManipulationOptions != null; }
                         )
-                    .AddValidation(
-                        RollbarLoggerConfig.RollbarLoggerConfigValidationRule.InfrastructureOptionsRequired,
-                        (config) => { return this.RollbarInfrastructureOptions != null; }
-                        )
+                    //.AddValidation(
+                    //    RollbarLoggerConfig.RollbarLoggerConfigValidationRule.InfrastructureOptionsRequired,
+                    //    (config) => { return this.RollbarInfrastructureOptions != null; }
+                    //    )
                ;
 
             IValidatable[] validatableComponents =
@@ -276,7 +274,7 @@
                 this._rollbarDataSecurityOptions,
                 this._rollbarPayloadAdditionOptions,
                 this._rollbarPayloadManipulationOptions,
-                this._rollbarInfrastructureOptions,
+                //this._rollbarInfrastructureOptions,
             };
 
             Debug.Assert(validator.TotalValidationRules == (new HashSet<IValidatable>(validatableComponents)).Count);
@@ -297,7 +295,7 @@
             DataSecurityOptionsRequired,
             PayloadAdditionOptionsRequired,
             PayloadManipulationOptionsRequired,
-            InfrastructureOptionsRequired,
+            //InfrastructureOptionsRequired,
         }
 
         IRollbarDestinationOptions IRollbarLoggerConfig.RollbarDestinationOptions
@@ -342,13 +340,13 @@
                 return this.RollbarPayloadManipulationOptions;
             }
         }
-        IRollbarInfrastructureOptions IRollbarLoggerConfig.RollbarInfrastructureOptions
-        {
-            get
-            {
-                return this.RollbarInfrastructureOptions;
-            }
-        }
+        //IRollbarInfrastructureOptions IRollbarLoggerConfig.RollbarInfrastructureOptions
+        //{
+        //    get
+        //    {
+        //        return this.RollbarInfrastructureOptions;
+        //    }
+        //}
 
         IRollbarLoggerConfig IReconfigurable<IRollbarLoggerConfig, IRollbarLoggerConfig>.Reconfigure(IRollbarLoggerConfig likeMe)
         {
@@ -367,46 +365,6 @@
                 this.Reconfigured -= value;
             }
         }
-
-
-
-
-
-        #region 
-        //TODO: RollbarConfig!!!
-        public bool EnableLocalPayloadStore
-        {
-            get; set;
-        }
-
-        public string LocalPayloadStoreFileName
-        {
-            get; set;
-        }
-
-        public string LocalPayloadStoreLocationPath
-        {
-            get; set;
-        }
-
-        internal string GetLocalPayloadStoreFullPathName()
-        {
-            string dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath)
-                ? PayloadStoreConstants.DefaultRollbarStoreDbFileLocation
-                : this.LocalPayloadStoreLocationPath;
-
-            string dbFile = string.IsNullOrWhiteSpace(this.LocalPayloadStoreFileName)
-                ? PayloadStoreConstants.DefaultRollbarStoreDbFile
-                : this.LocalPayloadStoreFileName;
-
-            string result = string.IsNullOrWhiteSpace(dbLocation)
-                ? dbFile
-                : Path.Combine(dbLocation, dbFile);
-
-            return result;
-        }
-
-        #endregion
 
     }
 }

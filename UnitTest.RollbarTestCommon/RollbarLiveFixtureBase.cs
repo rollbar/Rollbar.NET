@@ -29,7 +29,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// The logger configuration
         /// </summary>
-        private RollbarLoggerConfig _loggerConfig;
+        private IRollbarLoggerConfig _loggerConfig;
 
         /// <summary>
         /// The disposable rollbar instances
@@ -41,6 +41,17 @@ namespace UnitTest.Rollbar
         /// </summary>
         protected static readonly TimeSpan defaultRollbarTimeout = TimeSpan.FromSeconds(3);
 
+        protected static readonly RollbarInfrastructureConfig infrastructureConfig;
+        static RollbarLiveFixtureBase()
+        {
+            infrastructureConfig = new RollbarInfrastructureConfig();
+            if(!RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructure.Instance.Init(infrastructureConfig);
+            }
+        }
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLiveFixtureBase"/> class.
         /// </summary>
@@ -48,17 +59,26 @@ namespace UnitTest.Rollbar
         {
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
 
-            RollbarDestinationOptions destinationOptions = 
-                new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
+            //if(!RollbarInfrastructure.Instance.IsInitialized)
+            //{
+            //    RollbarDestinationOptions destinationOptions =
+            //        new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
 
-            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
-            dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
+            //    RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            //    dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
 
-            RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
-            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
-            loggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+            //    RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
+            //    config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            //    config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
 
-            this._loggerConfig = loggerConfig;
+            //    RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            //    loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            //    loggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+            //    this._loggerConfig = config.RollbarLoggerConfig;
+
+            //    RollbarInfrastructure.Instance.Init(config);
+            //}
         }
 
         /// <summary>
@@ -68,6 +88,23 @@ namespace UnitTest.Rollbar
         public virtual void SetupFixture()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
+            RollbarDestinationOptions destinationOptions =
+    new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
+
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
+
+            RollbarInfrastructureConfig config = infrastructureConfig;
+            config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+            //RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+            //loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            //loggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+            this._loggerConfig = config.RollbarLoggerConfig;
+
 
             this.Reset();
         }

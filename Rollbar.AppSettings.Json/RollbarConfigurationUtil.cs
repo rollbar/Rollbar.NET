@@ -15,11 +15,13 @@
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns></returns>
-        public static IRollbarLoggerConfig DeduceRollbarConfig(IConfiguration configuration)
+        public static IRollbarInfrastructureConfig DeduceRollbarConfig(IConfiguration configuration)
         {
-            if (RollbarLocator.RollbarInstance.Config.RollbarDestinationOptions.AccessToken != null)
+            //if (RollbarLocator.RollbarInstance.Config.RollbarDestinationOptions.AccessToken != null)
+            if (RollbarInfrastructure.Instance.Config?.RollbarLoggerConfig?.RollbarDestinationOptions?.AccessToken != null)
             {
-                return RollbarLocator.RollbarInstance.Config;
+                //return RollbarLocator.RollbarInstance.Config;
+                return RollbarInfrastructure.Instance.Config;
             }
 
             // Here we assume that the Rollbar singleton was not explicitly preconfigured 
@@ -29,17 +31,26 @@
             Assumption.AssertNotNull(configuration, nameof(configuration));
 
             const string defaultAccessToken = "none";
-            RollbarLoggerConfig rollbarConfig = new RollbarLoggerConfig(defaultAccessToken);
+            RollbarInfrastructureConfig rollbarConfig = new RollbarInfrastructureConfig(defaultAccessToken);
             AppSettingsUtility.LoadAppSettings(rollbarConfig, configuration);
 
-            if (rollbarConfig.RollbarDestinationOptions.AccessToken == defaultAccessToken)
+            if (rollbarConfig.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken == defaultAccessToken)
             {
                 const string error = "Rollbar.NET notifier is not configured properly. A valid access token needs to be specified.";
                 throw new Exception(error);
             }
 
+            if(RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructure.Instance.Config.Reconfigure(rollbarConfig);
+            }
+            else
+            {
+                RollbarInfrastructure.Instance.Init(rollbarConfig);
+            }
+
             RollbarLocator.RollbarInstance
-                .Configure(rollbarConfig);
+                .Configure(rollbarConfig.RollbarLoggerConfig);
 
             return rollbarConfig;
         }

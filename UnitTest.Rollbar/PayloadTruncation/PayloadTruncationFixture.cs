@@ -19,15 +19,19 @@ namespace UnitTest.Rollbar.PayloadTruncation
     [TestCategory(nameof(PayloadTruncationFixture))]
     public class PayloadTruncationFixture
     {
-        private readonly RollbarLoggerConfig _config;
+        private readonly RollbarInfrastructureConfig _config;
 
         public PayloadTruncationFixture()
         {
             RollbarDestinationOptions destinationOptions =
                 new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
 
-            this._config = new RollbarLoggerConfig();
-            this._config.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            this._config = new RollbarInfrastructureConfig();
+            this._config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            if(!RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructure.Instance.Init(this._config);
+            }
         }
 
         [TestInitialize]
@@ -47,30 +51,30 @@ namespace UnitTest.Rollbar.PayloadTruncation
 
             Payload[] testPayloads = new Payload[]
             {
-                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config,
+                new Payload(this._config.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken, new Data(
+                    this._config.RollbarLoggerConfig,
                     new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config, 
+                new Payload(this._config.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken, new Data(
+                    this._config.RollbarLoggerConfig, 
                     new Body("A terrible crash!"),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config,
+                new Payload(this._config.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken, new Data(
+                    this._config.RollbarLoggerConfig,
                     new Body(GetException()),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
-                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config,
+                new Payload(this._config.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken, new Data(
+                    this._config.RollbarLoggerConfig,
                     new Body(GetAggregateException()),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
             };
 
             TimeSpan blockingTimeout = TimeSpan.FromSeconds(5);
-            using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            using (var logger = RollbarFactory.CreateNew().Configure(this._config.RollbarLoggerConfig))
             {
                 foreach(var payload in testPayloads)
                 {

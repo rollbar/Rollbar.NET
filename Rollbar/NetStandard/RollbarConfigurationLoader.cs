@@ -91,22 +91,15 @@
             }
         }
 
-        public bool Load(RollbarLoggerConfig config)
-        {
-            //TODO: RolbarConfig!!!
-            //return (this._loader != null && this._loader.Load(config));
-            return false;
-        }
-
         /// <summary>
         /// Loads the provided configuration object based on found configuration store (if any).
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        //public bool Load(RollbarLoggerConfig config)
-        //{
-        //    return (this._loader != null && this._loader.Load(config));
-        //}
+        public bool Load(RollbarInfrastructureConfig config)
+        {
+            return (this._loader != null && this._loader.Load(config));
+        }
 
         /// <summary>
         /// Loads the provided configuration object based on found configuration store (if any).
@@ -122,7 +115,7 @@
         /// Loads the rollbar configuration.
         /// </summary>
         /// <returns>IRollbarConfig or null if no configuration store was found.</returns>
-        public IRollbarLoggerConfig LoadRollbarConfig()
+        public IRollbarInfrastructureConfig LoadRollbarConfig()
         {
             if (this._loader != null) 
                 return this._loader.LoadRollbarConfig();

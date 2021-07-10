@@ -2,6 +2,7 @@
 {
     using Rollbar.Telemetry;
     using System;
+    using System.Diagnostics;
 
     /// <summary>
     /// Class AppConfigUtility.
@@ -16,150 +17,181 @@
         /// <summary>
         /// Loads the application settings.
         /// </summary>
-        /// <param name="rollbarConfig">The Rollbar configuration.</param>
-        /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarLoggerConfig rollbarConfig)
+        /// <param name="config">The configuration.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config)
         {
-            return AppConfigUtility.LoadAppSettings(rollbarConfig, RollbarConfigSection.GetConfiguration());
+            return AppConfigUtility.LoadAppSettings(config, RollbarConfigSection.GetConfiguration());
         }
 
         /// <summary>
         /// Loads the application settings.
         /// </summary>
-        /// <param name="rollbarConfig">The configuration.</param>
+        /// <param name="config">The configuration.</param>
         /// <param name="rollbarConfigSection">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarLoggerConfig rollbarConfig, RollbarConfigSection rollbarConfigSection)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, RollbarConfigSection rollbarConfigSection)
         {
             if (rollbarConfigSection == null)
             {
                 return false;
             }
 
-            //TODO: RollbarConfig!!!
+            // infrastructure options:
+            //////////////////////////
+            
+            RollbarInfrastructureOptions infrastructureOptions = new RollbarInfrastructureOptions();
 
-            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.AccessToken))
-            //{
-            //    rollbarConfig.AccessToken = rollbarConfigSection.AccessToken;
-            //}
+            if(rollbarConfigSection.MaxReportsPerMinute.HasValue)
+            {
+                infrastructureOptions.MaxReportsPerMinute = rollbarConfigSection.MaxReportsPerMinute.Value;
+            }
 
-            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.Environment))
-            //{
-            //    rollbarConfig.Environment = rollbarConfigSection.Environment;
-            //}
-            
-            //if (rollbarConfigSection.Enabled.HasValue)
-            //{
-            //    rollbarConfig.Enabled = rollbarConfigSection.Enabled.Value;
-            //}
-            
-            //if (rollbarConfigSection.Transmit.HasValue)
-            //{
-            //    rollbarConfig.Transmit = rollbarConfigSection.Transmit.Value;
-            //}
-            
-            //if (rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
-            //{
-            //    rollbarConfig.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
-            //}
-            
-            //if (rollbarConfigSection.EnableLocalPayloadStore.HasValue)
-            //{
-            //    rollbarConfig.EnableLocalPayloadStore = rollbarConfigSection.EnableLocalPayloadStore.Value;
-            //}
-            
-            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreFileName))
-            //{
-            //    rollbarConfig.LocalPayloadStoreFileName = rollbarConfigSection.LocalPayloadStoreFileName;
-            //}
-            
-            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreLocationPath))
-            //{
-            //    rollbarConfig.LocalPayloadStoreLocationPath = rollbarConfigSection.LocalPayloadStoreLocationPath;
-            //}
-            
-            //if (rollbarConfigSection.MaxReportsPerMinute.HasValue)
-            //{
-            //    rollbarConfig.MaxReportsPerMinute = rollbarConfigSection.MaxReportsPerMinute.Value;
-            //}
-            
-            //if (rollbarConfigSection.ReportingQueueDepth.HasValue)
-            //{
-            //    rollbarConfig.ReportingQueueDepth = rollbarConfigSection.ReportingQueueDepth.Value;
-            //}
-            
-            //if (rollbarConfigSection.MaxItems.HasValue)
-            //{
-            //    rollbarConfig.MaxItems = rollbarConfigSection.MaxItems.Value;
-            //}
-            
-            //if (rollbarConfigSection.CaptureUncaughtExceptions.HasValue)
-            //{
-            //    rollbarConfig.CaptureUncaughtExceptions = rollbarConfigSection.CaptureUncaughtExceptions.Value;
-            //}
-            
-            //if (rollbarConfigSection.LogLevel.HasValue)
-            //{
-            //    rollbarConfig.LogLevel = rollbarConfigSection.LogLevel.Value;
-            //}
-            
-            //if (rollbarConfigSection.ScrubFields != null && rollbarConfigSection.ScrubFields.Length > 0)
-            //{
-            //    rollbarConfig.ScrubFields =
-            //        string.IsNullOrEmpty(rollbarConfigSection.ScrubFields) ? new string[0]
-            //        : rollbarConfigSection.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            //}
-            
-            //if (rollbarConfigSection.ScrubSafelistFields != null && rollbarConfigSection.ScrubSafelistFields.Length > 0)
-            //{
-            //    rollbarConfig.ScrubSafelistFields =
-            //        string.IsNullOrEmpty(rollbarConfigSection.ScrubSafelistFields) ? new string[0]
-            //        : rollbarConfigSection.ScrubSafelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            //}
+            if(rollbarConfigSection.ReportingQueueDepth.HasValue)
+            {
+                infrastructureOptions.ReportingQueueDepth = rollbarConfigSection.ReportingQueueDepth.Value;
+            }
 
-            //if (rollbarConfigSection.ScrubWhitelistFields != null && rollbarConfigSection.ScrubWhitelistFields.Length > 0)
-            //{
-            //    rollbarConfig.ScrubWhitelistFields =
-            //        string.IsNullOrEmpty(rollbarConfigSection.ScrubWhitelistFields) ? new string[0]
-            //        : rollbarConfigSection.ScrubWhitelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            //}
-            
-            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.EndPoint))
-            //{
-            //    rollbarConfig.EndPoint = rollbarConfigSection.EndPoint;
-            //}
-            
-            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyAddress))
-            //{
-            //    rollbarConfig.ProxyAddress = rollbarConfigSection.ProxyAddress;
-            //}
-            
-            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyUsername))
-            //{
-            //    rollbarConfig.ProxyUsername = rollbarConfigSection.ProxyUsername;
-            //}
-            
-            //if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyPassword))
-            //{
-            //    rollbarConfig.ProxyPassword = rollbarConfigSection.ProxyPassword;
-            //}
-            
-            //if (rollbarConfigSection.PayloadPostTimeout.HasValue)
-            //{
-            //    rollbarConfig.PayloadPostTimeout = rollbarConfigSection.PayloadPostTimeout.Value;
-            //}
+            if(rollbarConfigSection.MaxItems.HasValue)
+            {
+                infrastructureOptions.MaxItems = rollbarConfigSection.MaxItems.Value;
+            }
 
-            //if (rollbarConfigSection.PersonDataCollectionPolicies.HasValue)
-            //{
-            //    rollbarConfig.PersonDataCollectionPolicies = rollbarConfigSection.PersonDataCollectionPolicies.Value;
-            //}
-            
-            //if (rollbarConfigSection.IpAddressCollectionPolicy.HasValue)
-            //{
-            //    rollbarConfig.IpAddressCollectionPolicy = rollbarConfigSection.IpAddressCollectionPolicy.Value;
-            //}
+            if(rollbarConfigSection.CaptureUncaughtExceptions.HasValue)
+            {
+                infrastructureOptions.CaptureUncaughtExceptions = rollbarConfigSection.CaptureUncaughtExceptions.Value;
+            }
 
-            return true;
+            if(rollbarConfigSection.PayloadPostTimeout.HasValue)
+            {
+                infrastructureOptions.PayloadPostTimeout = rollbarConfigSection.PayloadPostTimeout.Value;
+            }
+
+            config.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
+
+            // offline payload store options:
+            /////////////////////////////////
+
+            RollbarOfflineStoreOptions offlineStoreOptions = new RollbarOfflineStoreOptions();
+
+            if(rollbarConfigSection.EnableLocalPayloadStore.HasValue)
+            {
+                offlineStoreOptions.EnableLocalPayloadStore = rollbarConfigSection.EnableLocalPayloadStore.Value;
+            }
+
+            if(!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreFileName))
+            {
+                offlineStoreOptions.LocalPayloadStoreFileName = rollbarConfigSection.LocalPayloadStoreFileName;
+            }
+
+            if(!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreLocationPath))
+            {
+                offlineStoreOptions.LocalPayloadStoreLocationPath = rollbarConfigSection.LocalPayloadStoreLocationPath;
+            }
+
+            config.RollbarOfflineStoreOptions.Reconfigure(offlineStoreOptions);
+
+            // logger destination options:
+            //////////////////////////////
+
+            if(!string.IsNullOrWhiteSpace(rollbarConfigSection.AccessToken))
+            {
+                RollbarDestinationOptions destinationOptions = 
+                    new RollbarDestinationOptions(rollbarConfigSection.AccessToken);
+
+                if(!string.IsNullOrWhiteSpace(rollbarConfigSection.Environment))
+                {
+                    destinationOptions.Environment = rollbarConfigSection.Environment;
+                }
+
+                if(!string.IsNullOrWhiteSpace(rollbarConfigSection.EndPoint))
+                {
+                    destinationOptions.EndPoint = rollbarConfigSection.EndPoint;
+                }
+
+                config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            }
+
+            // logger developer options:
+            ////////////////////////////
+            
+            if(rollbarConfigSection.Enabled.HasValue)
+            {
+                config.RollbarLoggerConfig.RollbarDeveloperOptions.Enabled = rollbarConfigSection.Enabled.Value;
+            }
+
+            if(rollbarConfigSection.Transmit.HasValue)
+            {
+                config.RollbarLoggerConfig.RollbarDeveloperOptions.Transmit = rollbarConfigSection.Transmit.Value;
+            }
+
+            if(rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
+            {
+                config.RollbarLoggerConfig.RollbarDeveloperOptions.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
+            }
+
+            if(rollbarConfigSection.LogLevel.HasValue)
+            {
+                config.RollbarLoggerConfig.RollbarDeveloperOptions.LogLevel = rollbarConfigSection.LogLevel.Value;
+            }
+
+            // logger HTTP proxy options:
+            /////////////////////////////
+
+            if(!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyAddress))
+            {
+                HttpProxyOptions httpProxyOptions = new HttpProxyOptions(rollbarConfigSection.ProxyAddress);
+
+                if(!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyUsername))
+                {
+                    httpProxyOptions.ProxyUsername = rollbarConfigSection.ProxyUsername;
+                }
+
+                if(!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyPassword))
+                {
+                    httpProxyOptions.ProxyPassword = rollbarConfigSection.ProxyPassword;
+                }
+
+                config.RollbarLoggerConfig.HttpProxyOptions.Reconfigure(httpProxyOptions);
+            }
+
+            // logger data security options:
+            ////////////////////////////////
+
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+
+            if(rollbarConfigSection.ScrubFields != null && rollbarConfigSection.ScrubFields.Length > 0)
+            {
+                dataSecurityOptions.ScrubFields =
+                    string.IsNullOrEmpty(rollbarConfigSection.ScrubFields) ? new string[0]
+                    : rollbarConfigSection.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            if(rollbarConfigSection.ScrubSafelistFields != null && rollbarConfigSection.ScrubSafelistFields.Length > 0)
+            {
+                dataSecurityOptions.ScrubSafelistFields =
+                    string.IsNullOrEmpty(rollbarConfigSection.ScrubSafelistFields) ? new string[0]
+                    : rollbarConfigSection.ScrubSafelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
+            }
+
+            if(rollbarConfigSection.PersonDataCollectionPolicies.HasValue)
+            {
+                dataSecurityOptions.PersonDataCollectionPolicies = rollbarConfigSection.PersonDataCollectionPolicies.Value;
+            }
+
+            if(rollbarConfigSection.IpAddressCollectionPolicy.HasValue)
+            {
+                dataSecurityOptions.IpAddressCollectionPolicy = rollbarConfigSection.IpAddressCollectionPolicy.Value;
+            }
+
+            config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+
+            var validationResults = config.Validate();
+            bool configLoadingResult = 
+                (validationResults == null) || (validationResults.Count == 0);
+            Debug.Assert(configLoadingResult);
+            return configLoadingResult;
         }
 
         #endregion RollbarConfig

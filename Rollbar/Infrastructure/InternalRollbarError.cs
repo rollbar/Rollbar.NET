@@ -9,6 +9,8 @@
     /// </summary>
     public enum InternalRollbarError
     {
+        InfrastructureError,
+
         /// <summary>
         /// The general error
         /// </summary>

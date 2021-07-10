@@ -13,6 +13,16 @@ namespace UnitTest.Rollbar
     [TestCategory(nameof(PayloadBundleFixture))]
     public class PayloadBundleFixture
     {
+        private static readonly RollbarInfrastructureConfig infrastructureConfig;
+        static PayloadBundleFixture()
+        {
+            infrastructureConfig = new RollbarInfrastructureConfig();
+            if(!RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructure.Instance.Init(infrastructureConfig);
+            }
+        }
+
         [TestInitialize]
         public void SetupFixture()
         {
@@ -36,7 +46,7 @@ namespace UnitTest.Rollbar
 
             RollbarDestinationOptions destinationOptions = 
                 new RollbarDestinationOptions("ACCESS_TOKEN", "ENV");
-            RollbarLoggerConfig config = new RollbarLoggerConfig();
+            IRollbarLoggerConfig config = infrastructureConfig.RollbarLoggerConfig;
             config.RollbarDestinationOptions.Reconfigure(destinationOptions);
             using (IRollbar rollbarLogger = RollbarFactory.CreateNew(config))
             {

@@ -134,7 +134,7 @@ namespace Rollbar.NetCore.AspNet
                         networkTelemetry.FinalizeEvent();
                     }
 
-                    if (!RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.CaptureUncaughtExceptions)
+                    if (!RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.CaptureUncaughtExceptions)
                     {
                         // just rethrow since the Rollbar SDK is configured not to auto-capture 
                         // uncaught exceptions:
@@ -142,17 +142,17 @@ namespace Rollbar.NetCore.AspNet
                     }
 
                     if (RollbarScope.Current != null 
-                        && RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems > 0
+                        && RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems > 0
                         )
                     {
                         RollbarScope.Current.IncrementLogItemsCount();
-                        if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems)
+                        if (RollbarScope.Current.LogItemsCount == RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems)
                         {
                             // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
                             RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
                             throw;
                         }
-                        else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.RollbarInfrastructureOptions.MaxItems)
+                        else if (RollbarScope.Current.LogItemsCount > RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems)
                         {
                             // just rethrow since the Rollbar SDK already exceeded MaxItems limit:
                             throw;

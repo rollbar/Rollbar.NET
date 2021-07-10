@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarLoggerConfig config)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -39,7 +39,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarLoggerConfig config, string appSettingsFileName)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, string appSettingsFileName)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -60,7 +60,7 @@
         /// <param name="appSettingsFolderPath">The application settings folder path.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarLoggerConfig config, string appSettingsFolderPath, string appSettingsFileName)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, string appSettingsFolderPath, string appSettingsFileName)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -80,7 +80,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="appSettings">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarLoggerConfig config, IConfiguration appSettings)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, IConfiguration appSettings)
         {
             Assumption.AssertNotNull(config, nameof(config));
 

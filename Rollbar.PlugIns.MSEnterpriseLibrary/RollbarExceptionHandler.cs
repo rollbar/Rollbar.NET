@@ -56,7 +56,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarBlockingTimeout">The rollbar blocking timeout.</param>
         public RollbarExceptionHandler(
-            IRollbarLoggerConfig rollbarConfig,
+            IRollbarInfrastructureConfig rollbarConfig,
             TimeSpan? rollbarBlockingTimeout
             )
             : base(rollbarErrorLevelByPlugInErrorLevel, customPrefix, rollbarConfig, rollbarBlockingTimeout)

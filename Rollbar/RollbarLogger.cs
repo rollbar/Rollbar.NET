@@ -54,6 +54,8 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         internal RollbarLogger(bool isSingleton, IRollbarLoggerConfig rollbarConfig)
         {
+            Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
+
             if (!TelemetryCollector.Instance.IsAutocollecting)
             {
                 TelemetryCollector.Instance.StartAutocollection();
@@ -72,7 +74,8 @@
             }
 
             // let's figure out where to keep the local payloads store:
-            PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig)this._config).GetLocalPayloadStoreFullPathName();
+            //TODO: RollbarConfig - use the infrastructure related payload store settings...
+            //PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig)this._config).GetLocalPayloadStoreFullPathName();
 
             // let's init proper Rollbar client:
             var rollbarClient = new RollbarClient(this);

@@ -64,7 +64,7 @@
                 new Validator<RollbarDestinationOptions, RollbarDestinationOptions.RollbarDestinationOptionsValidationRule>()
                     .AddValidation(
                         RollbarDestinationOptions.RollbarDestinationOptionsValidationRule.ValidAccessTokenRequired,
-                        (config) => { return !string.IsNullOrWhiteSpace(config.AccessToken); }
+                        (config) => { return !string.IsNullOrWhiteSpace(config.AccessToken) && config.AccessToken != "seedToken"; }
                         )
                     .AddValidation(
                         RollbarDestinationOptions.RollbarDestinationOptionsValidationRule.ValidEndPointRequired,

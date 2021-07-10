@@ -73,17 +73,6 @@
             => this["scrubFields"] as string;
 
         /// <summary>
-        /// Gets or sets the scrub fields.
-        /// </summary>
-        /// <value>
-        /// The scrub fields.
-        /// </value>
-        [Obsolete("Use the ScrubSafelistFields property instead.")]
-        [ConfigurationProperty("scrubWhitelistFields", IsRequired = false)]
-        public string ScrubWhitelistFields 
-            => this.ScrubSafelistFields;
-
-        /// <summary>
         /// Gets the scrub safelist fields.
         /// </summary>
         /// <value>The scrub safelist fields.</value>
