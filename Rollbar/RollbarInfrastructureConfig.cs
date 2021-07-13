@@ -13,9 +13,12 @@
         , IRollbarInfrastructureConfig
 
     {
-        private readonly RollbarLoggerConfig _rollbarLoggerConfig = null;
-        private RollbarInfrastructureOptions _rollbarInfrastructureOptions = null;
-        private RollbarOfflineStoreOptions _rollbarOfflineStoreOptions = null;
+        private readonly RollbarLoggerConfig _rollbarLoggerConfig = 
+            null;
+        private readonly RollbarInfrastructureOptions _rollbarInfrastructureOptions = 
+            new RollbarInfrastructureOptions();
+        private readonly RollbarOfflineStoreOptions _rollbarOfflineStoreOptions = 
+            new RollbarOfflineStoreOptions();
 
         public RollbarInfrastructureConfig()
             : this("seedToken")
@@ -31,11 +34,6 @@
         {
             get
             {
-                //if(this._rollbarLoggerConfig == null)
-                //{
-                //    this._rollbarLoggerConfig =new RollbarLoggerConfig();
-                //}
-
                 return this._rollbarLoggerConfig;
             }
         }
@@ -43,11 +41,6 @@
         {
             get
             {
-                if(this._rollbarInfrastructureOptions == null)
-                {
-                    this._rollbarInfrastructureOptions = new RollbarInfrastructureOptions();
-                }
-
                 return this._rollbarInfrastructureOptions;
             }
         }
@@ -56,11 +49,6 @@
         {
             get
             {
-                if(this._rollbarOfflineStoreOptions == null)
-                {
-                    this._rollbarOfflineStoreOptions = new RollbarOfflineStoreOptions();
-                }
-
                 return this._rollbarOfflineStoreOptions;
             }
         }

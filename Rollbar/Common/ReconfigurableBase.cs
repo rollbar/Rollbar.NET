@@ -159,8 +159,11 @@
         : ITraceable
         , IValidatable
     {
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType
-            = new ConcurrentDictionary<Type, PropertyInfo[]>();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType = 
+            new ConcurrentDictionary<Type, PropertyInfo[]>();
+
+        protected readonly List<ReconfigurableBase> _reconfigurableProperties = 
+            null;
 
         /// <summary>
         /// The this instance type (most specific one).
@@ -173,6 +176,27 @@
         protected ReconfigurableBase()
         {
             this._thisInstanceType = this.GetType();
+
+            PropertyInfo[] thisInstanceProperyInfos = 
+                ReconfigurableBase.ListInstancePublicProperties(this._thisInstanceType);
+            List<object> propertyValues = 
+                thisInstanceProperyInfos
+                .Select(i => i.GetValue(this))
+                .ToList();
+            this._reconfigurableProperties = 
+                propertyValues
+                .Where(i => i is ReconfigurableBase)
+                .Cast<ReconfigurableBase>()
+                .ToList();
+            foreach(var reconfigurable in this._reconfigurableProperties)
+            {
+                reconfigurable.Reconfigured += Reconfigurable_Reconfigured;
+            }
+        }
+
+        private void Reconfigurable_Reconfigured(object sender, EventArgs e)
+        {
+            this.OnReconfigured(new EventArgs());
         }
 
         /// <summary>
@@ -214,7 +238,7 @@
                 if(targetPropertyValue != null)
                 {
                     object sourcePropertyValue = property.GetValue(likeMe);
-                    targetPropertyValue.Reconfigure(sourcePropertyValue, property.PropertyType);
+                    targetPropertyValue.Reconfigure(sourcePropertyValue, sourcePropertyValue.GetType());
                     continue;
                 }
 
@@ -237,7 +261,7 @@
                 }
             }
 
-            OnReconfigured(new EventArgs());
+            this.OnReconfigured(new EventArgs());
         }
 
         /// <summary>

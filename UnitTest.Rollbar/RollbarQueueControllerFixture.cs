@@ -13,6 +13,15 @@ namespace UnitTest.Rollbar
     {
         //private IRollbar _logger = null;
 
+        public RollbarQueueControllerFixture()
+        {
+            if(!RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
+                RollbarInfrastructure.Instance.Init(config);
+            }
+        }
+
         [TestInitialize]
         public void SetupFixture()
         {
@@ -22,8 +31,6 @@ namespace UnitTest.Rollbar
             //    new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
             //_logger = RollbarFactory.CreateNew().Configure(loggerConfig);
 
-            RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
-            RollbarInfrastructure.Instance.Init(config);
         }
 
         [TestCleanup]

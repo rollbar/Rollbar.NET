@@ -16,10 +16,14 @@ namespace UnitTest.Rollbar
     [TestCategory(nameof(RollbarLoggerConfigFixture))]
     public class RollbarLoggerConfigFixture
     {
+        private int _actualReconfigCount = 0;
+
         [TestInitialize]
         public void SetupFixture()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+
+            this._actualReconfigCount = 0;
         }
 
         [TestCleanup]
@@ -49,23 +53,38 @@ namespace UnitTest.Rollbar
             RollbarLoggerConfig config = new RollbarLoggerConfig();
             Assert.AreEqual("seedToken", config.RollbarDestinationOptions.AccessToken);
             Console.WriteLine(config.TraceAsString());
-
+            config.Reconfigured += Config_Reconfigured;
+            Assert.AreEqual(0, this._actualReconfigCount);
+            IRollbarDestinationOptions rollbarDestinationOptions = config.RollbarDestinationOptions;
 
             RollbarDestinationOptions destinationOptions = new RollbarDestinationOptions();
             destinationOptions.AccessToken = "CUSTOM";
             config.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            Assert.AreEqual(1, this._actualReconfigCount);
+            Assert.AreSame(rollbarDestinationOptions, config.RollbarDestinationOptions);
             Assert.AreEqual("CUSTOM", config.RollbarDestinationOptions.AccessToken, "Options reconfig works!");
             Console.WriteLine(config.TraceAsString());
 
             RollbarLoggerConfig newConfig = new RollbarLoggerConfig();
             Assert.AreEqual("seedToken", newConfig.RollbarDestinationOptions.AccessToken);
             Console.WriteLine(newConfig.TraceAsString());
+            Assert.AreNotSame(rollbarDestinationOptions, newConfig.RollbarDestinationOptions);
+            newConfig.Reconfigured += Config_Reconfigured;
+            rollbarDestinationOptions = newConfig.RollbarDestinationOptions;
 
             newConfig.Reconfigure(config);
+            Assert.AreEqual(8, this._actualReconfigCount);
             Assert.AreEqual("CUSTOM", newConfig.RollbarDestinationOptions.AccessToken, "Structured config's reconfig works!");
             Console.WriteLine(newConfig.TraceAsString());
+            Assert.AreSame(rollbarDestinationOptions, newConfig.RollbarDestinationOptions);
+            Assert.AreNotSame(config, newConfig);
+            Assert.AreNotSame(config.RollbarDestinationOptions, newConfig.RollbarDestinationOptions);
         }
 
+        private void Config_Reconfigured(object sender, EventArgs e)
+        {
+            this._actualReconfigCount++;
+        }
 
         [TestMethod]
         public void TestInstanceCreation()

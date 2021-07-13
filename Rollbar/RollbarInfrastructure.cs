@@ -10,6 +10,14 @@
     using Rollbar.Diagnostics;
     using Rollbar.PayloadStore;
 
+    /// <summary>
+    /// Class RollbarInfrastructure.
+    /// Implements the <see cref="System.IDisposable" />
+    /// 
+    /// This is a process-wide service operating in the background on its own dedicated thread(s).
+    /// 
+    /// </summary>
+    /// <seealso cref="System.IDisposable" />
     public class RollbarInfrastructure
         : IDisposable
 
@@ -29,8 +37,6 @@
         private IRollbarInfrastructureConfig _config = null;
 
         private IPayloadStoreRepository _storeRepository = null;
-
-
 
         #region singleton implementation
 
@@ -75,6 +81,10 @@
 
         #endregion singleton implementation
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is initialized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is initialized; otherwise, <c>false</c>.</value>
         public bool IsInitialized
         {
             get
@@ -83,6 +93,10 @@
             }
         }
 
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
         public IRollbarInfrastructureConfig Config
         {
             get
@@ -91,6 +105,13 @@
             }
         }
 
+        /// <summary>
+        /// Initializes the specified configuration.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <exception cref="RollbarException">
+        /// Exception while initializing the internal services!
+        /// </exception>
         public void Init(IRollbarInfrastructureConfig config)
         {
             Assumption.AssertNotNull(config, nameof(config));
@@ -136,16 +157,23 @@
             //throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Starts this instance.
+        /// </summary>
         public void Start()
         {
             traceSource.TraceInformation($"Starting the {typeof(RollbarInfrastructure).Name}...");
         }
 
-        public void Stop(bool immediate)
+        /// <summary>
+        /// Stops the infrustructure operation.
+        /// </summary>
+        /// <param name="immediately">if set to <c>true</c> it, essentially, aborts the operation without gracefully shutting it down.</param>
+        public void Stop(bool immediately)
         {
             traceSource.TraceInformation($"Stopping the {typeof(RollbarInfrastructure).Name}...");
 
-            if(!immediate && this._cancellationTokenSource != null)
+            if(!immediately && this._cancellationTokenSource != null)
             {
                 this._cancellationTokenSource.Cancel();
                 return;
@@ -218,7 +246,6 @@
         }
 
         #endregion IDisposable Support
-
 
     }
 }
