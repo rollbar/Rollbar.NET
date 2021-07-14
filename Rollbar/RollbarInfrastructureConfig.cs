@@ -17,6 +17,8 @@
             null;
         private readonly RollbarInfrastructureOptions _rollbarInfrastructureOptions = 
             new RollbarInfrastructureOptions();
+        private readonly RollbarTelemetryOptions _rollbarTelemetryOptions = 
+            new RollbarTelemetryOptions();
         private readonly RollbarOfflineStoreOptions _rollbarOfflineStoreOptions = 
             new RollbarOfflineStoreOptions();
 
@@ -42,6 +44,14 @@
             get
             {
                 return this._rollbarInfrastructureOptions;
+            }
+        }
+
+        public IRollbarTelemetryOptions RollbarTelemetryOptions
+        {
+            get
+            {
+                return this._rollbarTelemetryOptions;
             }
         }
 
@@ -71,6 +81,10 @@
                         (config) => { return this.RollbarInfrastructureOptions != null; }
                         )
                     .AddValidation(
+                        RollbarInfrastructureConfig.RollbarInfrastructureConfigValidationRule.TelemetryOptionsRequired,
+                        (config) => { return this.RollbarTelemetryOptions != null; }
+                        )
+                    .AddValidation(
                         RollbarInfrastructureConfig.RollbarInfrastructureConfigValidationRule.OfflineStoreOptionsRequired,
                         (config) => { return this.RollbarOfflineStoreOptions != null; }
                         )
@@ -80,6 +94,7 @@
             {
                 this._rollbarLoggerConfig,
                 this._rollbarInfrastructureOptions,
+                this._rollbarTelemetryOptions,
                 this._rollbarOfflineStoreOptions,
             };
 
@@ -97,6 +112,7 @@
         {
             LoggerConfigRequired,
             InfrastructureOptionsRequred,
+            TelemetryOptionsRequired,
             OfflineStoreOptionsRequired,
         }
 

@@ -14,6 +14,11 @@
             get;
         }
 
+        IRollbarTelemetryOptions RollbarTelemetryOptions
+        {
+            get;
+        }
+
         IRollbarOfflineStoreOptions RollbarOfflineStoreOptions
         {
             get;
