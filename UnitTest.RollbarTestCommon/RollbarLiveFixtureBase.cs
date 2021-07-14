@@ -10,6 +10,7 @@ namespace UnitTest.Rollbar
     using System.Collections.Concurrent;
     using System.Diagnostics;
     using System.Threading;
+    using UnitTest.RollbarTestCommon;
 
     /// <summary>
     /// Defines test class RollbarLiveFixtureBase.
@@ -44,11 +45,7 @@ namespace UnitTest.Rollbar
         protected static readonly RollbarInfrastructureConfig infrastructureConfig;
         static RollbarLiveFixtureBase()
         {
-            infrastructureConfig = new RollbarInfrastructureConfig();
-            if(!RollbarInfrastructure.Instance.IsInitialized)
-            {
-                RollbarInfrastructure.Instance.Init(infrastructureConfig);
-            }
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
         }
 
 
@@ -58,27 +55,6 @@ namespace UnitTest.Rollbar
         protected RollbarLiveFixtureBase()
         {
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
-
-            //if(!RollbarInfrastructure.Instance.IsInitialized)
-            //{
-            //    RollbarDestinationOptions destinationOptions =
-            //        new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
-
-            //    RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
-            //    dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
-
-            //    RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
-            //    config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
-            //    config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
-
-            //    RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
-            //    loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
-            //    loggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
-
-            //    this._loggerConfig = config.RollbarLoggerConfig;
-
-            //    RollbarInfrastructure.Instance.Init(config);
-            //}
         }
 
         /// <summary>
@@ -87,24 +63,17 @@ namespace UnitTest.Rollbar
         //[TestInitialize]
         public virtual void SetupFixture()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            RollbarDestinationOptions destinationOptions =
-    new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
 
             RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
             dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
+            RollbarInfrastructure.Instance
+                .Config
+                .RollbarLoggerConfig
+                .RollbarDataSecurityOptions
+                .Reconfigure(dataSecurityOptions);
 
-            RollbarInfrastructureConfig config = infrastructureConfig;
-            config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
-            config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
-
-            //RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
-            //loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
-            //loggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
-
-            this._loggerConfig = config.RollbarLoggerConfig;
-
+            this._loggerConfig = RollbarInfrastructure.Instance.Config.RollbarLoggerConfig;
 
             this.Reset();
         }
