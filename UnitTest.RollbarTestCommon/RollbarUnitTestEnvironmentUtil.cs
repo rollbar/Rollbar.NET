@@ -30,11 +30,16 @@
 
             var destinationOptions =
                 RollbarUnitTestEnvironmentUtil.GetLiveTestRollbarDestinationOptions();
-
             config
                 .RollbarLoggerConfig
                 .RollbarDestinationOptions
                 .Reconfigure(destinationOptions);
+
+            var infrastructureOptions = new RollbarInfrastructureOptions();
+            infrastructureOptions.PayloadPostTimeout = TimeSpan.FromSeconds(3);
+            config
+                .RollbarInfrastructureOptions
+                .Reconfigure(infrastructureOptions);
 
             return config;
         }

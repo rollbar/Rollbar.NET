@@ -1156,13 +1156,25 @@ namespace Rollbar
                 {
                     foreach (var flushedBundle in queue.Flush())
                     {
-                        this.OnRollbarEvent(
-                            new PayloadDropEventArgs(
-                                queue.Logger,
-                                flushedBundle.GetPayload(),
-                                PayloadDropEventArgs.DropReason.RollbarQueueControllerFlushedQueues
-                                )
-                            );
+                        Payload payload = null;
+                        try
+                        {
+                            payload = flushedBundle?.GetPayload();
+                        }
+                        catch
+                        {
+                            payload = null;
+                        }
+                        finally
+                        {
+                            this.OnRollbarEvent(
+                                new PayloadDropEventArgs(
+                                    queue.Logger,
+                                    payload,
+                                    PayloadDropEventArgs.DropReason.RollbarQueueControllerFlushedQueues
+                                    )
+                                );
+                        }
                     }
                 }
             }

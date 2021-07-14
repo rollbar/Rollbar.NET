@@ -16,38 +16,19 @@ namespace UnitTest.Rollbar.PayloadTruncation
     using System.Threading;
     using System.Threading.Tasks;
 
+    using UnitTest.RollbarTestCommon;
+
     [TestClass]
     [TestCategory(nameof(PayloadTruncationFixture))]
     public class PayloadTruncationFixture
     {
-        private readonly RollbarInfrastructureConfig _config;
-
-        public PayloadTruncationFixture()
-        {
-            RollbarDestinationOptions destinationOptions =
-                new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
-            RollbarDeveloperOptions developerOptions =
-                new RollbarDeveloperOptions(ErrorLevel.Debug, true, true);
-
-            this._config = new RollbarInfrastructureConfig();
-            this._config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
-            this._config.RollbarLoggerConfig.RollbarDeveloperOptions.Reconfigure(developerOptions);
-            if(!RollbarInfrastructure.Instance.IsInitialized)
-            {
-                RollbarInfrastructure.Instance.Init(this._config);
-                RollbarInfrastructure.Instance.Config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
-                RollbarInfrastructure.Instance.Config.RollbarLoggerConfig.RollbarDeveloperOptions.Reconfigure(developerOptions);
-            }
-
-            Assert.IsTrue(this._config.RollbarLoggerConfig.RollbarDeveloperOptions.Transmit);
-            Assert.IsTrue(RollbarInfrastructure.Instance.Config.RollbarLoggerConfig.RollbarDeveloperOptions.Transmit);
-
-        }
+        private IRollbarInfrastructureConfig _config;
 
         [TestInitialize]
         public void SetupFixture()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
+            this._config = RollbarInfrastructure.Instance.Config;
         }
 
         [TestCleanup]

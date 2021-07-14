@@ -40,10 +40,11 @@ namespace UnitTest.Rollbar
         public void QueueRegisterationTest()
         {
             // we need to make sure we are starting clean:
-            while (RollbarQueueController.Instance.GetQueuesCount() > 0)
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(250));
-            }
+            RollbarQueueController.Instance.FlushQueues();
+            //while (RollbarQueueController.Instance.GetQueuesCount() > 0)
+            //{
+            //    Thread.Sleep(TimeSpan.FromMilliseconds(250));
+            //}
 
             RollbarDestinationOptions destinationOptions =
                 new RollbarDestinationOptions(
