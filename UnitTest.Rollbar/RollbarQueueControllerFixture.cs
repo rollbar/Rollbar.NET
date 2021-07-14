@@ -7,30 +7,17 @@ namespace UnitTest.Rollbar
     using System;
     using System.Threading;
 
+    using UnitTest.RollbarTestCommon;
+
     [TestClass]
     [TestCategory(nameof(RollbarQueueControllerFixture))]
     public class RollbarQueueControllerFixture
     {
-        //private IRollbar _logger = null;
-
-        public RollbarQueueControllerFixture()
-        {
-            if(!RollbarInfrastructure.Instance.IsInitialized)
-            {
-                RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
-                RollbarInfrastructure.Instance.Init(config);
-            }
-        }
 
         [TestInitialize]
         public void SetupFixture()
         {
-            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            //RollbarConfig loggerConfig =
-            //    new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            //_logger = RollbarFactory.CreateNew().Configure(loggerConfig);
-
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
         }
 
         [TestCleanup]
