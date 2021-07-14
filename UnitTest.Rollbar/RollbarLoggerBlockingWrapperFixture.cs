@@ -9,6 +9,7 @@ namespace UnitTest.Rollbar
     using System.Threading;
     using global::Rollbar.DTOs;
     using Exception = System.Exception;
+    using UnitTest.RollbarTestCommon;
 
     [TestClass]
     [TestCategory(nameof(RollbarLoggerBlockingWrapperFixture))]
@@ -20,22 +21,12 @@ namespace UnitTest.Rollbar
         [TestInitialize]
         public void SetupFixture()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
 
             RollbarQueueController.Instance.FlushQueues();
             //RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
 
-            RollbarDestinationOptions destinationOptions = 
-                new RollbarDestinationOptions(
-                    RollbarUnitTestSettings.AccessToken, 
-                    RollbarUnitTestSettings.Environment
-                    );
-            RollbarLoggerConfig loggerConfig =
-                new RollbarLoggerConfig();
-            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
-
-            _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
-
+            _logger = RollbarFactory.CreateNew().Configure(RollbarInfrastructure.Instance.Config.RollbarLoggerConfig);
         }
 
         [TestCleanup]
