@@ -98,7 +98,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig config)
+        public static bool LoadAppSettings(RollbarTelemetryOptions config)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -118,7 +118,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig config, string appSettingsFileName)
+        public static bool LoadAppSettings(RollbarTelemetryOptions config, string appSettingsFileName)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -139,7 +139,7 @@
         /// <param name="appSettingsFolderPath">The application settings folder path.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig config, string appSettingsFolderPath, string appSettingsFileName)
+        public static bool LoadAppSettings(RollbarTelemetryOptions config, string appSettingsFolderPath, string appSettingsFileName)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -159,7 +159,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="appSettings">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig config, IConfiguration appSettings)
+        public static bool LoadAppSettings(RollbarTelemetryOptions config, IConfiguration appSettings)
         {
             Assumption.AssertNotNull(config, nameof(config));
 

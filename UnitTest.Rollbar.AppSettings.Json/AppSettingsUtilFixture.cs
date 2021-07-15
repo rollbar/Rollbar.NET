@@ -108,7 +108,7 @@ namespace UnitTest.Rollbar.AppSettings.Json
         [TestMethod]
         public void LoadRollbarTelemetryAppSettingsTest()
         {
-            TelemetryConfig config = new TelemetryConfig(false, 5, TelemetryType.None, TimeSpan.FromMilliseconds(100));
+            RollbarTelemetryOptions config = new RollbarTelemetryOptions(false, 5, TelemetryType.None, TimeSpan.FromMilliseconds(100));
             Console.WriteLine(JsonConvert.SerializeObject(config));
 
             Assert.AreEqual(false, config.TelemetryEnabled);

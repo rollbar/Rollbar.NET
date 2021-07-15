@@ -11,6 +11,7 @@ namespace UnitTest.Rollbar.Telemetry
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using global::Rollbar;
 
     [TestClass]
     [TestCategory(nameof(TelemetryCollectorFixture))]
@@ -20,6 +21,7 @@ namespace UnitTest.Rollbar.Telemetry
         public void SetupFixture()
         {
             //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            TelemetryCollector.Instance.Init(new RollbarTelemetryOptions());
         }
 
         [TestCleanup]
@@ -91,7 +93,9 @@ namespace UnitTest.Rollbar.Telemetry
             TelemetryCollector.Instance.FlushQueue();
             Assert.IsFalse(TelemetryCollector.Instance.IsAutocollecting);
 
-            var config = TelemetryCollector.Instance.Config.Reconfigure(new TelemetryConfig(false, 10));
+            var config = 
+                TelemetryCollector.Instance.Config
+                .Reconfigure(new RollbarTelemetryOptions(false, 10));
 
             Assert.IsFalse(config.TelemetryEnabled);
             Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
@@ -105,7 +109,7 @@ namespace UnitTest.Rollbar.Telemetry
             }
             Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
 
-            config.Reconfigure(new TelemetryConfig(true, telemetryItems.Count));
+            config.Reconfigure(new RollbarTelemetryOptions(true, telemetryItems.Count));
             Assert.IsTrue(config.TelemetryEnabled);
             Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
 
@@ -124,7 +128,7 @@ namespace UnitTest.Rollbar.Telemetry
             Assert.IsFalse(TelemetryCollector.Instance.IsAutocollecting);
 
             var config = TelemetryCollector.Instance.Config;
-            var config1 = new TelemetryConfig(true, 10);
+            var config1 = new RollbarTelemetryOptions(true, 10);
             config.Reconfigure(config1);
 
             List<dto.Telemetry> telemetryItems = new List<dto.Telemetry>(2 * config.TelemetryQueueDepth);
@@ -145,7 +149,7 @@ namespace UnitTest.Rollbar.Telemetry
 
             TelemetryCollector.Instance.FlushQueue();
             Assert.AreEqual(0, TelemetryCollector.Instance.GetItemsCount());
-            var config2 = new TelemetryConfig(true, config1.TelemetryQueueDepth / 2);
+            var config2 = new RollbarTelemetryOptions(true, config1.TelemetryQueueDepth / 2);
             config.Reconfigure(config2);
             foreach (var item in telemetryItems)
             {

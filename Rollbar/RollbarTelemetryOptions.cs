@@ -33,6 +33,16 @@
         {
         }
 
+        internal RollbarTelemetryOptions(bool enabled, int queueDepth)
+            : this(
+                  enabled,
+                  queueDepth,
+                  RollbarTelemetryOptions.defaultTelemetryTypes,
+                  RollbarTelemetryOptions.defaultAutoCollectionInterval
+                  )
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarTelemetryOptions"/> class.
         /// </summary>

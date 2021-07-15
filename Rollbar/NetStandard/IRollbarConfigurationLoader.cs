@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        bool Load(TelemetryConfig config);
+        bool Load(RollbarTelemetryOptions config);
 
         /// <summary>
         /// Loads the rollbar configuration.
@@ -31,7 +31,7 @@
         /// Loads the telemetry configuration.
         /// </summary>
         /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        ITelemetryConfig LoadTelemetryConfig();
+        IRollbarTelemetryOptions LoadTelemetryConfig();
 
     }
 }

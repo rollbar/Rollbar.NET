@@ -106,7 +106,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        public bool Load(TelemetryConfig config)
+        public bool Load(RollbarTelemetryOptions config)
         {
             return (this._loader != null && this._loader.Load(config));
         }
@@ -127,7 +127,7 @@
         /// Loads the telemetry configuration.
         /// </summary>
         /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        public ITelemetryConfig LoadTelemetryConfig()
+        public IRollbarTelemetryOptions LoadTelemetryConfig()
         {
             if (this._loader != null) 
                 return this._loader.LoadTelemetryConfig();

@@ -27,7 +27,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        public bool Load(TelemetryConfig config)
+        public bool Load(RollbarTelemetryOptions config)
         {
             return AppConfigUtility.LoadAppSettings(config);
         }
@@ -50,9 +50,9 @@
         /// Loads the telemetry configuration.
         /// </summary>
         /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        public ITelemetryConfig LoadTelemetryConfig()
+        public IRollbarTelemetryOptions LoadTelemetryConfig()
         {
-            TelemetryConfig config = new TelemetryConfig();
+            RollbarTelemetryOptions config = new RollbarTelemetryOptions();
             if (this.Load(config))
             {
                 return config;

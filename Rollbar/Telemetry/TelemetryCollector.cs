@@ -12,7 +12,8 @@
         : ITelemetryCollector
         , IDisposable
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(TelemetryCollector).FullName);
+        private static readonly TraceSource traceSource = 
+            new TraceSource(typeof(TelemetryCollector).FullName);
         
         #region singleton implementation
 
@@ -35,10 +36,6 @@
         /// </summary>
         private TelemetryCollector()
         {
-            this._config = new TelemetryConfig();
-            this._config.Reconfigured += _config_Reconfigured;
-
-            this.StartAutocollection();
         }
 
         private sealed class NestedSingleInstance
@@ -55,6 +52,24 @@
         }
 
         #endregion singleton implementation
+
+        internal void Init(IRollbarTelemetryOptions options)
+        {
+            if(this._config != null)
+            {
+                this.StopAutocollection(false);
+                this.FlushQueue();
+                this._config.Reconfigured -= _config_Reconfigured;
+            }
+
+            this._config = options;
+            
+            if(this._config != null)
+            {
+                this._config.Reconfigured += _config_Reconfigured;
+                this.StartAutocollection();
+            }
+        }
 
         /// <summary>
         /// Captures the specified telemetry.
@@ -114,7 +129,7 @@
         /// <value>
         /// The configuration.
         /// </value>
-        public TelemetryConfig Config { get { return this._config; } }
+        public IRollbarTelemetryOptions Config { get { return this._config; } }
 
         /// <summary>
         /// Starts the auto-collection.
@@ -205,7 +220,7 @@
 
         private Thread _telemetryThread;
         private CancellationTokenSource _cancellationTokenSource;
-        private readonly TelemetryConfig _config;
+        private IRollbarTelemetryOptions _config = null;
         private readonly TelemetryQueue _telemetryQueue = new TelemetryQueue();
         private readonly object _syncRoot = new object();
 
@@ -213,7 +228,12 @@
         {
             this._telemetryQueue.QueueDepth = this._config.TelemetryQueueDepth;
 
-            if (this.IsAutocollecting && this._config.TelemetryAutoCollectionInterval == TimeSpan.Zero)
+            if (this.IsAutocollecting 
+                && (!this._config.TelemetryEnabled 
+                    || this._config.TelemetryAutoCollectionInterval == TimeSpan.Zero 
+                    || this._config.TelemetryAutoCollectionTypes == TelemetryType.None
+                    )
+               )
             {
                 this.StopAutocollection(false);
             }

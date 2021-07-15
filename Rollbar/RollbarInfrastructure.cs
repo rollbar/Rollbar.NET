@@ -9,6 +9,7 @@
 
     using Rollbar.Diagnostics;
     using Rollbar.PayloadStore;
+    using Rollbar.Telemetry;
 
     /// <summary>
     /// Class RollbarInfrastructure.
@@ -128,14 +129,13 @@
                         );
                 }
 
-                //TODO: implement...
                 this._config = config;
                 this._config.Reconfigured += _config_Reconfigured;
                 try
                 {
                     RollbarQueueController.Instance.Init(config);
+                    TelemetryCollector.Instance.Init(config.RollbarTelemetryOptions);
                     //TODO: RollbarConfig
-                    // - init RollbarTelemetry service as needed
                     // - init ConnectivityMonitor service as needed
                 }
                 catch(Exception ex)

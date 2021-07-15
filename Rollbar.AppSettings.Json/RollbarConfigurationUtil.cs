@@ -60,9 +60,9 @@
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns></returns>
-        public static ITelemetryConfig DeduceRollbarTelemetryConfig(IConfiguration configuration)
+        public static IRollbarTelemetryOptions DeduceRollbarTelemetryConfig(IConfiguration configuration)
         {
-            TelemetryConfig config = new TelemetryConfig();
+            RollbarTelemetryOptions config = new RollbarTelemetryOptions();
             AppSettingsUtility.LoadAppSettings(config, configuration);
 
             TelemetryCollector.Instance.Config.Reconfigure(config);
