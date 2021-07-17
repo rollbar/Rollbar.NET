@@ -10,7 +10,7 @@
     /// Implements the <see cref="System.IDisposable" />
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    public class ConnectivityMonitor
+    internal class ConnectivityMonitor
         : IDisposable
     {
         private readonly object _connectivityStatusSyncLock = new object();

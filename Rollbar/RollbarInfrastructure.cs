@@ -137,6 +137,9 @@
                     TelemetryCollector.Instance.Init(config.RollbarTelemetryOptions);
                     //TODO: RollbarConfig
                     // - init ConnectivityMonitor service as needed
+                    //   NOTE: It should be sufficient to make ConnectivityMonitor as internal class
+                    //         It is only used by RollbarClient and RollbarQueueController that are 
+                    //         already properly deactivated in single-threaded environments.
                 }
                 catch(Exception ex)
                 {
