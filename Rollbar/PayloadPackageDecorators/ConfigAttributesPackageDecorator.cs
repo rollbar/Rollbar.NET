@@ -53,7 +53,9 @@
 
             // telemetry data is based on the configuration,
             // so let's include it if applicable:
-            if (TelemetryCollector.Instance.Config.TelemetryEnabled)
+            if (RollbarInfrastructure.Instance.IsInitialized 
+                && TelemetryCollector.Instance.Config.TelemetryEnabled
+                )
             {
                 this._capturedTelemetryRecords =
                     TelemetryCollector.Instance.GetQueueContent();

@@ -28,15 +28,19 @@
         RollbarLoggerConfig config = new RollbarLoggerConfig();
         config.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
+        IRollbar logger = null;
         try
         {
-            var logger = RollbarFactory.CreateNew(config);
-            //logger.AsBlockingLogger(TimeSpan.FromSeconds(3)).Info("Hello from Blazor WASM!!!");
+            logger = RollbarFactory.CreateNew(config);
             logger.Info("Hello from Blazor WASM!!!");
+
+            int divider = 0;
+            int result = 20 / divider;
         }
         catch(Exception ex)
         {
             string error = ex.Message;
+            logger.Error(ex);
         }
 
     }
