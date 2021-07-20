@@ -486,6 +486,7 @@
 
         #region IValidatable
 
+        /// <summary>
         /// Validates this instance.
         /// </summary>
         /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>
