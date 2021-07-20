@@ -53,7 +53,7 @@
 
             // telemetry data is based on the configuration,
             // so let's include it if applicable:
-            if (RollbarInfrastructure.Instance.IsInitialized 
+            if (TelemetryCollector.Instance != null 
                 && TelemetryCollector.Instance.Config.TelemetryEnabled
                 )
             {

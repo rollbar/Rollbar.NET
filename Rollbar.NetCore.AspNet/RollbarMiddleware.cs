@@ -74,7 +74,7 @@ namespace Rollbar.NetCore.AspNet
             this._rollbarOptions = rollbarOptions.Value;
 
             RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-            TelemetryCollector.Instance.StartAutocollection();
+            TelemetryCollector.Instance?.StartAutocollection();
             RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
         }
 
@@ -103,7 +103,11 @@ namespace Rollbar.NetCore.AspNet
 
                 try
                 {
-                    if (TelemetryCollector.Instance.IsAutocollecting && context != null && context.Request != null)
+                    if (TelemetryCollector.Instance != null 
+                        && TelemetryCollector.Instance.IsAutocollecting
+                        && context != null 
+                        && context.Request != null
+                        )
                     {
                         int? telemetryStatusCode = null;
                         telemetryStatusCode = context?.Response?.StatusCode;

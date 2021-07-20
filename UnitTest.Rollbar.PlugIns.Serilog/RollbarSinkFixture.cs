@@ -5,6 +5,8 @@ namespace UnitTest.Rollbar.PlugIns.Serilog
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
 
+    using UnitTest.RollbarTestCommon;
+
     [TestClass]
     [TestCategory(nameof(RollbarSinkFixture))]
     public class RollbarSinkFixture
@@ -14,6 +16,7 @@ namespace UnitTest.Rollbar.PlugIns.Serilog
         [TestInitialize]
         public void SetupFixture()
         {
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
         }
 

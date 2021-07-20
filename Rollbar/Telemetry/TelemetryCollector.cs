@@ -23,7 +23,7 @@
         /// <value>
         /// The instance.
         /// </value>
-        public static TelemetryCollector Instance
+        public static TelemetryCollector? Instance
         {
             get
             {
@@ -47,8 +47,9 @@
             /// <summary>
             /// The singleton-like instance of the service.
             /// </summary>
-            internal static readonly TelemetryCollector Instance =
-                new TelemetryCollector();
+            internal static readonly TelemetryCollector? Instance =
+                RollbarInfrastructure.Instance.IsInitialized ? new TelemetryCollector()
+                : null;
         }
 
         #endregion singleton implementation

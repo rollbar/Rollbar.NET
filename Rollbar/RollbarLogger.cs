@@ -56,7 +56,9 @@
         {
             Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
 
-            if (!TelemetryCollector.Instance.IsAutocollecting)
+            if (TelemetryCollector.Instance != null 
+                && !TelemetryCollector.Instance.IsAutocollecting
+                )
             {
                 TelemetryCollector.Instance.StartAutocollection();
             }

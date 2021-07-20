@@ -12,6 +12,7 @@ namespace UnitTest.Rollbar.Telemetry
     using System.Threading;
     using System.Threading.Tasks;
     using global::Rollbar;
+    using UnitTest.RollbarTestCommon;
 
     [TestClass]
     [TestCategory(nameof(TelemetryCollectorFixture))]
@@ -21,6 +22,7 @@ namespace UnitTest.Rollbar.Telemetry
         public void SetupFixture()
         {
             //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
             TelemetryCollector.Instance.Init(new RollbarTelemetryOptions());
         }
 

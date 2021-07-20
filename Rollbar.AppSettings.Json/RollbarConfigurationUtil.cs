@@ -65,7 +65,7 @@
             RollbarTelemetryOptions config = new RollbarTelemetryOptions();
             AppSettingsUtility.LoadAppSettings(config, configuration);
 
-            TelemetryCollector.Instance.Config.Reconfigure(config);
+            TelemetryCollector.Instance?.Config.Reconfigure(config);
 
             return config;
         }

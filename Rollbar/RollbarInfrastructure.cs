@@ -131,10 +131,11 @@
 
                 this._config = config;
                 this._config.Reconfigured += _config_Reconfigured;
+                this._isInitialized = true;
                 try
                 {
-                    RollbarQueueController.Instance.Init(config);
-                    TelemetryCollector.Instance.Init(config.RollbarTelemetryOptions);
+                    RollbarQueueController.Instance!.Init(config);
+                    TelemetryCollector.Instance!.Init(config.RollbarTelemetryOptions);
                     //TODO: RollbarConfig
                     // - init ConnectivityMonitor service as needed
                     //   NOTE: It should be sufficient to make ConnectivityMonitor as internal class
@@ -143,6 +144,8 @@
                 }
                 catch(Exception ex)
                 {
+                    this._isInitialized = false;
+
                     throw new RollbarException(
                         InternalRollbarError.InfrastructureError, 
                         "Exception while initializing the internal services!", 
@@ -150,7 +153,6 @@
                         );
                 }
 
-                this._isInitialized = true;
             }
         }
 

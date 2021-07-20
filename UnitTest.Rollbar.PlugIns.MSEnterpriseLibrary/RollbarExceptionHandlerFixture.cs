@@ -7,6 +7,8 @@ namespace UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
 
+    using UnitTest.RollbarTestCommon;
+
     [TestClass]
     [TestCategory(nameof(RollbarExceptionHandlerFixture))]
     public class RollbarExceptionHandlerFixture
@@ -16,6 +18,7 @@ namespace UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary
         [TestInitialize]
         public void SetupFixture()
         {
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
         }
 

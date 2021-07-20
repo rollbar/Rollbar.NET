@@ -44,7 +44,7 @@ namespace Rollbar
         /// Gets the instance.
         /// </summary>
         /// <value>The instance.</value>
-        public static RollbarQueueController Instance
+        public static RollbarQueueController? Instance
         {
             get
             {
@@ -77,8 +77,9 @@ namespace Rollbar
             /// <summary>
             /// The instance
             /// </summary>
-            internal static readonly RollbarQueueController Instance =
-                new RollbarQueueController();
+            internal static readonly RollbarQueueController? Instance =
+                RollbarInfrastructure.Instance.IsInitialized ? new RollbarQueueController()
+                : null;
         }
 
         #endregion singleton implementation

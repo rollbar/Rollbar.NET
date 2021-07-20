@@ -5,6 +5,8 @@ namespace UnitTest.Rollbar.PlugIns.NLog
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
 
+    using UnitTest.RollbarTestCommon;
+
     [TestClass]
     [TestCategory(nameof(RollbarTargetFixture))]
     public class RollbarTargetFixture
@@ -14,6 +16,7 @@ namespace UnitTest.Rollbar.PlugIns.NLog
         [TestInitialize]
         public void SetupFixture()
         {
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
         }
 

@@ -26,7 +26,7 @@
         /// Gets the instance.
         /// </summary>
         /// <value>The instance.</value>
-        public static ConnectivityMonitor Instance
+        public static ConnectivityMonitor? Instance
         {
             get
             {
@@ -71,8 +71,9 @@
             /// <summary>
             /// The instance
             /// </summary>
-            internal static readonly ConnectivityMonitor Instance =
-                new ConnectivityMonitor();
+            internal static readonly ConnectivityMonitor? Instance =
+                RollbarInfrastructure.Instance.IsInitialized ? new ConnectivityMonitor()
+                : null;
         }
 
         #endregion singleton implementation

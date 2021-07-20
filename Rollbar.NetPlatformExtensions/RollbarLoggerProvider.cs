@@ -50,8 +50,6 @@
         {
             if(configuration!= null)
             {
-                RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-                TelemetryCollector.Instance.StartAutocollection();
                 this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
                 if(RollbarInfrastructure.Instance.IsInitialized)
                 {
@@ -61,6 +59,8 @@
                 {
                     RollbarInfrastructure.Instance.Init(this._rollbarConfig);
                 }
+                RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
+                TelemetryCollector.Instance?.StartAutocollection();
             }
 
             if(options != null)
