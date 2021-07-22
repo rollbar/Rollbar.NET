@@ -20,8 +20,8 @@
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     public class RollbarInfrastructure
-        : IDisposable
-
+        : IRollbarInfrastructure
+        , IDisposable
     {
         private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarInfrastructure).FullName);
 
@@ -95,6 +95,18 @@
         }
 
         /// <summary>
+        /// Gets the queue controller.
+        /// </summary>
+        /// <value>The queue controller.</value>
+        public IRollbarQueueController? QueueController
+        {
+            get
+            {
+                return RollbarQueueController.Instance;
+            }
+        }
+
+        /// <summary>
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
@@ -124,7 +136,7 @@
                     string msg = $"{typeof(RollbarInfrastructure).Name} can not be initialized more than once!";
                     traceSource.TraceInformation(msg);
                     throw new RollbarException(
-                        InternalRollbarError.InfrastructureError, 
+                        InternalRollbarError.InfrastructureError,
                         msg
                         );
                 }
@@ -147,8 +159,8 @@
                     this._isInitialized = false;
 
                     throw new RollbarException(
-                        InternalRollbarError.InfrastructureError, 
-                        "Exception while initializing the internal services!", 
+                        InternalRollbarError.InfrastructureError,
+                        "Exception while initializing the internal services!",
                         ex
                         );
                 }
