@@ -2,7 +2,6 @@
 {
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// Class ConfigAttributesPackageDecorator.
@@ -53,12 +52,12 @@
 
             // telemetry data is based on the configuration,
             // so let's include it if applicable:
-            if (TelemetryCollector.Instance != null 
-                && TelemetryCollector.Instance.Config.TelemetryEnabled
+            if (RollbarTelemetryCollector.Instance != null 
+                && RollbarTelemetryCollector.Instance.Config.TelemetryEnabled
                 )
             {
                 this._capturedTelemetryRecords =
-                    TelemetryCollector.Instance.GetQueueContent();
+                    RollbarTelemetryCollector.Instance.GetQueueContent();
             }
         }
 

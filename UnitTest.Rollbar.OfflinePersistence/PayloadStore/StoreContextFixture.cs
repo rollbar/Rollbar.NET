@@ -2,7 +2,6 @@
 
 namespace UnitTest.Rollbar.PayloadStore 
 {
-    using global::Rollbar.Telemetry;
     using dto = global::Rollbar.DTOs;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;

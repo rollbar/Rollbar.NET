@@ -9,7 +9,6 @@
 
     using Rollbar.Diagnostics;
     using Rollbar.PayloadStore;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// Class RollbarInfrastructure.
@@ -107,6 +106,19 @@
         }
 
         /// <summary>
+        /// Gets the telemetry collector.
+        /// </summary>
+        /// <value>The telemetry collector.</value>
+        public IRollbarTelemetryCollector? TelemetryCollector
+        {
+            get
+            {
+                return RollbarTelemetryCollector.Instance;
+            }
+        }
+
+
+        /// <summary>
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
@@ -147,7 +159,7 @@
                 try
                 {
                     RollbarQueueController.Instance!.Init(config);
-                    TelemetryCollector.Instance!.Init(config.RollbarTelemetryOptions);
+                    RollbarTelemetryCollector.Instance!.Init(config.RollbarTelemetryOptions);
                     //TODO: RollbarConfig
                     // - init ConnectivityMonitor service as needed
                     //   NOTE: It should be sufficient to make ConnectivityMonitor as internal class

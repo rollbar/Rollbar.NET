@@ -1,7 +1,5 @@
 ﻿namespace Rollbar.NetStandard
 {
-    using Rollbar.Telemetry;
-
     /// <summary>
     /// Interface IRollbarConfigurationLoader
     /// </summary>

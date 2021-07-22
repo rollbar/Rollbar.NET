@@ -7,7 +7,6 @@ namespace Rollbar.NetCore.AspNet
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar.DTOs;
-    using Rollbar.Telemetry;
     using Rollbar.AppSettings.Json;
     using System;
     using System.Threading.Tasks;
@@ -74,7 +73,7 @@ namespace Rollbar.NetCore.AspNet
             this._rollbarOptions = rollbarOptions.Value;
 
             RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-            TelemetryCollector.Instance?.StartAutocollection();
+            RollbarTelemetryCollector.Instance?.StartAutocollection();
             RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
         }
 
@@ -103,8 +102,8 @@ namespace Rollbar.NetCore.AspNet
 
                 try
                 {
-                    if (TelemetryCollector.Instance != null 
-                        && TelemetryCollector.Instance.IsAutocollecting
+                    if (RollbarTelemetryCollector.Instance != null 
+                        && RollbarTelemetryCollector.Instance.IsAutocollecting
                         && context != null 
                         && context.Request != null
                         )
@@ -119,7 +118,7 @@ namespace Rollbar.NetCore.AspNet
                             eventEnd:null,
                             statusCode:telemetryStatusCode
                             );
-                        TelemetryCollector.Instance.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
+                        RollbarTelemetryCollector.Instance.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
                     }
 
                     if (RollbarScope.Current != null && RollbarScope.Current.HttpContext != null)

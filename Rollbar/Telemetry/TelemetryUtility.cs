@@ -1,4 +1,4 @@
-﻿namespace Rollbar.Telemetry
+﻿namespace Rollbar
 {
     /// <summary>
     /// TODO: complete the implementation...

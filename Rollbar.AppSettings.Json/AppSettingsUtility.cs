@@ -4,7 +4,6 @@
     using System.IO;
     using Microsoft.Extensions.Configuration;
     using Rollbar.Diagnostics;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// A utility class aiding in reading in settings from the .NET Core appsettings.json files.

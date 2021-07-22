@@ -6,7 +6,6 @@
     using System.Reflection;
 
     using Rollbar.Common;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// Class RollbarConfigurationLoader.

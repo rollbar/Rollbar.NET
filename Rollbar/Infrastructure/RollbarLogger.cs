@@ -3,7 +3,6 @@
     using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
-    using Rollbar.Telemetry;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -56,11 +55,11 @@
         {
             Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
 
-            if (TelemetryCollector.Instance != null 
-                && !TelemetryCollector.Instance.IsAutocollecting
+            if (RollbarTelemetryCollector.Instance != null 
+                && !RollbarTelemetryCollector.Instance.IsAutocollecting
                 )
             {
-                TelemetryCollector.Instance.StartAutocollection();
+                RollbarTelemetryCollector.Instance.StartAutocollection();
             }
 
             this.IsSingleton = isSingleton;

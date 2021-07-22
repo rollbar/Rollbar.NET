@@ -4,7 +4,6 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar.AppSettings.Json;
-    using Rollbar.Telemetry;
 
     using System;
     using System.Collections.Concurrent;
@@ -60,7 +59,7 @@
                     RollbarInfrastructure.Instance.Init(this._rollbarConfig);
                 }
                 RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-                TelemetryCollector.Instance?.StartAutocollection();
+                RollbarTelemetryCollector.Instance?.StartAutocollection();
             }
 
             if(options != null)

@@ -2,7 +2,6 @@
 {
     using Rollbar;
     using Rollbar.NetStandard;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// Class RollbarConfigurationLoader.

@@ -1,19 +1,21 @@
-﻿namespace Rollbar.Telemetry
+﻿namespace Rollbar
 {
     using System;
     using System.Diagnostics;
     using System.Threading;
+
+    using Rollbar;
     using Rollbar.DTOs;
 
     /// <summary>
     /// Implements Rollbar telemetry collector service.
     /// </summary>
-    public class TelemetryCollector
-        : ITelemetryCollector
+    public class RollbarTelemetryCollector
+        : IRollbarTelemetryCollector
         , IDisposable
     {
         private static readonly TraceSource traceSource = 
-            new TraceSource(typeof(TelemetryCollector).FullName);
+            new TraceSource(typeof(RollbarTelemetryCollector).FullName);
         
         #region singleton implementation
 
@@ -23,7 +25,7 @@
         /// <value>
         /// The instance.
         /// </value>
-        public static TelemetryCollector? Instance
+        public static RollbarTelemetryCollector? Instance
         {
             get
             {
@@ -32,9 +34,9 @@
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="TelemetryCollector"/> class from being created.
+        /// Prevents a default instance of the <see cref="RollbarTelemetryCollector"/> class from being created.
         /// </summary>
-        private TelemetryCollector()
+        private RollbarTelemetryCollector()
         {
         }
 
@@ -47,8 +49,8 @@
             /// <summary>
             /// The singleton-like instance of the service.
             /// </summary>
-            internal static readonly TelemetryCollector? Instance =
-                RollbarInfrastructure.Instance.IsInitialized ? new TelemetryCollector()
+            internal static readonly RollbarTelemetryCollector? Instance =
+                RollbarInfrastructure.Instance.IsInitialized ? new RollbarTelemetryCollector()
                 : null;
         }
 
@@ -77,7 +79,7 @@
         /// </summary>
         /// <param name="telemetry">The telemetry.</param>
         /// <returns></returns>
-        public TelemetryCollector Capture(Telemetry telemetry)
+        public RollbarTelemetryCollector Capture(Telemetry telemetry)
         {
             if (this.Config.TelemetryEnabled)
             {
@@ -91,7 +93,7 @@
         /// </summary>
         /// <param name="telemetry">The telemetry.</param>
         /// <returns></returns>
-        ITelemetryCollector ITelemetryCollector.Capture(Telemetry telemetry)
+        IRollbarTelemetryCollector IRollbarTelemetryCollector.Capture(Telemetry telemetry)
         {
             return this.Capture(telemetry);
         }
@@ -118,7 +120,7 @@
         /// Flushes the queue.
         /// </summary>
         /// <returns></returns>
-        public ITelemetryCollector FlushQueue()
+        public IRollbarTelemetryCollector FlushQueue()
         {
             this._telemetryQueue.Flush();
             return this;
@@ -135,7 +137,7 @@
         /// <summary>
         /// Starts the auto-collection.
         /// </summary>
-        public ITelemetryCollector StartAutocollection()
+        public IRollbarTelemetryCollector StartAutocollection()
         {
             if (!this.Config.TelemetryEnabled)
             {
@@ -175,7 +177,7 @@
         /// Stops the auto-collection.
         /// </summary>
         /// <param name="immediate">if set to <c>true</c> [immediate].</param>
-        public ITelemetryCollector StopAutocollection(bool immediate)
+        public IRollbarTelemetryCollector StopAutocollection(bool immediate)
         {
             lock(_syncRoot)
             {

@@ -53,5 +53,14 @@
         {
             get;
         }
+
+        /// <summary>
+        /// Gets the telemetry collector.
+        /// </summary>
+        /// <value>The telemetry collector.</value>
+        IRollbarTelemetryCollector? TelemetryCollector
+        {
+            get;
+        }
     }
 }

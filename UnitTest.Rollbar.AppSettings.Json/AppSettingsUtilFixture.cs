@@ -5,7 +5,6 @@ namespace UnitTest.Rollbar.AppSettings.Json
     using global::Rollbar;
     using global::Rollbar.DTOs;
     using global::Rollbar.AppSettings.Json;
-    using global::Rollbar.Telemetry;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
     using System;

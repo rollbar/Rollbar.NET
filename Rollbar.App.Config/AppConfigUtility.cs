@@ -1,6 +1,5 @@
 ﻿namespace Rollbar.App.Config
 {
-    using Rollbar.Telemetry;
     using System;
     using System.Diagnostics;
 

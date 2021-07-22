@@ -1,4 +1,4 @@
-﻿namespace Rollbar.Telemetry
+﻿namespace Rollbar
 {
     using System;
 

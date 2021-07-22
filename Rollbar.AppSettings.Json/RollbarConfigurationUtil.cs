@@ -3,7 +3,6 @@
     using System;
     using Microsoft.Extensions.Configuration;
     using Rollbar.Diagnostics;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// Utility type aiding in Rollbar configuration options/alternatives.
@@ -65,7 +64,7 @@
             RollbarTelemetryOptions config = new RollbarTelemetryOptions();
             AppSettingsUtility.LoadAppSettings(config, configuration);
 
-            TelemetryCollector.Instance?.Config.Reconfigure(config);
+            RollbarTelemetryCollector.Instance?.Config.Reconfigure(config);
 
             return config;
         }
