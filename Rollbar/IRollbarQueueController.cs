@@ -6,9 +6,7 @@
     /// Interface IRollbarQueueController
     /// Implements the <see cref="System.IDisposable" />
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
     public interface IRollbarQueueController
-        : IDisposable
     {
         /// <summary>
         /// Starts this instance.

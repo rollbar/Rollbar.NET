@@ -190,7 +190,7 @@
 
             // first, let's run quick Internet availability check
             // to minimize potential timeout of the following JSON POST call: 
-            if (!ConnectivityMonitor.Instance.IsConnectivityOn)
+            if (!RollbarConnectivityMonitor.Instance.IsConnectivityOn)
             {
                 throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
@@ -235,7 +235,7 @@
 
             // first, let's run quick Internet availability check
             // to minimize potential timeout of the following JSON POST call: 
-            if (!ConnectivityMonitor.Instance.IsConnectivityOn)
+            if (!RollbarConnectivityMonitor.Instance.IsConnectivityOn)
             {
                 throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }

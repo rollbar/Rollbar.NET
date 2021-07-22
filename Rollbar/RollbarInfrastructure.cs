@@ -117,6 +117,18 @@
             }
         }
 
+        /// <summary>
+        /// Gets the connectivity monitor.
+        /// </summary>
+        /// <value>The connectivity monitor.</value>
+        public IRollbarConnectivityMonitor? ConnectivityMonitor
+        {
+            get
+            {
+                return RollbarConnectivityMonitor.Instance;
+            }
+        }
+
 
         /// <summary>
         /// Gets the configuration.

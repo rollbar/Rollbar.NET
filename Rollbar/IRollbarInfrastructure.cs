@@ -6,9 +6,7 @@
     /// Interface IRollbarInfrastructure
     /// Implements the <see cref="System.IDisposable" />
     /// </summary>
-    /// <seealso cref="System.IDisposable" />
     public interface IRollbarInfrastructure
-        : IDisposable
     {
         /// <summary>
         /// Initializes the specified configuration.
@@ -59,6 +57,15 @@
         /// </summary>
         /// <value>The telemetry collector.</value>
         IRollbarTelemetryCollector? TelemetryCollector
+        {
+            get;
+        }
+
+        /// <summary>
+        /// Gets the connectivity monitor.
+        /// </summary>
+        /// <value>The connectivity monitor.</value>
+        IRollbarConnectivityMonitor? ConnectivityMonitor
         {
             get;
         }

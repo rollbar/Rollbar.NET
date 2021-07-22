@@ -149,9 +149,9 @@ namespace Rollbar
                 || !string.IsNullOrWhiteSpace(proxyPassword)
                 )
             {
-                if(!ConnectivityMonitor.Instance.IsDisabled)
+                if(!RollbarConnectivityMonitor.Instance.IsDisabled)
                 {
-                    ConnectivityMonitor.Instance.Disable();
+                    RollbarConnectivityMonitor.Instance.Disable();
                 }
                 proxySettings = $"{proxyAddress?.ToLower()}+{proxyUsername?.ToLower()}+{proxyPassword?.ToLower()}";
             }
@@ -507,7 +507,7 @@ namespace Rollbar
             }
 
             // 2. get the oldest record of this destination and try transmitting it:
-            if(!ConnectivityMonitor.Instance.IsConnectivityOn)
+            if(!RollbarConnectivityMonitor.Instance.IsConnectivityOn)
             {
                 return; // there is no point trying to transmit the oldest record (if any)...
             }
