@@ -6,15 +6,18 @@
 
     using Rollbar.Common;
 
+    /// <summary>
+    /// Interface IHttpProxyOptions
+    /// Implements the <see cref="Rollbar.Common.IReconfigurable{Rollbar.IHttpProxyOptions, Rollbar.IHttpProxyOptions}" />
+    /// </summary>
+    /// <seealso cref="Rollbar.Common.IReconfigurable{Rollbar.IHttpProxyOptions, Rollbar.IHttpProxyOptions}" />
     public interface IHttpProxyOptions
         : IReconfigurable<IHttpProxyOptions, IHttpProxyOptions>
     {
         /// <summary>
         /// Gets the proxy address.
         /// </summary>
-        /// <value>
-        /// The proxy address.
-        /// </value>
+        /// <value>The proxy address.</value>
         string ProxyAddress
         {
             get;

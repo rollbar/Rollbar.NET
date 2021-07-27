@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     using Rollbar.NetStandard;
 
@@ -17,12 +18,12 @@
         /// <summary>
         /// The rollbar
         /// </summary>
-        protected readonly IRollbar _rollbar;
+        protected readonly IRollbar rollbar;
 
         /// <summary>
         /// The Rollbar logger
         /// </summary>
-        private readonly ILogger _rollbarLogger;
+        private readonly ILogger rollbarLogger;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PlugInCoreBase"/> class from being created.
@@ -55,16 +56,16 @@
             }
 
             // create proper IRollbar instance:
-            this._rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig.RollbarLoggerConfig);
+            this.rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig.RollbarLoggerConfig);
 
             // create proper RollbarLogger instance:
             if (rollbarBlockingTimeout.HasValue)
             {
-                this._rollbarLogger = this._rollbar.AsBlockingLogger(rollbarBlockingTimeout.Value);
+                this.rollbarLogger = this.rollbar.AsBlockingLogger(rollbarBlockingTimeout.Value);
             }
             else
             {
-                this._rollbarLogger = this._rollbar.Logger;
+                this.rollbarLogger = this.rollbar.Logger;
             }
         }
 
@@ -96,7 +97,7 @@
         /// <value>The rollbar configuration.</value>
         public IRollbarLoggerConfig RollbarConfig
         {
-            get { return this._rollbar.Config; }
+            get { return this.rollbar.Config; }
         }
 
         /// <summary>
@@ -105,9 +106,9 @@
         /// <param name="rollbarData">The Rollbar data.</param>
         protected void ReportToRollbar(DTOs.Data rollbarData)
         {
-            if (this._rollbarLogger != null)
+            if (this.rollbarLogger != null)
             {
-                ReportToRollbar(this._rollbarLogger, rollbarData);
+                ReportToRollbar(this.rollbarLogger, rollbarData);
             }
         }
 
@@ -139,7 +140,7 @@
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    (this._rollbarLogger as IDisposable)?.Dispose();
+                    (this.rollbarLogger as IDisposable)?.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
@@ -178,6 +179,7 @@
     /// <typeparam name="TPlugInEventData">The type of the t plug in event data.</typeparam>
     public abstract class PlugInCore<TPlugInErrorLevel, TPlugInEventData>
         : PlugInCoreBase
+        where TPlugInErrorLevel : notnull
     {
         /// <summary>
         /// The custom prefix for the Rollbar payload custom fields.
@@ -245,7 +247,7 @@
             }
             catch(Exception ex)
             {
-                data = new DTOs.Data(this._rollbar.Config, new DTOs.Body(ex));
+                data = new DTOs.Data(this.rollbar.Config, new DTOs.Body(ex));
             }
             finally
             {
@@ -287,7 +289,7 @@
                 custom[this._customPrefix] = pluginEventProperties;
             }
 
-            DTOs.Data rollbarData = new DTOs.Data(this._rollbar.Config, rollbarBody, custom)
+            DTOs.Data rollbarData = new DTOs.Data(this.rollbar.Config, rollbarBody, custom)
             {
                 Level = errorLevel
             };

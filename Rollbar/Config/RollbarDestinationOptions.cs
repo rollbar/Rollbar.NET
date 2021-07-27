@@ -53,7 +53,7 @@
             set;
         }
 
-        public IRollbarDestinationOptions Reconfigure(IRollbarDestinationOptions likeMe)
+        public override RollbarDestinationOptions Reconfigure(IRollbarDestinationOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -97,5 +97,9 @@
             ValidEnvironmentRequired,
         }
 
+        IRollbarDestinationOptions IReconfigurable<IRollbarDestinationOptions, IRollbarDestinationOptions>.Reconfigure(IRollbarDestinationOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
     }
 }

@@ -284,7 +284,7 @@
                 {
                     GetPayload(); // it actually calculates and sets this._ignorable value...
                 }
-                return this._ignorable.Value;
+                return this._ignorable!.Value;
             }
         }
 

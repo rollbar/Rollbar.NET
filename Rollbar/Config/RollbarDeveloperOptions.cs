@@ -68,7 +68,7 @@
             get;
         }
 
-        public IRollbarDeveloperOptions Reconfigure(IRollbarDeveloperOptions likeMe)
+        public override RollbarDeveloperOptions Reconfigure(IRollbarDeveloperOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -76,6 +76,11 @@
         public override Validator GetValidator()
         {
             return null;
+        }
+
+        IRollbarDeveloperOptions IReconfigurable<IRollbarDeveloperOptions, IRollbarDeveloperOptions>.Reconfigure(IRollbarDeveloperOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
         }
     }
 }

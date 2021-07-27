@@ -21,7 +21,7 @@
         /// <summary>
         /// The must apply synchronously
         /// </summary>
-        protected readonly bool _mustApplySynchronously = false;
+        protected readonly bool applySynchronously = false;
 
         /// <summary>
         /// The rollbar data resulted from this package instance.
@@ -42,7 +42,7 @@
         /// <param name="mustApplySynchronously">if set to <c>true</c> the strategy must be apply synchronously.</param>
         protected RollbarPackageBase(bool mustApplySynchronously)
         {
-            this._mustApplySynchronously = mustApplySynchronously;
+            this.applySynchronously = mustApplySynchronously;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@
         /// the packaging strategy will be invoked during payload transmission on a dedicated worker thread.
         /// </summary>
         /// <value><c>true</c> if needs to package synchronously; otherwise, <c>false</c>.</value>
-        public virtual bool MustApplySynchronously { get { return this._mustApplySynchronously; } }
+        public virtual bool MustApplySynchronously { get { return this.applySynchronously; } }
 
         /// <summary>
         /// Gets the rollbar data packaged by this strategy (if any).

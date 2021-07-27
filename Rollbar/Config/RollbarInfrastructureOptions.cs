@@ -73,10 +73,14 @@
             return null;
         }
 
-        public IRollbarInfrastructureOptions Reconfigure(IRollbarInfrastructureOptions likeMe)
+        public override RollbarInfrastructureOptions Reconfigure(IRollbarInfrastructureOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
 
+        IRollbarInfrastructureOptions IReconfigurable<IRollbarInfrastructureOptions, IRollbarInfrastructureOptions>.Reconfigure(IRollbarInfrastructureOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
     }
 }

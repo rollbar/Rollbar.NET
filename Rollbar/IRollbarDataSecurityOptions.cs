@@ -6,6 +6,11 @@
 
     using Rollbar.Common;
 
+    /// <summary>
+    /// Interface IRollbarDataSecurityOptions
+    /// Implements the <see cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarDataSecurityOptions, Rollbar.IRollbarDataSecurityOptions}" />
+    /// </summary>
+    /// <seealso cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarDataSecurityOptions, Rollbar.IRollbarDataSecurityOptions}" />
     public interface IRollbarDataSecurityOptions
         :IReconfigurable<IRollbarDataSecurityOptions, IRollbarDataSecurityOptions>
     {

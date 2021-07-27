@@ -52,9 +52,11 @@
             var config = new RollbarLoggerConfig();
             config.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
-            using HttpClient httpClient = new HttpClient();
-            RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
-            await rollbarClient.PostAsync(deployment);
+            using(HttpClient httpClient = new HttpClient())
+            {
+                RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
+                await rollbarClient.PostAsync(deployment);
+            }
         }
 
         /// <summary>

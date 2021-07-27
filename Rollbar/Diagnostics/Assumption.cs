@@ -126,7 +126,7 @@
         /// 	this.uiElement = Assumption.AssertNotNull(uiElement, "uiElement");	
         /// }
         /// </example>
-        public static T AssertNotNull<T>(T value, string parameterName) where T : class
+        public static T AssertNotNull<T>(T value, string parameterName) //where T : class
         {
             if (value == null)
             {

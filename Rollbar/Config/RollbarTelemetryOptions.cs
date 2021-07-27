@@ -116,7 +116,7 @@
         /// </summary>
         /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>
         /// <returns>Reconfigured instance.</returns>
-        public IRollbarTelemetryOptions Reconfigure(IRollbarTelemetryOptions likeMe)
+        public override RollbarTelemetryOptions Reconfigure(IRollbarTelemetryOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -128,6 +128,11 @@
         public override Validator GetValidator()
         {
             return null;
+        }
+
+        IRollbarTelemetryOptions IReconfigurable<IRollbarTelemetryOptions, IRollbarTelemetryOptions>.Reconfigure(IRollbarTelemetryOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
         }
     }
 }

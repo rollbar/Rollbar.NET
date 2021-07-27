@@ -221,9 +221,9 @@
         /// </value>
         public int QueueDepth { get { return this._telemetryQueue.QueueDepth; } }
 
-        private Thread _telemetryThread;
-        private CancellationTokenSource _cancellationTokenSource;
-        private IRollbarTelemetryOptions _config = null;
+        private Thread? _telemetryThread;
+        private CancellationTokenSource? _cancellationTokenSource;
+        private IRollbarTelemetryOptions _config;
         private readonly TelemetryQueue _telemetryQueue = new TelemetryQueue();
         private readonly object _syncRoot = new object();
 

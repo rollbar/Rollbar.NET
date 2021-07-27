@@ -77,7 +77,7 @@
             return this.ScrubFields.Where(i => !scrubSafeList.Contains(i)).ToArray();
         }
 
-        public IRollbarDataSecurityOptions Reconfigure(IRollbarDataSecurityOptions likeMe)
+        public override RollbarDataSecurityOptions Reconfigure(IRollbarDataSecurityOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -85,6 +85,11 @@
         public override Validator GetValidator()
         {
             return null;
+        }
+
+        IRollbarDataSecurityOptions IReconfigurable<IRollbarDataSecurityOptions, IRollbarDataSecurityOptions>.Reconfigure(IRollbarDataSecurityOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
         }
     }
 }

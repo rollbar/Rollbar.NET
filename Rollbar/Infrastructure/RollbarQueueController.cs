@@ -126,7 +126,7 @@ namespace Rollbar
         /// <summary>
         /// The store context (the payload persistence infrastructure)
         /// </summary>
-        private IPayloadStoreRepository _storeRepository = null;
+        private IPayloadStoreRepository? _storeRepository = null;
 
         /// <summary>
         /// The HTTP clients by proxy settings
@@ -141,7 +141,7 @@ namespace Rollbar
         /// <param name="proxyUsername">The proxy username.</param>
         /// <param name="proxyPassword">The proxy password.</param>
         /// <returns>HttpClient.</returns>
-        internal HttpClient ProvideHttpClient(string proxyAddress = null, string proxyUsername = null, string proxyPassword = null)
+        internal HttpClient ProvideHttpClient(string? proxyAddress = null, string? proxyUsername = null, string? proxyPassword = null)
         {
             string proxySettings = string.Empty;
             if(!string.IsNullOrWhiteSpace(proxyAddress)
@@ -149,7 +149,9 @@ namespace Rollbar
                 || !string.IsNullOrWhiteSpace(proxyPassword)
                 )
             {
-                if(!RollbarConnectivityMonitor.Instance.IsDisabled)
+                if (RollbarConnectivityMonitor.Instance != null 
+                    && !RollbarConnectivityMonitor.Instance.IsDisabled
+                    )
                 {
                     RollbarConnectivityMonitor.Instance.Disable();
                 }
@@ -906,8 +908,8 @@ namespace Rollbar
             RollbarLoggerConfig config = (RollbarLoggerConfig) sender;
             Assumption.AssertNotNull(config, nameof(config));
 
-            RollbarLogger rollbarLogger = config.Logger as RollbarLogger;
-            Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
+            RollbarLogger? rollbarLogger = config.Logger as RollbarLogger;
+            _ = Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
 
             //string newStorePath = (config.RollbarOfflineStoreOptions as RollbarOfflineStoreOptions)?.GetLocalPayloadStoreFullPathName();
             //if (this._useLocalPayloadStore && this._storeRepository != null && string.Compare(newStorePath, this._storeRepository.GetRollbarStoreDbFullName(), false) != 0)

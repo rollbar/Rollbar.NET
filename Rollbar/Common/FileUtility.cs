@@ -23,7 +23,7 @@
         /// <returns><c>true</c> if exists, <c>false</c> otherwise.</returns>
         public static bool ApplicationFileExists(string applicationRootRelativeFilePath)
         {
-            string absoluteFilePath = null;
+            string? absoluteFilePath = null;
 
             try
             {
@@ -44,11 +44,14 @@
             {
                 // search based on the executing assembly location:
                 string exePath = Assembly.GetExecutingAssembly().Location;
-                string exeDir = Path.GetDirectoryName(exePath);
-                absoluteFilePath = Path.Combine(exeDir, applicationRootRelativeFilePath);
-                if (File.Exists(absoluteFilePath))
+                string? exeDir = Path.GetDirectoryName(exePath);
+                if(exeDir != null)
                 {
-                    return true;
+                    absoluteFilePath = Path.Combine(exeDir, applicationRootRelativeFilePath);
+                    if(File.Exists(absoluteFilePath))
+                    {
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)

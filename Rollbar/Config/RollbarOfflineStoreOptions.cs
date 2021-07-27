@@ -74,7 +74,7 @@
         /// </summary>
         /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>
         /// <returns>Reconfigured instance.</returns>
-        public IRollbarOfflineStoreOptions Reconfigure(IRollbarOfflineStoreOptions likeMe)
+        public override RollbarOfflineStoreOptions Reconfigure(IRollbarOfflineStoreOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -110,5 +110,9 @@
             return result;
         }
 
+        IRollbarOfflineStoreOptions IReconfigurable<IRollbarOfflineStoreOptions, IRollbarOfflineStoreOptions>.Reconfigure(IRollbarOfflineStoreOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
     }
 }

@@ -28,15 +28,15 @@
 
         private readonly object _syncLock = new object();
 
-        private Thread _infrastructureThread;
+        private Thread? _infrastructureThread;
 
-        private CancellationTokenSource _cancellationTokenSource;
+        private CancellationTokenSource? _cancellationTokenSource;
 
         private bool _isInitialized = false;
 
-        private IRollbarInfrastructureConfig _config = null;
+        private IRollbarInfrastructureConfig _config;
 
-        private IPayloadStoreRepository _storeRepository = null;
+        private IPayloadStoreRepository _storeRepository;
 
         #region singleton implementation
 

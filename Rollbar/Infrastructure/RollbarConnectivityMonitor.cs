@@ -232,7 +232,7 @@
         public static bool TestApiServer()
         {
             bool result = false;
-            TcpClient client = null;
+            TcpClient? client = null;
             try
             {
                 client = new TcpClient("www.rollbar.com", 80);

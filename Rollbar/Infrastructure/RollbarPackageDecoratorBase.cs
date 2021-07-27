@@ -87,7 +87,7 @@
             {
                 // here, we are looking for the first/closest (if any) strategy 
                 // in the decoration chain that must be applied synchronously:
-                if (this._mustApplySynchronously)
+                if (this.applySynchronously)
                 {
                     return true;
                 }

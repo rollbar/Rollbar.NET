@@ -20,7 +20,7 @@
         /// <summary>
         /// The details
         /// </summary>
-        public readonly IReadOnlyCollection<ValidationResult> _details;
+        public readonly IReadOnlyCollection<ValidationResult> resultDetails;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ValidationResult"/> class from being created.
@@ -48,7 +48,7 @@
         public ValidationResult(Enum validationRule, IEnumerable<ValidationResult> details)
         {
             this._validationRule = validationRule;
-            this._details = new List<ValidationResult>(details);
+            this.resultDetails = new List<ValidationResult>(details);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@
         /// <value>The details.</value>
         public IReadOnlyCollection<ValidationResult> Details
         {
-            get { return this._details; }
+            get { return this.resultDetails; }
         }
 
         /// <summary>

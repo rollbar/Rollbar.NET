@@ -34,7 +34,7 @@
             set;
         }
 
-        public IRollbarPayloadAdditionOptions Reconfigure(IRollbarPayloadAdditionOptions likeMe)
+        public override RollbarPayloadAdditionOptions Reconfigure(IRollbarPayloadAdditionOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -61,5 +61,9 @@
             ValidPersonIfAny,
         }
 
+        IRollbarPayloadAdditionOptions IReconfigurable<IRollbarPayloadAdditionOptions, IRollbarPayloadAdditionOptions>.Reconfigure(IRollbarPayloadAdditionOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
     }
 }

@@ -44,7 +44,7 @@
             set;
         }
 
-        public IRollbarPayloadManipulationOptions Reconfigure(IRollbarPayloadManipulationOptions likeMe)
+        public override RollbarPayloadManipulationOptions Reconfigure(IRollbarPayloadManipulationOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -57,6 +57,11 @@
         public override string TraceAsString(string indent)
         {
             return base.TraceAsString(indent);
+        }
+
+        IRollbarPayloadManipulationOptions IReconfigurable<IRollbarPayloadManipulationOptions, IRollbarPayloadManipulationOptions>.Reconfigure(IRollbarPayloadManipulationOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
         }
     }
 }

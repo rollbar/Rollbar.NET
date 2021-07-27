@@ -63,7 +63,7 @@
             }
         }
 
-        public IRollbarInfrastructureConfig Reconfigure(IRollbarInfrastructureConfig likeMe)
+        public override RollbarInfrastructureConfig Reconfigure(IRollbarInfrastructureConfig likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -116,5 +116,9 @@
             OfflineStoreOptionsRequired,
         }
 
+        IRollbarInfrastructureConfig IReconfigurable<IRollbarInfrastructureConfig, IRollbarInfrastructureConfig>.Reconfigure(IRollbarInfrastructureConfig likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
     }
 }

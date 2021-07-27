@@ -57,61 +57,6 @@
 
         #region constructors
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarClient" /> class.
-        /// </summary>
-        /// <param name="rollbarLogger">The rollbar logger.</param>
-        //protected RollbarBlazorClient(IRollbar rollbarLogger)
-        //    : this(rollbarLogger.Config)
-        //{
-        //    Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
-
-        //    this._rollbarLogger = rollbarLogger;
-
-        //    this._payloadTruncationStrategy = new IterativeTruncationStrategy();
-        //    this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.RollbarDataSecurityOptions.GetFieldsToScrub());
-        //}
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarClient"/> class.
-        /// </summary>
-        /// <param name="rollbarConfig">The rollbar configuration.</param>
-//        protected RollbarBlazorClient(IRollbarLoggerConfig rollbarConfig)
-//        {
-//            Assumption.AssertNotNull(rollbarConfig, nameof(rollbarConfig));
-
-//            this._payloadPostUri = 
-//                new Uri($"{rollbarConfig.RollbarDestinationOptions.EndPoint}item/");
-//            this._httpClient = 
-//                RollbarQueueController.Instance.ProvideHttpClient(
-//                    rollbarConfig.HttpProxyOptions.ProxyAddress,
-//                    rollbarConfig.HttpProxyOptions.ProxyUsername,
-//                    rollbarConfig.HttpProxyOptions.ProxyPassword
-//                );
-
-//            this._expectedPostToApiTimeout = rollbarConfig.RollbarInfrastructureOptions.PayloadPostTimeout;
-
-//            var header = new MediaTypeWithQualityHeaderValue("application/json");
-//            if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
-//            {
-//                this._httpClient.DefaultRequestHeaders.Accept.Add(header);
-//            }
-
-//            var sp = ServicePointManager.FindServicePoint(new Uri(rollbarConfig.RollbarDestinationOptions.EndPoint));
-//            try
-//            {
-//                sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
-//            }
-//#pragma warning disable CS0168 // Variable is declared but never used
-//#pragma warning disable IDE0059 // Variable is declared but never used
-//            catch (NotImplementedException ex)
-//#pragma warning restore CS0168 // Variable is declared but never used
-//#pragma warning restore IDE0059 // Variable is declared but never used
-//            {
-//                // just a crash prevention.
-//                // this is a work around the unimplemented property within Mono runtime...
-//            }
-//        }
 
 
         public RollbarBlazorClient(IRollbar logger, HttpClient httpClient)
@@ -218,16 +163,11 @@
                 new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
 
             Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
-            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken), nameof(payload.AccessToken));
+            _ = Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken, StringComparison.Ordinal), nameof(payload.AccessToken));
 
             return true;
         }
 
-        /// <summary>
-        /// Posts as json.
-        /// </summary>
-        /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns>RollbarResponse.</returns>
         //public RollbarResponse PostAsJson(PayloadBundle payloadBundle)
         //{
         //    Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
@@ -266,12 +206,6 @@
         //    }
         //}
 
-        /// <summary>
-        /// Posts as json.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <param name="jsonContent">Content of the json.</param>
-        /// <returns>RollbarResponse.</returns>
         //public RollbarResponse PostAsJson(string accessToken, string jsonContent) 
         //{
         //    Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
@@ -316,7 +250,6 @@
         /// post as json as an asynchronous operation.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
         public async Task<RollbarResponse> PostAsJsonAsync(
             PayloadBundle payloadBundle

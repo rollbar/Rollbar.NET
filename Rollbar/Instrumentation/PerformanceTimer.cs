@@ -35,7 +35,7 @@
         /// </summary>
         /// <param name="performanceMonitor">The performance monitor.</param>
         /// <param name="measurementClassification">The measurement classification.</param>
-        private PerformanceTimer(IPerformanceMonitor performanceMonitor, IClassification measurementClassification = null)
+        private PerformanceTimer(IPerformanceMonitor performanceMonitor, IClassification? measurementClassification = null)
         {
             this._performanceMonitor = performanceMonitor;
             this._measurementClassification = measurementClassification;

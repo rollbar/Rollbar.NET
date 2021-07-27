@@ -5,6 +5,7 @@
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Text;
@@ -36,7 +37,7 @@
         /// </returns>
         public virtual T Reconfigure(T likeMe)
         {
-            base.Reconfigure(likeMe, this._thisInstanceType);
+            base.Reconfigure(likeMe, this.thisInstanceType);
 
             return (T) this;
         }
@@ -48,7 +49,7 @@
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
         public bool Equals(T other)
         {
-            return base.Equals(other, this._thisInstanceType);
+            return base.Equals(other, this.thisInstanceType);
         }
 
         /// <summary>
@@ -162,33 +163,33 @@
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType = 
             new ConcurrentDictionary<Type, PropertyInfo[]>();
 
-        protected readonly List<ReconfigurableBase> _reconfigurableProperties = 
+        protected readonly List<ReconfigurableBase> reconfigurableProperties = 
             null;
 
         /// <summary>
         /// The this instance type (most specific one).
         /// </summary>
-        protected readonly Type _thisInstanceType;
+        protected readonly Type thisInstanceType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReconfigurableBase"/> class.
         /// </summary>
         protected ReconfigurableBase()
         {
-            this._thisInstanceType = this.GetType();
+            this.thisInstanceType = this.GetType();
 
             PropertyInfo[] thisInstanceProperyInfos = 
-                ReconfigurableBase.ListInstancePublicProperties(this._thisInstanceType);
+                ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType);
             List<object> propertyValues = 
                 thisInstanceProperyInfos
                 .Select(i => i.GetValue(this))
                 .ToList();
-            this._reconfigurableProperties = 
+            this.reconfigurableProperties = 
                 propertyValues
                 .Where(i => i is ReconfigurableBase)
                 .Cast<ReconfigurableBase>()
                 .ToList();
-            foreach(var reconfigurable in this._reconfigurableProperties)
+            foreach(var reconfigurable in this.reconfigurableProperties)
             {
                 reconfigurable.Reconfigured += Reconfigurable_Reconfigured;
             }
@@ -222,7 +223,7 @@
         protected virtual void Reconfigure(object likeMe, Type likeMeTypeOfInterest)
         {
             Assumption.AssertNotNull(likeMe, nameof(likeMe));
-            Assumption.AssertTrue(likeMeTypeOfInterest.IsAssignableFrom(this._thisInstanceType), nameof(likeMeTypeOfInterest));
+            Assumption.AssertTrue(likeMeTypeOfInterest.IsAssignableFrom(this.thisInstanceType), nameof(likeMeTypeOfInterest));
 
             // In general we could be reconfiguring the destination object 
             // based on a source object that is a subtype of the destination type.
@@ -252,7 +253,7 @@
                     // This case handles situations when the reconfiguration source object has read-only
                     // property but the destination object could have an equivalent read-write property:
                     var destinationProperty
-                        = ReconfigurableBase.ListInstancePublicProperties(this._thisInstanceType)
+                        = ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType)
                             .SingleOrDefault(p => p.Name == property.Name);
                     if (destinationProperty.CanWrite)
                     {
@@ -282,7 +283,7 @@
                 return true;
             }
 
-            if (!otherType.IsAssignableFrom(this._thisInstanceType))
+            if (!otherType.IsAssignableFrom(this.thisInstanceType))
             {
                 return false;
             }
@@ -432,11 +433,11 @@
         {
             StringBuilder sb = new StringBuilder();
             //string traceString = this.RenderAsString(indent);
-            sb.AppendLine("{" + this._thisInstanceType.FullName + "}");
+            sb.AppendLine("{" + this.thisInstanceType.FullName + "}");
 
             //indent += "  ";
             PropertyInfo[] properties
-                = ReconfigurableBase.ListInstancePublicProperties(this._thisInstanceType);
+                = ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType);
 
             foreach(var property in properties)
             {

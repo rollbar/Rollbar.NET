@@ -40,7 +40,7 @@
             set;
         }
 
-        public IHttpProxyOptions Reconfigure(IHttpProxyOptions likeMe)
+        public override HttpProxyOptions Reconfigure(IHttpProxyOptions likeMe)
         {
             return base.Reconfigure(likeMe);
         }
@@ -50,5 +50,9 @@
             return null;
         }
 
+        IHttpProxyOptions IReconfigurable<IHttpProxyOptions, IHttpProxyOptions>.Reconfigure(IHttpProxyOptions likeMe)
+        {
+            return this.Reconfigure(likeMe);
+        }
     }
 }
