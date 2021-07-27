@@ -349,6 +349,14 @@
                     }
                     var leftEnumeration = leftPropertyValue as IEnumerable;
                     var rightEnumeration = rightPropertyValue as IEnumerable;
+                    if(leftEnumeration == null && rightEnumeration == null)
+                    {
+                        return true;
+                    }
+                    else if(leftEnumeration == null || rightEnumeration == null)
+                    {
+                        return false;
+                    }
                     foreach (var leftItem in leftEnumeration)
                     {
                         bool hasMatchingItem = false;

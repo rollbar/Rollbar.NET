@@ -34,13 +34,17 @@
         {
         }
 
-        public RollbarLoggerConfig(string accessToken)
+        public RollbarLoggerConfig(string accessToken, string? rollbarEnvironment = null)
         {
             this.SetDefaults();
 
             if(!string.IsNullOrWhiteSpace(accessToken))
             {
                 this._rollbarDestinationOptions.AccessToken = accessToken;
+                if(!string.IsNullOrWhiteSpace(rollbarEnvironment))
+                {
+                    this._rollbarDestinationOptions.Environment = rollbarEnvironment;
+                }
             }
             else
             {

@@ -20,29 +20,39 @@
 
     private static void TestOutRollbar()
     {
-        RollbarDestinationOptions destinationOptions =
-            new RollbarDestinationOptions(
+
+        RollbarLoggerConfig config =
+            new RollbarLoggerConfig(
                 RollbarSamplesSettings.AccessToken,
-                RollbarSamplesSettings.Environment);
+                RollbarSamplesSettings.Environment
+                );
 
-        RollbarLoggerConfig config = new RollbarLoggerConfig();
-        config.RollbarDestinationOptions.Reconfigure(destinationOptions);
-
-        IRollbar logger = null;
-        try
+        using(IRollbar logger = RollbarFactory.CreateNew(config))
         {
-            logger = RollbarFactory.CreateNew(config);
             logger.Info("Hello from Blazor WASM!!!");
 
-            int divider = 0;
-            int result = 20 / divider;
-        }
-        catch(Exception ex)
-        {
-            string error = ex.Message;
-            logger.Error(ex);
+            try
+            {
+                CallSomeTrouble();
+            }
+            catch(Exception ex)
+            {
+                string error = ex.Message;
+                logger.Error(ex);
+            }
         }
 
+    }
+
+    private static void CallSomeTrouble()
+    {
+        MakeTrouble();
+    }
+
+    private static void MakeTrouble()
+    {
+        int divider = 0;
+        int result = 20 / divider;
     }
 
 }
