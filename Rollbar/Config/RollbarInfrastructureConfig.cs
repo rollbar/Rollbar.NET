@@ -27,9 +27,9 @@
         {
         }
 
-        public RollbarInfrastructureConfig(string accessToken)
+        public RollbarInfrastructureConfig(string rollbarAccessToken, string? rollbarEnvironment = null)
         {
-            this._rollbarLoggerConfig = new RollbarLoggerConfig(accessToken);
+            this._rollbarLoggerConfig = new RollbarLoggerConfig(rollbarAccessToken, rollbarEnvironment);
         }
 
         public IRollbarLoggerConfig RollbarLoggerConfig

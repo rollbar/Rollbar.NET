@@ -365,7 +365,7 @@ namespace UnitTest.Rollbar
         /// <returns>IRollbar.</returns>
         protected IRollbar ProvideDisposableRollbar()
         {
-            IRollbar rollbar = RollbarFactory.CreateNew(isSingleton: false, rollbarConfig: this.ProvideLiveRollbarConfig());
+            IRollbar rollbar = RollbarFactory.CreateNew(isSingleton: false, config: this.ProvideLiveRollbarConfig());
             this._disposableRollbarInstances.Add(rollbar);
             return rollbar;
         }

@@ -33,7 +33,7 @@
         {
         }
 
-        internal RollbarTelemetryOptions(bool enabled, int queueDepth)
+        public RollbarTelemetryOptions(bool enabled, int queueDepth)
             : this(
                   enabled,
                   queueDepth,
