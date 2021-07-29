@@ -220,7 +220,6 @@ namespace Rollbar
                     this._storeRepository.Dispose();
                     this._storeRepository = null;
                 }
-
                 return;
             }
 

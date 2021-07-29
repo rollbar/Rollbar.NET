@@ -120,12 +120,15 @@
             {
                 destination = new Destination() { Endpoint = destinationEndPoint, AccessToken = destinationAccessToken, };
                 this._storeContext.Destinations.Add(destination);
+                this._storeContext.SaveChanges();
             }
 
             foreach (var p in payloads.Cast<PayloadRecord>())
             {
                 destination.PayloadRecords.Add(p);
+                //this._storeContext.PayloadRecords.Add(p);
             }
+            this._storeContext.PayloadRecords.AddRange(destination.PayloadRecords);
 
             this._storeContext.SaveChanges();
         }
