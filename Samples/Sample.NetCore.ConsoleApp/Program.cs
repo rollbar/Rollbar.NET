@@ -23,8 +23,8 @@ namespace Sample.NetCore.ConsoleApp
 
             Thread.Sleep(TimeSpan.FromSeconds(10));
 
-            PrintEventCounters();
             PrintEvents();
+            PrintEventCounters();
         }
 
         /// <summary>
@@ -51,8 +51,15 @@ namespace Sample.NetCore.ConsoleApp
             var exceptionWithData = new ArgumentNullException("Exception with Data");
             exceptionWithData.Data["argumentName"] = "requiredOne";
 
-            RollbarLocator.RollbarInstance
-                .Info("ConsoleApp sample: Basic info log example.", customFields);
+            int count = 3;
+            while(count-- > 0)
+            {
+
+                RollbarLocator.RollbarInstance
+                    .Info($"ConsoleApp sample: Basic info log example @ {DateTime.Now} - {count}.", customFields);
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+            }
+
 
             RollbarInfrastructure.Instance.TelemetryCollector.Capture(
                 new Telemetry(
@@ -115,7 +122,7 @@ namespace Sample.NetCore.ConsoleApp
                     .Info("Via blocking mechanism.")
                     ;
             }
-            catch (System.TimeoutException ex)
+            catch(System.TimeoutException ex)
             {
                 msg = "*** Blocking call with too short timeout. Exception: " + Environment.NewLine + ex;
                 System.Diagnostics.Trace.WriteLine(msg);
@@ -133,7 +140,7 @@ namespace Sample.NetCore.ConsoleApp
                     .Info("Via blocking mechanism with short timeout.")
                     ;
             }
-            catch (System.TimeoutException ex)
+            catch(System.TimeoutException ex)
             {
                 msg = "*** 3. Blocking call with too short timeout. Exception: " + Environment.NewLine + ex;
                 System.Diagnostics.Trace.WriteLine(msg);

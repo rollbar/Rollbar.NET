@@ -132,7 +132,7 @@
 
   <ItemGroup>
     <Content Include="RollbarPayloadsStore.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

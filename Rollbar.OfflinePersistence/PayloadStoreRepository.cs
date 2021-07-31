@@ -126,9 +126,9 @@
             foreach (var p in payloads.Cast<PayloadRecord>())
             {
                 destination.PayloadRecords.Add(p);
-                //this._storeContext.PayloadRecords.Add(p);
+                this._storeContext.PayloadRecords.Add(p);
             }
-            this._storeContext.PayloadRecords.AddRange(destination.PayloadRecords);
+            //this._storeContext.PayloadRecords.AddRange(destination.PayloadRecords);
 
             this._storeContext.SaveChanges();
         }

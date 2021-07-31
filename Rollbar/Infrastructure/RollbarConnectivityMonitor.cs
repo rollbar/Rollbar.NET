@@ -87,6 +87,10 @@
         {
             get;
             private set;
+
+            // Simple way to fake no-connectivity:
+            //get { return false; }
+            //private set { }
         }
 
         /// <summary>
