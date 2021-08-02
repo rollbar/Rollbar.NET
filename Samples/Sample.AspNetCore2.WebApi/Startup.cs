@@ -11,7 +11,9 @@
     using Microsoft.Extensions.Options;
     using Rollbar;
     using Rollbar.NetCore.AspNet;
-    using Rollbar.Telemetry;
+
+    using Samples;
+
     using Swashbuckle.AspNetCore.Swagger;
 
     public class Startup
@@ -83,25 +85,20 @@
         /// </summary>
         private void ConfigureRollbarSingleton()
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
+            RollbarInfrastructureConfig config = new RollbarInfrastructureConfig(
+                RollbarSamplesSettings.AccessToken,
+                RollbarSamplesSettings.Environment
+                );
+            //RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            //dataSecurityOptions.ScrubFields = new string[]
+            //{
+            //    "url",
+            //    "method",
+            //};
+            //config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
 
-            RollbarConfig rollbarConfig = 
-                new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment };
-            rollbarConfig.ScrubFields = new string[] // data fields which values we want to mask as "***"
-            {
-                //"url",
-                //"method",
-            };
-
-            RollbarLocator.RollbarInstance
-                // minimally required Rollbar configuration:
-                // if you remove line below the logger's configuration will be auto-loaded from appsettings.json
-                //.Configure(new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment })
-                .Configure(rollbarConfig)
-                // optional step if you would like to monitor Rollbar internal events within your application:
-                .InternalEvent += OnRollbarInternalEvent
-                ;
+            RollbarInfrastructure.Instance.Init(config);
+            RollbarInfrastructure.Instance.QueueController.InternalEvent += OnRollbarInternalEvent;
         }
 
         /// <summary>

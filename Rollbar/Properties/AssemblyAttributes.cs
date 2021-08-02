@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Rollbar.AppSettings.Json")]
 [assembly: InternalsVisibleTo("Rollbar.App.Config")]
+[assembly: InternalsVisibleTo("Rollbar.NetPlatformExtensions")]
 
 [assembly: InternalsVisibleTo("UnitTest.Rollbar")]
 [assembly: InternalsVisibleTo("UnitTest.Rollbar.PlugIns.Log4net")]

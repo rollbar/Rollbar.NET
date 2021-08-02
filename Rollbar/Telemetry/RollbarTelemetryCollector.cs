@@ -10,7 +10,7 @@
     /// <summary>
     /// Implements Rollbar telemetry collector service.
     /// </summary>
-    public class RollbarTelemetryCollector
+    internal class RollbarTelemetryCollector
         : IRollbarTelemetryCollector
         , IDisposable
     {

@@ -59,7 +59,7 @@
                     RollbarInfrastructure.Instance.Init(this._rollbarConfig);
                 }
                 RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-                RollbarTelemetryCollector.Instance?.StartAutocollection();
+                _ = Rollbar.RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
             }
 
             if(options != null)

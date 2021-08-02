@@ -73,7 +73,7 @@ namespace Rollbar.NetCore.AspNet
             this._rollbarOptions = rollbarOptions.Value;
 
             RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-            RollbarTelemetryCollector.Instance?.StartAutocollection();
+            Rollbar.RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
             RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
         }
 
@@ -102,8 +102,9 @@ namespace Rollbar.NetCore.AspNet
 
                 try
                 {
-                    if (RollbarTelemetryCollector.Instance != null 
-                        && RollbarTelemetryCollector.Instance.IsAutocollecting
+                    if (RollbarInfrastructure.Instance != null
+                        && RollbarInfrastructure.Instance.TelemetryCollector != null 
+                        && RollbarInfrastructure.Instance.TelemetryCollector.IsAutocollecting
                         && context != null 
                         && context.Request != null
                         )
@@ -118,7 +119,7 @@ namespace Rollbar.NetCore.AspNet
                             eventEnd:null,
                             statusCode:telemetryStatusCode
                             );
-                        RollbarTelemetryCollector.Instance.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
+                        RollbarInfrastructure.Instance.TelemetryCollector.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
                     }
 
                     if (RollbarScope.Current != null && RollbarScope.Current.HttpContext != null)
