@@ -39,8 +39,7 @@
         {
             Assumption.AssertNotNull(configuration, nameof(configuration));
             Assumption.AssertNotNull(options, nameof(options));
-            Assumption.AssertNotNull(this._rollbarConfig, nameof(this._rollbarConfig));
-            Assumption.AssertNotNullOrWhiteSpace(this._rollbarConfig.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken, nameof(this._rollbarConfig.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken));
+            Assumption.AssertTrue(this._rollbarInfrastructureConfig != null || this._rollbarLoggerConfig != null, "configuration");
 
             this._httpContextAccessor = httpContextAccessor;
         }
@@ -51,12 +50,31 @@
         /// <returns>ILogger.</returns>
         protected override ILogger CreateLoggerImplementation(string name)
         {
-            return new RollbarLogger(
-                name
-                ,this._rollbarConfig.RollbarLoggerConfig
-                ,this._rollbarOptions
-                ,this._httpContextAccessor
-                );
+
+            if (this._rollbarInfrastructureConfig != null
+                && this._rollbarInfrastructureConfig.RollbarLoggerConfig != null
+                )
+            {
+                return new RollbarLogger(
+                    name, 
+                    this._rollbarInfrastructureConfig.RollbarLoggerConfig, 
+                    this._rollbarOptions, 
+                    this._httpContextAccessor
+                    );
+            }
+            else if(this._rollbarLoggerConfig != null)
+            {
+                return new RollbarLogger(
+                    name, 
+                    this._rollbarLoggerConfig, 
+                    this._rollbarOptions, 
+                    this._httpContextAccessor
+                    );
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
