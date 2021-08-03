@@ -22,17 +22,24 @@
         /// <summary>
         /// The rollbar options
         /// </summary>
-        protected readonly RollbarOptions _rollbarOptions;
+        protected readonly RollbarOptions? _rollbarOptions;
 
         /// <summary>
-        /// The rollbar configuration
+        /// The rollbar infrastructure configuration
         /// </summary>
-        protected readonly IRollbarInfrastructureConfig _rollbarInfrastructureConfig;
+        protected readonly IRollbarInfrastructureConfig? _rollbarInfrastructureConfig;
 
+        /// <summary>
+        /// The rollbar logger configuration
+        /// </summary>
+        protected readonly IRollbarLoggerConfig? _rollbarLoggerConfig;
 
-        protected readonly IRollbarLoggerConfig _rollbarLoggerConfig;
-
-        public RollbarLoggerProvider(IRollbarLoggerConfig config, IOptions<RollbarOptions> options = null)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="options">The options.</param>
+        public RollbarLoggerProvider(IRollbarLoggerConfig config, IOptions<RollbarOptions>? options = null)
         {
             this._rollbarLoggerConfig = config;
 
@@ -56,11 +63,11 @@
         /// <param name="configuration">The configuration.</param>
         /// <param name="options">The options.</param>
         public RollbarLoggerProvider(
-                    IConfiguration configuration,
-                    IOptions<RollbarOptions> options
+                    IConfiguration? configuration,
+                    IOptions<RollbarOptions>? options = default
                     )
         {
-            if(configuration!= null)
+            if(configuration != null)
             {
                 this._rollbarInfrastructureConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
                 if(RollbarInfrastructure.Instance.IsInitialized)

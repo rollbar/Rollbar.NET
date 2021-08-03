@@ -12,7 +12,6 @@
         /// Logging filter function based on the logger name and the log level.
         /// </summary>
         public Func<string, LogLevel, bool> Filter { get; set; } 
-            = (loggerName, logLevel) => true
-            ;
+            = (loggerName, logLevel) => true;
     }
 }

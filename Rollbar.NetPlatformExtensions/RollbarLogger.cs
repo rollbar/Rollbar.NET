@@ -28,17 +28,19 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
+        /// Initializes a new instance of the <see cref="RollbarLogger"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        /// <param name="rollbarOptions">The options.</param>
-        public RollbarLogger(string name
-            ,IRollbarLoggerConfig rollbarConfig
-            ,RollbarOptions rollbarOptions = default
+        /// <param name="rollbarOptions">The rollbar options.</param>
+        public RollbarLogger(
+            string name,
+            IRollbarLoggerConfig rollbarConfig,
+            RollbarOptions? rollbarOptions = default
             )
         {
             this._name = name;
+
             this._rollbarOptions = rollbarOptions ?? new RollbarOptions();
 
             this._rollbar = RollbarFactory.CreateNew(rollbarConfig);
