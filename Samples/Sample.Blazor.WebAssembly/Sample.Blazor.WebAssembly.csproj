@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Rollbar.NetPlatformExtensions\Rollbar.NetPlatformExtensions.csproj" />
     <ProjectReference Include="..\..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 

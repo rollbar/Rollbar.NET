@@ -1,7 +1,13 @@
 ﻿@page "/counter"
 
+@using Microsoft.Extensions.Logging
+@*inject Microsoft.Extensions.Logging.ILogger<Counter> Logger;*@
+@inject ILoggerFactory LoggerFactory
+@inject ILoggerProvider LoggerProvider
+
 @using Samples
 @using Rollbar
+
 
 <h1>Counter</h1>
 
@@ -15,10 +21,23 @@
     private void IncrementCount()
     {
         currentCount++;
-        TestOutRollbar();
+
+        string logMessage = $"Incremented count to: {currentCount}";
+        //Logger.LogInformation("From ILogger: " + logMessage);
+        Microsoft.Extensions.Logging.ILogger logger = LoggerProvider.CreateLogger("Counter");
+        logger.LogInformation(logMessage);
+
+        TestOutRollbarDirectly(currentCount);
+
+        TestOutRollbarViaBlazorUnhandledExceptionLogging();
     }
 
-    private static void TestOutRollbar()
+    private static void TestOutRollbarViaBlazorUnhandledExceptionLogging()
+    {
+        CallSomeTrouble();
+    }
+
+    private static void TestOutRollbarDirectly(int currentCount)
     {
 
         RollbarLoggerConfig config =
@@ -29,7 +48,7 @@
 
         using(IRollbar logger = RollbarFactory.CreateNew(config))
         {
-            logger.Info("Hello from Blazor WASM!!!");
+            logger.Info("Direct use of Rollbar: Hello from Blazor WASM!!!");
 
             try
             {
@@ -38,7 +57,11 @@
             catch(Exception ex)
             {
                 string error = ex.Message;
-                logger.Error(ex);
+                var customData = new Dictionary<string, object>();
+                customData.Add("RollbarUsage", "Direct use of Rollbar");
+                customData.Add("Error", error);
+                customData.Add("CurrentCount", currentCount);
+                logger.Error(ex, customData);
             }
         }
 

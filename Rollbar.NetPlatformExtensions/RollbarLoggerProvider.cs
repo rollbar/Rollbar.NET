@@ -27,13 +27,26 @@
         /// <summary>
         /// The rollbar configuration
         /// </summary>
-        protected readonly IRollbarInfrastructureConfig _rollbarConfig;
+        protected readonly IRollbarInfrastructureConfig _rollbarInfrastructureConfig;
+
+
+        protected readonly IRollbarLoggerConfig _rollbarLoggerConfig;
+
+        public RollbarLoggerProvider(IRollbarLoggerConfig config, IOptions<RollbarOptions> options = null)
+        {
+            this._rollbarLoggerConfig = config;
+
+            if(options != null)
+            {
+                this._rollbarOptions = options.Value;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.
         /// </summary>
         public RollbarLoggerProvider()
-            : this(null,null)
+            : this(null as IConfiguration, null)
         {
         }
 
@@ -49,14 +62,14 @@
         {
             if(configuration!= null)
             {
-                this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
+                this._rollbarInfrastructureConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
                 if(RollbarInfrastructure.Instance.IsInitialized)
                 {
-                    RollbarInfrastructure.Instance.Config.Reconfigure(this._rollbarConfig);
+                    RollbarInfrastructure.Instance.Config.Reconfigure(this._rollbarInfrastructureConfig);
                 }
                 else
                 {
-                    RollbarInfrastructure.Instance.Init(this._rollbarConfig);
+                    RollbarInfrastructure.Instance.Init(this._rollbarInfrastructureConfig);
                 }
                 RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
                 _ = Rollbar.RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
@@ -85,11 +98,28 @@
         /// <returns>ILogger.</returns>
         protected virtual ILogger CreateLoggerImplementation(string name)
         {
-            return new RollbarLogger(
-                name
-                , this._rollbarConfig.RollbarLoggerConfig
-                , this._rollbarOptions
-                );
+            if(this._rollbarInfrastructureConfig != null
+                && this._rollbarInfrastructureConfig.RollbarLoggerConfig != null
+                )
+            {
+                return new RollbarLogger(
+                    name
+                    , this._rollbarInfrastructureConfig.RollbarLoggerConfig
+                    , this._rollbarOptions
+                    );
+            }
+            else if(this._rollbarLoggerConfig != null)
+            {
+                return new RollbarLogger(
+                    name
+                    , this._rollbarLoggerConfig
+                    , this._rollbarOptions
+                    );
+            }
+            else
+            {
+                return null;
+            }
         }
 
         #region IDisposable Support
