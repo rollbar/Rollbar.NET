@@ -1,14 +1,15 @@
 namespace Sample.NetCore.ConsoleApp
 {
-    using Rollbar;
-    using Rollbar.DTOs;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
-    using Rollbar.Common;
     using Samples;
+
+    using Rollbar;
+    using Rollbar.Common;
+    using Rollbar.DTOs;
 
     class Program
     {
