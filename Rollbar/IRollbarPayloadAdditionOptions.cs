@@ -1,12 +1,13 @@
 ﻿namespace Rollbar
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     using Rollbar.Common;
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Interface IRollbarPayloadAdditionOptions
+    /// Implements the <see cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarPayloadAdditionOptions, Rollbar.IRollbarPayloadAdditionOptions}" />
+    /// </summary>
+    /// <seealso cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarPayloadAdditionOptions, Rollbar.IRollbarPayloadAdditionOptions}" />
     public interface IRollbarPayloadAdditionOptions
         : IReconfigurable<IRollbarPayloadAdditionOptions, IRollbarPayloadAdditionOptions>
     {
@@ -16,7 +17,7 @@
         /// <value>
         /// The person.
         /// </value>
-        Person Person
+        Person? Person
         {
             get; 
             set;
@@ -28,7 +29,7 @@
         /// <value>
         /// The server.
         /// </value>
-        Server Server
+        Server? Server
         {
             get; 
             set;

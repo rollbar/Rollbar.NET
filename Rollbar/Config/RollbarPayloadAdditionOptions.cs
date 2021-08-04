@@ -1,12 +1,15 @@
 ﻿namespace Rollbar
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
-
     using Rollbar.Common;
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Class RollbarPayloadAdditionOptions.
+    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarPayloadAdditionOptions, Rollbar.IRollbarPayloadAdditionOptions}" />
+    /// Implements the <see cref="Rollbar.IRollbarPayloadAdditionOptions" />
+    /// </summary>
+    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarPayloadAdditionOptions, Rollbar.IRollbarPayloadAdditionOptions}" />
+    /// <seealso cref="Rollbar.IRollbarPayloadAdditionOptions" />
     public class RollbarPayloadAdditionOptions
         : ReconfigurableBase<RollbarPayloadAdditionOptions, IRollbarPayloadAdditionOptions>
         , IRollbarPayloadAdditionOptions
@@ -14,6 +17,11 @@
         private const Person defaultPerson = null;
         private const Server defaultServer = null;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarPayloadAdditionOptions"/> class.
+        /// </summary>
+        /// <param name="person">The person.</param>
+        /// <param name="server">The server.</param>
         public RollbarPayloadAdditionOptions(
             Person person = RollbarPayloadAdditionOptions.defaultPerson, 
             Server server = RollbarPayloadAdditionOptions.defaultServer
@@ -23,18 +31,33 @@
             Server = server;
         }
 
-        public Person Person
+        /// <summary>
+        /// Gets or sets the person.
+        /// </summary>
+        /// <value>The person.</value>
+        public Person? Person
         {
             get;
             set;
         }
-        public Server Server
+        /// <summary>
+        /// Gets or sets the server.
+        /// </summary>
+        /// <value>The server.</value>
+        public Server? Server
         {
             get;
             set;
         }
 
-        public override RollbarPayloadAdditionOptions Reconfigure(IRollbarPayloadAdditionOptions likeMe)
+        /// <summary>
+        /// Reconfigures this object similar to the specified one.
+        /// </summary>
+        /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>
+        /// <returns>Reconfigured instance.</returns>
+        public override RollbarPayloadAdditionOptions Reconfigure(
+            IRollbarPayloadAdditionOptions likeMe
+            )
         {
             return base.Reconfigure(likeMe);
         }
@@ -53,6 +76,9 @@
             return validator;
         }
 
+        /// <summary>
+        /// Enum RollbarPayloadAdditionOptionsValidationRule
+        /// </summary>
         public enum RollbarPayloadAdditionOptionsValidationRule
         {
             /// <summary>
@@ -61,7 +87,14 @@
             ValidPersonIfAny,
         }
 
-        IRollbarPayloadAdditionOptions IReconfigurable<IRollbarPayloadAdditionOptions, IRollbarPayloadAdditionOptions>.Reconfigure(IRollbarPayloadAdditionOptions likeMe)
+        /// <summary>
+        /// Reconfigures this object similar to the specified one.
+        /// </summary>
+        /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>
+        /// <returns>Reconfigured instance.</returns>
+        IRollbarPayloadAdditionOptions IReconfigurable<IRollbarPayloadAdditionOptions, IRollbarPayloadAdditionOptions>.Reconfigure(
+            IRollbarPayloadAdditionOptions likeMe
+            )
         {
             return this.Reconfigure(likeMe);
         }
