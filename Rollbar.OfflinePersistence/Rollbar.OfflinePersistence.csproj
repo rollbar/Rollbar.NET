@@ -1,7 +1,7 @@
 <Project ToolsVersion="Current">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp5.0;netcoreapp3.1;netcoreapp3.0;netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461;net46;net452;net451;netstandard2.1;netstandard2.0</TargetFrameworks>
     <!--TargetFrameworks>netcoreapp2.2;netcoreapp2.1;netcoreapp2.0;net48;net472;net471;net47;net462;net461</TargetFrameworks-->
     <AssemblyName>Rollbar.OfflinePersistence</AssemblyName>
     <RootNamespace>Rollbar.OfflinePersistence</RootNamespace>
@@ -79,21 +79,21 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.6" />
       </ItemGroup>
     </When>
-    <When Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+    <When Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
       <ItemGroup Label="EF Core relatively recent tools">
         <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
 
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.0" />
 
         
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.0" />
         
 
         <PackageReference Include="Microsoft.Windows.Compatibility" Version="2.0.1" />
@@ -114,13 +114,13 @@
     </Otherwise>
   </Choose>
 
-  <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp3.0')">
+  <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp3.1')">
     <Compile Remove="Migrations\20190916220704_Initial.cs" />
     <Compile Remove="Migrations\20190916220704_Initial.Designer.cs" />
     <Compile Remove="Migrations\StoreContextModelSnapshot.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp2.2')">
+  <ItemGroup Condition="!('$(TargetFramework)' == 'netcoreapp3.1')">
     <None Include="Migrations\20190916220704_Initial.cs" />
     <None Include="Migrations\20190916220704_Initial.Designer.cs" />
     <None Include="Migrations\StoreContextModelSnapshot.cs" />

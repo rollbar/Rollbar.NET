@@ -33,10 +33,10 @@ namespace UnitTest.Rollbar.PayloadStore
         {
             using (StoreContext storeContext = new StoreContext())
             {
-                var payloadRecords = storeContext.PayloadRecords.ToArray();
+                var payloadRecords = storeContext.PayloadRecords.Where(i => true).ToArray();
                 storeContext.RemoveRange(payloadRecords);
 
-                var destinations = storeContext.Destinations.ToArray();
+                var destinations = storeContext.Destinations.Where(i => true).ToArray();
                 storeContext.RemoveRange(destinations);
 
                 storeContext.SaveChanges();
