@@ -1,13 +1,16 @@
-﻿using System;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
-using Rollbar;
-using Rollbar.Net.AspNet;
-
-namespace Sample.AspNet.MvcApp
+﻿namespace Sample.AspNet.MvcApp
 {
+    using System;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.Optimization;
+    using System.Web.Routing;
+
+    using Rollbar;
+    using Rollbar.Net.AspNet;
+
+    using Samples;
+
     public class MvcApplication : System.Web.HttpApplication
     {
         protected void Application_Start()
@@ -40,28 +43,31 @@ namespace Sample.AspNet.MvcApp
         /// </summary>
         private static void ConfigureRollbarSingleton()
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
-
-            var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
+            // minimally required Rollbar configuration:
+            RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig(
+                RollbarSamplesSettings.AccessToken, 
+                RollbarSamplesSettings.Environment
+                );
+            // optionally, add data scrubbing options:
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            dataSecurityOptions.ScrubFields = new string[]
             {
-                Environment = rollbarEnvironment,
-                ScrubFields = new string[]
-                {
-                    "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
-                    "username",
-                }
+                "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
+                "username",
             };
-            RollbarLocator.RollbarInstance
-                // minimally required Rollbar configuration:
-                .Configure(config)
-                // optional step if you would like to monitor this Rollbar instance's internal events within your application:
-                .InternalEvent += OnRollbarInternalEvent
-                ;
+            rollbarInfrastructureConfig.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
 
-            // optional step if you would like to monitor all Rollbar instances' internal events within your application:
-            //RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
+            // initialize Rollbar infrastructure:
+            RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
 
+            // optionally, if you would like to monitor all Rollbar instances' internal events within your application:
+            RollbarInfrastructure.Instance.QueueController.InternalEvent += OnRollbarInternalEvent;
+
+            // optionally, if you would like to monitor this Rollbar instance's internal events within your application:
+            RollbarLocator.RollbarInstance.InternalEvent += OnRollbarInternalEvent;
+
+            // basic test:
+            RollbarLocator.RollbarInstance.Info($"{typeof(MvcApplication).Namespace}: Rollbar is up and running!");
         }
 
         /// <summary>
