@@ -71,7 +71,11 @@
             // telemetry options:
             /////////////////////
 
-            //RollbarTelemetryOptions telemetryOptions = new RollbarTelemetryOptions();
+            RollbarTelemetryOptions telemetryOptions = new RollbarTelemetryOptions();
+            if(AppConfigUtility.LoadAppSettings(telemetryOptions))
+            {
+                config.RollbarTelemetryOptions.Reconfigure(telemetryOptions);
+            }
 
             //if(telemetryConfigSection.TelemetryEnabled.HasValue)
             //{

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Rollbar;
+using Rollbar.App.Config;
 
 namespace Sample.Net.ConsoleApp.App.Config
 {
@@ -12,6 +13,10 @@ namespace Sample.Net.ConsoleApp.App.Config
     {
         static void Main(string[] args)
         {
+            RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig();
+            AppConfigUtility.LoadAppSettings(rollbarInfrastructureConfig);
+            RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
+
             // The Rollbar Notifier is configured within the app.config.
             // Let's just start using it:
             RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(3))
