@@ -211,7 +211,7 @@ namespace Rollbar
 
         private void EvaluateUseOfLocalPayloadStoreOptions(IRollbarOfflineStoreOptions options)
         {
-            Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + "...");
+            //Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + "...");
 
             if(!options.EnableLocalPayloadStore)
             {
@@ -237,7 +237,7 @@ namespace Rollbar
             //this._useLocalPayloadStore = true;
             this._storeRepository.MakeSureDatabaseExistsAndReady();
 
-            Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + ".");
+            //Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + ".");
         }
 
         internal string GetLocalPayloadStoreFullPathName(IRollbarOfflineStoreOptions options)

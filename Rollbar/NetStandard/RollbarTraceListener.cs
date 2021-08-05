@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     /// Class RollbarTraceListener.
@@ -84,17 +85,22 @@
             {
                 if (this._rollbar == null)
                 {
-                    var config = this.GetRollbarTraceListenerConfig();
-                    if (config != null)
+                    lock(typeSyncRoot)
                     {
-                        this._rollbar = RollbarFactory.CreateNew();
-                        this._rollbar.Configure(config);
-                    }
-                    else
-                    {
-                        // the best thing we can do at this point is to start using 
-                        // the Rollbar singleton hoping it was pre-configured by now:
-                        this._rollbar = RollbarLocator.RollbarInstance;
+                        if(this._rollbar == null)
+                        {
+                            var config = this.GetRollbarTraceListenerConfig();
+                            if(config != null)
+                            {
+                                this._rollbar = RollbarFactory.CreateNew(config);
+                            }
+                            else
+                            {
+                                // the best thing we can do at this point is to start using 
+                                // the Rollbar singleton hoping it was pre-configured by now:
+                                this._rollbar = RollbarLocator.RollbarInstance;
+                            }
+                        }
                     }
                 }
 
@@ -107,13 +113,6 @@
         /// </summary>
         public RollbarTraceListener()
         {
-            var config = this.GetRollbarTraceListenerConfig();
-            if (config != null)
-            {
-                this._rollbar = RollbarFactory.CreateNew();
-                this._rollbar.Configure(config);
-            }
-
             lock(typeSyncRoot)
             {
                 RollbarTraceListener.InstanceCount++;
@@ -134,21 +133,11 @@
         /// </summary>
         /// <param name="rollbarAccessToken">The rollbar access token.</param>
         /// <param name="rollbarEnvironment">The rollbar environment.</param>
-        public RollbarTraceListener(string rollbarAccessToken, string rollbarEnvironment)
+        public RollbarTraceListener(string rollbarAccessToken, string? rollbarEnvironment)
         {
-            if (!string.IsNullOrWhiteSpace(rollbarAccessToken))
-            {
-                RollbarDestinationOptions destinationOptions = new RollbarDestinationOptions(rollbarAccessToken);
-                if (!string.IsNullOrWhiteSpace(rollbarEnvironment))
-                {
-                    destinationOptions.Environment = rollbarEnvironment;
-                }
-                RollbarLoggerConfig config = new RollbarLoggerConfig();
-                config.RollbarDestinationOptions.Reconfigure(destinationOptions);
-                
-                this._rollbar = RollbarFactory.CreateNew();
-                this._rollbar.Configure(config);
-            }
+            this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()] = rollbarAccessToken;
+            this.Attributes[RollbarTraceListenerAttributes.rollbarEnvironment.ToString()] = rollbarEnvironment;
+
             lock (typeSyncRoot)
             {
                 RollbarTraceListener.InstanceCount++;
@@ -171,7 +160,7 @@
         /// <param name="message">A message to write.</param>
         public override void WriteLine(string message)
         {
-            this.Rollbar.Info(message);
+            this.Rollbar?.Info(message);
         }
 
         /// <summary>
@@ -184,6 +173,11 @@
         /// <param name="message">A message to write.</param>
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
         {
+            if(this.Rollbar == null)
+            {
+                return;
+            }
+
             // the code below is simplified way to report events to Rollbar API,
             // in production code we can do better job mapping the available event data
             // into proper Rollbar data body:
@@ -254,24 +248,45 @@
         /// Gets the Rollbar trace listener configuration.
         /// </summary>
         /// <returns>RollbarConfig.</returns>
-        private RollbarLoggerConfig GetRollbarTraceListenerConfig()
+        private IRollbarLoggerConfig? GetRollbarTraceListenerConfig()
         {
-            if (string.IsNullOrWhiteSpace(this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()]))
+            if(string.IsNullOrWhiteSpace(this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()]))
             {
                 return null;
             }
 
-            // minimally required Rollbar configuration
-            RollbarDestinationOptions destinationOptions = 
-                new RollbarDestinationOptions(
+            if(!RollbarInfrastructure.Instance.IsInitialized)
+            {
+#if !NETFX_47nOlder
+                if(RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
+                {
+                    // We are running within Blazor WASM runtime environment that is known to be single threaded in its nature
+                    // at least at the moment, so no background threads are allowed and our infrastructure depends on the threads.
+                    // Hence, we can not initialize the infrastructure:
+                    // NO-OP...
+                }
+                else
+#endif
+                {
+                    // It is safe to assume we can use the infrastructure:
+                    RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig(
+                        this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()],
+                        this.Attributes[RollbarTraceListenerAttributes.rollbarEnvironment.ToString()]
+                        );
+                    RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
+                    return rollbarInfrastructureConfig.RollbarLoggerConfig;
+                }
+            }
+            else
+            {
+                RollbarLoggerConfig rollbarLoggerConfig = new RollbarLoggerConfig(
                     this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()],
                     this.Attributes[RollbarTraceListenerAttributes.rollbarEnvironment.ToString()]
                     );
+                return rollbarLoggerConfig;
+            }
 
-            var config = new RollbarLoggerConfig();
-            config.RollbarDestinationOptions.Reconfigure(destinationOptions);
-
-            return config;
+            return null;
         }
 
         /// <summary>
