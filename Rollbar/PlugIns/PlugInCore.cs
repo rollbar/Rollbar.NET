@@ -56,7 +56,7 @@
             }
 
             // create proper IRollbar instance:
-            this.rollbar = RollbarFactory.CreateNew().Configure(rollbarConfig.RollbarLoggerConfig);
+            this.rollbar = RollbarFactory.CreateNew(rollbarConfig.RollbarLoggerConfig);
 
             // create proper RollbarLogger instance:
             if (rollbarBlockingTimeout.HasValue)
@@ -82,11 +82,7 @@
         /// <returns>IRollbarConfig.</returns>
         public static IRollbarInfrastructureConfig CreateConfig(string rollbarAccessToken, string rollbarEnvironment)
         {
-            RollbarDestinationOptions destinationOptions = 
-                new RollbarDestinationOptions(rollbarAccessToken, rollbarEnvironment);
-
-            IRollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
-            config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            IRollbarInfrastructureConfig config = new RollbarInfrastructureConfig(rollbarAccessToken, rollbarEnvironment);
 
             return config;
         }
