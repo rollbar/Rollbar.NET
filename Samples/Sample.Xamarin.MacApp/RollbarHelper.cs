@@ -5,6 +5,8 @@
     using Rollbar;
     using Rollbar.DTOs;
 
+    using Samples;
+
     public static class RollbarHelper
     {
         public static readonly TimeSpan RollbarTimeout = TimeSpan.FromSeconds(10);
@@ -26,49 +28,34 @@
                 RollbarLocator.RollbarInstance.AsBlockingLogger(RollbarTimeout).Critical(newExc);
             };
         }
-        /// <summary>
-        /// Configures the Rollbar singleton-like notifier.
-        /// </summary>
-        public static void ConfigureRollbarSingleton()
-        {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
 
-            var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
+        private static void ConfigureRollbar()
+        {
+            RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig(
+                RollbarSamplesSettings.AccessToken,
+                RollbarSamplesSettings.Environment
+                );
+
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            dataSecurityOptions.ScrubFields = new string[]
             {
-                Environment = rollbarEnvironment,
-                ScrubFields = new string[]
-                {
-                    "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
-                    "username",
-                },
+                "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
+                "username",
             };
-            RollbarLocator.RollbarInstance
-                // minimally required Rollbar configuration:
-                .Configure(config)
-                // optional step if you would like to monitor this Rollbar instance's internal events within your application:
-                .InternalEvent += OnRollbarInternalEvent
-                ;
+            rollbarInfrastructureConfig.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
 
-            // optional step if you would like to monitor all Rollbar instances' internal events within your application:
-            RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
+            RollbarPayloadAdditionOptions payloadAdditionOptions = new RollbarPayloadAdditionOptions();
+            payloadAdditionOptions.Person = new Person("007")
+            {
+                Email = "jbond@mi6.uk",
+                UserName = "JBOND"
+            };
+            rollbarInfrastructureConfig.RollbarLoggerConfig.RollbarPayloadAdditionOptions.Reconfigure(payloadAdditionOptions);
 
-            // Optional info about reporting Rollbar user:
-            SetRollbarReportingUser("007", "jbond@mi6.uk", "JBOND");
-        }
+            RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
 
-        /// <summary>
-        /// Sets the rollbar reporting user.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="email">The email.</param>
-        /// <param name="userName">Name of the user.</param>
-        private static void SetRollbarReportingUser(string id, string email, string userName)
-        {
-            Person person = new Person(id);
-            person.Email = email;
-            person.UserName = userName;
-            RollbarLocator.RollbarInstance.Config.Person = person;
+            // optionally, if you would like to monitor this Rollbar instance's internal events within your application:
+            RollbarInfrastructure.Instance.QueueController.InternalEvent += OnRollbarInternalEvent;
         }
 
         /// <summary>
