@@ -1,4 +1,7 @@
 ﻿using Rollbar;
+
+using Samples;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +17,7 @@ namespace Sample.WebForms.Site
     {
         void Application_Start(object sender, EventArgs e)
         {
-            ConfigureRollbarSingleton();
+            ConfigureRollbar();
 
             // Code that runs on application startup
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -45,17 +48,16 @@ namespace Sample.WebForms.Site
         /// <summary>
         /// Configures the Rollbar singleton-like notifier.
         /// </summary>
-        private void ConfigureRollbarSingleton()
+        private void ConfigureRollbar()
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
+            RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig(
+                RollbarSamplesSettings.AccessToken,
+                RollbarSamplesSettings.Environment
+                );
+            RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
 
-            RollbarLocator.RollbarInstance
-                // minimally required Rollbar configuration:
-                .Configure(new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment })
-                // optional step if you would like to monitor Rollbar internal events within your application:
-                .InternalEvent += OnRollbarInternalEvent
-                ;
+            // optionally, if you would like to monitor Rollbar internal events within your application:
+            RollbarInfrastructure.Instance.QueueController.InternalEvent += OnRollbarInternalEvent;
         }
 
         private static void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
