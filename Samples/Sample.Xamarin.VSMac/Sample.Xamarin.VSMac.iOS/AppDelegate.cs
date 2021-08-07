@@ -22,7 +22,7 @@ namespace Sample.Xamarin.VSMac.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            RollbarHelper.ConfigureRollbarSingleton();
+            RollbarHelper.ConfigureRollbar();
             //START: Let's subscribe to all known unhandled exception events application-wide...
             RollbarHelper.RegisterForGlobalExceptionHandling();
             //END.
