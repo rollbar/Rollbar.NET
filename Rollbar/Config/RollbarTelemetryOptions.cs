@@ -9,10 +9,10 @@
 
     /// <summary>
     /// Class RollbarTelemetryOptions.
-    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarTelemetryOptions, Rollbar.IRollbarTelemetryOptions}" />
+    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{T, TBase}" />
     /// Implements the <see cref="Rollbar.IRollbarTelemetryOptions" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarTelemetryOptions, Rollbar.IRollbarTelemetryOptions}" />
+    /// <seealso cref="Rollbar.Common.ReconfigurableBase{T, TBase}" />
     /// <seealso cref="Rollbar.IRollbarTelemetryOptions" />
     public class RollbarTelemetryOptions
         : ReconfigurableBase<RollbarTelemetryOptions, IRollbarTelemetryOptions>

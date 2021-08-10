@@ -5,9 +5,9 @@
 
     /// <summary>
     /// Interface IRollbarPayloadAdditionOptions
-    /// Implements the <see cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarPayloadAdditionOptions, Rollbar.IRollbarPayloadAdditionOptions}" />
+    /// Implements the <see cref="Rollbar.Common.IReconfigurable{T, TBase}" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarPayloadAdditionOptions, Rollbar.IRollbarPayloadAdditionOptions}" />
+    /// <seealso cref="Rollbar.Common.IReconfigurable{T, TBase}" />
     public interface IRollbarPayloadAdditionOptions
         : IReconfigurable<IRollbarPayloadAdditionOptions, IRollbarPayloadAdditionOptions>
     {

@@ -13,6 +13,7 @@
     /// <seealso cref="System.IDisposable" />
     [Conditional(InstrumentationCondition.Instrument)]
     [AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false, Inherited = false)]
+    [CLSCompliant(false)]
     public class PerformanceTimer
         : Attribute
         , IDisposable
@@ -29,6 +30,13 @@
         /// The measurement classification
         /// </summary>
         private readonly IClassification _measurementClassification;
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="PerformanceTimer"/> class from being created.
+        /// </summary>
+        private PerformanceTimer()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PerformanceTimer"/> class.
@@ -62,7 +70,7 @@
         /// <returns>PerformanceTimer.</returns>
         public static PerformanceTimer StartNew(
             IPerformanceMonitor performanceMonitor, 
-            IClassification measurementClassification
+            IClassification? measurementClassification
             )
         {
             var timer = new PerformanceTimer(performanceMonitor, measurementClassification);

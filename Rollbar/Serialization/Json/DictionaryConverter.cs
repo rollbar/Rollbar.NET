@@ -5,19 +5,11 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
-#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
-#pragma warning disable CS1658 // Warning is overriding an error
-#pragma warning disable CS1658 // Warning is overriding an error
-#pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
     /// DictionaryConverter simplifies Json de/serialization of .NET Dictionaries.
     /// </summary>
-    /// <seealso cref="Json.JsonConverter{System.Collections.Generic.IDictionary{System.String, System.Object}}" />
+    /// <seealso cref="JsonConverter{T}" />
     public class DictionaryConverter
-#pragma warning restore CS1658 // Warning is overriding an error
-#pragma warning restore CS1658 // Warning is overriding an error
-#pragma warning restore CS1658 // Warning is overriding an error
-#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
         : JsonConverter<IDictionary<string, object>>
     {
         /// <summary>

@@ -8,9 +8,9 @@
 
     /// <summary>
     /// Interface IHttpProxyOptions
-    /// Implements the <see cref="Rollbar.Common.IReconfigurable{Rollbar.IHttpProxyOptions, Rollbar.IHttpProxyOptions}" />
+    /// Implements the <see cref="Rollbar.Common.IReconfigurable{T, TBase}" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.IReconfigurable{Rollbar.IHttpProxyOptions, Rollbar.IHttpProxyOptions}" />
+    /// <seealso cref="Rollbar.Common.IReconfigurable{T, TBase}" />
     public interface IHttpProxyOptions
         : IReconfigurable<IHttpProxyOptions, IHttpProxyOptions>
     {
@@ -18,7 +18,7 @@
         /// Gets the proxy address.
         /// </summary>
         /// <value>The proxy address.</value>
-        string ProxyAddress
+        string? ProxyAddress
         {
             get;
         }
@@ -27,7 +27,7 @@
         /// Gets the proxy username.
         /// </summary>
         /// <value>The proxy username.</value>
-        string ProxyUsername
+        string? ProxyUsername
         {
             get;
         }
@@ -36,10 +36,9 @@
         /// Gets the proxy password.
         /// </summary>
         /// <value>The proxy password.</value>
-        string ProxyPassword
+        string? ProxyPassword
         {
             get;
         }
-
     }
 }

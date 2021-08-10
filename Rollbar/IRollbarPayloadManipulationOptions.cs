@@ -1,12 +1,15 @@
 ﻿namespace Rollbar
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     using Rollbar.Common;
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Interface IRollbarPayloadManipulationOptions
+    /// Implements the <see cref="IReconfigurable{T, TBase}" />
+    /// </summary>
+    /// <seealso cref="IReconfigurable{T, TBase}" />
     public interface IRollbarPayloadManipulationOptions
         : IReconfigurable<IRollbarPayloadManipulationOptions, IRollbarPayloadManipulationOptions>
     {
@@ -16,7 +19,7 @@
         /// <value>
         /// The transform.
         /// </value>
-        Action<Payload> Transform
+        Action<Payload>? Transform
         {
             get;
         }
@@ -27,7 +30,7 @@
         /// <value>
         /// The truncate.
         /// </value>
-        Action<Payload> Truncate
+        Action<Payload>? Truncate
         {
             get;
         }
@@ -38,7 +41,7 @@
         /// <value>
         /// The check ignore.
         /// </value>
-        Func<Payload,bool> CheckIgnore
+        Func<Payload,bool>? CheckIgnore
         {
             get;
         }

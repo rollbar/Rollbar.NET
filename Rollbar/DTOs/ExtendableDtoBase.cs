@@ -9,19 +9,15 @@
     using System.Text;
     using Common;
 
-#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
-#pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
     /// Implements an abstract base for defining expendable DTO types.
     /// These types of DTOs can be extended with arbitrary extra 
     /// key-value pairs as needed.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.DtoBase" />
-    /// <seealso cref="System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String, System.Object}}" />
-    /// <seealso cref="System.Collections.Generic.IDictionary{System.String, System.Object}" />
+    /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
+    /// <seealso cref="System.Collections.Generic.IDictionary{TKey,TValue}" />
     public abstract class ExtendableDtoBase
-#pragma warning restore CS1658 // Warning is overriding an error
-#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
         : DtoBase,
         IEnumerable<KeyValuePair<string, object>>,
         IDictionary<string, object>

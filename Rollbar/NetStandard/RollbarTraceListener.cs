@@ -264,6 +264,7 @@
                     // at least at the moment, so no background threads are allowed and our infrastructure depends on the threads.
                     // Hence, we can not initialize the infrastructure:
                     // NO-OP...
+                    return null;
                 }
                 else
 #endif
@@ -285,8 +286,6 @@
                     );
                 return rollbarLoggerConfig;
             }
-
-            return null;
         }
 
         /// <summary>

@@ -7,11 +7,11 @@
 
     /// <summary>
     /// Class RollbarOfflineStoreOptions.
-    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarOfflineStoreOptions, Rollbar.IRollbarOfflineStoreOptions}" />
-    /// Implements the <see cref="Rollbar.IRollbarOfflineStoreOptions" />
+    /// Implements the <see cref="ReconfigurableBase{T, TBase}" />
+    /// Implements the <see cref="IRollbarOfflineStoreOptions" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarOfflineStoreOptions, Rollbar.IRollbarOfflineStoreOptions}" />
-    /// <seealso cref="Rollbar.IRollbarOfflineStoreOptions" />
+    /// <seealso cref="ReconfigurableBase{T, TBase}" />
+    /// <seealso cref="IRollbarOfflineStoreOptions" />
     public class RollbarOfflineStoreOptions
         : ReconfigurableBase<RollbarOfflineStoreOptions, IRollbarOfflineStoreOptions>
         , IRollbarOfflineStoreOptions

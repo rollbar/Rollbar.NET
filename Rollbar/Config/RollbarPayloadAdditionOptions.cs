@@ -5,11 +5,11 @@
 
     /// <summary>
     /// Class RollbarPayloadAdditionOptions.
-    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarPayloadAdditionOptions, Rollbar.IRollbarPayloadAdditionOptions}" />
-    /// Implements the <see cref="Rollbar.IRollbarPayloadAdditionOptions" />
+    /// Implements the <see cref="ReconfigurableBase{T, TBase}" />
+    /// Implements the <see cref="IRollbarPayloadAdditionOptions" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarPayloadAdditionOptions, Rollbar.IRollbarPayloadAdditionOptions}" />
-    /// <seealso cref="Rollbar.IRollbarPayloadAdditionOptions" />
+    /// <seealso cref="ReconfigurableBase{T, TBase}" />
+    /// <seealso cref="IRollbarPayloadAdditionOptions" />
     public class RollbarPayloadAdditionOptions
         : ReconfigurableBase<RollbarPayloadAdditionOptions, IRollbarPayloadAdditionOptions>
         , IRollbarPayloadAdditionOptions

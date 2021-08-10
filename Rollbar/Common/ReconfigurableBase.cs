@@ -47,7 +47,7 @@
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-        public bool Equals(T other)
+        public bool Equals(T? other)
         {
             return base.Equals(other, this.thisInstanceType);
         }
@@ -57,7 +57,7 @@
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as T);
         }
@@ -122,7 +122,7 @@
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-        public bool Equals(TBase other)
+        public bool Equals(TBase? other)
         {
             return base.Equals(other, this._baseInstanceType);
         }
@@ -132,7 +132,7 @@
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as TBase);
         }
@@ -271,7 +271,7 @@
         /// <param name="other">The other.</param>
         /// <param name="otherType">Type of the other.</param>
         /// <returns><c>true</c> if not equal, <c>false</c> otherwise.</returns>
-        protected bool Equals(object other, Type otherType)
+        protected bool Equals(object? other, Type otherType)
         {
             if (other == null)
             {

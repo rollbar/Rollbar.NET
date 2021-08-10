@@ -4,15 +4,11 @@
     using Rollbar.Common;
 
 
-#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
-#pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
     /// Interface IRollbarOfflineStoreOptions
-    /// Implements the <see cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarOfflineStoreOptions, Rollbar.IRollbarOfflineStoreOptions}" />
+    /// Implements the <see cref="Rollbar.Common.IReconfigurable{T,TBase}" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarOfflineStoreOptions, Rollbar.IRollbarOfflineStoreOptions}" />
-#pragma warning restore CS1658 // Warning is overriding an error
-#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
+    /// <seealso cref="Rollbar.Common.IReconfigurable{T,TBase}" />
     public interface IRollbarOfflineStoreOptions
         : IReconfigurable<IRollbarOfflineStoreOptions, IRollbarOfflineStoreOptions>
     {

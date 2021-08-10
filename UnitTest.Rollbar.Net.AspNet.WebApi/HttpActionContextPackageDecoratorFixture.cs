@@ -8,7 +8,6 @@ namespace UnitTest.Rollbar.Net.AspNet.WebApi
     using Moq;
     using System;
     using System.Collections.Specialized;
-    using System.Net.Http;
     using System.Security.Principal;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -42,6 +41,7 @@ namespace UnitTest.Rollbar.Net.AspNet.WebApi
             }
             catch(System.Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 Assert.Fail("No exception expected");
             }
         }

@@ -8,9 +8,9 @@
 
     /// <summary>
     /// Interface IRollbarDataSecurityOptions
-    /// Implements the <see cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarDataSecurityOptions, Rollbar.IRollbarDataSecurityOptions}" />
+    /// Implements the <see cref="Rollbar.Common.IReconfigurable{T, TBase}" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.IReconfigurable{Rollbar.IRollbarDataSecurityOptions, Rollbar.IRollbarDataSecurityOptions}" />
+    /// <seealso cref="Rollbar.Common.IReconfigurable{T, TBase}" />
     public interface IRollbarDataSecurityOptions
         :IReconfigurable<IRollbarDataSecurityOptions, IRollbarDataSecurityOptions>
     {

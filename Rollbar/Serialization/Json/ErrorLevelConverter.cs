@@ -3,15 +3,11 @@
     using System;
     using Newtonsoft.Json;
 
-#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
-#pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
     /// ErrorLevelConverter simplifies ErrorLevel Json de/serialization.
     /// </summary>
-    /// <seealso cref="Rollbar.Serialization.Json.JsonConverter{Rollbar.ErrorLevel}" />
+    /// <seealso cref="Rollbar.Serialization.Json.JsonConverter{T}" />
     public class ErrorLevelConverter 
-#pragma warning restore CS1658 // Warning is overriding an error
-#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
         : JsonConverter<ErrorLevel>
     {
 

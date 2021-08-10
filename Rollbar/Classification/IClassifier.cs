@@ -2,15 +2,11 @@
 {
     using System;
 
-#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
-#pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
     /// Interface IClassifier
-    /// Implements the <see cref="Rollbar.Classification.Identifiable{System.String}" />
+    /// Implements the <see cref="Rollbar.Classification.Identifiable{TID}" />
     /// </summary>
-    /// <seealso cref="Rollbar.Classification.Identifiable{System.String}" />
-#pragma warning restore CS1658 // Warning is overriding an error
-#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
+    /// <seealso cref="Rollbar.Classification.Identifiable{TID}" />
     public interface IClassifier
         : Identifiable<string>
     {
