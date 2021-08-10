@@ -23,11 +23,14 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>4.0.3</SdkVersion>           <!-- Required: major.minor.patch -->
-    <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
+    <SdkVersion>5.0.0</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersionSuffix>beta.01</SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - fix: merge PR resolve #583 - Rollbar 4.0.2 crashes Xamarin.Forms-App
+      - feat: optioanl RollbarInfrastructure concept
+      - feat: optional explicit RollbarInfrastructure initialization
+      - feat: structured Rollbar configuration
+      - feat: Blazor browser-side support
     </SdkReleaseNotes>                        
 
     <!--
