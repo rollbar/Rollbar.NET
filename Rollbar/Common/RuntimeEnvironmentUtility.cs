@@ -62,13 +62,15 @@ namespace Rollbar.Common
         /// <returns></returns>
         public static string GetTypeAssemblyVersion(Type theType)
         {
-            StringBuilder result = new StringBuilder(theType.Assembly.GetName().Version.ToString(3));
-            //var infoVersion = theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
+            //StringBuilder result = new StringBuilder(theType.Assembly.GetName().Version.ToString(3));
+            //return result.ToString();
+
+            var infoVersion = theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
+            return infoVersion.InformationalVersion;
             //if (infoVersion != null && infoVersion.InformationalVersion.StartsWith("LTS"))
             //{
             //    result.Append($" ({infoVersion.InformationalVersion.TrimEnd('-')})");
             //}
-            return result.ToString();
         }
 
         /// <summary>
