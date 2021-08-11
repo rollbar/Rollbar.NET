@@ -33,7 +33,7 @@ namespace Sample.Blazor.WebAssembly
 
             builder.Services.AddLogging(configure =>
                 configure
-                .AddFilter(levelFilter => levelFilter >= LogLevel.Information)
+                .AddFilter(levelFilter => levelFilter >= LogLevel.Information) //also, try enabling LogLevel.Trace...
                 .AddProvider(new RollbarLoggerProvider(rollbarConfig))
             );
 
