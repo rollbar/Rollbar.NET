@@ -292,7 +292,7 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        private async Task<RollbarResponse> PostAsJsonAsync(
+        private async Task<RollbarResponse?> PostAsJsonAsync(
             string accessToken, 
             StringContent jsonContent 
             )
@@ -307,8 +307,8 @@
             request.Content = jsonContent;
             
             // send the request:
-            HttpResponseMessage postResponse = null;
-            RollbarResponse response = null;
+            HttpResponseMessage? postResponse = null;
+            RollbarResponse? response = null;
             try 
             {
                 postResponse = await this._httpClient.SendAsync(request);
@@ -341,7 +341,6 @@
             finally
             {
                 postResponse?.Dispose();
-
             }
 
             return response;

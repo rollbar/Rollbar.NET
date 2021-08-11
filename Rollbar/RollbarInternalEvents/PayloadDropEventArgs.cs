@@ -50,7 +50,7 @@
         /// <param name="logger">The logger.</param>
         /// <param name="payload">The payload.</param>
         /// <param name="dropReason">The drop reason.</param>
-        internal PayloadDropEventArgs(RollbarLogger logger, Payload payload, DropReason dropReason) 
+        internal PayloadDropEventArgs(RollbarLogger logger, Payload? payload, DropReason dropReason) 
             : base(logger, payload)
         {
             this.Reason = dropReason;

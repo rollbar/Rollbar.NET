@@ -141,7 +141,7 @@ namespace Rollbar
         /// <param name="proxyUsername">The proxy username.</param>
         /// <param name="proxyPassword">The proxy password.</param>
         /// <returns>HttpClient.</returns>
-        internal HttpClient ProvideHttpClient(string? proxyAddress = null, string? proxyUsername = null, string? proxyPassword = null)
+        internal HttpClient? ProvideHttpClient(string? proxyAddress = null, string? proxyUsername = null, string? proxyPassword = null)
         {
             string proxySettings = string.Empty;
             if(!string.IsNullOrWhiteSpace(proxyAddress)
@@ -158,7 +158,7 @@ namespace Rollbar
                 proxySettings = $"{proxyAddress?.ToLower()}+{proxyUsername?.ToLower()}+{proxyPassword?.ToLower()}";
             }
 
-            HttpClient httpClient = null;
+            HttpClient? httpClient = null;
             if(this._httpClientsByProxySettings.TryGetValue(proxySettings, out httpClient))
             {
                 return httpClient;
@@ -478,7 +478,7 @@ namespace Rollbar
         /// <param name="destination">The destination.</param>
         private void ProcessPersistentStoreOnce(IDestination destination)
         {
-            AccessTokenQueuesMetadata accessTokenMetadata = null;
+            AccessTokenQueuesMetadata? accessTokenMetadata = null;
             lock(this._syncLock)
             {
                 if(!this._queuesByAccessToken.TryGetValue(destination.AccessToken, out accessTokenMetadata))
@@ -625,8 +625,8 @@ namespace Rollbar
                     return;
                 }
 
-                PayloadBundle payloadBundle = null;
-                RollbarResponse response = null;
+                PayloadBundle? payloadBundle = null;
+                RollbarResponse? response = null;
                 try
                 {
                     payloadBundle = Process(queue, out response);
@@ -797,9 +797,9 @@ namespace Rollbar
         /// </summary>
         /// <param name="queue">The queue.</param>
         /// <returns>PayloadBundle.</returns>
-        private PayloadBundle GetFirstTransmittableBundle(PayloadQueue queue)
+        private PayloadBundle? GetFirstTransmittableBundle(PayloadQueue queue)
         {
-            PayloadBundle payloadBundle = null;
+            PayloadBundle? payloadBundle = null;
 
             bool ignorableBundle = false;
             do
@@ -846,12 +846,12 @@ namespace Rollbar
         /// <param name="queue">The queue.</param>
         /// <param name="response">The response.</param>
         /// <returns>PayloadBundle.</returns>
-        private PayloadBundle Process(PayloadQueue queue, out RollbarResponse response)
+        private PayloadBundle? Process(PayloadQueue queue, out RollbarResponse? response)
         {
             response = null;
 
-            PayloadBundle payloadBundle = GetFirstTransmittableBundle(queue);
-            Payload payload = payloadBundle?.GetPayload();
+            PayloadBundle? payloadBundle = GetFirstTransmittableBundle(queue);
+            Payload? payload = payloadBundle?.GetPayload();
             if(payload == null) // one more sanity check before proceeding further...
             {
                 return null;
@@ -1038,7 +1038,7 @@ namespace Rollbar
         public int GetPayloadCount(string accessToken)
         {
             int counter = 0;
-            AccessTokenQueuesMetadata tokenMetadata = null;
+            AccessTokenQueuesMetadata? tokenMetadata = null;
             lock(this._syncLock)
             {
                 Assumption.AssertNotNull(this._config, nameof(this._config));
@@ -1075,7 +1075,7 @@ namespace Rollbar
         {
             TimeSpan payloadTimeout = TimeSpan.Zero;
             int totalPayloads = 0;
-            AccessTokenQueuesMetadata tokenMetadata = null;
+            AccessTokenQueuesMetadata? tokenMetadata = null;
             lock(this._syncLock)
             {
                 Assumption.AssertNotNull(this._config, nameof(this._config));
@@ -1156,7 +1156,7 @@ namespace Rollbar
                 {
                     foreach(var flushedBundle in queue.Flush())
                     {
-                        Payload payload = null;
+                        Payload? payload = null;
                         try
                         {
                             payload = flushedBundle?.GetPayload();

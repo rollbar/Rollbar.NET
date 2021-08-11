@@ -38,7 +38,7 @@
         /// <summary>
         /// The access token queues metadata
         /// </summary>
-        private AccessTokenQueuesMetadata _accessTokenQueuesMetadata;
+        private AccessTokenQueuesMetadata? _accessTokenQueuesMetadata;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PayloadQueue"/> class from being created.
@@ -148,11 +148,11 @@
         /// Peeks this instance.
         /// </summary>
         /// <returns>PayloadBundle, if any, otherwise null.</returns>
-        public PayloadBundle Peek()
+        public PayloadBundle? Peek()
         {
             lock(this._syncLock)
             {
-                PayloadBundle result = null;
+                PayloadBundle? result = null;
 
                 if (this._queue.Count > 0)
                 {
@@ -167,11 +167,11 @@
         /// Dequeues this instance.
         /// </summary>
         /// <returns>PayloadBundle, if any, otherwise null.</returns>
-        public PayloadBundle Dequeue()
+        public PayloadBundle? Dequeue()
         {
             lock (this._syncLock)
             {
-                PayloadBundle result = null;
+                PayloadBundle? result = null;
 
                 if (this._queue.Count > 0)
                 {
@@ -220,7 +220,7 @@
         /// Gets or sets the access token queues metadata.
         /// </summary>
         /// <value>The access token queues metadata.</value>
-        public AccessTokenQueuesMetadata AccessTokenQueuesMetadata
+        public AccessTokenQueuesMetadata? AccessTokenQueuesMetadata
         {
             get { return this._accessTokenQueuesMetadata; }
             set { this._accessTokenQueuesMetadata = value; }

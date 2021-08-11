@@ -40,7 +40,7 @@
         /// <param name="dataObject">The data object.</param>
         internal RollbarEventArgs(
             IRollbar logger, 
-            object dataObject
+            object? dataObject
             )
         {
             this._logger = logger;

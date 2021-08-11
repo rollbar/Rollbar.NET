@@ -107,24 +107,27 @@
                 var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
                 if (concreteDtoMetadata
                     .ReservedPropertyInfoByReservedKey
-                    .TryGetValue(key, out PropertyInfo reservedPropertyInfo))
+                    .TryGetValue(key, out PropertyInfo? reservedPropertyInfo))
                 {
                     var reservedPropertyType = reservedPropertyInfo.PropertyType;
                     var valueType = value?.GetType();
-                    Assumption.AssertTrue(
-                        //we are not dealing with a reserved property, hence, anything works:
-                        !(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(key) || concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
-                        //OR we are dealing with a reserved property and the value and its type should make sense:  
-                        || value == null
-                        || reservedPropertyType == valueType
-                        || (reservedPropertyType.IsInterface 
-                            && ReflectionUtility.DoesTypeImplementInterface(valueType, reservedPropertyType))
-                        || (reservedPropertyType.IsGenericType                                // dealing with nullable type
-                            && reservedPropertyType.GenericTypeArguments.Length == 1
-                            && reservedPropertyType.GenericTypeArguments[0] == valueType)
-                        || valueType.IsSubclassOf(reservedPropertyType),
-                        nameof(value)
-                    );
+                    if(valueType != null)
+                    {
+                        Assumption.AssertTrue(
+                            //we are not dealing with a reserved property, hence, anything works:
+                            !(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(key) || concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
+                            //OR we are dealing with a reserved property and the value and its type should make sense:  
+                            || value == null
+                            || reservedPropertyType == valueType
+                            || (reservedPropertyType.IsInterface
+                                && ReflectionUtility.DoesTypeImplementInterface(valueType, reservedPropertyType))
+                            || (reservedPropertyType.IsGenericType                                // dealing with nullable type
+                                && reservedPropertyType.GenericTypeArguments.Length == 1
+                                && reservedPropertyType.GenericTypeArguments[0] == valueType)
+                            || valueType.IsSubclassOf(reservedPropertyType),
+                            nameof(value)
+                        );
+                    }
                 }
 
                 if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))

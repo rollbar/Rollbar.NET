@@ -55,7 +55,7 @@
         {
             foreach(var property in this.StringProperties)
             {
-                string originalString = property.GetValue(this) as string;
+                string? originalString = property.GetValue(this) as string;
                 string truncatedString = StringUtility.Truncate(originalString, encoding, stringBytesLimit);
                 if (!object.ReferenceEquals(originalString, truncatedString))
                 {
@@ -84,7 +84,7 @@
 
             foreach (var property in this.DtoProperties)
             {
-                DtoBase dto = property.GetValue(this) as DtoBase;
+                DtoBase? dto = property.GetValue(this) as DtoBase;
                 if (dto != null)
                 {
                     dto.TruncateStrings(encoding, stringBytesLimit);
@@ -147,7 +147,7 @@
             var keys = dictionary.Keys.ToArray();
             foreach (var key in keys)
             {
-                string originalString = dictionary[key] as string;
+                string? originalString = dictionary[key] as string;
                 if (originalString != null)
                 {
                     string truncatedString = StringUtility.Truncate(originalString, encoding, stringBytesLimit);
