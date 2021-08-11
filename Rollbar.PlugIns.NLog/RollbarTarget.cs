@@ -71,7 +71,7 @@
         }
 
         /// <summary>
-        /// Initializes a new <see cref="RollbarConfig"/> from app.config (NetFramework) / appsettings.json (NetCore)
+        /// Initializes a new <see cref="IRollbarInfrastructureConfig"/> from app.config (NetFramework) / appsettings.json (NetCore)
         /// </summary>
         private static IRollbarInfrastructureConfig CreateDefaultRollbarConfig()
         {

@@ -9,10 +9,10 @@
 
     /// <summary>
     /// Class RollbarPayloadManipulationOptions.
-    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarPayloadManipulationOptions, Rollbar.IRollbarPayloadManipulationOptions}" />
+    /// Implements the <see cref="Rollbar.Common.ReconfigurableBase{T,TBase}" />
     /// Implements the <see cref="Rollbar.IRollbarPayloadManipulationOptions" />
     /// </summary>
-    /// <seealso cref="Rollbar.Common.ReconfigurableBase{Rollbar.RollbarPayloadManipulationOptions, Rollbar.IRollbarPayloadManipulationOptions}" />
+    /// <seealso cref="Rollbar.Common.ReconfigurableBase{T,TBase}" />
     /// <seealso cref="Rollbar.IRollbarPayloadManipulationOptions" />
     public class RollbarPayloadManipulationOptions
         : ReconfigurableBase<RollbarPayloadManipulationOptions, IRollbarPayloadManipulationOptions>

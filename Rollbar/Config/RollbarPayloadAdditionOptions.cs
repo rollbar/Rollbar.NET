@@ -62,6 +62,10 @@
             return base.Reconfigure(likeMe);
         }
 
+        /// <summary>
+        /// Gets the proper validator.
+        /// </summary>
+        /// <returns>Validator.</returns>
         public override Validator GetValidator()
         {
             var validator = 

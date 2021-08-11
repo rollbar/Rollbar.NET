@@ -163,8 +163,10 @@
         private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType = 
             new ConcurrentDictionary<Type, PropertyInfo[]>();
 
-        protected readonly List<ReconfigurableBase> reconfigurableProperties = 
-            null;
+        /// <summary>
+        /// The reconfigurable properties
+        /// </summary>
+        protected readonly List<ReconfigurableBase> reconfigurableProperties;
 
         /// <summary>
         /// The this instance type (most specific one).

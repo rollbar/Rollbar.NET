@@ -33,6 +33,11 @@
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarTelemetryOptions"/> class.
+        /// </summary>
+        /// <param name="enabled">if set to <c>true</c> [enabled].</param>
+        /// <param name="queueDepth">The queue depth.</param>
         public RollbarTelemetryOptions(bool enabled, int queueDepth)
             : this(
                   enabled,

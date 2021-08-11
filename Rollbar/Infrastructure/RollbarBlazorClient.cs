@@ -274,7 +274,6 @@
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
         public async Task<RollbarResponse> PostAsJsonAsync(
             string accessToken, 
@@ -295,7 +294,6 @@
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
-        /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
         private async Task<RollbarResponse> PostAsJsonAsync(
             string accessToken, 
