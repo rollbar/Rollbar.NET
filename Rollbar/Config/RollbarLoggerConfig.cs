@@ -160,11 +160,11 @@
         {
             base.Reconfigure(likeMe);
 
-            RollbarLogger rollbarLogger = this.Logger as RollbarLogger;
+            RollbarLogger? rollbarLogger = this.Logger as RollbarLogger;
 
             if(rollbarLogger != null && rollbarLogger.Queue != null)
             {
-                var rollbarClient = new RollbarClient(this.Logger);
+                var rollbarClient = new RollbarClient(rollbarLogger);
                 // reset the queue to use the new RollbarClient:
                 rollbarLogger.Queue.Flush();
                 rollbarLogger.Queue.UpdateClient(rollbarClient);

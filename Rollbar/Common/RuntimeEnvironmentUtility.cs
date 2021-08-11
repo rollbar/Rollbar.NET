@@ -19,7 +19,7 @@ namespace Rollbar.Common
         /// <returns>System.String.</returns>
         public static string GetSdkRuntimeLocationPath()
         {
-            string path = null;
+            string? path = null;
 
 #if (!NETFX || NETFX_461nNewer)
             path = AppContext.BaseDirectory;
@@ -28,7 +28,7 @@ namespace Rollbar.Common
             if (string.IsNullOrWhiteSpace(path))
             {
                 Assembly thisAssembly = Assembly.GetExecutingAssembly();
-                string sdkAssembliesPath = Path.GetDirectoryName(thisAssembly.Location);
+                string? sdkAssembliesPath = Path.GetDirectoryName(thisAssembly.Location);
                 path = sdkAssembliesPath;
             }
 

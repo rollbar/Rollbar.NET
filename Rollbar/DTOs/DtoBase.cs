@@ -321,7 +321,7 @@
         /// </returns>
         public virtual string TraceAsString(string indent)
         {
-            return this.ToString();
+            return this.ToString() ?? string.Empty;
         }
 
         /// <summary>
@@ -348,7 +348,7 @@
         /// </summary>
         /// <returns>Validator.</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual Validator GetValidator()
+        public virtual Validator? GetValidator()
         {
             return null;
         }

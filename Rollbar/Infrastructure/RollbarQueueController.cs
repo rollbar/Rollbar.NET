@@ -397,9 +397,6 @@ namespace Rollbar
         private readonly Dictionary<string, AccessTokenQueuesMetadata> _queuesByAccessToken =
             new Dictionary<string, AccessTokenQueuesMetadata>();
 
-        /// <summary>
-        /// Flags the use of local payload store
-        /// </summary>
         //private bool _useLocalPayloadStore = false;
 
         /// <summary>

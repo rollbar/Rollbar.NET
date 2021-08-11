@@ -33,9 +33,6 @@
         /// </summary>
         private readonly HttpClient _httpClient;
 
-        /// <summary>
-        /// The expected post to API timeout
-        /// </summary>
         //private readonly TimeSpan _expectedPostToApiTimeout;
 
         /// <summary>

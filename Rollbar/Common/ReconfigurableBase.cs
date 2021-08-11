@@ -209,7 +209,7 @@
         /// <returns>PropertyInfo[].</returns>
         protected static PropertyInfo[] ListInstancePublicProperties(Type objectType)
         {
-            if(!publicPropertyInfosByType.TryGetValue(objectType,out PropertyInfo[] properties))
+            if(!publicPropertyInfosByType.TryGetValue(objectType, out var properties))
             {
                 properties = ReflectionUtility.GetAllPublicInstanceProperties(objectType);
                 publicPropertyInfosByType.TryAdd(objectType,properties);
@@ -237,11 +237,14 @@
             foreach (var property in properties)
             {
                 // Let's see first if the property value is a Reconfigurable object:
-                ReconfigurableBase targetPropertyValue = property.GetValue(this) as ReconfigurableBase;
+                ReconfigurableBase? targetPropertyValue = property.GetValue(this) as ReconfigurableBase;
                 if(targetPropertyValue != null)
                 {
-                    object sourcePropertyValue = property.GetValue(likeMe);
-                    targetPropertyValue.Reconfigure(sourcePropertyValue, sourcePropertyValue.GetType());
+                    object? sourcePropertyValue = property.GetValue(likeMe);
+                    if(sourcePropertyValue != null)
+                    {
+                        targetPropertyValue.Reconfigure(sourcePropertyValue, sourcePropertyValue.GetType());
+                    }
                     continue;
                 }
 
@@ -314,8 +317,8 @@
             foreach (var property in properties)
             {
                 //compare this instance property values to other's:
-                object leftPropertyValue = property.GetValue(left);
-                object rightPropertyValue = property.GetValue(right);
+                object? leftPropertyValue = property.GetValue(left);
+                object? rightPropertyValue = property.GetValue(right);
 
                 if (leftPropertyValue == rightPropertyValue)
                 {
@@ -451,8 +454,8 @@
 
             foreach(var property in properties)
             {
-                object propertyValue = property.GetValue(this);
-                string propertyValueTrace = "<null>";
+                object? propertyValue = property.GetValue(this);
+                string? propertyValueTrace = "<null>";
                 switch(propertyValue)
                 {
                     case null:

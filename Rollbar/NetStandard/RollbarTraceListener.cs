@@ -191,8 +191,10 @@
             custom["eventType"] = eventType;
             custom["eventMessage"] = message;
 
-            if (!string.IsNullOrWhiteSpace(eventCache.Callstack) 
+            if (!string.IsNullOrWhiteSpace(eventCache.Callstack)
+#pragma warning disable CA1307 // Specify StringComparison for clarity
                 && (message.Contains("Exception: ") || (eventType == TraceEventType.Critical) || (eventType == TraceEventType.Error)))
+#pragma warning restore CA1307 // Specify StringComparison for clarity
             {
                 DTOs.Body body = new DTOs.Body(new DTOs.Trace(eventCache.Callstack, message));
                 DTOs.Data data = new DTOs.Data(this.Rollbar.Config, body, custom);

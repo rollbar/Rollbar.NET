@@ -70,11 +70,11 @@
         /// </value>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public object this[string key]
+        public object? this[string key]
         {
             get
             {
-                if (this._keyedValues.TryGetValue(key, out object result))
+                if (this._keyedValues.TryGetValue(key, out var result))
                 {
                     return result;
                 }
@@ -82,7 +82,7 @@
                 var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
                 if (concreteDtoMetadata
                     .ReservedPropertyInfoByReservedKey
-                    .TryGetValue(key, out PropertyInfo reservedPropertyInfo))
+                    .TryGetValue(key, out var reservedPropertyInfo))
                 {
                     //if we have matching reserved property of value type - return default for it:   
                     if(reservedPropertyInfo.PropertyType.IsValueType)
