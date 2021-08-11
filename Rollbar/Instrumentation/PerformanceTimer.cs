@@ -21,15 +21,15 @@
         /// <summary>
         /// The timer
         /// </summary>
-        private readonly Stopwatch _timer;
+        private readonly Stopwatch? _timer;
         /// <summary>
         /// The performance monitor
         /// </summary>
-        private readonly IPerformanceMonitor _performanceMonitor;
+        private readonly IPerformanceMonitor? _performanceMonitor;
         /// <summary>
         /// The measurement classification
         /// </summary>
-        private readonly IClassification _measurementClassification;
+        private readonly IClassification? _measurementClassification;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PerformanceTimer"/> class from being created.

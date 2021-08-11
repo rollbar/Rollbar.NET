@@ -335,13 +335,13 @@ namespace Rollbar
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <returns>System.Int32.</returns>
-        internal int GetQueuesCount(string accessToken = null)
+        internal int GetQueuesCount(string? accessToken = null)
         {
             Assumption.AssertNotNull(this._config, nameof(this._config));
 
             if(!string.IsNullOrWhiteSpace(accessToken))
             {
-                if(this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata metadata))
+                if(this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata? metadata))
                 {
                     return metadata.PayloadQueuesCount;
                 }
@@ -361,13 +361,13 @@ namespace Rollbar
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <returns>IEnumerable&lt;PayloadQueue&gt;.</returns>
-        internal IEnumerable<PayloadQueue> GetQueues(string accessToken = null)
+        internal IEnumerable<PayloadQueue> GetQueues(string? accessToken = null)
         {
             Assumption.AssertNotNull(this._config, nameof(this._config));
 
             if(!string.IsNullOrWhiteSpace(accessToken))
             {
-                if(this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata metadata))
+                if(this._queuesByAccessToken.TryGetValue(accessToken, out AccessTokenQueuesMetadata? metadata))
                 {
                     return metadata.PayloadQueues;
                 }

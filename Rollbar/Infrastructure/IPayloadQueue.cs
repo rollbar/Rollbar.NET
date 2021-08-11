@@ -15,13 +15,13 @@
         /// Peeks this instance.
         /// </summary>
         /// <returns>PayloadBundle, if any, otherwise null.</returns>
-        PayloadBundle Peek();
+        PayloadBundle? Peek();
 
         /// <summary>
         /// Dequeues this instance.
         /// </summary>
         /// <returns>PayloadBundle, if any, otherwise null.</returns>
-        PayloadBundle Dequeue();
+        PayloadBundle? Dequeue();
 
         /// <summary>
         /// Gets the payload count.
@@ -47,7 +47,7 @@
         /// Gets or sets the access token queues metadata.
         /// </summary>
         /// <value>The access token queues metadata.</value>
-        AccessTokenQueuesMetadata AccessTokenQueuesMetadata { get; set; }
+        AccessTokenQueuesMetadata? AccessTokenQueuesMetadata { get; set; }
 
         /// <summary>
         /// Gets the logger.

@@ -11,6 +11,7 @@
     public static class StringUtility
     {
         private static readonly TraceSource traceSource = new TraceSource(typeof(StringUtility).FullName);
+
         /// <summary>
         /// Delegate TryParseHandler
         /// </summary>
@@ -133,7 +134,7 @@
         /// <param name="encoding">The encoding.</param>
         /// <param name="encodedBytesLimit">The encoded bytes limit.</param>
         /// <returns></returns>
-        public static string Truncate(string input, Encoding encoding, int encodedBytesLimit)
+        public static string? Truncate(string? input, Encoding encoding, int encodedBytesLimit)
         {
             if (input == null)
             {

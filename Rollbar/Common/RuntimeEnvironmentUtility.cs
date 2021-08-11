@@ -119,7 +119,7 @@ namespace Rollbar.Common
         /// Gets the CPU architecture.
         /// </summary>
         /// <returns></returns>
-        public static string GetCpuArchitecture()
+        public static string? GetCpuArchitecture()
         {
 #if NETFX_47nOlder
             return null;

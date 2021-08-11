@@ -19,20 +19,20 @@
     /// <seealso cref="System.Collections.Generic.IDictionary{TKey,TValue}" />
     public abstract class ExtendableDtoBase
         : DtoBase,
-        IEnumerable<KeyValuePair<string, object>>,
-        IDictionary<string, object>
+        IEnumerable<KeyValuePair<string, object?>>,
+        IDictionary<string, object?>
     {
         internal const string reservedPropertiesNestedTypeName = "ReservedProperties";
 
         private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType;
 
-        private readonly ExtendableDtoMetadata _metadata;
+        private readonly ExtendableDtoMetadata? _metadata;
 
         /// <summary>
         /// The keyed values
         /// </summary>
-        private readonly IDictionary<string, object> _keyedValues = 
-            new Dictionary<string, object>();
+        private readonly IDictionary<string, object?> _keyedValues = 
+            new Dictionary<string, object?>();
 
         static ExtendableDtoBase()
         {
@@ -153,7 +153,7 @@
         /// Gets an <see cref="T:System.Collections.Generic.ICollection`1"></see> 
         /// containing the values in the <see cref="T:System.Collections.Generic.IDictionary`2"></see>.
         /// </summary>
-        public ICollection<object> Values => this._keyedValues.Values;
+        public ICollection<object?> Values => this._keyedValues.Values;
 
         /// <summary>
         /// Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"></see>.
@@ -171,7 +171,7 @@
         /// </summary>
         /// <param name="key">The object to use as the key of the element to add.</param>
         /// <param name="value">The object to use as the value of the element to add.</param>
-        public void Add(string key, object value)
+        public void Add(string key, object? value)
         {
             this._keyedValues[key] = value;
         }
@@ -182,7 +182,7 @@
         /// <param name="item">
         /// The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"></see>.
         /// </param>
-        public void Add(KeyValuePair<string, object> item)
+        public void Add(KeyValuePair<string, object?> item)
         {
             this._keyedValues[item.Key] = item.Value;
         }
@@ -207,7 +207,7 @@
         /// the <see cref="T:System.Collections.Generic.ICollection`1"></see>; 
         /// otherwise, false.
         /// </returns>
-        public bool Contains(KeyValuePair<string, object> item)
+        public bool Contains(KeyValuePair<string, object?> item)
         {
             return this._keyedValues.Contains(item);
         }
@@ -241,7 +241,7 @@
         /// <param name="arrayIndex">
         /// The zero-based index in array at which copying begins.
         /// </param>
-        public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex)
         {
             this._keyedValues.CopyTo(array, arrayIndex);
         }
@@ -252,7 +252,7 @@
         /// <returns>
         /// An enumerator that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, object?>> GetEnumerator()
         {
             return this._keyedValues.GetEnumerator();
         }
@@ -287,7 +287,7 @@
         /// This method also returns false if <paramref name="item">item</paramref> is not found 
         /// in the original <see cref="T:System.Collections.Generic.ICollection`1"></see>.
         /// </returns>
-        public bool Remove(KeyValuePair<string, object> item)
+        public bool Remove(KeyValuePair<string, object?> item)
         {
             return this._keyedValues.Remove(item);
         }

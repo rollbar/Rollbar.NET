@@ -26,7 +26,7 @@
             }
 
             List<Type> relevantTypes = new List<Type>();
-            Type relevantType = type;
+            Type? relevantType = type;
             while (relevantType != null)
             {
                 relevantTypes.Add(relevantType);

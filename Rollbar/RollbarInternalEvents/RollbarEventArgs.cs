@@ -16,11 +16,11 @@
     {
         private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarEventArgs).FullName);
 
-        private readonly IRollbar _logger;
+        private readonly IRollbar? _logger;
 
         private readonly DateTimeOffset _eventTimeStamp = DateTimeOffset.Now;
 
-        internal IRollbar Logger
+        internal IRollbar? Logger
         {
             get { return this._logger; }
         }
@@ -39,7 +39,7 @@
         /// <param name="logger">The logger.</param>
         /// <param name="dataObject">The data object.</param>
         internal RollbarEventArgs(
-            IRollbar logger, 
+            IRollbar? logger, 
             object? dataObject
             )
         {
@@ -49,7 +49,7 @@
 
             if (dataObject != null)
             {
-                string payloadString = dataObject as string;
+                string? payloadString = dataObject as string;
                 if (payloadString != null)
                 {
                     this.Payload = payloadString;
@@ -86,7 +86,7 @@
         /// <value>
         /// The payload.
         /// </value>
-        public string Payload { get; private set; }
+        public string? Payload { get; private set; }
 
         /// <summary>
         /// Gets the event timestamp.
