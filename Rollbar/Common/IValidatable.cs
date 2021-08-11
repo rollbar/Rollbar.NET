@@ -18,6 +18,6 @@
         /// Gets the proper validator.
         /// </summary>
         /// <returns>Validator.</returns>
-        Validator GetValidator();
+        Validator? GetValidator();
     }
 }
