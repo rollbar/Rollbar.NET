@@ -16,7 +16,7 @@
         /// Gets the access token.
         /// </summary>
         /// <value>The access token.</value>
-        string AccessToken
+        string? AccessToken
         {
             get;
         }
@@ -25,7 +25,7 @@
         /// Gets the environment.
         /// </summary>
         /// <value>The environment.</value>
-        string Environment
+        string? Environment
         {
             get;
         }
@@ -34,7 +34,7 @@
         /// Gets the end point.
         /// </summary>
         /// <value>The end point.</value>
-        string EndPoint
+        string? EndPoint
         {
             get;
         }

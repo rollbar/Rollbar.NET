@@ -114,7 +114,7 @@
         {
             base.Reconfigure(likeMe, this._baseInstanceType);
 
-            return this as T;
+            return (T) this;
         }
 
         /// <summary>
@@ -182,7 +182,7 @@
 
             PropertyInfo[] thisInstanceProperyInfos = 
                 ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType);
-            List<object> propertyValues = 
+            List<object?> propertyValues = 
                 thisInstanceProperyInfos
                 .Select(i => i.GetValue(this))
                 .ToList();
@@ -197,7 +197,7 @@
             }
         }
 
-        private void Reconfigurable_Reconfigured(object sender, EventArgs e)
+        private void Reconfigurable_Reconfigured(object? sender, EventArgs e)
         {
             this.OnReconfigured(new EventArgs());
         }
@@ -415,7 +415,7 @@
         /// <summary>
         /// Occurs when this instance reconfigured.
         /// </summary>
-        public event EventHandler Reconfigured;
+        public event EventHandler? Reconfigured;
 
         /// <summary>
         /// Raises the <see cref="E:Reconfigured" /> event.
@@ -525,7 +525,7 @@
         /// Gets the proper validator.
         /// </summary>
         /// <returns>Validator.</returns>
-        public abstract Validator GetValidator();
+        public abstract Validator? GetValidator();
 
         #endregion IValidatable
     }

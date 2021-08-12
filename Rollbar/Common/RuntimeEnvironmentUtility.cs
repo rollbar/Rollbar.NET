@@ -65,8 +65,14 @@ namespace Rollbar.Common
             //StringBuilder result = new StringBuilder(theType.Assembly.GetName().Version.ToString(3));
             //return result.ToString();
 
-            var infoVersion = theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
-            return infoVersion.InformationalVersion;
+            var infoVersion = 
+                theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) 
+                as AssemblyInformationalVersionAttribute;
+
+            return (infoVersion != null) 
+                ? infoVersion.InformationalVersion 
+                : string.Empty;
+
             //if (infoVersion != null && infoVersion.InformationalVersion.StartsWith("LTS"))
             //{
             //    result.Append($" ({infoVersion.InformationalVersion.TrimEnd('-')})");

@@ -148,7 +148,7 @@
         /// <param name="nestedTypeName">Name of the nested type (without its namespace).</param>
         /// <param name="nestedTypeBindingFlags">The nested type binding flags.</param>
         /// <returns></returns>
-        public static Type GetNestedTypeByName(Type hostType, string nestedTypeName, BindingFlags nestedTypeBindingFlags = BindingFlags.Public)
+        public static Type? GetNestedTypeByName(Type hostType, string nestedTypeName, BindingFlags nestedTypeBindingFlags = BindingFlags.Public)
         {
             return hostType.GetNestedType(nestedTypeName, nestedTypeBindingFlags);
         }
@@ -203,7 +203,7 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>Type[].</returns>
-        public static Type[] GetTypesHierarchy(Type type)
+        public static Type[] GetTypesHierarchy(Type? type)
         {
             if(type == null)
             {
@@ -224,7 +224,7 @@
         /// <returns>Type[].</returns>
         public static Type[] GetBaseTypesHierarchy(Type type)
         {
-            Type baseType = type?.BaseType;
+            Type? baseType = type?.BaseType;
             if(type == null || baseType == null)
             {
                 return new Type[0];
@@ -254,7 +254,7 @@
         /// <param name="lType">Type of the left type.</param>
         /// <param name="rType">Type of the right type</param>
         /// <returns>Type.</returns>
-        public static Type GetTopCommonSuperType(Type lType, Type rType)
+        public static Type? GetTopCommonSuperType(Type lType, Type rType)
         {
             var lBases = ReflectionUtility.GetTypesHierarchy(lType);
             var rBases = ReflectionUtility.GetTypesHierarchy(rType);

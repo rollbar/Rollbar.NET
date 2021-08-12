@@ -188,7 +188,7 @@ namespace Rollbar
         /// </summary>
         public event EventHandler<RollbarEventArgs> InternalEvent;
 
-        private IRollbarInfrastructureConfig _config = null;
+        private IRollbarInfrastructureConfig _config;
 
         internal void Init(IRollbarInfrastructureConfig config)
         {
@@ -203,7 +203,7 @@ namespace Rollbar
             this.Start();
         }
 
-        private void _config_Reconfigured(object sender, EventArgs e)
+        private void _config_Reconfigured(object? sender, EventArgs e)
         {
             //TODO: RollbarConfig - implement
             //throw new NotImplementedException();
@@ -235,7 +235,7 @@ namespace Rollbar
             }
 
             //this._useLocalPayloadStore = true;
-            this._storeRepository.MakeSureDatabaseExistsAndReady();
+            this._storeRepository?.MakeSureDatabaseExistsAndReady();
 
             //Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + ".");
         }
@@ -535,7 +535,7 @@ namespace Rollbar
         /// </summary>
         /// <param name="payloadRecord">The payload record.</param>
         /// <returns>RollbarResponse.</returns>
-        private RollbarResponse TryPosting(IPayloadRecord payloadRecord)
+        private RollbarResponse? TryPosting(IPayloadRecord payloadRecord)
         {
             //Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
             //IRollbarConfig config = payload.Data.Notifier.Configuration;

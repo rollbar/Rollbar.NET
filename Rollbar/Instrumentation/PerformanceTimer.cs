@@ -74,7 +74,7 @@
             )
         {
             var timer = new PerformanceTimer(performanceMonitor, measurementClassification);
-            timer._timer.Start();
+            timer._timer?.Start();
             return timer;
         }
 
@@ -88,9 +88,12 @@
         /// </summary>
         public void Dispose()
         {
-            this._timer.Stop();
+            if(this._timer != null)
+            {
+                this._timer.Stop();
 
-            this._performanceMonitor.Capture(this._timer.Elapsed, this._measurementClassification);
+                this._performanceMonitor?.Capture(this._timer.Elapsed, this._measurementClassification);
+            }
         }
 
         #endregion

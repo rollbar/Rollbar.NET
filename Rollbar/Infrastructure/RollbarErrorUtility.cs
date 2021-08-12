@@ -23,7 +23,7 @@
             InternalRollbarError rollbarError, 
             string message, 
             Exception exception,
-            IErrorCollector errorCollector
+            IErrorCollector? errorCollector
             )
         {
             var rollbarException = new RollbarException(rollbarError, message ?? rollbarError.ToString(), exception);

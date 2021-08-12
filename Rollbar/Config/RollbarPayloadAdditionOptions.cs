@@ -66,18 +66,25 @@
         /// Gets the proper validator.
         /// </summary>
         /// <returns>Validator.</returns>
-        public override Validator GetValidator()
+        public override Validator? GetValidator()
         {
-            var validator = 
-                new Validator<RollbarPayloadAdditionOptions, RollbarPayloadAdditionOptions.RollbarPayloadAdditionOptionsValidationRule>()
-                    .AddValidation(
-                        RollbarPayloadAdditionOptions.RollbarPayloadAdditionOptionsValidationRule.ValidPersonIfAny,
-                        (config) => config.Person,
-                        this.Person?.GetValidator() as Validator<Person>
-                        )
-               ;
+            Validator<Person?>? personValidator = this.Person?.GetValidator() as Validator<Person?>;
 
-            return validator;
+            if(personValidator != null)
+            {
+                var validator =
+                    new Validator<RollbarPayloadAdditionOptions, RollbarPayloadAdditionOptions.RollbarPayloadAdditionOptionsValidationRule>()
+                        .AddValidation(
+                            RollbarPayloadAdditionOptions.RollbarPayloadAdditionOptionsValidationRule.ValidPersonIfAny,
+                            (config) => config.Person,
+                            personValidator
+                            )
+                   ;
+
+                return validator;
+            }
+
+            return null;
         }
 
         /// <summary>

@@ -83,7 +83,7 @@
         /// Gets the proper validator.
         /// </summary>
         /// <returns>Validator.</returns>
-        public override Validator GetValidator()
+        public override Validator? GetValidator()
         {
             return null;
         }

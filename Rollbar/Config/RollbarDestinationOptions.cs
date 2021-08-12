@@ -38,7 +38,7 @@
         /// Initializes a new instance of the <see cref="RollbarDestinationOptions"/> class.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
-        public RollbarDestinationOptions(string accessToken)
+        public RollbarDestinationOptions(string? accessToken)
             : this(accessToken, RollbarDestinationOptions.defaultEnvironment)
         {
         }
@@ -48,7 +48,7 @@
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="environment">The environment.</param>
-        public RollbarDestinationOptions(string accessToken, string environment)
+        public RollbarDestinationOptions(string? accessToken, string? environment)
             : this(accessToken, environment, RollbarDestinationOptions.defaultEndpoint)
         {
         }
@@ -59,7 +59,7 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="environment">The environment.</param>
         /// <param name="endPoint">The end point.</param>
-        public RollbarDestinationOptions(string accessToken, string environment, string endPoint)
+        public RollbarDestinationOptions(string? accessToken, string? environment, string endPoint)
         {
             this.AccessToken = accessToken;
             this.Environment = environment;
@@ -70,7 +70,7 @@
         /// Gets the access token.
         /// </summary>
         /// <value>The access token.</value>
-        public string AccessToken
+        public string? AccessToken
         {
             get;
             set;
@@ -80,7 +80,7 @@
         /// Gets the environment.
         /// </summary>
         /// <value>The environment.</value>
-        public string Environment
+        public string? Environment
         {
             get;
             set;
@@ -90,7 +90,7 @@
         /// Gets the end point.
         /// </summary>
         /// <value>The end point.</value>
-        public string EndPoint
+        public string? EndPoint
         {
             get;
             set;

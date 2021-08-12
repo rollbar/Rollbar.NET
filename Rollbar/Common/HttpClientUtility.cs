@@ -22,7 +22,7 @@
         /// </summary>
         /// <param name="proxyAddress">The proxy address.</param>
         /// <returns>HttpClient.</returns>
-        public static HttpClient CreateHttpClient(string proxyAddress)
+        public static HttpClient CreateHttpClient(string? proxyAddress)
         {
             return HttpClientUtility.CreateHttpClient(proxyAddress, null, null);
         }
@@ -34,7 +34,7 @@
         /// <param name="proxyUsername">The proxy user name.</param>
         /// <param name="proxyPassword">The proxy password.</param>
         /// <returns>HttpClient.</returns>
-        public static  HttpClient CreateHttpClient(string? proxyAddress = null, string? proxyUsername = null, string? proxyPassword = null)
+        public static  HttpClient CreateHttpClient(string? proxyAddress, string? proxyUsername, string? proxyPassword)
         {
             if (string.IsNullOrWhiteSpace(proxyAddress))
             {

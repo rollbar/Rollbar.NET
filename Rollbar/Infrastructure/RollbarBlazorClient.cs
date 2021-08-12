@@ -132,7 +132,7 @@
                 return false;
             }
 
-            string jsonData = SerializePayloadAsJsonString(payloadBundle);
+            string? jsonData = SerializePayloadAsJsonString(payloadBundle);
             if (string.IsNullOrWhiteSpace(jsonData))
             {
                 return false;
@@ -248,14 +248,15 @@
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        public async Task<RollbarResponse> PostAsJsonAsync(
+        public async Task<RollbarResponse?> PostAsJsonAsync(
             PayloadBundle payloadBundle
             )
         {
             Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
             // make sure there anything meaningful to send:
-            if (!EnsureHttpContentToSend(payloadBundle))
+            if (string.IsNullOrWhiteSpace(this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken) 
+                || !EnsureHttpContentToSend(payloadBundle))
             {
                 return null;
             }
@@ -272,7 +273,7 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        public async Task<RollbarResponse> PostAsJsonAsync(
+        public async Task<RollbarResponse?> PostAsJsonAsync(
             string accessToken, 
             string jsonContent 
             )
@@ -351,7 +352,7 @@
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
         /// <returns>System.String.</returns>
-        private string SerializePayloadAsJsonString(PayloadBundle payloadBundle)
+        private string? SerializePayloadAsJsonString(PayloadBundle payloadBundle)
         {
             Payload payload = payloadBundle.GetPayload();
 

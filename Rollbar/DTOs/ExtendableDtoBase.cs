@@ -95,11 +95,15 @@
             }
             set
             {
+                bool isReservedProperty = 
+                    this._metadata?.ReservedPropertyInfoByReservedKey.Keys.Contains(key) 
+                    ?? false;
+
                 Assumption.AssertTrue(
                     !this._keyedValues.ContainsKey(key)                                         // no such key preset yet
                     || this._keyedValues[key] == null                                           // OR its not initialized yet
                     || value != null                                                            // OR no-null value
-                    || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),    // OR not about reserved property/key
+                    || !isReservedProperty,                                                     // OR not about reserved property/key
                     "conditional " + nameof(value) + " assessment"
                     );
 
@@ -306,7 +310,7 @@
         /// <see cref="T:System.Collections.Generic.IDictionary`2"></see> contains 
         /// an element with the specified key; otherwise, false.
         /// </returns>
-        public bool TryGetValue(string key, out object value)
+        public bool TryGetValue(string key, out object? value)
         {
             return this._keyedValues.TryGetValue(key, out value);
         }
