@@ -233,7 +233,7 @@
         /// <param name="value">The value to test.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns>The specified value.</returns>
-        public static string? AssertNotNullOrWhiteSpace(string value, string parameterName)
+        public static string? AssertNotNullOrWhiteSpace(string? value, string parameterName)
         {
             if (value == null || value.Trim().Length == 0)
             {

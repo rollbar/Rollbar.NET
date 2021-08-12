@@ -498,18 +498,18 @@ namespace Rollbar
             // 1. delete all the stale records of this destination and save the store context
             //    (if any records were deleted):
             DateTime staleRecordsLimit = DateTime.UtcNow.Subtract(staleRecordAge);
-            var staleRecords = this._storeRepository.GetStaleRecords(staleRecordsLimit);
+            var staleRecords = this._storeRepository?.GetStaleRecords(staleRecordsLimit);
             if(staleRecords != null && staleRecords.Length > 0)
             {
-                this._storeRepository.DeleteRecords(staleRecords);
+                this._storeRepository?.DeleteRecords(staleRecords);
             }
 
             // 2. get the oldest record of this destination and try transmitting it:
-            if(!RollbarConnectivityMonitor.Instance.IsConnectivityOn)
+            if(RollbarConnectivityMonitor.Instance != null && !RollbarConnectivityMonitor.Instance.IsConnectivityOn)
             {
                 return; // there is no point trying to transmit the oldest record (if any)...
             }
-            var oldestRecord = this._storeRepository.GetOldestRecords(destination.ID);
+            var oldestRecord = this._storeRepository?.GetOldestRecords(destination.ID);
             if(oldestRecord != null)
             {
                 var rollbarResponse = TryPosting(oldestRecord);
@@ -526,7 +526,7 @@ namespace Rollbar
                 // Regardless of actual result, update next token usage and consider
                 // this payload record processed so it can be deleted:
                 accessTokenMetadata.UpdateNextTimeTokenUsage(rollbarResponse.RollbarRateLimit);
-                this._storeRepository.DeleteRecords(oldestRecord);
+                this._storeRepository?.DeleteRecords(oldestRecord);
             }
         }
 
@@ -642,7 +642,7 @@ namespace Rollbar
                     {
                         var bundle = queue.Dequeue();
                         this.OnRollbarEvent(
-                            new PayloadDropEventArgs(queue.Logger, bundle.GetPayload(), PayloadDropEventArgs.DropReason.InvalidPayload)
+                            new PayloadDropEventArgs(queue.Logger, bundle?.GetPayload(), PayloadDropEventArgs.DropReason.InvalidPayload)
                         );
                         queue.Dequeue();
                         throw;
@@ -659,7 +659,7 @@ namespace Rollbar
                 {
                     var bundle = queue.Dequeue();
                     this.OnRollbarEvent(
-                        new PayloadDropEventArgs(queue.Logger, bundle.GetPayload(), PayloadDropEventArgs.DropReason.AllTransmissionRetriesFailed)
+                        new PayloadDropEventArgs(queue.Logger, bundle?.GetPayload(), PayloadDropEventArgs.DropReason.AllTransmissionRetriesFailed)
                         );
                 }
 
@@ -710,8 +710,13 @@ namespace Rollbar
                 return;
             }
 
-            string endPoint = payloadQueue.Logger.Config.RollbarDestinationOptions.EndPoint;
-            string accessToken = payloadQueue.AccessTokenQueuesMetadata.AccessToken;
+            string? endPoint = payloadQueue.Logger.Config.RollbarDestinationOptions.EndPoint;
+            string? accessToken = payloadQueue.AccessTokenQueuesMetadata?.AccessToken;
+
+            if( string.IsNullOrWhiteSpace(endPoint) || string.IsNullOrWhiteSpace(accessToken))
+            {
+                return;
+            }
 
             var payloads = new List<IPayloadRecord>();
             foreach(var item in items)

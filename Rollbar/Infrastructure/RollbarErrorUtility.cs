@@ -19,7 +19,7 @@
         /// <param name="errorCollector">The error collector.</param>
         public static void Report(
             IRollbar? rollbarLogger, 
-            object dataObject, 
+            object? dataObject, 
             InternalRollbarError rollbarError, 
             string message, 
             Exception exception,

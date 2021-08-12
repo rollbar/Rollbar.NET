@@ -22,7 +22,7 @@
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings();
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings();
             if (appSettingsConfig == null)
             {
                 return false;
@@ -42,7 +42,7 @@
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFileName);
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFileName);
             if (appSettingsConfig == null)
             {
                 return false;
@@ -63,7 +63,7 @@
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFolderPath, appSettingsFileName);
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFolderPath, appSettingsFileName);
             if (appSettingsConfig == null)
             {
                 return false;
@@ -101,7 +101,7 @@
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings();
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings();
             if (appSettingsConfig == null)
             {
                 return false;
@@ -121,7 +121,7 @@
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFileName);
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFileName);
             if (appSettingsConfig == null)
             {
                 return false;
@@ -142,7 +142,7 @@
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFolderPath, appSettingsFileName);
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFolderPath, appSettingsFileName);
             if (appSettingsConfig == null)
             {
                 return false;
@@ -173,7 +173,7 @@
         /// Loads the application settings.
         /// </summary>
         /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
-        private static IConfiguration LoadAppSettings()
+        private static IConfiguration? LoadAppSettings()
         {
             return AppSettingsUtility.LoadAppSettings("appsettings.json");
         }
@@ -183,7 +183,7 @@
         /// </summary>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
-        private static IConfiguration LoadAppSettings(string appSettingsFileName)
+        private static IConfiguration? LoadAppSettings(string appSettingsFileName)
         {
             return AppSettingsUtility.LoadAppSettings(
                 Directory.GetCurrentDirectory(),
@@ -197,7 +197,7 @@
         /// <param name="folderPath">The folder path.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
-        private static IConfiguration LoadAppSettings(string folderPath, string appSettingsFileName)
+        private static IConfiguration? LoadAppSettings(string folderPath, string appSettingsFileName)
         {
             if (!Directory.Exists(folderPath))
             {

@@ -26,6 +26,7 @@
         /// </summary>
         private AccessTokenQueuesMetadata()
         {
+            this.AccessToken = string.Empty;
         }
 
         /// <summary>

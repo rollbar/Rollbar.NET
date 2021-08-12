@@ -23,12 +23,12 @@
         /// <summary>
         /// The logger
         /// </summary>
-        private readonly RollbarLogger _logger;
+        private readonly RollbarLogger? _logger;
 
         /// <summary>
         /// The client
         /// </summary>
-        private RollbarClient _client;
+        private RollbarClient? _client;
 
         /// <summary>
         /// The is released
@@ -45,6 +45,9 @@
         /// </summary>
         private PayloadQueue()
         {
+            this._syncLock = new object();
+            this._queue = new Queue<PayloadBundle>();
+            this._isReleased = false;
         }
 
         /// <summary>
@@ -92,7 +95,7 @@
         /// <value>The logger.</value>
         public RollbarLogger Logger
         {
-            get { return this._logger; }
+            get { return this._logger!; }
         }
 
         /// <summary>
@@ -118,7 +121,7 @@
         /// <value>The client.</value>
         public RollbarClient Client
         {
-            get { return this._client; }
+            get { return this._client!; }
         }
 
         /// <summary>
