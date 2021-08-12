@@ -111,7 +111,7 @@
         public Data(
             IRollbarLoggerConfig config,
             Body body,
-            IDictionary<string, object> custom
+            IDictionary<string, object>? custom
             )
             : this(config, body, custom, null)
         {
@@ -128,7 +128,7 @@
         public Data(
             IRollbarLoggerConfig config, 
             Body body, 
-            IDictionary<string, object> custom, 
+            IDictionary<string, object>? custom, 
             Request request
             )
         {

@@ -18,7 +18,7 @@
         /// <summary>
         /// The captured telemetry records
         /// </summary>
-        private readonly DTOs.Telemetry[] _capturedTelemetryRecords;
+        private readonly DTOs.Telemetry[]? _capturedTelemetryRecords;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigAttributesPackageDecorator"/> class.

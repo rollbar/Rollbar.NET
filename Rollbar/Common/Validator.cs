@@ -188,7 +188,7 @@
         public Validator<TValidationSubject, TValidationRule> AddValidation<TSubjectProperty>(
             TValidationRule validationRule,
             Expression<Func<TValidationSubject, TSubjectProperty>> subjectPropertyExpression,
-            Validator<TSubjectProperty> subjectPropertyValidator
+            Validator<TSubjectProperty>? subjectPropertyValidator
             )
         {
             if (subjectPropertyValidator != null)

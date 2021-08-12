@@ -48,7 +48,7 @@
         /// Initializes a new instance of the <see cref="ExtendableDtoBase"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        protected ExtendableDtoBase(IDictionary<string, object> arbitraryKeyValuePairs)
+        protected ExtendableDtoBase(IDictionary<string, object>? arbitraryKeyValuePairs)
         {
             this._metadata = ExtendableDtoBase.metadataByDerivedType[this.GetType()];
             Assumption.AssertNotNull(this._metadata, nameof(this._metadata));

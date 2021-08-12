@@ -60,7 +60,7 @@
 
             this.OriginalException = exception;
 
-            AggregateException aggregateException = exception as AggregateException;
+            AggregateException? aggregateException = exception as AggregateException;
             if (aggregateException != null)
             {
                 TraceChain = aggregateException.InnerExceptions.Select(e => new Trace(e)).ToArray();
@@ -109,7 +109,7 @@
         }
 
         [JsonIgnore]
-        internal readonly System.Exception OriginalException = null;
+        internal readonly System.Exception? OriginalException = null;
 
         #region These are mutually exclusive properties - only one of them can be not null
 
@@ -123,7 +123,7 @@
             Required = Required.AllowNull, 
             DefaultValueHandling = DefaultValueHandling.Ignore
             )]
-        public Telemetry[] Telemetry { get; internal set; }
+        public Telemetry[]? Telemetry { get; internal set; }
 
         /// <summary>
         /// Gets the trace.
@@ -132,7 +132,7 @@
         /// The trace.
         /// </value>
         [JsonProperty("trace", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Trace Trace { get; private set; }
+        public Trace? Trace { get; private set; }
 
         /// <summary>
         /// Gets the trace chain.
@@ -141,7 +141,7 @@
         /// The trace chain.
         /// </value>
         [JsonProperty("trace_chain", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Trace[] TraceChain { get; private set; }
+        public Trace[]? TraceChain { get; private set; }
 
         /// <summary>
         /// Gets the message.
@@ -150,7 +150,7 @@
         /// The message.
         /// </value>
         [JsonProperty("message", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Message Message { get; private set; }
+        public Message? Message { get; private set; }
 
         /// <summary>
         /// Gets the crash report.
@@ -159,7 +159,7 @@
         /// The crash report.
         /// </value>
         [JsonProperty("crash_report", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public CrashReport CrashReport { get; private set; }
+        public CrashReport? CrashReport { get; private set; }
 
         #endregion These are mutually exclusive properties - only one of them can be not null
 
@@ -201,17 +201,17 @@
                     .AddValidation(
                         Body.BodyValidationRule.ValidCrashReportIfAny,
                         (body) => body.CrashReport,
-                        this.CrashReport?.GetValidator() as Validator<CrashReport>
+                        this.CrashReport?.GetValidator() as Validator<CrashReport?>
                         )
                     .AddValidation(
                         Body.BodyValidationRule.ValidMessageIfAny,
                         (body) => body.Message,
-                        this.Message?.GetValidator() as Validator<Message>
+                        this.Message?.GetValidator() as Validator<Message?>
                         )
                     .AddValidation(
                         Body.BodyValidationRule.ValidTraceIfAny,
                         (body) => body.Trace,
-                        this.Trace?.GetValidator() as Validator<Trace>
+                        this.Trace?.GetValidator() as Validator<Trace?>
                         )
                     .AddValidation(
                         Body.BodyValidationRule.ValidTraceChainIfAny,

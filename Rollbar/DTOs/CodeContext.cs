@@ -16,7 +16,7 @@
         /// The pre-code-context.
         /// </value>
         [JsonProperty("pre", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string[] Pre { get; set; }
+        public string[]? Pre { get; set; }
 
         /// <summary>
         /// Gets or sets the post-code-context.
@@ -25,6 +25,6 @@
         /// The post-code-context.
         /// </value>
         [JsonProperty("post", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string[] Post { get; set; }
+        public string[]? Post { get; set; }
     }
 }
