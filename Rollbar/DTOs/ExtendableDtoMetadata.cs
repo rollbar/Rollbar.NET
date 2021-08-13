@@ -8,9 +8,9 @@
 
     internal class ExtendableDtoMetadata
     {
-        public Type ExtendableDtoType { get; private set; }
+        public Type? ExtendableDtoType { get; private set; }
 
-        public IReadOnlyDictionary<string, PropertyInfo> ReservedPropertyInfoByReservedKey { get; private set; }
+        public IReadOnlyDictionary<string, PropertyInfo>? ReservedPropertyInfoByReservedKey { get; private set; }
 
         public static IReadOnlyDictionary<Type, ExtendableDtoMetadata> BuildAll()
         {
@@ -39,7 +39,7 @@
             Type extendableDtoHierarchyType = extendableDtoType;
             while (extendableDtoHierarchyType != null)
             {
-                Type reservedPropertiesNestedType = ReflectionUtility.GetNestedTypeByName(
+                Type? reservedPropertiesNestedType = ReflectionUtility.GetNestedTypeByName(
                     extendableDtoHierarchyType,
                     ExtendableDtoBase.reservedPropertiesNestedTypeName,
                     BindingFlags.Public | BindingFlags.Static
@@ -83,7 +83,7 @@
                 string reservedKey = ReflectionUtility.GetStaticFieldValue<string>(reservedAttribue);
                 Assumption.AssertNotNullOrWhiteSpace(reservedKey, nameof(reservedKey));
 
-                reservedPropertyInfoByName.Add(reservedKey, property);
+                reservedPropertyInfoByName.Add(reservedKey, property!);
             }
 
             return result;

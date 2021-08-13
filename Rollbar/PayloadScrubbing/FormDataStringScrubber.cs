@@ -19,7 +19,7 @@
         /// <summary>
         /// The form data boundary
         /// </summary>
-        private readonly string _formDataBoundary;
+        private readonly string? _formDataBoundary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FormDataStringScrubber"/> class.
@@ -64,7 +64,7 @@
         /// </summary>
         /// <param name="contentTypeHeaderValue">The content type header value.</param>
         /// <returns>System.String.</returns>
-        private string ExtractBaundaryValue(string contentTypeHeaderValue)
+        private string? ExtractBaundaryValue(string contentTypeHeaderValue)
         {
             // Value sample:
             // multipart/form-data; boundary=---------------------------974767299852498929531610575
@@ -72,7 +72,9 @@
             var components = contentTypeHeaderValue.Split(';');
             foreach (var component in components)
             {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
                 if (component.Contains("boundary="))
+#pragma warning restore CA1307 // Specify StringComparison for clarity
                 {
                     return component.Split('=').Last();
                 }
@@ -128,7 +130,9 @@
                 {
                     foreach (var scrubField in this._scrubFields)
                     {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
                         if (line.Contains($"\"{scrubField}\""))
+#pragma warning restore CA1307 // Specify StringComparison for clarity
                         {
                             scrubContent = true;
                         }
@@ -147,8 +151,10 @@
             if (scrubContent && contentStartIndex > 1 && contentStartIndex < part.Count)
             {
                 // replace the content with a scrub mask line:
-                string closingBoundary = null;
-                if (part[part.Count - 1].StartsWith(this._formDataBoundary))
+                string? closingBoundary = null;
+                if (this._formDataBoundary != null 
+                    && part[part.Count - 1].StartsWith(this._formDataBoundary)
+                    )
                 {
                     closingBoundary = part[part.Count - 1];
                 }
@@ -169,7 +175,9 @@
         /// <exception cref="ArgumentException"></exception>
         protected override string DoScrub(string inputString)
         {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             if (!inputString.Contains("Content-Disposition: form-data;"))
+#pragma warning restore CA1307 // Specify StringComparison for clarity
             {
                 throw new ArgumentException($"{nameof(inputString)} does not appear to be a form-data like...");
             }

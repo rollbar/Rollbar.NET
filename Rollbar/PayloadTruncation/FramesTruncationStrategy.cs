@@ -42,7 +42,7 @@
         /// </returns>
         public override int Truncate(Payload payload)
         {
-            Trace[] traceChain = payload.Data.Body.TraceChain;
+            Trace[]? traceChain = payload.Data.Body.TraceChain;
             if (traceChain == null && (payload.Data.Body.Trace != null))
             {
                 traceChain = new Trace[] { payload.Data.Body.Trace };

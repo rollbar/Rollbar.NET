@@ -80,6 +80,10 @@
                 }
 
                 var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
+                if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey == null)
+                {
+                    return null;
+                }
                 if (concreteDtoMetadata
                     .ReservedPropertyInfoByReservedKey
                     .TryGetValue(key, out var reservedPropertyInfo))
@@ -96,7 +100,7 @@
             set
             {
                 bool isReservedProperty = 
-                    this._metadata?.ReservedPropertyInfoByReservedKey.Keys.Contains(key) 
+                    this._metadata?.ReservedPropertyInfoByReservedKey?.Keys.Contains(key) 
                     ?? false;
 
                 Assumption.AssertTrue(
@@ -109,7 +113,8 @@
 
                 var lowCaseKey = key.ToLower();
                 var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
-                if (concreteDtoMetadata
+                if (concreteDtoMetadata.ReservedPropertyInfoByReservedKey != null 
+                    && concreteDtoMetadata
                     .ReservedPropertyInfoByReservedKey
                     .TryGetValue(key, out PropertyInfo? reservedPropertyInfo))
                 {
@@ -134,7 +139,8 @@
                     }
                 }
 
-                if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
+                if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey != null
+                    && concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
                 {
                     // we are setting a reserved key when calling Bind(...) on an IConfigurationSection 
                     // that treats this instance of ExtendableDtoBase as a dictionary while binding to the targeted deserialization object:
