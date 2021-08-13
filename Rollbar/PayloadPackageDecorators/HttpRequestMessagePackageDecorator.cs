@@ -34,7 +34,7 @@
         /// <summary>
         /// The arbitrary key value pairs
         /// </summary>
-        private readonly IDictionary<string, object> _arbitraryKeyValuePairs;
+        private readonly IDictionary<string, object>? _arbitraryKeyValuePairs;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpRequestMessagePackageDecorator"/> class.
@@ -100,7 +100,7 @@
             IRollbarPackage packageToDecorate, 
             HttpRequestMessage  httpRequestMessage, 
             IRollbarLoggerConfig rollbarConfig,
-            IDictionary<string, object> arbitraryKeyValuePairs,
+            IDictionary<string, object>? arbitraryKeyValuePairs,
             bool mustApplySynchronously
             ) 
             : base(packageToDecorate, mustApplySynchronously)
@@ -165,12 +165,12 @@
                 return;
             }
 
-            string userIP = null;
+            string? userIP = null;
             const string HttpContextProperty = "MS_HttpContext";
             const string RemoteEndpointMessagePropery = "System.ServiceModel.Channels.RemoteEndpointMessageProperty";
             if (this._httpRequestMessage.Properties.ContainsKey(HttpContextProperty))
             {
-                HttpContextBase ctx = this._httpRequestMessage.Properties[HttpContextProperty] as HttpContextBase;
+                HttpContextBase? ctx = this._httpRequestMessage.Properties[HttpContextProperty] as HttpContextBase;
                 if (ctx != null)
                 {
                     userIP = ctx.Request.UserHostAddress;
@@ -178,7 +178,7 @@
             }
             else if (this._httpRequestMessage.Properties.ContainsKey(RemoteEndpointMessagePropery))
             {
-                RemoteEndpointMessageProperty remoteEndpoint =
+                RemoteEndpointMessageProperty? remoteEndpoint =
                     this._httpRequestMessage.Properties[RemoteEndpointMessagePropery] as RemoteEndpointMessageProperty;
                 if (remoteEndpoint != null)
                 {
@@ -198,14 +198,22 @@
         /// <param name="initialIPAddress">The initial ip address.</param>
         /// <param name="ipAddressCollectionPolicy">The ip address collection policy.</param>
         /// <returns>The IP value as System.String.</returns>
-        private static string DecideCollectableUserIPValue(string initialIPAddress, IpAddressCollectionPolicy ipAddressCollectionPolicy)
+        private static string? DecideCollectableUserIPValue(
+            string? initialIPAddress, 
+            IpAddressCollectionPolicy ipAddressCollectionPolicy
+            )
         {
+            if(string.IsNullOrWhiteSpace(initialIPAddress))
+            {
+                return null;
+            }
+
             switch (ipAddressCollectionPolicy)
             {
                 case IpAddressCollectionPolicy.Collect:
                     return initialIPAddress;
                 case IpAddressCollectionPolicy.CollectAnonymized:
-                    return IpAddressUtility.Anonymize(initialIPAddress);
+                    return IpAddressUtility.Anonymize(initialIPAddress!);
                 case IpAddressCollectionPolicy.DoNotCollect:
                     return null;
                 default:

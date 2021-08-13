@@ -63,11 +63,11 @@
                 rollbarData.Request.Params = new Dictionary<string, object>();
             }
             rollbarData.Request.Params["controller"] =
-                this._httpActionContext.ControllerContext?.ControllerDescriptor?.ControllerName;
+                this._httpActionContext.ControllerContext?.ControllerDescriptor?.ControllerName ?? string.Empty;
             //rollbarData.Request.Params["controller_properties"] =
             //    this._httpActionContext.ControllerContext?.ControllerDescriptor?.Properties;
             rollbarData.Request.Params["action"] = 
-                this._httpActionContext.ActionDescriptor?.ActionName;
+                this._httpActionContext.ActionDescriptor?.ActionName ?? string.Empty;
             //rollbarData.Request["action_properties"] = 
             //    this._httpActionContext.ActionDescriptor?.Properties;
 
@@ -104,7 +104,7 @@
         /// </summary>
         /// <param name="httpContent">Content of the HTTP.</param>
         /// <returns>System.String.</returns>
-        private string ReadInHttpMessageBody(HttpContent httpContent)
+        private string? ReadInHttpMessageBody(HttpContent httpContent)
         {
             if (httpContent == null)
             {
@@ -124,7 +124,7 @@
         /// </summary>
         /// <param name="httpHeaders">The HTTP headers.</param>
         /// <returns>IDictionary&lt;System.String, System.String&gt;.</returns>
-        private IDictionary<string, string> Convert(HttpHeaders httpHeaders)
+        private IDictionary<string, string>? Convert(HttpHeaders httpHeaders)
         {
             if (httpHeaders == null)
             {

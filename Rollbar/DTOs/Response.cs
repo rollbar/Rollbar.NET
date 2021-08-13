@@ -72,7 +72,7 @@
         /// Gets or sets the headers.
         /// </summary>
         /// <value>The headers.</value>
-        public IDictionary<string, string> Headers
+        public IDictionary<string, string>? Headers
         {
             get { return this[ReservedProperties.Headers] as IDictionary<string, string>; }
             set { this[ReservedProperties.Headers] = value; }
@@ -82,7 +82,7 @@
         /// Gets or sets the body.
         /// </summary>
         /// <value>The body.</value>
-        public object Body
+        public object? Body
         {
             get { return this[ReservedProperties.Body]; }
             set { this[ReservedProperties.Body] = value; }

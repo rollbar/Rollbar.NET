@@ -129,7 +129,7 @@ namespace Rollbar.Net.AspNet
             // if the X-Forwarded-For header exists, use that as the user's IP.
             // that will be the true remote IP of a user behind a proxy server or load balancer
             var forwardedFor = this._httpRequest.Headers?["X-Forwarded-For"];
-            if (!string.IsNullOrEmpty(forwardedFor) && forwardedFor.Contains(","))
+            if (!string.IsNullOrEmpty(forwardedFor) && forwardedFor!.Contains(","))
             {
                 forwardedFor = forwardedFor.Split(',').Last().Trim();
             }
@@ -190,7 +190,7 @@ namespace Rollbar.Net.AspNet
                         "LOGON_USER",
                         "REMOTE_USER",
                     };
-                    string username = null;
+                    string? username = null;
                     foreach (var serverVar in serverVarsOfInterest)
                     {
                         try
@@ -208,9 +208,9 @@ namespace Rollbar.Net.AspNet
                     }
                     if (!string.IsNullOrWhiteSpace(username))
                     {
-                        rollbarData.Person = new Person(username)
+                        rollbarData.Person = new Person(username!)
                         {
-                            UserName = username,
+                            UserName = username!,
                         };
                     }
 

@@ -69,31 +69,31 @@
                 }
             }
 
-            AssignResponseBody(rollbarData);
+            AssignResponseBody(rollbarData.Response);
         }
 
         /// <summary>
         /// Assigns the response body.
         /// </summary>
-        /// <param name="rollbarData">The rollbar data.</param>
-        private void AssignResponseBody(Data rollbarData)
+        /// <param name="response">The response.</param>
+        private void AssignResponseBody(Response response)
         {
             if (this._httpResponse == null || this._httpResponse.Body == null)
             {
                 return; // nothing to do...
             }
 
-            string jsonString = StreamUtil.ConvertToString(this._httpResponse.Body);
+            string? jsonString = StreamUtil.ConvertToString(this._httpResponse.Body);
             if (string.IsNullOrWhiteSpace(jsonString))
             {
                 return;
             }
-            rollbarData.Response.Body = jsonString;
+            response.Body = jsonString;
 
             object responseBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
             if (responseBodyObject != null)
             {
-                rollbarData.Response.Body = responseBodyObject;
+                response.Body = responseBodyObject;
             }
         }
 

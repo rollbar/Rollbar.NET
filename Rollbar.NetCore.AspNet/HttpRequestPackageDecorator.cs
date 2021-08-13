@@ -81,7 +81,7 @@ namespace Rollbar.NetCore.AspNet
             switch (rollbarData.Request.Method.ToUpper())
             {
                 case "POST":
-                    AssignRequestBody(rollbarData);
+                    AssignRequestBody(rollbarData.Request);
                     break;
                 case "GET":
                     if (this._httpRequest.Query?.Count > 0)
@@ -103,8 +103,8 @@ namespace Rollbar.NetCore.AspNet
         /// <summary>
         /// Assigns the request body.
         /// </summary>
-        /// <param name="rollbarData">The rollbar data.</param>
-        private void AssignRequestBody(Data rollbarData)
+        /// <param name="request">The request.</param>
+        private void AssignRequestBody(Request request)
         {
             if (this._httpRequest == null || this._httpRequest.Body == null)
             {
@@ -116,12 +116,12 @@ namespace Rollbar.NetCore.AspNet
             {
                 return;
             }
-            rollbarData.Request.PostBody = jsonString;
+            request.PostBody = jsonString;
 
             object requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
             if (requesBodyObject != null)
             {
-                rollbarData.Request.PostBody = requesBodyObject;
+                request.PostBody = requesBodyObject;
             }
         }
     }
