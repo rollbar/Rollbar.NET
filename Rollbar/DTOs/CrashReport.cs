@@ -13,7 +13,7 @@
     {
         private CrashReport()
         {
-
+            this.Raw = string.Empty;
         }
 
         /// <summary>

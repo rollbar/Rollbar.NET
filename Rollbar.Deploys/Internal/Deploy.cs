@@ -18,7 +18,7 @@
         /// The deploy identifier.
         /// </value>
         [JsonProperty("id", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string DeployID { get; set; }
+        public string? DeployID { get; set; }
 
         /// <summary>
         /// Gets or sets the project identifier.
@@ -27,7 +27,7 @@
         /// The project identifier.
         /// </value>
         [JsonProperty("project_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string ProjectID { get; set; }
+        public string? ProjectID { get; set; }
 
         /// <summary>
         /// Gets the revision.
@@ -36,7 +36,7 @@
         /// The revision.
         /// </value>
         [JsonProperty("revision", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Revision { get; set; }
+        public string? Revision { get; set; }
 
         /// <summary>
         /// Gets the environment.
@@ -45,7 +45,7 @@
         /// The environment.
         /// </value>
         [JsonProperty("environment", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Environment { get; set; }
+        public string? Environment { get; set; }
 
         /// <summary>
         /// Gets the comment.
@@ -54,7 +54,7 @@
         /// The comment.
         /// </value>
         [JsonProperty("comment", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         /// <summary>
         /// Gets the local username.
@@ -63,7 +63,7 @@
         /// The local username.
         /// </value>
         [JsonProperty("local_username", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string LocalUsername { get; set; }
+        public string? LocalUsername { get; set; }
 
         /// <summary>
         /// Gets the rollbar username.
@@ -72,7 +72,7 @@
         /// The rollbar username.
         /// </value>
         [JsonProperty("user_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string RollbarUsername { get; set; }
+        public string? RollbarUsername { get; set; }
 
         /// <summary>
         /// Gets or sets the start time.

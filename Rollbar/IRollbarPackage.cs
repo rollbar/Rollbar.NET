@@ -19,7 +19,7 @@
         /// Packages as rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        Data PackageAsRollbarData();
+        Data? PackageAsRollbarData();
 
         /// <summary>
         /// Gets a value indicating whether to package synchronously (within the logging method call).

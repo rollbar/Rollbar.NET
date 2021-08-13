@@ -26,7 +26,7 @@
         /// <summary>
         /// The rollbar data resulted from this package instance.
         /// </summary>
-        private Data _rollbarData;
+        private Data? _rollbarData;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarPackageBase"/> class from being created.
@@ -49,7 +49,7 @@
         /// Produces the rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        protected abstract Data ProduceRollbarData();
+        protected abstract Data? ProduceRollbarData();
 
         /// <summary>
         /// Gets a value indicating whether to package synchronously (within the logging method call).

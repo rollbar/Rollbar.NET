@@ -115,7 +115,7 @@
         /// <param name="custom">The custom.</param>
         public static void SnapExceptionDataAsCustomData(
             System.Exception e,
-            ref IDictionary<string, object> custom
+            ref IDictionary<string, object>? custom
             )
         {
             if (custom == null)

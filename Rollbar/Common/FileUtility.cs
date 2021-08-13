@@ -70,10 +70,10 @@
         {
             List<string> fileNames = new List<string>();
             fileNames.Add("web.config");
-            Assembly exeAssembly = Assembly.GetEntryAssembly();
+            Assembly? exeAssembly = Assembly.GetEntryAssembly();
             if (exeAssembly != null)
             {
-                fileNames.Add(Path.GetFileName(Assembly.GetEntryAssembly().Location) + ".config");
+                fileNames.Add(Path.GetFileName(Assembly.GetEntryAssembly()?.Location) + ".config");
             }
             return fileNames;
         }

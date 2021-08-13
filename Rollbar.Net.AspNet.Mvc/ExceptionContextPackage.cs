@@ -15,7 +15,7 @@
         /// </summary>
         private readonly ExceptionContext _exceptionContext;
 
-        private readonly string _message;
+        private readonly string? _message;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExceptionContextPackage" /> class.
@@ -31,7 +31,7 @@
         /// </summary>
         /// <param name="exceptionContext">The exception context.</param>
         /// <param name="message">The message.</param>
-        public ExceptionContextPackage(ExceptionContext exceptionContext, string message)
+        public ExceptionContextPackage(ExceptionContext exceptionContext, string? message)
             : base(false)
         {
             this._exceptionContext = exceptionContext;
@@ -42,7 +42,7 @@
         /// Produces the rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        protected override Data ProduceRollbarData()
+        protected override Data? ProduceRollbarData()
         {
             if (this._exceptionContext == null)
             {
@@ -58,7 +58,7 @@
                 packagingStrategy = new HttpContextPackageDecorator(packagingStrategy, this._exceptionContext.RequestContext.HttpContext);
             }
 
-            Data rollbarData = packagingStrategy.PackageAsRollbarData();
+            Data? rollbarData = packagingStrategy.PackageAsRollbarData();
 
             return rollbarData;
         }

@@ -28,7 +28,7 @@
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public ErrorTelemetry(
             System.Exception exception, 
-            IDictionary<string, object> arbitraryKeyValuePairs
+            IDictionary<string, object>? arbitraryKeyValuePairs
             )
             : base(TelemetryType.Error, exception.Message, arbitraryKeyValuePairs)
         {

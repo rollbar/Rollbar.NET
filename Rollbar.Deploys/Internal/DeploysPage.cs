@@ -1,5 +1,7 @@
 ﻿namespace Rollbar.Deploys
 {
+    using System;
+
     using Newtonsoft.Json;
 
     /// <summary>
@@ -7,6 +9,14 @@
     /// </summary>
     internal class DeploysPage
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeploysPage"/> class.
+        /// </summary>
+        public DeploysPage()
+        {
+            this.Deploys = Array.Empty<Deploy>();
+        }
+
         /// <summary>
         /// Gets or sets the page number.
         /// </summary>

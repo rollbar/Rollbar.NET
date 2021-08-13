@@ -65,7 +65,7 @@
         protected LogTelemetry(
             TelemetryType type, 
             string message, 
-            IDictionary<string, object> arbitraryKeyValuePairs
+            IDictionary<string, object>? arbitraryKeyValuePairs
             )
             : base(type, arbitraryKeyValuePairs)
         {
@@ -78,7 +78,7 @@
         /// <value>
         /// The message.
         /// </value>
-        public string Message
+        public string? Message
         {
             get { return this[ReservedProperties.Message] as string; }
             set { this[ReservedProperties.Message] = value; }

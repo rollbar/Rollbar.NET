@@ -88,7 +88,7 @@
 
             if (!string.IsNullOrWhiteSpace(this._rollbarConfig.RollbarDestinationOptions.Environment))
             {
-                rollbarData.Environment = this._rollbarConfig.RollbarDestinationOptions.Environment;
+                rollbarData.Environment = this._rollbarConfig.RollbarDestinationOptions.Environment!;
             }
 
             if(this._rollbarConfig.RollbarPayloadAdditionOptions.Person != null)

@@ -11,13 +11,13 @@
         /// Gets or sets the access token.
         /// </summary>
         /// <value>The access token.</value>
-        string AccessToken { get; set; }
+        string? AccessToken { get; set; }
 
         /// <summary>
         /// Gets or sets the endpoint.
         /// </summary>
         /// <value>The endpoint.</value>
-        string Endpoint { get; set; }
+        string? Endpoint { get; set; }
 
         /// <summary>
         /// Gets or sets the identifier.

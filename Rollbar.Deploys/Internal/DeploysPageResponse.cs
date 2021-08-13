@@ -16,6 +16,6 @@
         /// The deploys page.
         /// </value>
         [JsonProperty("result", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public DeploysPage DeploysPage { get; set; }
+        public DeploysPage? DeploysPage { get; set; }
     }
 }

@@ -16,6 +16,6 @@
         /// The message.
         /// </value>
         [JsonProperty("message", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 }

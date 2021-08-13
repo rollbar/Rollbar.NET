@@ -2,9 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
 
@@ -23,7 +20,7 @@
         /// <summary>
         /// The rollbar data title
         /// </summary>
-        private readonly string _rollbarDataTitle;
+        private readonly string? _rollbarDataTitle;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExceptionPackage"/> class.
@@ -39,7 +36,7 @@
         /// </summary>
         /// <param name="exceptionToPackage">The exception to package.</param>
         /// <param name="rollbarDataTitle">The rollbar data title.</param>
-        public ExceptionPackage(System.Exception exceptionToPackage, string rollbarDataTitle)
+        public ExceptionPackage(System.Exception exceptionToPackage, string? rollbarDataTitle)
             : this(exceptionToPackage, rollbarDataTitle, false)
         {
         }
@@ -60,7 +57,7 @@
         /// <param name="exceptionToPackage">The exception to package.</param>
         /// <param name="rollbarDataTitle">The rollbar data title.</param>
         /// <param name="mustApplySynchronously">if set to <c>true</c> the strategy must be apply synchronously.</param>
-        public ExceptionPackage(System.Exception exceptionToPackage, string rollbarDataTitle, bool mustApplySynchronously)
+        public ExceptionPackage(System.Exception exceptionToPackage, string? rollbarDataTitle, bool mustApplySynchronously)
             : base(mustApplySynchronously)
         {
             Assumption.AssertNotNull(exceptionToPackage, nameof(exceptionToPackage));
@@ -76,7 +73,7 @@
         protected override Data ProduceRollbarData()
         {
             Body rollbarBody = new Body(this._exceptionToPackage);
-            IDictionary<string, object> custom = null;
+            IDictionary<string, object>? custom = null;
             RollbarUtility.SnapExceptionDataAsCustomData(this._exceptionToPackage, ref custom);
             Data rollbarData = new Data(rollbarBody, custom);
             rollbarData.Title = this._rollbarDataTitle;

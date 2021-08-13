@@ -15,7 +15,7 @@
         /// <value>
         /// The deploy identifier.
         /// </value>
-        string DeployID { get; }
+        string? DeployID { get; }
 
         /// <summary>
         /// Gets the project identifier.
@@ -23,7 +23,7 @@
         /// <value>
         /// The project identifier.
         /// </value>
-        string ProjectID { get; }
+        string? ProjectID { get; }
 
         /// <summary>
         /// Gets the start time.
