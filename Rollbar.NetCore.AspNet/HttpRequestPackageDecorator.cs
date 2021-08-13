@@ -118,7 +118,7 @@ namespace Rollbar.NetCore.AspNet
             }
             request.PostBody = jsonString;
 
-            object requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
+            object? requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
             if (requesBodyObject != null)
             {
                 request.PostBody = requesBodyObject;

@@ -90,7 +90,7 @@
             }
             response.Body = jsonString;
 
-            object responseBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
+            object? responseBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
             if (responseBodyObject != null)
             {
                 response.Body = responseBodyObject;

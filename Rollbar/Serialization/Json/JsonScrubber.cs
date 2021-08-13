@@ -31,7 +31,7 @@
         /// <param name="root">The root.</param>
         /// <param name="childPropertyName">Name of the child property.</param>
         /// <returns>JProperty.</returns>
-        public static JProperty GetChildPropertyByName(JContainer root, string childPropertyName)
+        public static JProperty? GetChildPropertyByName(JContainer root, string childPropertyName)
         {
             foreach(var child in root.Children())
             {
@@ -217,7 +217,7 @@
                 return;
             }
 
-            JToken jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, scrubPath);            
+            JToken? jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, scrubPath);            
             if (jToken != null)
             {
                 var jProperty = jToken.Parent as JProperty;
@@ -252,9 +252,9 @@
             }
         }
 
-        private static JToken FindJsonTokenSafelyUsingPath(JObject jsonData, string tokenPath)
+        private static JToken? FindJsonTokenSafelyUsingPath(JObject jsonData, string tokenPath)
         {
-            JToken jToken = null;
+            JToken? jToken = null;
             try
             {
                 jToken = jsonData.SelectToken(tokenPath);

@@ -12,14 +12,14 @@
         /// </summary>
         /// <param name="exactIpAddress">The specified IP address to anonymize.</param>
         /// <returns></returns>
-        public static string Anonymize(string exactIpAddress)
+        public static string? Anonymize(string exactIpAddress)
         {
             if (string.IsNullOrEmpty(exactIpAddress))
             {
                 return exactIpAddress;
             }
 
-            string[] components = null;
+            string[]? components = null;
 
             // try IPv4 format:
             const char ipv4ComponentsSeparator = '.';

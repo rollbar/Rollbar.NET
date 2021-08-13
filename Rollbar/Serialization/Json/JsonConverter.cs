@@ -53,7 +53,7 @@
         /// </returns>
         /// <exception cref="JsonSerializationException">
         /// </exception>
-        public sealed override object ReadJson(
+        public sealed override object? ReadJson(
             JsonReader reader, 
             Type objectType, 
             object existingValue, 

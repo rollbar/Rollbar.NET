@@ -28,7 +28,7 @@
         /// <value>
         /// The error.
         /// </value>
-        public Exception Error { get; private set; }
+        public Exception? Error { get; private set; }
         /// <summary>
         /// Gets the details.
         /// </summary>
