@@ -52,7 +52,7 @@
         /// The identifier.
         /// </value>
         [JsonProperty("id", Required = Required.Always)]
-        public string Id
+        public string? Id
         {
             get { return this._id; }
             set
@@ -64,7 +64,7 @@
                 this._id = value;
             }
         }
-        private string _id;
+        private string? _id;
 
         /// <summary>
         /// Gets or sets the username (OPTIONAL).
@@ -77,7 +77,7 @@
         /// A string up to 255 characters
         /// </remarks>
         [JsonProperty("username", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string UserName
+        public string? UserName
         {
             get { return this._userName; }
             set
@@ -89,7 +89,7 @@
                 this._userName = value;
             }
         }
-        private string _userName;
+        private string? _userName;
 
         /// <summary>
         /// Gets or sets the email (OPTIONAL).
@@ -102,7 +102,7 @@
         /// A string up to 255 characters
         /// </remarks>
         [JsonProperty("email", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Email
+        public string? Email
         {
             get { return this._email; }
             set
@@ -114,7 +114,7 @@
                 this._email = value;
             }
         }
-        private string _email;
+        private string? _email;
 
         /// <summary>
         /// Gets the proper validator.

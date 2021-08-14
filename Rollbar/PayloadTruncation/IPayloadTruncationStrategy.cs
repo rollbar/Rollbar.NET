@@ -12,6 +12,6 @@
         /// </summary>
         /// <param name="payload">The payload.</param>
         /// <returns>Payload size (in bytes) after the truncation.</returns>
-        int Truncate(Payload payload);
+        int Truncate(Payload? payload);
     }
 }

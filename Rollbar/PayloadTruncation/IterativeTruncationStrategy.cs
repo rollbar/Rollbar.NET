@@ -68,7 +68,7 @@
         /// <returns>
         /// Payload size (in bytes) after the truncation.
         /// </returns>
-        public override int Truncate(Payload payload)
+        public override int Truncate(Payload? payload)
         {
             int result = 0;
 

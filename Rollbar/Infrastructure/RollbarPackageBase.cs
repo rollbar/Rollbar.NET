@@ -63,7 +63,7 @@
         /// Gets the rollbar data packaged by this strategy (if any).
         /// </summary>
         /// <value>The rollbar data.</value>
-        public virtual Data RollbarData
+        public virtual Data? RollbarData
         {
             get { return this._rollbarData; }
         }
@@ -72,7 +72,7 @@
         /// Packages as rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        public virtual Data PackageAsRollbarData()
+        public virtual Data? PackageAsRollbarData()
         {
             if (this._rollbarData != null)
             {

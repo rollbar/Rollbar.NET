@@ -20,7 +20,7 @@
         /// <summary>
         /// The payload bundle
         /// </summary>
-        private PayloadBundle _payloadBundle;
+        private PayloadBundle? _payloadBundle;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Payload" /> class.
@@ -28,7 +28,7 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="data">The data.</param>
         public Payload(
-            string accessToken, 
+            string? accessToken, 
             Data data
             )
         {
@@ -62,7 +62,7 @@
         /// A post_server_item token should be used for other platforms.
         /// </remarks>
         [JsonProperty("access_token", Required = Required.Always)]
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
 
         /// <summary>
         /// Gets the data (REQUIRED).
@@ -81,7 +81,7 @@
         /// </summary>
         /// <value>The payload bundle.</value>
         [JsonIgnore]
-        internal PayloadBundle PayloadBundle
+        internal PayloadBundle? PayloadBundle
         {
             get { return this._payloadBundle; }
             set

@@ -93,7 +93,7 @@
         /// <param name="body">The body.</param>
         /// <param name="request">The request.</param>
         public Data(
-            IRollbarLoggerConfig config,
+            IRollbarLoggerConfig? config,
             Body body,
             Request request
             )
@@ -109,7 +109,7 @@
         /// <param name="body">The body.</param>
         /// <param name="custom">The custom.</param>
         public Data(
-            IRollbarLoggerConfig config,
+            IRollbarLoggerConfig? config,
             Body body,
             IDictionary<string, object>? custom
             )

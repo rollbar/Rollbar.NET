@@ -36,7 +36,7 @@
         /// </summary>
         /// <param name="destinationId">The destination identifier.</param>
         /// <returns>IPayloadRecord.</returns>
-        IPayloadRecord GetOldestRecords(Guid destinationId);
+        IPayloadRecord? GetOldestRecords(Guid destinationId);
 
         /// <summary>
         /// Deletes the records.

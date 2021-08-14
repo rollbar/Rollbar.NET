@@ -18,12 +18,12 @@
         /// <summary>
         /// The rollbar
         /// </summary>
-        protected readonly IRollbar rollbar;
+        protected readonly IRollbar? rollbar;
 
         /// <summary>
         /// The Rollbar logger
         /// </summary>
-        private readonly ILogger rollbarLogger;
+        private readonly ILogger? rollbarLogger;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PlugInCoreBase"/> class from being created.
@@ -91,9 +91,9 @@
         /// Gets the rollbar configuration.
         /// </summary>
         /// <value>The rollbar configuration.</value>
-        public IRollbarLoggerConfig RollbarConfig
+        public IRollbarLoggerConfig? RollbarConfig
         {
-            get { return this.rollbar.Config; }
+            get { return this.rollbar?.Config; }
         }
 
         /// <summary>
@@ -235,7 +235,7 @@
                 return;
             }
 
-            DTOs.Data data = null;
+            DTOs.Data? data = null;
 
             try
             {
@@ -243,7 +243,7 @@
             }
             catch(Exception ex)
             {
-                data = new DTOs.Data(this.rollbar.Config, new DTOs.Body(ex));
+                data = new DTOs.Data(this.rollbar?.Config, new DTOs.Body(ex));
             }
             finally
             {
@@ -267,7 +267,7 @@
             Exception exception = this.ExtractException(plugInEventData);
             object pluginEventProperties = this.ExtractCustomProperties(plugInEventData);
 
-            DTOs.Body rollbarBody = null;
+            DTOs.Body? rollbarBody = null;
             if (exception != null)
             {
                 rollbarBody = new DTOs.Body(exception);
@@ -277,7 +277,7 @@
                 rollbarBody = new DTOs.Body(new DTOs.Message(message));
             }
 
-            IDictionary<string, object> custom = null;
+            IDictionary<string, object>? custom = null;
             if (pluginEventProperties != null)
             {
                 const int customCapacity = 1;
@@ -285,7 +285,7 @@
                 custom[this._customPrefix] = pluginEventProperties;
             }
 
-            DTOs.Data rollbarData = new DTOs.Data(this.rollbar.Config, rollbarBody, custom)
+            DTOs.Data rollbarData = new DTOs.Data(this.rollbar?.Config, rollbarBody, custom)
             {
                 Level = errorLevel
             };

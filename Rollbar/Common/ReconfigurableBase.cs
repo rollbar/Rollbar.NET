@@ -185,6 +185,7 @@
             List<object?> propertyValues = 
                 thisInstanceProperyInfos
                 .Select(i => i.GetValue(this))
+                .Cast<object?>()
                 .ToList();
             this.reconfigurableProperties = 
                 propertyValues
@@ -299,7 +300,7 @@
             return this.HaveEqualPropertyValues(this, other, properties);
         }
 
-        private bool HaveEqualPropertyValues(object left, object right, IEnumerable<PropertyInfo> properties)
+        private bool HaveEqualPropertyValues(object? left, object? right, IEnumerable<PropertyInfo> properties)
         {
             if (left == null && right == null)
             {
@@ -342,7 +343,7 @@
                 {
                     return false;
                 }
-                if (property.PropertyType.GetInterface(typeof(IEnumerable).FullName) != null)
+                if (property.PropertyType.GetInterface(typeof(IEnumerable).FullName!) != null)
                 {
 #pragma warning disable IDE0019 // Use pattern matching
                     var leftCollection = leftPropertyValue as ICollection;
@@ -367,17 +368,17 @@
                         bool hasMatchingItem = false;
                         foreach (var rightItem in rightEnumeration)
                         {
-                            Type leftItemType = leftItem.GetType();
-                            Type rightItemType = rightItem.GetType();
+                            Type? leftItemType = leftItem?.GetType();
+                            Type? rightItemType = rightItem?.GetType();
 
                             if (leftItemType != rightItemType)
                             {
                                 continue;
                             }
 
-                            if (leftItemType.IsPrimitive || leftItemType == typeof(string) || leftItemType == typeof(Guid))
+                            if (leftItemType != null && (leftItemType.IsPrimitive || leftItemType == typeof(string) || leftItemType == typeof(Guid)))
                             {
-                                if (leftItem.Equals(rightItem))
+                                if (leftItem != null && leftItem.Equals(rightItem))
                                 {
                                     hasMatchingItem = true;
                                     break;
@@ -388,11 +389,14 @@
                                 }
                             }
 
-                            var itemProperties = ListInstancePublicProperties(rightItem.GetType());
-                            if (HaveEqualPropertyValues(leftItem, rightItem, itemProperties))
+                            if(rightItem != null)
                             {
-                                hasMatchingItem = true;
-                                break;
+                                var itemProperties = ListInstancePublicProperties(rightItem.GetType());
+                                if(HaveEqualPropertyValues(leftItem, rightItem, itemProperties))
+                                {
+                                    hasMatchingItem = true;
+                                    break;
+                                }
                             }
                         }
                         if (!hasMatchingItem)

@@ -26,7 +26,7 @@
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         public ConfigAttributesPackageDecorator(
-            IRollbarPackage packageToDecorate, 
+            IRollbarPackage? packageToDecorate, 
             IRollbarLoggerConfig rollbarConfig
             )
             : this(packageToDecorate, rollbarConfig, false)
@@ -40,7 +40,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ConfigAttributesPackageDecorator(
-            IRollbarPackage packageToDecorate, 
+            IRollbarPackage? packageToDecorate, 
             IRollbarLoggerConfig rollbarConfig, 
             bool mustApplySynchronously
             ) 
@@ -65,7 +65,7 @@
         /// Decorates the specified rollbar data.
         /// </summary>
         /// <param name="rollbarData">The rollbar data.</param>
-        protected override void Decorate(Data rollbarData)
+        protected override void Decorate(Data? rollbarData)
         {
             if (rollbarData == null)
             {

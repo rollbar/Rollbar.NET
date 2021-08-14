@@ -2,11 +2,6 @@
 {
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Class RollbarPackageDecoratorBase.
@@ -22,7 +17,7 @@
         /// <summary>
         /// The strategy to decorate
         /// </summary>
-        private readonly IRollbarPackage _packageToDecorate;
+        private readonly IRollbarPackage? _packageToDecorate;
 
         /// <summary>
         /// The decorator was already applied
@@ -34,7 +29,7 @@
         /// </summary>
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="mustApplySynchronously">if set to <c>true</c> the strategy must be apply synchronously.</param>
-        protected RollbarPackageDecoratorBase(IRollbarPackage packageToDecorate, bool mustApplySynchronously)
+        protected RollbarPackageDecoratorBase(IRollbarPackage? packageToDecorate, bool mustApplySynchronously)
             : base(mustApplySynchronously)
         {
             Assumption.AssertNotNull(packageToDecorate, nameof(packageToDecorate));
@@ -46,7 +41,7 @@
         /// Produces the rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        protected override Data ProduceRollbarData()
+        protected override Data? ProduceRollbarData()
         {
             // this is a decorator, it does not produce Rollbar Data, but decorates provided one (if any)
             return null; 
@@ -56,15 +51,15 @@
         /// Decorates the specified rollbar data.
         /// </summary>
         /// <param name="rollbarData">The rollbar data.</param>
-        protected abstract void Decorate(Data rollbarData);
+        protected abstract void Decorate(Data? rollbarData);
 
         /// <summary>
         /// Packages as rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        public override Data PackageAsRollbarData()
+        public override Data? PackageAsRollbarData()
         {
-            Data rollbarData = this._packageToDecorate?.PackageAsRollbarData();
+            Data? rollbarData = this._packageToDecorate?.PackageAsRollbarData();
             if (!this._decoratorWasAlreadyApplied)
             {
                 // we want to apply a decorator only once:
@@ -106,7 +101,7 @@
         /// Gets the rollbar data packaged by this strategy (if any).
         /// </summary>
         /// <value>The rollbar data.</value>
-        public override Data RollbarData
+        public override Data? RollbarData
         {
             get
             {

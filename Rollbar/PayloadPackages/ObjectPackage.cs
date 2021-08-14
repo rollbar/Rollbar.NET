@@ -23,11 +23,11 @@
         /// <summary>
         /// The rollbar data title
         /// </summary>
-        private readonly string _rollbarDataTitle;
+        private readonly string? _rollbarDataTitle;
         /// <summary>
         /// The custom
         /// </summary>
-        private IDictionary<string, object> _custom;
+        private IDictionary<string, object>? _custom;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
@@ -74,7 +74,7 @@
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ObjectPackage(
             object objectToPackage,
-            IDictionary<string, object> custom,
+            IDictionary<string, object>? custom,
             bool mustApplySynchronously
             )
             : this(objectToPackage, null, custom, mustApplySynchronously)
@@ -104,8 +104,8 @@
         /// <param name="custom">The custom.</param>
         public ObjectPackage(
             object objectToPackage,
-            string rollbarDataTitle,
-            IDictionary<string, object> custom
+            string? rollbarDataTitle,
+            IDictionary<string, object>? custom
             )
             : this(objectToPackage, rollbarDataTitle, custom, false)
         {
@@ -120,8 +120,8 @@
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ObjectPackage(
             object objectToPackage, 
-            string rollbarDataTitle, 
-            IDictionary<string, object> custom, 
+            string? rollbarDataTitle, 
+            IDictionary<string, object>? custom, 
             bool mustApplySynchronously
             ) 
             : base(mustApplySynchronously)
@@ -137,9 +137,9 @@
         /// Produces the rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        protected override Data ProduceRollbarData()
+        protected override Data? ProduceRollbarData()
         {
-            Data data = null;
+            Data? data = null;
             switch(this._objectToPackage)
             {
                 case Data dataObj:
@@ -149,7 +149,7 @@
                     data = rollbarPackageObj.PackageAsRollbarData();
                     break;
                 default:
-                    Body body = this._objectToPackage as Body;
+                    Body? body = this._objectToPackage as Body;
                     if (body == null)
                     {
                         body = RollbarUtility.PackageAsPayloadBody(this._objectToPackage, ref this._custom);
@@ -159,7 +159,7 @@
                     break;
             }
 
-            if (!string.IsNullOrWhiteSpace(this._rollbarDataTitle))
+            if (data != null && !string.IsNullOrWhiteSpace(this._rollbarDataTitle))
             {
                 data.Title = this._rollbarDataTitle;
             }

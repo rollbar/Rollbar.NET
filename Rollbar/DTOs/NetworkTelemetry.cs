@@ -121,7 +121,7 @@
             , DateTime? eventStart
             , DateTime? eventEnd
             , int? statusCode
-            , string subtype
+            , string? subtype
             )
             : this(method, url, eventStart, eventEnd, statusCode, subtype, null)
         {
@@ -143,8 +143,8 @@
             , DateTime? eventStart
             , DateTime? eventEnd
             , int? statusCode
-            , string subtype
-            , IDictionary<string, object> arbitraryKeyValuePairs
+            , string? subtype
+            , IDictionary<string, object>? arbitraryKeyValuePairs
             )
             : base(TelemetryType.Network, arbitraryKeyValuePairs)
         {
@@ -189,7 +189,7 @@
         /// <value>
         /// The subtype.
         /// </value>
-        public string Subtype
+        public string? Subtype
         {
             get { return this[ReservedProperties.Subtype] as string; }
             private set { this[ReservedProperties.Subtype] = value; }
@@ -201,7 +201,7 @@
         /// <value>
         /// The method.
         /// </value>
-        public string Method
+        public string? Method
         {
             get { return this[ReservedProperties.Method] as string; }
             private set { this[ReservedProperties.Method] = value; }
@@ -213,7 +213,7 @@
         /// <value>
         /// The URL.
         /// </value>
-        public string Url
+        public string? Url
         {
             get { return this[ReservedProperties.Url] as string; }
             private set { this[ReservedProperties.Url] = value; }
@@ -225,7 +225,7 @@
         /// <value>
         /// The status code.
         /// </value>
-        public string StatusCode
+        public string? StatusCode
         {
             get { return this[ReservedProperties.StatusCode] as string; }
             set { this[ReservedProperties.StatusCode] = value; }
@@ -239,7 +239,7 @@
         /// </value>
         public long StartTimestamp
         {
-            get { return (long) this[ReservedProperties.StartTimestamp]; }
+            get { return (long) this[ReservedProperties.StartTimestamp]!; }
             private set { this[ReservedProperties.StartTimestamp] = value; }
         }
 

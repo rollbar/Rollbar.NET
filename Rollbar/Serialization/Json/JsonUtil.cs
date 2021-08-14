@@ -86,7 +86,7 @@
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>System.String.</returns>
-        public static string SerializeAsJsonString(object obj)
+        public static string SerializeAsJsonString(object? obj)
         {
             string jsonString = JsonConvert.SerializeObject(obj);
             return jsonString;

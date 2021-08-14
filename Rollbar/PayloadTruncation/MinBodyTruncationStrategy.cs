@@ -20,14 +20,18 @@
         /// <returns>
         /// Payload size (in bytes) after the truncation.
         /// </returns>
-        public override int Truncate(Payload payload)
+        public override int Truncate(Payload? payload)
         {
-            if  (payload == null || payload.Data == null || payload.Data.Body == null)
+            if(payload == null)
+            {
+                return 0;
+            }
+            if  (payload.Data == null || payload.Data.Body == null)
             {
                 return GetSizeInBytes(payload); //nothing to truncate ...
             }
 
-            Trace[] traces = payload.Data.Body.TraceChain;
+            Trace[]? traces = payload.Data.Body.TraceChain;
             if ((traces == null || traces.LongLength == 0) 
                 && (payload.Data.Body.Trace != null)
                 )

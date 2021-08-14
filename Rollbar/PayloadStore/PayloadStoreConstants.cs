@@ -16,14 +16,16 @@
         /// <summary>
         /// The default rollbar store database file location
         /// </summary>
-        public static readonly string DefaultRollbarStoreDbFileLocation = null;
+        public static readonly string? DefaultRollbarStoreDbFileLocation = null;
 
         /// <summary>
         /// Initializes static members of the <see cref="PayloadStoreConstants"/> class.
         /// </summary>
         static PayloadStoreConstants()
         {
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             if (!Environment.OSVersion.VersionString.Contains("Windows"))
+#pragma warning restore CA1307 // Specify StringComparison for clarity
             {
                 DefaultRollbarStoreDbFileLocation =
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);

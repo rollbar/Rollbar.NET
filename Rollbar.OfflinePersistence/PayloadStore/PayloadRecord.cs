@@ -24,19 +24,19 @@
         /// Gets or sets the payload json.
         /// </summary>
         /// <value>The payload json.</value>
-        public string PayloadJson { get; set; }
+        public string? PayloadJson { get; set; }
 
         /// <summary>
         /// Gets or sets the configuration json.
         /// </summary>
         /// <value>The configuration json.</value>
-        public string ConfigJson { get; set; }
+        public string? ConfigJson { get; set; }
 
         /// <summary>
         /// Gets or sets the destination.
         /// </summary>
         /// <value>The destination.</value>
-        public Destination Destination { get; set; }
+        public Destination? Destination { get; set; }
 
         /// <summary>
         /// Gets or sets the destination identifier.

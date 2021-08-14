@@ -15,7 +15,7 @@
         /// <summary>
         /// The rollbar configuration
         /// </summary>
-        private readonly IRollbarLoggerConfig _rollbarConfig;
+        private readonly IRollbarLoggerConfig? _rollbarConfig;
         /// <summary>
         /// The body to package
         /// </summary>
@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="bodyToPackage">The body to package.</param>
-        public BodyPackage(IRollbarLoggerConfig rollbarConfig, Body bodyToPackage)
+        public BodyPackage(IRollbarLoggerConfig? rollbarConfig, Body bodyToPackage)
             : this(rollbarConfig, bodyToPackage, null)
         {
         }
@@ -41,7 +41,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="bodyToPackage">The body to package.</param>
         /// <param name="custom">The custom.</param>
-        public BodyPackage(IRollbarLoggerConfig rollbarConfig, Body bodyToPackage, IDictionary<string, object>? custom) 
+        public BodyPackage(IRollbarLoggerConfig? rollbarConfig, Body bodyToPackage, IDictionary<string, object>? custom) 
             : base(false)
         {
             this._rollbarConfig = rollbarConfig;
