@@ -80,10 +80,13 @@
                         );
                 Assumption.AssertNotNull(property, nameof(property));
 
-                string reservedKey = ReflectionUtility.GetStaticFieldValue<string>(reservedAttribue);
+                string? reservedKey = ReflectionUtility.GetStaticFieldValue<string>(reservedAttribue);
                 Assumption.AssertNotNullOrWhiteSpace(reservedKey, nameof(reservedKey));
 
-                reservedPropertyInfoByName.Add(reservedKey, property!);
+                if(reservedKey != null)
+                {
+                    reservedPropertyInfoByName.Add(reservedKey, property!);
+                }
             }
 
             return result;

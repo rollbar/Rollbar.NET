@@ -21,7 +21,7 @@
         /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
         /// (for example, when instance argument happened to be uninitialized)
         /// </returns>
-        public static IDictionary<string, object> CaptureState(
+        public static IDictionary<string, object?>? CaptureState(
             object instance
             )
         {
@@ -41,9 +41,9 @@
         /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
         /// (for example, when instance argument happened to be uninitialized)
         /// </returns>
-        public static IDictionary<string, object> CaptureState(
+        public static IDictionary<string, object?>? CaptureState(
             object instance,
-            IDictionary<string, object> stateCapture
+            IDictionary<string, object?>? stateCapture
             )
         {
             return CaptureState(instance, null, stateCapture);
@@ -62,7 +62,7 @@
         /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
         /// (for example, when instance argument happened to be uninitialized)
         /// </returns>
-        public static IDictionary<string, object> CaptureState(
+        public static IDictionary<string, object?>? CaptureState(
             object instance,
             string instanceName
             )
@@ -84,10 +84,10 @@
         /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
         /// (for example, when instance argument happened to be uninitialized)
         /// </returns>
-        public static IDictionary<string, object> CaptureState(
+        public static IDictionary<string, object?>? CaptureState(
             object instance, 
-            string instanceName, 
-            IDictionary<string, object> stateCapture
+            string? instanceName, 
+            IDictionary<string, object?>? stateCapture
             )
         {
             if (instance == null)
@@ -114,11 +114,11 @@
 
             if (stateCapture == null)
             {
-                stateCapture = new Dictionary<string, object>(memberInfos.Length);
+                stateCapture = new Dictionary<string, object?>(memberInfos.Length);
             }
             foreach (var memberInfo in memberInfos)
             {
-                object value = memberInfo.GetValue(instance);
+                object? value = memberInfo.GetValue(instance);
                 if (value != null && value.GetType().IsEnum)
                 {
                     value = value.ToString();
@@ -138,7 +138,7 @@
         /// the captured state of the supplied static type or null whenever the state capture is not applicable 
         /// (for example, when static type argument happened to represent an Enum or an interface).
         /// </returns>
-        public static IDictionary<string, object> CaptureState(
+        public static IDictionary<string, object?>? CaptureState(
             Type staticType
             )
         {
@@ -155,9 +155,9 @@
         /// the captured state of the supplied static type or null whenever the state capture is not applicable 
         /// (for example, when static type argument happened to represent an Enum or an interface).
         /// </returns>
-        public static IDictionary<string, object> CaptureState(
+        public static IDictionary<string, object?>? CaptureState(
             Type staticType, 
-            IDictionary<string, object> stateCapture
+            IDictionary<string, object?>? stateCapture
             )
         {
             if (staticType.IsInterface || staticType.IsEnum)
@@ -170,7 +170,7 @@
 
             if (stateCapture == null)
             {
-                stateCapture = new Dictionary<string, object>(memberInfos.Length);
+                stateCapture = new Dictionary<string, object?>(memberInfos.Length);
             }
             foreach (var memberInfo in memberInfos)
             {

@@ -39,7 +39,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="rollbarBlockingTimeout">The rollbar blocking timeout.</param>
         protected PlugInCoreBase(
-            IRollbarInfrastructureConfig rollbarConfig,
+            IRollbarInfrastructureConfig? rollbarConfig,
             TimeSpan? rollbarBlockingTimeout
             )
         {
@@ -212,7 +212,7 @@
         protected PlugInCore(
             IDictionary<TPlugInErrorLevel, ErrorLevel> rollbarErrorLevelByPlugInErrorLevel,
             string customPrefix,
-            IRollbarInfrastructureConfig rollbarConfig,
+            IRollbarInfrastructureConfig? rollbarConfig,
             TimeSpan? rollbarBlockingTimeout
             )
             : base(rollbarConfig, rollbarBlockingTimeout)
