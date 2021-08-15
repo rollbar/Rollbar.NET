@@ -62,7 +62,8 @@
             /// <param name="description">The description.</param>
             public RollbarErrorDetails(RollbarError error, string description)
             {
-
+                this.Error = error;
+                this.Description = description;
             }
 
             /// <summary>
@@ -79,7 +80,7 @@
             /// <value>
             /// The description.
             /// </value>
-            public string Description { get; private set; }
+            public string? Description { get; private set; }
         }
 
         private static readonly Dictionary<int, RollbarErrorDetails> errorDetailsByCode;
@@ -147,7 +148,7 @@
         {
             get
             {
-                RollbarErrorDetails error = GetErrorDetailsByCode(this.ErrorCode);
+                RollbarErrorDetails? error = GetErrorDetailsByCode(this.ErrorCode);
 
                 if (error != null)
                 {
@@ -164,11 +165,11 @@
         /// <value>
         /// The error description.
         /// </value>
-        public string ErrorDescription
+        public string? ErrorDescription
         {
             get
             {
-                RollbarErrorDetails error = GetErrorDetailsByCode(this.ErrorCode);
+                RollbarErrorDetails? error = GetErrorDetailsByCode(this.ErrorCode);
 
                 if (error != null)
                 {
@@ -179,9 +180,9 @@
             }
         }
 
-        private static RollbarErrorDetails GetErrorDetailsByCode(int code)
+        private static RollbarErrorDetails? GetErrorDetailsByCode(int code)
         {
-            if (errorDetailsByCode.TryGetValue(code, out RollbarErrorDetails error))
+            if (errorDetailsByCode.TryGetValue(code, out RollbarErrorDetails? error))
             {
                 return error;
             }

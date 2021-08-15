@@ -53,8 +53,13 @@
         /// Decorates the specified rollbar data.
         /// </summary>
         /// <param name="rollbarData">The rollbar data.</param>
-        protected override void Decorate(Data rollbarData)
+        protected override void Decorate(Data? rollbarData)
         {
+            if(rollbarData == null)
+            {
+                return;
+            }
+
             if (this._custom == null || this._custom.Count == 0)
             {
                 return; // nothing to decorate with...

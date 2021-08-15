@@ -71,8 +71,13 @@
         /// Decorates the specified rollbar data.
         /// </summary>
         /// <param name="rollbarData">The rollbar data.</param>
-        protected override void Decorate(Data rollbarData)
+        protected override void Decorate(Data? rollbarData)
         {
+            if(rollbarData == null)
+            {
+                return;
+            }
+
             IRollbarPackage package = this._packageToDecorate;
 
             if (this._httpContext?.Request != null)

@@ -100,13 +100,19 @@
         /// <typeparam name="TFieldDataType">The type of the field data type.</typeparam>
         /// <param name="staticField">The static field.</param>
         /// <returns></returns>
-        public static TFieldDataType GetStaticFieldValue<TFieldDataType>(FieldInfo staticField)
+        public static TFieldDataType? GetStaticFieldValue<TFieldDataType>(FieldInfo staticField)
         {
             Assumption.AssertTrue(staticField.IsStatic, nameof(staticField.IsStatic));
 
-            TFieldDataType result  = (TFieldDataType)staticField.GetValue(null);
+            object? valueObject = staticField.GetValue(null);
+            if(valueObject != null)
+            {
+                TFieldDataType result = (TFieldDataType) valueObject;
 
-            return result;
+                return result;
+            }
+
+            return default(TFieldDataType);
         }
 
         /// <summary>
@@ -115,15 +121,17 @@
         /// <typeparam name="TField">The type of the field.</typeparam>
         /// <param name="type">The type.</param>
         /// <returns>All the field values.</returns>
-        public static TField[] GetAllPublicStaticFieldValues<TField>(Type type)
+        public static TField?[] GetAllPublicStaticFieldValues<TField>(Type type)
         {
             var memberInfos =
                 type.GetFields(BindingFlags.GetField | BindingFlags.Static | BindingFlags.Public);
 
-            var values = new List<TField>(memberInfos.Length);
+            var values = new List<TField?>(memberInfos.Length);
             foreach (var memberInfo in memberInfos)
             {
-                values.Add((TField)memberInfo.GetValue(null));
+                object? valueObject = memberInfo.GetValue(null);
+                TField? value = valueObject != null ? (TField) valueObject : default(TField);
+                values.Add(value);
             }
             return values.ToArray();
         }
