@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="validationSubject">The validation subject.</param>
         /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
-        public abstract IReadOnlyCollection<ValidationResult> Validate(object validationSubject);
+        public abstract IReadOnlyCollection<ValidationResult> Validate(object? validationSubject);
 
         /// <summary>
         /// Enum ValidationRule
@@ -46,15 +46,15 @@
     public class CompositeValidator
         : Validator
     {
-        private readonly List<IValidatable> _validatables = null;
-        private readonly List<Validator> _validators = null;
+        private readonly List<IValidatable> _validatables;
+        private readonly List<Validator> _validators;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeValidator"/> class.
         /// </summary>
         /// <param name="validators">The validators.</param>
         /// <param name="validatables">The validatables.</param>
-        public CompositeValidator(IEnumerable<Validator> validators, IEnumerable<IValidatable> validatables = null)
+        public CompositeValidator(IEnumerable<Validator> validators, IEnumerable<IValidatable>? validatables = null)
         {
             this._validators =
                 (validators != null) ? new List<Validator>(validators) : new List<Validator>();
@@ -98,7 +98,7 @@
         /// </summary>
         /// <param name="validationSubject">The validation subject.</param>
         /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
-        public override IReadOnlyCollection<ValidationResult> Validate(object validationSubject)
+        public override IReadOnlyCollection<ValidationResult> Validate(object? validationSubject)
         {
             List<ValidationResult> results = new List<ValidationResult>();
 
@@ -107,14 +107,14 @@
                 foreach(var validator in this._validators)
                 {
                     Debug.Assert(validator != null);
-                    results.AddRange(validator.Validate(validationSubject));
+                    results.AddRange(validator!.Validate(validationSubject));
                 }
             }
 
             foreach(var validatable in this._validatables)
             {
                 Debug.Assert(validatable != null);
-                results.AddRange(validatable.Validate());
+                results.AddRange(validatable!.Validate());
             }
 
             return results;
@@ -205,7 +205,7 @@
         /// </summary>
         /// <param name="validationSubject">The validation subject.</param>
         /// <returns>IReadOnlyDictionary&lt;TValidationRule, ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
-        public IReadOnlyCollection<ValidationResult> Validate(TValidationSubject validationSubject)
+        public IReadOnlyCollection<ValidationResult> Validate(TValidationSubject? validationSubject)
         {
             CollectorCollection<ValidationResult> failedValidationResults = 
                 new CollectorCollection<ValidationResult>(this._validationFunctionsByRule.Count);
@@ -232,7 +232,7 @@
 
                 var exprBody = (MemberExpression)expression.Body;
                 var property = (PropertyInfo)exprBody.Member;
-                object validationSubjectPropertyValue = property.GetValue(validationSubject);
+                object? validationSubjectPropertyValue = property.GetValue(validationSubject);
 
                 var validatorResults = validator.Validate(validationSubjectPropertyValue);
 
@@ -250,12 +250,12 @@
         /// </summary>
         /// <param name="validationSubject">The validation subject.</param>
         /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
-        public override IReadOnlyCollection<ValidationResult> Validate(object validationSubject)
+        public override IReadOnlyCollection<ValidationResult> Validate(object? validationSubject)
         {
-            TValidationSubject typeSafeValidationSubject = default(TValidationSubject);
+            TValidationSubject? typeSafeValidationSubject = default(TValidationSubject);
             try
             {
-                typeSafeValidationSubject = (TValidationSubject)validationSubject;
+                typeSafeValidationSubject = (TValidationSubject?) validationSubject;
             }
             catch
             {

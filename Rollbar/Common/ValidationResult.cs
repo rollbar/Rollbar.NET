@@ -16,7 +16,7 @@
         /// <summary>
         /// The validation rule
         /// </summary>
-        private readonly Enum _validationRule;
+        private readonly Enum? _validationRule;
         /// <summary>
         /// The details
         /// </summary>
@@ -27,7 +27,8 @@
         /// </summary>
         private ValidationResult()
         {
-
+            this._validationRule = null;
+            this.resultDetails = new List<ValidationResult>();
         }
 
         /// <summary>
@@ -57,7 +58,7 @@
         /// <value>The validation rule.</value>
         public Enum ValidationRule
         {
-            get { return this._validationRule; }
+            get { return this._validationRule!; }
         }
 
         /// <summary>

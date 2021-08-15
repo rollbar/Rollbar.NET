@@ -16,7 +16,7 @@
         /// <param name="stream">The stream.</param>
         /// <param name="encoding">The encoding.</param>
         /// <returns>System.String.</returns>
-        public static string ConvertToString(Stream stream, Encoding encoding = null)
+        public static string? ConvertToString(Stream? stream, Encoding? encoding = null)
         {
             if (stream == null || !stream.CanSeek || !stream.CanRead)
             {
@@ -46,10 +46,10 @@
         /// </summary>
         /// <param name="stream">The stream.</param>
         /// <returns>System.Object.</returns>
-        public static object InterpretAsJsonObject(Stream stream)
+        public static object? InterpretAsJsonObject(Stream? stream)
         {
-            string jsonString = StreamUtil.ConvertToString(stream);
-            object jsonObject = JsonUtil.InterpretAsJsonObject(jsonString);
+            string? jsonString = StreamUtil.ConvertToString(stream);
+            object? jsonObject = JsonUtil.InterpretAsJsonObject(jsonString);
             return jsonObject;
         }
     }

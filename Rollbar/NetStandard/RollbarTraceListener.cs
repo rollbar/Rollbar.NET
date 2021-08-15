@@ -73,7 +73,7 @@
         /// </summary>
         public static int InstanceCount { get; set; }
 
-        private IRollbar _rollbar;
+        private IRollbar? _rollbar;
 
         /// <summary>
         /// Gets the Rollbar.

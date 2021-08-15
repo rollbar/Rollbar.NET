@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="jsonString">The json string.</param>
         /// <returns>System.Object.</returns>
-        public static object? InterpretAsJsonObject(string jsonString)
+        public static object? InterpretAsJsonObject(string? jsonString)
         {
             if (string.IsNullOrWhiteSpace(jsonString))
             {

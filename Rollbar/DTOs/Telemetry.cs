@@ -66,7 +66,7 @@
             TelemetrySource source
             ,TelemetryLevel level
             ,TelemetryBody body
-            ,IDictionary<string, object> arbitraryKeyValuePairs
+            ,IDictionary<string, object>? arbitraryKeyValuePairs
             )
             : base(arbitraryKeyValuePairs)
         {
@@ -89,7 +89,7 @@
         /// </value>
         public TelemetryLevel Level
         {
-            get { return (TelemetryLevel) this[ReservedProperties.Level]; }
+            get { return (TelemetryLevel) this[ReservedProperties.Level]!; }
             private set { this[ReservedProperties.Level] = value; }
         }
 
@@ -101,7 +101,7 @@
         /// </value>
         public TelemetryType Type
         {
-            get { return (TelemetryType) this[ReservedProperties.Type]; }
+            get { return (TelemetryType) this[ReservedProperties.Type]!; }
             private set { this[ReservedProperties.Type] = value; }
         }
 
@@ -113,7 +113,7 @@
         /// </value>
         public TelemetrySource Source
         {
-            get { return (TelemetrySource)this[ReservedProperties.Source]; }
+            get { return (TelemetrySource)this[ReservedProperties.Source]!; }
             private set { this[ReservedProperties.Source] = value; }
         }
 
@@ -125,7 +125,7 @@
         /// </value>
         public long Timestamp
         {
-            get { return (long) this[ReservedProperties.Timestamp]; }
+            get { return (long) this[ReservedProperties.Timestamp]!; }
             private set { this[ReservedProperties.Timestamp] = value; }
         }
 
@@ -137,7 +137,7 @@
         /// </value>
         public TelemetryBody Body
         {
-            get { return this[ReservedProperties.Body] as TelemetryBody; }
+            get { return (this[ReservedProperties.Body] as TelemetryBody)!; }
             private set { this[ReservedProperties.Body] = value; }
         }
 
@@ -154,7 +154,9 @@
                         )
                     .AddValidation(
                         Telemetry.TelemetryValidationRule.ValidBodyExpected,
+#pragma warning disable CA1307 // Specify StringComparison for clarity
                         (config) => { return this.Body.GetType().Name.Contains(this.Type.ToString()); }
+#pragma warning restore CA1307 // Specify StringComparison for clarity
                         )
                ;
 

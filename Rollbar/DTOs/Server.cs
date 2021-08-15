@@ -29,7 +29,7 @@
         /// Initializes a new instance of the <see cref="Server"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Server(IDictionary<string, object> arbitraryKeyValuePairs) 
+        public Server(IDictionary<string, object>? arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
         }
@@ -66,7 +66,7 @@
         /// <remarks>
         /// host: The server hostname. Will be indexed.
         /// </remarks>
-        public string Host
+        public string? Host
         {
             get { return this[ReservedProperties.Host] as string; }
             set { this[ReservedProperties.Host] = value; }
@@ -82,7 +82,7 @@
         /// root: Path to the application code root, not including the final slash.
         /// Used to collapse non-project code when displaying tracebacks.
         /// </remarks>
-        public string Root
+        public string? Root
         {
             get { return this[ReservedProperties.Root] as string; }
             set { this[ReservedProperties.Root] = value; }
@@ -97,7 +97,7 @@
         /// <remarks>
         /// branch: Name of the checked-out source control branch. Defaults to "master"
         /// </remarks>
-        public string Branch
+        public string? Branch
         {
             get { return this[ReservedProperties.Branch] as string; }
             set { this[ReservedProperties.Branch] = value; }
@@ -113,7 +113,7 @@
         /// Optional: code_version
         /// String describing the running code version on the server
         /// </remarks>
-        public string CodeVersion
+        public string? CodeVersion
         {
             get { return this[ReservedProperties.CodeVersion] as string; }
             set { this[ReservedProperties.CodeVersion] = value; }

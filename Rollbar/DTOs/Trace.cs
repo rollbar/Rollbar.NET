@@ -32,13 +32,10 @@
 
                 frames.Add(new DTOs.Frame(entry));
             }
-            if (frames.Count > 0)
-            {
-                this.Frames = frames.ToArray();
-            }
+            this.Frames = frames.ToArray();
 
             entries = exceptionInfo.Split(new [] { ": ", }, StringSplitOptions.None);
-            DTOs.Exception ex = null;
+            DTOs.Exception ex;
             switch (entries.Length)
             {
                 case 3:
@@ -52,12 +49,10 @@
                     break;
                 default:
                     traceSource.TraceEvent(TraceEventType.Warning, 0, $"Unexpected exception info component/entry...");
+                    ex = new DTOs.Exception("Default exception mock!");
                     break;
             }
-            if (ex != null)
-            {
-                this.Exception = ex;
-            }
+            this.Exception = ex;
         }
 
         /// <summary>

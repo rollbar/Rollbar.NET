@@ -27,7 +27,7 @@
         /// Initializes a new instance of the <see cref="Frame" /> class.
         /// </summary>
         /// <param name="frameString">The frame string.</param>
-        public Frame(string frameString)
+        public Frame(string? frameString)
         {
             if (string.IsNullOrWhiteSpace(frameString))
             {
@@ -35,7 +35,7 @@
             }
 
             string token = @"at ";
-            int tokenIndex = frameString.IndexOf(token, StringComparison.InvariantCulture);
+            int tokenIndex = frameString!.IndexOf(token, StringComparison.InvariantCulture);
             frameString = frameString.Remove(tokenIndex, token.Length);
             frameString = frameString.Trim();
             string[] components = frameString.Split(new [] { " in ", }, StringSplitOptions.None);
@@ -69,7 +69,7 @@
         /// Initializes a new instance of the <see cref="Frame"/> class.
         /// </summary>
         /// <param name="frame">The frame.</param>
-        public Frame(StackFrame frame)
+        public Frame(StackFrame? frame)
         {
             if (frame == null)
             {
