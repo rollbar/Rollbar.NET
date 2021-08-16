@@ -21,7 +21,7 @@
             IRollbar? rollbarLogger, 
             object? dataObject, 
             InternalRollbarError rollbarError, 
-            string message, 
+            string? message, 
             Exception exception,
             IErrorCollector? errorCollector
             )
