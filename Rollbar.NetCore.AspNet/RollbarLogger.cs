@@ -14,7 +14,7 @@
             : NetPlatformExtensions.RollbarLogger
     {
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor? _httpContextAccessor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
@@ -26,7 +26,7 @@
         public RollbarLogger(string name
             , IRollbarLoggerConfig rollbarConfig
             , NetPlatformExtensions.RollbarOptions? rollbarOptions
-            , IHttpContextAccessor httpContextAccessor
+            , IHttpContextAccessor? httpContextAccessor
             )
             : base(name, rollbarConfig, rollbarOptions)
         {

@@ -71,9 +71,14 @@
         /// <param name="json">The json.</param>
         /// <param name="scrubFields">The scrub fields.</param>
         /// <param name="scrubMask">The scrub mask.</param>
-        public static void ScrubJsonFieldsByName(JToken json, IEnumerable<string> scrubFields, string scrubMask)
+        public static void ScrubJsonFieldsByName(JToken? json, IEnumerable<string> scrubFields, string scrubMask)
         {
-            if (json is JProperty property)
+            if(json == null)
+            {
+                return;
+            }
+
+            if(json is JProperty property)
             {
                 ScrubJsonFieldsByName(property, scrubFields, scrubMask);
                 return;
@@ -91,8 +96,13 @@
         /// <param name="json">The json.</param>
         /// <param name="scrubFields">The scrub fields.</param>
         /// <param name="scrubMask">The scrub mask.</param>
-        public static void ScrubJsonFieldsByName(JProperty json, IEnumerable<string> scrubFields, string scrubMask)
+        public static void ScrubJsonFieldsByName(JProperty? json, IEnumerable<string> scrubFields, string scrubMask)
         {
+            if(json == null)
+            {
+                return;
+            }
+
             var fields = scrubFields as string[] ?? scrubFields.ToArray();
             if (fields.Contains(json.Name))
             {

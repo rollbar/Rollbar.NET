@@ -23,7 +23,7 @@
         /// <summary>
         /// The state
         /// </summary>
-        private readonly object _state;
+        private readonly object? _state;
 
         /// <summary>
         /// The log items count per this scope
@@ -35,7 +35,7 @@
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="state">The state.</param>
-        public RollbarScope(string name, object state)
+        public RollbarScope(string name, object? state)
         {
             this._name = name;
             this._state = state;
@@ -94,7 +94,7 @@
         /// Gets the state.
         /// </summary>
         /// <value>The state.</value>
-        public object State
+        public object? State
         {
             get { return this._state; }
         }

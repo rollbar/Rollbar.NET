@@ -19,7 +19,7 @@
 
         private const bool defaultEnableLocalPayloadStore = false;
         private static readonly string defaultLocalPayloadStoreFileName = PayloadStoreConstants.DefaultRollbarStoreDbFile;
-        private static readonly string defaultLocalPayloadStoreLocationPath = PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
+        private static readonly string? defaultLocalPayloadStoreLocationPath = PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarOfflineStoreOptions"/> class.
@@ -35,7 +35,7 @@
         /// <param name="enablePayloadStore">if set to <c>true</c> [enable payload store].</param>
         /// <param name="localPayloadStoreFileName">Name of the local payload store file.</param>
         /// <param name="LocalPayloadStoreLocationPath">The local payload store location path.</param>
-        public RollbarOfflineStoreOptions(bool enablePayloadStore, string localPayloadStoreFileName, string LocalPayloadStoreLocationPath)
+        public RollbarOfflineStoreOptions(bool enablePayloadStore, string localPayloadStoreFileName, string? LocalPayloadStoreLocationPath)
         {
             this.EnableLocalPayloadStore = enablePayloadStore;
             this.LocalPayloadStoreFileName = localPayloadStoreFileName;
@@ -63,7 +63,7 @@
         /// Gets the local payload store location path.
         /// </summary>
         /// <value>The local payload store location path.</value>
-        public string LocalPayloadStoreLocationPath
+        public string? LocalPayloadStoreLocationPath
         {
             get;
             set;
@@ -95,7 +95,7 @@
         //TODO: RollbarConfig - remove it!!!
         internal string GetLocalPayloadStoreFullPathName()
         {
-            string dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath)
+            string? dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath)
                 ? PayloadStoreConstants.DefaultRollbarStoreDbFileLocation
                 : this.LocalPayloadStoreLocationPath;
 

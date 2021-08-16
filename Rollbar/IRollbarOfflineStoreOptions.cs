@@ -34,7 +34,7 @@
         /// Gets the local payload store location path.
         /// </summary>
         /// <value>The local payload store location path.</value>
-        string LocalPayloadStoreLocationPath
+        string? LocalPayloadStoreLocationPath
         {
             get;
         }

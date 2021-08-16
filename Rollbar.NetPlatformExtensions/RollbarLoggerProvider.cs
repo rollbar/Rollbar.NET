@@ -125,7 +125,9 @@
             }
             else
             {
-                return null;
+                throw new RollbarException(
+                    InternalRollbarError.InfrastructureError, 
+                    $"{this.GetType().FullName}: Failed to create ILogger!");
             }
         }
 

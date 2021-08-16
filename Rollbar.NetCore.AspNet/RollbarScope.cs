@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="state">The state.</param>
-        public RollbarScope(string name, object state)
+        public RollbarScope(string name, object? state)
             : base(name, state)
         {
         }

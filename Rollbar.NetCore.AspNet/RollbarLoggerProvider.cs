@@ -15,7 +15,7 @@
         : NetPlatformExtensions.RollbarLoggerProvider
     {
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor? _httpContextAccessor;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarLoggerProvider" /> class from being created.
@@ -33,7 +33,7 @@
         public RollbarLoggerProvider(
                     IConfiguration configuration
                     , IOptions<NetPlatformExtensions.RollbarOptions> options
-                    , IHttpContextAccessor httpContextAccessor
+                    , IHttpContextAccessor? httpContextAccessor
                     )
             : base(configuration, options)
         {
@@ -73,7 +73,9 @@
             }
             else
             {
-                return null;
+                throw new RollbarException(
+                    InternalRollbarError.InfrastructureError,
+                    $"{this.GetType().FullName}: Failed to create ILogger!");
             }
         }
     }
