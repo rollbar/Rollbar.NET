@@ -28,7 +28,7 @@
         public XmlStringScrubber(string scrubMask, IEnumerable<string> scrubFields) 
             : base(scrubMask, scrubFields)
         {
-            this._jsonStringScrubber = new JsonStringScrubber(this._scrubMask, _scrubFields, _scrubPaths);
+            this._jsonStringScrubber = new JsonStringScrubber(this._scrubMask, _scrubFields ?? new string[0], _scrubPaths ?? new string[0]);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@
         public XmlStringScrubber(string scrubMask, IEnumerable<string> scrubFields, IEnumerable<string> scrubPaths) 
             : base(scrubMask, scrubFields, scrubPaths)
         {
-            this._jsonStringScrubber = new JsonStringScrubber(this._scrubMask, _scrubFields, _scrubPaths);
+            this._jsonStringScrubber = new JsonStringScrubber(this._scrubMask, _scrubFields ?? new string[0], _scrubPaths ?? new string[0]);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@
         public XmlStringScrubber(string scrubMask, string[] scrubFields, string[] scrubPaths) 
             : base(scrubMask, scrubFields, scrubPaths)
         {
-            this._jsonStringScrubber = new JsonStringScrubber(this._scrubMask, _scrubFields, _scrubPaths);
+            this._jsonStringScrubber = new JsonStringScrubber(this._scrubMask, _scrubFields ?? new string[0], _scrubPaths ?? new string[0]);
         }
 
         /// <summary>

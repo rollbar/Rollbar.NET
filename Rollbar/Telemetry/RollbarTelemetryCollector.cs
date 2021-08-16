@@ -132,13 +132,18 @@
         /// <value>
         /// The configuration.
         /// </value>
-        public IRollbarTelemetryOptions Config { get { return this._config; } }
+        public IRollbarTelemetryOptions? Config { get { return this._config; } }
 
         /// <summary>
         /// Starts the auto-collection.
         /// </summary>
         public IRollbarTelemetryCollector StartAutocollection()
         {
+            if(this.Config == null)
+            {
+                return this;
+            }
+
             if (!this.Config.TelemetryEnabled)
             {
                 return this; // no need to start at all...
@@ -223,12 +228,18 @@
 
         private Thread? _telemetryThread;
         private CancellationTokenSource? _cancellationTokenSource;
-        private IRollbarTelemetryOptions _config;
+        private IRollbarTelemetryOptions? _config;
         private readonly TelemetryQueue _telemetryQueue = new TelemetryQueue();
         private readonly object _syncRoot = new object();
 
-        private void _config_Reconfigured(object sender, EventArgs e)
+        private void _config_Reconfigured(object? sender, EventArgs e)
         {
+            if(this._config == null)
+            {
+                this.StopAutocollection(false);
+                return;
+            }
+
             this._telemetryQueue.QueueDepth = this._config.TelemetryQueueDepth;
 
             if (this.IsAutocollecting 
@@ -260,7 +271,7 @@
             //TBD...
         }
 
-        private void KeepCollectingTelemetry(object data)
+        private void KeepCollectingTelemetry(object? data)
         {
             //for now, until AutoCollectTelemetry() is implemented:
             return;

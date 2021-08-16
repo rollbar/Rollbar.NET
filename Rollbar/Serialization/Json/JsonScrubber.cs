@@ -51,7 +51,7 @@
         /// <param name="scrubFields">The scrub fields.</param>
         /// <param name="scrubMask">The scrub mask.</param>
         /// <returns>System.String.</returns>
-        public static string ScrubJsonFieldsByName(string jsonData, IEnumerable<string> scrubFields, string scrubMask)
+        public static string ScrubJsonFieldsByName(string jsonData, IEnumerable<string>? scrubFields, string scrubMask)
         {
             if (scrubFields == null || !scrubFields.Any())
             {
@@ -116,8 +116,13 @@
         /// <param name="scrubFieldsPaths">The scrub fields paths.</param>
         /// <param name="scrubMask">The scrub mask.</param>
         /// <returns>System.String.</returns>
-        public static string ScrubJsonFieldsByPaths(string jsonData, IEnumerable<string> scrubFieldsPaths, string scrubMask)
+        public static string ScrubJsonFieldsByPaths(string jsonData, IEnumerable<string>? scrubFieldsPaths, string scrubMask)
         {
+            if(scrubFieldsPaths == null)
+            {
+                return jsonData;
+            }
+
             var fieldsPaths = scrubFieldsPaths as string[] ?? scrubFieldsPaths.ToArray();
 
             if (fieldsPaths.LongLength == 0)
