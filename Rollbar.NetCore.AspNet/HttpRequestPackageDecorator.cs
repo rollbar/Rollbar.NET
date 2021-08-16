@@ -116,7 +116,7 @@ namespace Rollbar.NetCore.AspNet
                 return; // nothing to do...
             }
 
-            string jsonString = StreamUtil.ConvertToString(this._httpRequest.Body);
+            string? jsonString = StreamUtil.ConvertToString(this._httpRequest.Body);
             if (string.IsNullOrWhiteSpace(jsonString))
             {
                 return;

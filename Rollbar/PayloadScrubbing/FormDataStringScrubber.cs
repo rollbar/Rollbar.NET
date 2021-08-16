@@ -126,7 +126,9 @@
             int contentStartIndex = 0;
             foreach (var line in part)
             {
-                if (line.StartsWith("Content-Disposition: form-data; name=\""))
+                if (this._scrubFields != null 
+                    && line.StartsWith("Content-Disposition: form-data; name=\"")
+                    )
                 {
                     foreach (var scrubField in this._scrubFields)
                     {

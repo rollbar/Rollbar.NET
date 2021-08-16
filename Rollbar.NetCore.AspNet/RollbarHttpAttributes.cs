@@ -19,7 +19,7 @@
         /// Initializes a new instance of the <see cref="RollbarHttpAttributes" /> class.
         /// </summary>
         /// <param name="context">The context.</param>
-        public RollbarHttpAttributes(HttpContext context)
+        public RollbarHttpAttributes(HttpContext? context)
         {
             // as we learned from a field issue, 
             // apparently a middleware can be invoked without a valid HttPContext:
@@ -54,7 +54,7 @@
         /// <value>
         /// The request identifier.
         /// </value>
-        public string RequestID { get; }
+        public string? RequestID { get; }
 
         /// <summary>
         /// Gets the host.
@@ -72,13 +72,13 @@
         /// Gets the request method.
         /// </summary>
         /// <value>The request method.</value>
-        public string RequestMethod { get; }
+        public string? RequestMethod { get; }
 
         /// <summary>
         /// Gets the request headers.
         /// </summary>
         /// <value>The request headers.</value>
-        public IHeaderDictionary RequestHeaders { get; }
+        public IHeaderDictionary? RequestHeaders { get; }
 
         /// <summary>
         /// Gets the request query.
@@ -90,13 +90,13 @@
         /// Gets the request protocol.
         /// </summary>
         /// <value>The request protocol.</value>
-        public string RequestProtocol { get; }
+        public string? RequestProtocol { get; }
 
         /// <summary>
         /// Gets the request scheme.
         /// </summary>
         /// <value>The request scheme.</value>
-        public string RequestScheme { get; }
+        public string? RequestScheme { get; }
 
         /// <summary>
         /// Gets or sets the status code.
@@ -108,6 +108,6 @@
         /// Gets the response headers.
         /// </summary>
         /// <value>The response headers.</value>
-        public IHeaderDictionary ResponseHeaders { get; }
+        public IHeaderDictionary? ResponseHeaders { get; }
     }
 }

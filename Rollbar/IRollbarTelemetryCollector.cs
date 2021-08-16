@@ -13,7 +13,7 @@
         /// <value>
         /// The configuration.
         /// </value>
-        IRollbarTelemetryOptions Config { get; }
+        IRollbarTelemetryOptions? Config { get; }
 
         /// <summary>
         /// Captures the specified telemetry.

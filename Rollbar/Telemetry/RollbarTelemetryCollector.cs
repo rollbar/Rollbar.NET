@@ -81,7 +81,7 @@
         /// <returns></returns>
         public RollbarTelemetryCollector Capture(Telemetry telemetry)
         {
-            if (this.Config.TelemetryEnabled)
+            if (this.Config != null && this.Config.TelemetryEnabled)
             {
                 this._telemetryQueue.Enqueue(telemetry);
             }

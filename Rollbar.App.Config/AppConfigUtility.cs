@@ -241,7 +241,7 @@
         /// <param name="telemetryConfig">The configuration.</param>
         /// <param name="telemetryConfigSection">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarTelemetryOptions telemetryConfig, RollbarTelemetryConfigSection telemetryConfigSection)
+        public static bool LoadAppSettings(RollbarTelemetryOptions telemetryConfig, RollbarTelemetryConfigSection? telemetryConfigSection)
         {
             if (telemetryConfigSection == null)
             {

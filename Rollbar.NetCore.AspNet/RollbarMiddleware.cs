@@ -73,7 +73,7 @@ namespace Rollbar.NetCore.AspNet
             this._rollbarOptions = rollbarOptions.Value;
 
             RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-            Rollbar.RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
+            RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
             RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
         }
 
@@ -82,10 +82,10 @@ namespace Rollbar.NetCore.AspNet
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>A middleware invocation/execution task.</returns>
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext? context)
         {
             // as we learned from a field issue, apparently a middleware can even be invoked without a valid HttPContext:
-            string requestId = null;
+            string? requestId = null;
             requestId = context?.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
@@ -98,7 +98,7 @@ namespace Rollbar.NetCore.AspNet
 
             using (_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
-                NetworkTelemetry networkTelemetry = null;
+                NetworkTelemetry? networkTelemetry = null;
 
                 try
                 {
@@ -113,11 +113,11 @@ namespace Rollbar.NetCore.AspNet
                         telemetryStatusCode = context?.Response?.StatusCode;
 
                         networkTelemetry = new NetworkTelemetry(
-                            method: context.Request.Method,
+                            method: context!.Request.Method,
                             url: context.Request.Host.Value + context.Request.Path,
                             eventStart: DateTime.UtcNow,
-                            eventEnd:null,
-                            statusCode:telemetryStatusCode
+                            eventEnd: null,
+                            statusCode: telemetryStatusCode
                             );
                         RollbarInfrastructure.Instance.TelemetryCollector.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
                     }

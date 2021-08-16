@@ -23,12 +23,12 @@
         /// Gets or sets the HTTP context.
         /// </summary>
         /// <value>The HTTP context.</value>
-        public RollbarHttpContext HttpContext { get; set; }
+        public RollbarHttpContext? HttpContext { get; set; }
 
-        private static AsyncLocal<RollbarScope> currentScope =
-            new AsyncLocal<RollbarScope>();
+        private static AsyncLocal<RollbarScope?> currentScope =
+            new AsyncLocal<RollbarScope?>();
 
-        public static new RollbarScope Current
+        public static new RollbarScope? Current
         {
             set
             {

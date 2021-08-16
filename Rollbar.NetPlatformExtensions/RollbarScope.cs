@@ -46,19 +46,19 @@
         /// Gets or sets the next.
         /// </summary>
         /// <value>The next.</value>
-        public RollbarScope Next { get; private set; }
+        public RollbarScope? Next { get; private set; }
 
         /// <summary>
         /// The current scope
         /// </summary>
-        private static AsyncLocal<RollbarScope> currentScope =
-            new AsyncLocal<RollbarScope>();
+        private static AsyncLocal<RollbarScope?> currentScope =
+            new AsyncLocal<RollbarScope?>();
 
         /// <summary>
         /// Gets or sets the current.
         /// </summary>
         /// <value>The current.</value>
-        public static RollbarScope Current
+        public static RollbarScope? Current
         {
             set { currentScope.Value = value; }
             get { return currentScope.Value; }

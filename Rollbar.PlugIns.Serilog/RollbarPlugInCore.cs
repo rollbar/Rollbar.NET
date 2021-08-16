@@ -34,7 +34,7 @@
         /// <summary>
         /// The format provider
         /// </summary>
-        private readonly IFormatProvider _formatProvider;
+        private readonly IFormatProvider? _formatProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarPlugInCore"/> class.
@@ -47,7 +47,7 @@
             string rollbarAccessToken,
             string rollbarEnvironment,
             TimeSpan? rollbarBlockingLoggingTimeout,
-            IFormatProvider formatProvider
+            IFormatProvider? formatProvider
             )
             : this(
                   CreateConfig(rollbarAccessToken: rollbarAccessToken, rollbarEnvironment: rollbarEnvironment),
@@ -66,7 +66,7 @@
         public RollbarPlugInCore(
             IRollbarInfrastructureConfig rollbarConfig, 
             TimeSpan? rollbarBlockingTimeout,
-            IFormatProvider formatProvider
+            IFormatProvider? formatProvider
             ) 
             : base(rollbarErrorLevelByPlugInErrorLevel, customPrefix, rollbarConfig, rollbarBlockingTimeout)
         {
