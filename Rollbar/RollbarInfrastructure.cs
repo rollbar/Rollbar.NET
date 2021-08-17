@@ -34,7 +34,7 @@
 
         private bool _isInitialized = false;
 
-        private IRollbarInfrastructureConfig _config;
+        private IRollbarInfrastructureConfig? _config;
 
         //private IPayloadStoreRepository _storeRepository;
 

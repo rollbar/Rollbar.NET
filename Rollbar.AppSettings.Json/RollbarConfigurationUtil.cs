@@ -36,12 +36,12 @@
             if (rollbarConfig.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken == defaultAccessToken)
             {
                 const string error = "Rollbar.NET notifier is not configured properly. A valid access token needs to be specified.";
-                throw new Exception(error);
+                throw new RollbarException(InternalRollbarError.ConfigurationError, error);
             }
 
             if(RollbarInfrastructure.Instance.IsInitialized)
             {
-                RollbarInfrastructure.Instance.Config.Reconfigure(rollbarConfig);
+                RollbarInfrastructure.Instance.Config?.Reconfigure(rollbarConfig!);
             }
             else
             {
@@ -64,7 +64,7 @@
             RollbarTelemetryOptions config = new RollbarTelemetryOptions();
             AppSettingsUtility.LoadAppSettings(config, configuration);
 
-            RollbarTelemetryCollector.Instance?.Config.Reconfigure(config);
+            RollbarTelemetryCollector.Instance?.Config?.Reconfigure(config);
 
             return config;
         }

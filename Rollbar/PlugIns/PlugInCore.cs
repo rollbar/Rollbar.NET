@@ -49,6 +49,11 @@
                 rollbarConfig = configLoader.LoadRollbarConfig();
             }
 
+            if(rollbarConfig == null)
+            {
+                throw new RollbarException(InternalRollbarError.ConfigurationError, $"{this.GetType().FullName}: Failed to load Rollbar configuration!");
+            }
+
             // first, initialize the infrastructure:
             if(!RollbarInfrastructure.Instance.IsInitialized)
             {

@@ -54,7 +54,7 @@
         /// Gets the name of the local payload store file.
         /// </summary>
         /// <value>The name of the local payload store file.</value>
-        public string LocalPayloadStoreFileName
+        public string? LocalPayloadStoreFileName
         {
             get;
             set;

@@ -38,7 +38,7 @@
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        IRollbarInfrastructureConfig Config
+        IRollbarInfrastructureConfig? Config
         {
             get;
         }

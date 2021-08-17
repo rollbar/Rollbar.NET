@@ -23,13 +23,13 @@
         /// Loads the rollbar configuration.
         /// </summary>
         /// <returns>IRollbarConfig or null if no configuration store was found.</returns>
-        IRollbarInfrastructureConfig LoadRollbarConfig();
+        IRollbarInfrastructureConfig? LoadRollbarConfig();
 
         /// <summary>
         /// Loads the telemetry configuration.
         /// </summary>
         /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        IRollbarTelemetryOptions LoadTelemetryConfig();
+        IRollbarTelemetryOptions? LoadTelemetryConfig();
 
     }
 }

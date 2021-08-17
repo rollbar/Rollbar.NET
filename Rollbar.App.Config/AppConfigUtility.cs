@@ -29,7 +29,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="rollbarConfigSection">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarInfrastructureConfig config, RollbarConfigSection rollbarConfigSection)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, RollbarConfigSection? rollbarConfigSection)
         {
             if (rollbarConfigSection == null)
             {

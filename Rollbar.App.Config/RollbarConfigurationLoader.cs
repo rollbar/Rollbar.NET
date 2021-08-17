@@ -35,7 +35,7 @@
         /// Loads the rollbar configuration.
         /// </summary>
         /// <returns>IRollbarConfig or null if no configuration store was found.</returns>
-        public IRollbarInfrastructureConfig LoadRollbarConfig()
+        public IRollbarInfrastructureConfig? LoadRollbarConfig()
         {
             RollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
             if (this.Load(config))
@@ -49,7 +49,7 @@
         /// Loads the telemetry configuration.
         /// </summary>
         /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        public IRollbarTelemetryOptions LoadTelemetryConfig()
+        public IRollbarTelemetryOptions? LoadTelemetryConfig()
         {
             RollbarTelemetryOptions config = new RollbarTelemetryOptions();
             if (this.Load(config))
