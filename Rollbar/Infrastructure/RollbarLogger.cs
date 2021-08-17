@@ -51,7 +51,7 @@
         /// </summary>
         /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        internal RollbarLogger(bool isSingleton, IRollbarLoggerConfig rollbarConfig)
+        internal RollbarLogger(bool isSingleton, IRollbarLoggerConfig? rollbarConfig)
         {
             Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
 

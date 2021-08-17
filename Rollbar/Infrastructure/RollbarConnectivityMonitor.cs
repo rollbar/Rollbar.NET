@@ -16,7 +16,7 @@
     {
         private readonly object _connectivityStatusSyncLock = new object();
         private TimeSpan _currentMonitoringInterval;
-        private Timer _monitoringTimer;
+        private Timer? _monitoringTimer;
         private readonly TimeSpan _initialDelay;
         private readonly TimeSpan _minMonitoringInterval;
         private readonly TimeSpan _maxMonitoringInterval;
@@ -145,7 +145,7 @@
         /// Checks the connectivity status.
         /// </summary>
         /// <param name="state">The state.</param>
-        private void CheckConnectivityStatus(object state)
+        private void CheckConnectivityStatus(object? state)
         {
             try
             {

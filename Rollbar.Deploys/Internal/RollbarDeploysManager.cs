@@ -19,6 +19,8 @@
 
         private RollbarDeploysManager()
         {
+            this._readAccessToken = string.Empty;
+            this._writeAccessToken = string.Empty;
         }
 
         /// <summary>
@@ -64,7 +66,7 @@
         /// </summary>
         /// <param name="deploymentID">The deployment identifier.</param>
         /// <returns></returns>
-        public async Task<IDeploymentDetails> GetDeploymentAsync(string deploymentID)
+        public async Task<IDeploymentDetails?> GetDeploymentAsync(string deploymentID)
         {
             Assumption.AssertNotNullOrWhiteSpace(deploymentID, nameof(deploymentID));
             Assumption.AssertNotNullOrWhiteSpace(this._readAccessToken, nameof(this._readAccessToken));
@@ -74,7 +76,7 @@
             using HttpClient httpClient = new HttpClient();
             RollbarDeployClient rollbarClient = new RollbarDeployClient(config,httpClient);
             var result = await rollbarClient.GetDeploymentAsync(this._readAccessToken, deploymentID);
-            return result.Deploy;
+            return result?.Deploy;
         }
 
         /// <summary>
@@ -83,7 +85,7 @@
         /// <param name="environment">The environment.</param>
         /// <param name="pageNumber">The page number.</param>
         /// <returns></returns>
-        public async Task<IDeploymentDetails[]> GetDeploymentsPageAsync(string environment, int pageNumber)
+        public async Task<IDeploymentDetails[]?> GetDeploymentsPageAsync(string environment, int pageNumber)
         {
             Assumption.AssertNotNullOrWhiteSpace(this._readAccessToken, nameof(this._readAccessToken));
 
@@ -92,7 +94,7 @@
             using HttpClient httpClient = new HttpClient();
             RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
             var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken, pageNumber);
-            return result.DeploysPage.Deploys;
+            return result?.DeploysPage?.Deploys;
         }
     }
 }

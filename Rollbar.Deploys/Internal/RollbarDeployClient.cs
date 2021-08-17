@@ -16,9 +16,9 @@
         private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarDeployClient).FullName);
 
         private readonly RollbarLoggerConfig _config;
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient? _httpClient;
 
-        public RollbarDeployClient(RollbarLoggerConfig config, HttpClient httpClient = null)
+        public RollbarDeployClient(RollbarLoggerConfig config, HttpClient? httpClient = null)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -81,16 +81,25 @@
         /// <returns></returns>
         public async Task PostAsync(IDeployment deployment)
         {
+            if(deployment == null)
+            {
+                return; //no-op
+            }
+
             Assumption.AssertNotNull(this._config, nameof(this._config));
-            Assumption.AssertNotNullOrWhiteSpace(this._config.RollbarDestinationOptions.AccessToken, nameof(this._config.RollbarDestinationOptions.AccessToken));
+            Assumption.AssertNotNullOrWhiteSpace(
+                this._config.RollbarDestinationOptions.AccessToken, 
+                nameof(this._config.RollbarDestinationOptions.AccessToken)
+                );
             Assumption.AssertFalse(
                 string.IsNullOrWhiteSpace(deployment.Environment) 
-                && string.IsNullOrWhiteSpace(this._config.RollbarDestinationOptions.Environment), nameof(deployment.Environment)
+                && string.IsNullOrWhiteSpace(this._config.RollbarDestinationOptions.Environment), 
+                nameof(deployment.Environment)
                 );
             Assumption.AssertNotNullOrWhiteSpace(deployment.Revision, nameof(deployment.Revision));
 
             Assumption.AssertLessThan(
-                deployment.Environment.Length, 256,
+                deployment.Environment!.Length, 256,
                 nameof(deployment.Environment.Length)
                 );
             Assumption.AssertTrue(
@@ -104,9 +113,9 @@
 
             var uri = new Uri(this._config.RollbarDestinationOptions.EndPoint + RollbarDeployClient.deployApiPath);
 
-            var parameters = new Dictionary<string, string> {
+            var parameters = new Dictionary<string, string?> {
                     { "access_token", this._config.RollbarDestinationOptions.AccessToken },
-                    { "environment", (!string.IsNullOrWhiteSpace(deployment.Environment)) ? deployment.Environment : this._config.RollbarDestinationOptions.Environment  },
+                    { "environment", (!string.IsNullOrWhiteSpace(deployment.Environment)) ? deployment.Environment! : this._config.RollbarDestinationOptions.Environment!  },
                     { "revision", deployment.Revision },
                     { "rollbar_username", deployment.RollbarUsername },
                     { "local_username", deployment.LocalUsername },
@@ -137,7 +146,7 @@
         /// <param name="readAccessToken">The read access token.</param>
         /// <param name="deploymentID">The deployment identifier.</param>
         /// <returns></returns>
-        public async Task<DeployResponse> GetDeploymentAsync(string readAccessToken, string deploymentID)
+        public async Task<DeployResponse?> GetDeploymentAsync(string readAccessToken, string deploymentID)
         {
             Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
             Assumption.AssertNotNullOrWhiteSpace(deploymentID, nameof(deploymentID));
@@ -151,7 +160,7 @@
             var httpClient = ProvideHttpClient();
             var httpResponse = await httpClient.GetAsync(uri);
 
-            DeployResponse response = null;
+            DeployResponse? response = null;
             if (httpResponse.IsSuccessStatusCode)
             {
                 string reply = await httpResponse.Content.ReadAsStringAsync();
@@ -175,7 +184,7 @@
         /// <param name="readAccessToken">The read access token.</param>
         /// <param name="pageNumber">The page number.</param>
         /// <returns></returns>
-        public async Task<DeploysPageResponse> GetDeploymentsAsync(string readAccessToken, int pageNumber = 1)
+        public async Task<DeploysPageResponse?> GetDeploymentsAsync(string readAccessToken, int pageNumber = 1)
         {
             Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
 
@@ -188,7 +197,7 @@
             var httpClient = ProvideHttpClient();
             var httpResponse = await httpClient.GetAsync(uri);
 
-            DeploysPageResponse response = null;
+            DeploysPageResponse? response = null;
             if (httpResponse.IsSuccessStatusCode)
             {
                 string reply = await httpResponse.Content.ReadAsStringAsync();

@@ -84,7 +84,7 @@
         /// </summary>
         /// <param name="plugInEventData">The plug in event data.</param>
         /// <returns>Usually, either a data structure or a key-value dictionary returned as a System.Object.</returns>
-        protected override object ExtractCustomProperties(Exception plugInEventData)
+        protected override object? ExtractCustomProperties(Exception plugInEventData)
         {
             return null;
         }

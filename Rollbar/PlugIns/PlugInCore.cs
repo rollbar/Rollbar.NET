@@ -270,7 +270,7 @@
             ErrorLevel errorLevel = this.Translate(plugInErrorLevel);
             string message = this.ExtractMessage(plugInEventData);
             Exception exception = this.ExtractException(plugInEventData);
-            object pluginEventProperties = this.ExtractCustomProperties(plugInEventData);
+            object? pluginEventProperties = this.ExtractCustomProperties(plugInEventData);
 
             DTOs.Body? rollbarBody = null;
             if (exception != null)
@@ -337,7 +337,7 @@
         /// </summary>
         /// <param name="plugInEventData">The plug in event data.</param>
         /// <returns>Usually, either a data structure or a key-value dictionary returned as a System.Object.</returns>
-        protected abstract object ExtractCustomProperties(TPlugInEventData plugInEventData);
+        protected abstract object? ExtractCustomProperties(TPlugInEventData plugInEventData);
 
     }
 }
