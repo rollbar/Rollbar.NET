@@ -148,7 +148,7 @@
                 return true;
             }
 
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
             Assumption.AssertNotNull(payload, nameof(payload));
 
             if (!TruncatePayload(payloadBundle))
@@ -161,7 +161,7 @@
                 return false;
             }
 
-            string jsonData = SerializePayloadAsJsonString(payloadBundle);
+            string? jsonData = SerializePayloadAsJsonString(payloadBundle);
             if (string.IsNullOrWhiteSpace(jsonData))
             {
                 return false;
@@ -169,7 +169,7 @@
 
             try
             {
-                jsonData = ScrubPayload(jsonData);
+                jsonData = ScrubPayload(jsonData!);
             }
             catch (System.Exception exception)
             {
@@ -188,9 +188,15 @@
             payloadBundle.AsHttpContentToSend =
                 new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
 
-            Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
+            Assumption.AssertNotNull(
+                payloadBundle.AsHttpContentToSend, 
+                nameof(payloadBundle.AsHttpContentToSend)
+                );
 #pragma warning disable CA1307 // Specify StringComparison for clarity
-            _ = Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLoggerConfig.RollbarDestinationOptions.AccessToken), nameof(payload.AccessToken));
+            _ = Assumption.AssertTrue(
+                string.Equals(payload!.AccessToken, this._rollbarLoggerConfig.RollbarDestinationOptions.AccessToken), 
+                nameof(payload.AccessToken)
+                );
 #pragma warning restore CA1307 // Specify StringComparison for clarity
 
             return true;
@@ -247,7 +253,7 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
         /// <returns>RollbarResponse.</returns>
-        public RollbarResponse? PostAsJson(string? accessToken, string jsonContent) 
+        public RollbarResponse? PostAsJson(string? accessToken, string? jsonContent) 
         {
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
@@ -268,7 +274,7 @@
 
             using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
             {
-                var task = this.PostAsJsonAsync(accessToken, jsonContent, cancellationTokenSource.Token);
+                var task = this.PostAsJsonAsync(accessToken!, jsonContent!, cancellationTokenSource.Token);
 
                 try
                 {
@@ -316,8 +322,8 @@
             }
 
             return await PostAsJsonAsync(
-                this._rollbarLoggerConfig.RollbarDestinationOptions.AccessToken,
-                payloadBundle.AsHttpContentToSend,
+                this._rollbarLoggerConfig.RollbarDestinationOptions.AccessToken!,
+                payloadBundle.AsHttpContentToSend!,
                 cancellationToken
                 );
         }
@@ -329,7 +335,7 @@
         /// <param name="jsonContent">Content of the json.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        public async Task<RollbarResponse> PostAsJsonAsync(
+        public async Task<RollbarResponse?> PostAsJsonAsync(
             string accessToken, 
             string jsonContent, 
             CancellationToken cancellationToken
@@ -418,9 +424,9 @@
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
         /// <returns>System.String.</returns>
-        private string SerializePayloadAsJsonString(PayloadBundle payloadBundle)
+        private string? SerializePayloadAsJsonString(PayloadBundle payloadBundle)
         {
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
 
             string jsonData;
             try
@@ -458,7 +464,7 @@
                 return true; // as far as truncation is concerned - everything is good...
             }
 
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
 
             if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
             {
@@ -514,12 +520,14 @@
                 return true;
             }
 
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
 
-            DTOs.Request request = payload.Data.Request;
+            DTOs.Request? request = payload?.Data.Request;
             if (request?.PostBody is string requestBody)
             {
-                if (request.Headers.TryGetValue("Content-Type", out string? contentTypeHeader))
+                if (request.Headers != null 
+                    && request.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
+                    )
                 {
                     request.PostBody = 
                         this.ScrubHttpMessageBodyContentString(
@@ -531,10 +539,12 @@
                 }
             }
 
-            DTOs.Response response = payload.Data.Response;
+            DTOs.Response? response = payload?.Data.Response;
             if (response?.Body is string responseBody)
             {
-                if (response.Headers.TryGetValue("Content-Type", out string? contentTypeHeader))
+                if (response.Headers != null 
+                    && response.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
+                    )
                 {
                     response.Body =
                         this.ScrubHttpMessageBodyContentString(

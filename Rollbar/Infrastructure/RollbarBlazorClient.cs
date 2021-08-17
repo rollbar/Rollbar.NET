@@ -84,7 +84,9 @@
                 this._httpClient.DefaultRequestHeaders.Accept.Add(header);
             }
 
-            var sp = ServicePointManager.FindServicePoint(new Uri(logger.Config.RollbarDestinationOptions.EndPoint));
+            var sp = ServicePointManager.FindServicePoint(
+                new Uri(logger.Config.RollbarDestinationOptions.EndPoint!)
+                );
             try
             {
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
@@ -119,7 +121,7 @@
                 return true;
             }
 
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
             Assumption.AssertNotNull(payload, nameof(payload));
 
             if (!TruncatePayload(payloadBundle))
@@ -140,7 +142,7 @@
 
             try
             {
-                jsonData = ScrubPayload(jsonData);
+                jsonData = ScrubPayload(jsonData!);
             }
             catch (System.Exception exception)
             {
@@ -159,8 +161,14 @@
             payloadBundle.AsHttpContentToSend =
                 new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
 
-            Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
-            _ = Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken, StringComparison.Ordinal), nameof(payload.AccessToken));
+            Assumption.AssertNotNull(
+                payloadBundle.AsHttpContentToSend, 
+                nameof(payloadBundle.AsHttpContentToSend)
+                );
+            _ = Assumption.AssertTrue(
+                string.Equals(payload!.AccessToken, this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken, StringComparison.Ordinal), 
+                nameof(payload.AccessToken)
+                );
 
             return true;
         }
@@ -262,8 +270,8 @@
             }
 
             return await PostAsJsonAsync(
-                this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken,
-                payloadBundle.AsHttpContentToSend
+                this._rollbarLogger.Config.RollbarDestinationOptions.AccessToken!,
+                payloadBundle.AsHttpContentToSend!
                 );
         }
 
@@ -354,7 +362,7 @@
         /// <returns>System.String.</returns>
         private string? SerializePayloadAsJsonString(PayloadBundle payloadBundle)
         {
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
 
             string jsonData;
             try
@@ -392,7 +400,7 @@
                 return true; // as far as truncation is concerned - everything is good...
             }
 
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
 
             if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
             {
@@ -443,12 +451,18 @@
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         private bool ScrubHttpMessages(PayloadBundle payloadBundle)
         {
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
+            if(payload == null)
+            {
+                return true;
+            }
 
-            DTOs.Request request = payload.Data.Request;
+            DTOs.Request? request = payload.Data.Request;
             if (request?.PostBody is string requestBody)
             {
-                if (request.Headers.TryGetValue("Content-Type", out string contentTypeHeader))
+                if (request.Headers != null 
+                    && request.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
+                    )
                 {
                     request.PostBody = 
                         this.ScrubHttpMessageBodyContentString(
@@ -460,10 +474,12 @@
                 }
             }
 
-            DTOs.Response response = payload.Data.Response;
+            DTOs.Response? response = payload.Data.Response;
             if (response?.Body is string responseBody)
             {
-                if (response.Headers.TryGetValue("Content-Type", out string contentTypeHeader))
+                if (response.Headers != null 
+                    && response.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
+                    )
                 {
                     response.Body =
                         this.ScrubHttpMessageBodyContentString(
