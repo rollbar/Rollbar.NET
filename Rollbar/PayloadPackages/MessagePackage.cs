@@ -26,7 +26,7 @@
         /// <summary>
         /// The extra information
         /// </summary>
-        private readonly IDictionary<string, object>? _extraInfo;
+        private readonly IDictionary<string, object?>? _extraInfo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessagePackage"/> class.
@@ -59,7 +59,7 @@
         /// <param name="extraInfo">The extra information.</param>
         public MessagePackage(
             string? messageToPackage, 
-            IDictionary<string, object>? extraInfo
+            IDictionary<string, object?>? extraInfo
             )
             : this(messageToPackage, null, extraInfo)
         {
@@ -74,7 +74,7 @@
         public MessagePackage(
             string? messageToPackage, 
             string? rollbarDataTitle, 
-            IDictionary<string, object>? extraInfo
+            IDictionary<string, object?>? extraInfo
             )
             : base(false)
         {

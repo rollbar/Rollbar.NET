@@ -7,6 +7,7 @@
     using System.Text;
     using System.Threading;
 
+    using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.PayloadStore;
 
@@ -138,7 +139,9 @@
         {
             get
             {
-                return this._config;
+                this.ValidateConfiguration();
+
+                return this._config!;
             }
         }
 
@@ -166,8 +169,13 @@
                 }
 
                 this._config = config;
+                this.ValidateConfiguration();
                 this._config.Reconfigured += _config_Reconfigured;
+
                 this._isInitialized = true;
+
+                // now, since the basic infrastructure seems to be good and initialized,
+                // let's initialize all the dependent services of the infrastructure:
                 try
                 {
                     RollbarQueueController.Instance!.Init(config);
@@ -192,7 +200,33 @@
             }
         }
 
-        private void _config_Reconfigured(object sender, EventArgs e)
+        private void ValidateConfiguration()
+        {
+            if(this._isInitialized)
+            {
+                return;
+            }
+
+            if(this._config == null)
+            {
+                RollbarException exception = new RollbarException(InternalRollbarError.ConfigurationError, "Rollbar configuration is never assigned!");
+                throw exception;
+            }
+
+            IValidatable? validatable = this._config as IValidatable;
+            if(validatable != null)
+            {
+                var result = validatable.Validate();
+                if(result != null && result.Count > 0)
+                {
+                    RollbarException exception = new RollbarException(InternalRollbarError.ConfigurationError, "Invalid Rollbar configuration!");
+                    exception.Data["RollbarConfig validation results"] = result;
+                    throw exception;
+                }
+            }
+        }
+
+        private void _config_Reconfigured(object? sender, EventArgs e)
         {
             //TODO: RollbarConfig - implement
             //throw new NotImplementedException();
@@ -258,7 +292,10 @@
                 {
                     // TODO: dispose managed state (managed objects).
                     CompleteProcessing();
-                    this._config.Reconfigured -= _config_Reconfigured;
+                    if(this._config != null)
+                    {
+                        this._config.Reconfigured -= _config_Reconfigured;
+                    }
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

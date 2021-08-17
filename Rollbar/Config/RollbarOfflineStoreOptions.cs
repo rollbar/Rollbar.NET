@@ -93,17 +93,17 @@
         /// </summary>
         /// <returns>System.String.</returns>
         //TODO: RollbarConfig - remove it!!!
-        internal string GetLocalPayloadStoreFullPathName()
+        internal string? GetLocalPayloadStoreFullPathName()
         {
             string? dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath)
                 ? PayloadStoreConstants.DefaultRollbarStoreDbFileLocation
                 : this.LocalPayloadStoreLocationPath;
 
-            string dbFile = string.IsNullOrWhiteSpace(this.LocalPayloadStoreFileName)
+            string? dbFile = string.IsNullOrWhiteSpace(this.LocalPayloadStoreFileName)
                 ? PayloadStoreConstants.DefaultRollbarStoreDbFile
                 : this.LocalPayloadStoreFileName;
 
-            string result = string.IsNullOrWhiteSpace(dbLocation)
+            string? result = string.IsNullOrWhiteSpace(dbLocation)
                 ? dbFile
                 : Path.Combine(dbLocation, dbFile);
 

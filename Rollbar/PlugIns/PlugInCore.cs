@@ -282,11 +282,11 @@
                 rollbarBody = new DTOs.Body(new DTOs.Message(message));
             }
 
-            IDictionary<string, object>? custom = null;
+            IDictionary<string, object?>? custom = null;
             if (pluginEventProperties != null)
             {
                 const int customCapacity = 1;
-                custom = new Dictionary<string, object>(customCapacity);
+                custom = new Dictionary<string, object?>(customCapacity);
                 custom[this._customPrefix] = pluginEventProperties;
             }
 

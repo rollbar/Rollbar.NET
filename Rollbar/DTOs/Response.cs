@@ -42,7 +42,7 @@
         /// Initializes a new instance of the <see cref="Response"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Response(IDictionary<string, object>? arbitraryKeyValuePairs) 
+        public Response(IDictionary<string, object?>? arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
         }

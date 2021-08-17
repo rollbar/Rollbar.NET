@@ -53,7 +53,7 @@
         /// <param name="custom">The custom.</param>
         public Data(
             Body body,
-            IDictionary<string, object>? custom
+            IDictionary<string, object?>? custom
             )
             : this(null, body, custom, null)
         {
@@ -111,7 +111,7 @@
         public Data(
             IRollbarLoggerConfig? config,
             Body body,
-            IDictionary<string, object>? custom
+            IDictionary<string, object?>? custom
             )
             : this(config, body, custom, null)
         {
@@ -128,7 +128,7 @@
         public Data(
             IRollbarLoggerConfig? config, 
             Body body, 
-            IDictionary<string, object>? custom, 
+            IDictionary<string, object?>? custom, 
             Request? request
             )
         {
@@ -375,7 +375,7 @@
         /// Any arbitrary metadata you want to send. "custom" itself should be an object.
         /// </remarks>
         [JsonProperty("custom", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public IDictionary<string, object>? Custom { get; set; }
+        public IDictionary<string, object?>? Custom { get; set; }
 
         /// <summary>
         /// Gets or sets the fingerprint (OPTIONAL).

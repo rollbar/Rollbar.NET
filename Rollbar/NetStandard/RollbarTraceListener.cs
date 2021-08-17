@@ -181,7 +181,7 @@
             // the code below is simplified way to report events to Rollbar API,
             // in production code we can do better job mapping the available event data
             // into proper Rollbar data body:
-            var custom = new Dictionary<string, object>();
+            var custom = new Dictionary<string, object?>();
             custom["callStack"] = eventCache.Callstack;
             custom["logicalOperationStack"] = eventCache.LogicalOperationStack;
             custom["processID"] = eventCache.ProcessId;

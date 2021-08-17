@@ -16,7 +16,7 @@ namespace UnitTest.Rollbar
         private static readonly RollbarInfrastructureConfig infrastructureConfig;
         static PayloadBundleFixture()
         {
-            infrastructureConfig = new RollbarInfrastructureConfig();
+            infrastructureConfig = new RollbarInfrastructureConfig(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
             if(!RollbarInfrastructure.Instance.IsInitialized)
             {
                 RollbarInfrastructure.Instance.Init(infrastructureConfig);

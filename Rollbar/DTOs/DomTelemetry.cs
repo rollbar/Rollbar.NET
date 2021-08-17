@@ -48,7 +48,7 @@
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public DomTelemetry(
             string element, 
-            IDictionary<string, object>? arbitraryKeyValuePairs
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(TelemetryType.Dom, arbitraryKeyValuePairs)
         {

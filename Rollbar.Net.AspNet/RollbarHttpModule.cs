@@ -95,7 +95,7 @@
 
         private void Context_Error(object sender, EventArgs e)
         {
-            HttpApplication httpApplication = sender as HttpApplication;
+            HttpApplication? httpApplication = sender as HttpApplication;
             if (httpApplication == null 
                 || httpApplication.Context == null 
                 || httpApplication.Context.AllErrors == null 

@@ -25,7 +25,7 @@
             IRollbarLoggerConfig rollbarConfig, 
             ErrorLevel level, 
             object obj, 
-            IDictionary<string, object>? custom = null
+            IDictionary<string, object?>? custom = null
             )
         {
             //if (rollbarConfig.RollbarDeveloperOptions.LogLevel.HasValue && level < rollbarConfig.RollbarDeveloperOptions.LogLevel.Value)
@@ -84,7 +84,7 @@
         /// <param name="bodyObject">The body object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Body.</returns>
-        public static Body PackageAsPayloadBody(object bodyObject, ref IDictionary<string, object>? custom)
+        public static Body PackageAsPayloadBody(object bodyObject, ref IDictionary<string, object?>? custom)
         {
             System.Exception? exception = bodyObject as System.Exception;
             if (exception != null)
@@ -115,13 +115,13 @@
         /// <param name="custom">The custom.</param>
         public static void SnapExceptionDataAsCustomData(
             System.Exception e,
-            ref IDictionary<string, object>? custom
+            ref IDictionary<string, object?>? custom
             )
         {
             if (custom == null)
             {
                 custom =
-                    new Dictionary<string, object>(capacity: e.Data != null ? e.Data.Count : 0);
+                    new Dictionary<string, object?>(capacity: e.Data != null ? e.Data.Count : 0);
             }
 
             const string nullObjPresentation = "<null>";

@@ -147,11 +147,11 @@
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    foreach(var item in this._loggers?.Values)
+                    foreach(var item in this._loggers.Values)
                     {
                         (item as IDisposable)?.Dispose();
                     }
-                    this._loggers?.Clear();
+                    this._loggers.Clear();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

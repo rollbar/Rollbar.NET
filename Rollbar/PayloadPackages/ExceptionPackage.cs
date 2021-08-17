@@ -73,7 +73,7 @@
         protected override Data ProduceRollbarData()
         {
             Body rollbarBody = new Body(this._exceptionToPackage);
-            IDictionary<string, object>? custom = null;
+            IDictionary<string, object?>? custom = null;
             RollbarUtility.SnapExceptionDataAsCustomData(this._exceptionToPackage, ref custom);
             Data rollbarData = new Data(rollbarBody, custom);
             rollbarData.Title = this._rollbarDataTitle;

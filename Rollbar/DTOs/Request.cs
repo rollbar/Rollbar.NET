@@ -28,7 +28,7 @@ namespace Rollbar.DTOs
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public Request(
-            IDictionary<string, object>? arbitraryKeyValuePairs
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(arbitraryKeyValuePairs)
         {

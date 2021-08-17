@@ -27,7 +27,7 @@
         /// <summary>
         /// The custom
         /// </summary>
-        private readonly IDictionary<string, object>? _custom;
+        private readonly IDictionary<string, object?>? _custom;
 
         /// <summary>
         /// The level
@@ -141,7 +141,7 @@
             IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
-            IDictionary<string, object>? custom
+            IDictionary<string, object?>? custom
             )
             : this(rollbarLogger, payloadPackage, level, custom, null, null)
         {
@@ -179,7 +179,7 @@
             IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
-            IDictionary<string, object>? custom,
+            IDictionary<string, object?>? custom,
             DateTime? timeoutAt,
             SemaphoreSlim? signal
             )
@@ -218,7 +218,7 @@
             IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level,
-            IDictionary<string, object>? custom
+            IDictionary<string, object?>? custom
             )
             : this(rollbarLogger, payloadObject, level, custom, null, null)
         {
@@ -256,7 +256,7 @@
             IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level,
-            IDictionary<string, object>? custom,
+            IDictionary<string, object?>? custom,
             DateTime? timeoutAt,
             SemaphoreSlim? signal
             )

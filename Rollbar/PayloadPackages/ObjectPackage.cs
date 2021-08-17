@@ -27,7 +27,7 @@
         /// <summary>
         /// The custom
         /// </summary>
-        private IDictionary<string, object>? _custom;
+        private IDictionary<string, object?>? _custom;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ObjectPackage"/> class.
@@ -60,7 +60,7 @@
         /// <param name="custom">The custom.</param>
         public ObjectPackage(
             object objectToPackage,
-            IDictionary<string, object> custom
+            IDictionary<string, object?>? custom
             )
             : this(objectToPackage, null, custom, false)
         {
@@ -74,7 +74,7 @@
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public ObjectPackage(
             object objectToPackage,
-            IDictionary<string, object>? custom,
+            IDictionary<string, object?>? custom,
             bool mustApplySynchronously
             )
             : this(objectToPackage, null, custom, mustApplySynchronously)
@@ -105,7 +105,7 @@
         public ObjectPackage(
             object objectToPackage,
             string? rollbarDataTitle,
-            IDictionary<string, object>? custom
+            IDictionary<string, object?>? custom
             )
             : this(objectToPackage, rollbarDataTitle, custom, false)
         {
@@ -121,7 +121,7 @@
         public ObjectPackage(
             object objectToPackage, 
             string? rollbarDataTitle, 
-            IDictionary<string, object>? custom, 
+            IDictionary<string, object?>? custom, 
             bool mustApplySynchronously
             ) 
             : base(mustApplySynchronously)

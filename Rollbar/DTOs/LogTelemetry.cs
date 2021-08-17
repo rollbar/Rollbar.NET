@@ -37,7 +37,7 @@
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public LogTelemetry(
             string message, 
-            IDictionary<string, object> arbitraryKeyValuePairs
+            IDictionary<string, object?> arbitraryKeyValuePairs
             )
             : this(TelemetryType.Log, message, arbitraryKeyValuePairs)
         {
@@ -65,7 +65,7 @@
         protected LogTelemetry(
             TelemetryType type, 
             string message, 
-            IDictionary<string, object>? arbitraryKeyValuePairs
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(type, arbitraryKeyValuePairs)
         {

@@ -29,7 +29,7 @@
         /// Initializes a new instance of the <see cref="Server"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Server(IDictionary<string, object>? arbitraryKeyValuePairs) 
+        public Server(IDictionary<string, object?>? arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
         }

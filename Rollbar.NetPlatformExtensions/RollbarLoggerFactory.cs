@@ -32,7 +32,7 @@
                     this._providers = loggerProviders;
                     foreach(var provider in this._providers)
                     {
-                        RollbarLoggerProvider rollbarProvider = provider as RollbarLoggerProvider;
+                        RollbarLoggerProvider? rollbarProvider = provider as RollbarLoggerProvider;
                         if(rollbarProvider != null)
                         {
                             this._loggerProvider = rollbarProvider;
@@ -112,7 +112,7 @@
         /// <returns>
         /// The <see cref="T:Microsoft.Extensions.Logging.ILogger" />.
         /// </returns>
-        public ILogger CreateLogger(string categoryName)
+        public ILogger? CreateLogger(string categoryName)
         {
             if(this._loggerProvider != null)
             {

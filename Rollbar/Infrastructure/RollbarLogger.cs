@@ -35,7 +35,7 @@
         /// <summary>
         /// Occurs when a Rollbar internal event happens.
         /// </summary>
-        public event EventHandler<RollbarEventArgs> InternalEvent;
+        public event EventHandler<RollbarEventArgs>? InternalEvent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
@@ -83,7 +83,7 @@
 
             // let's init the corresponding queue and register it:
             this._payloadQueue = new PayloadQueue(this, rollbarClient);
-            RollbarQueueController.Instance.Register(this._payloadQueue);
+            RollbarQueueController.Instance?.Register(this._payloadQueue);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object>? custom = null)
+        public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, level, custom);
         }
@@ -187,7 +187,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Critical(object obj, IDictionary<string, object>? custom = null)
+        public ILogger Critical(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Critical, custom);
         }
@@ -198,7 +198,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Error(object obj, IDictionary<string, object>? custom = null)
+        public ILogger Error(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Error, custom);
         }
@@ -209,7 +209,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Warning(object obj, IDictionary<string, object>? custom = null)
+        public ILogger Warning(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Warning, custom);
         }
@@ -220,7 +220,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Info(object obj, IDictionary<string, object>? custom = null)
+        public ILogger Info(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Info, custom);
         }
@@ -231,7 +231,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Debug(object obj, IDictionary<string, object>? custom = null)
+        public ILogger Debug(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Debug, custom);
         }
@@ -321,7 +321,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Log(ErrorLevel level, object obj, IDictionary<string, object>? custom)
+        ILogger ILogger.Log(ErrorLevel level, object obj, IDictionary<string, object?>? custom)
         {
             return this.Log(level, obj, custom);
         }
@@ -333,7 +333,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Critical(object obj, IDictionary<string, object>? custom)
+        ILogger ILogger.Critical(object obj, IDictionary<string, object?>? custom)
         {
             return this.Critical(obj, custom);
         }
@@ -344,7 +344,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Error(object obj, IDictionary<string, object>? custom)
+        ILogger ILogger.Error(object obj, IDictionary<string, object?>? custom)
         {
             return this.Error(obj, custom);
         }
@@ -355,7 +355,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Warning(object obj, IDictionary<string, object>? custom)
+        ILogger ILogger.Warning(object obj, IDictionary<string, object?>? custom)
         {
             return this.Warning(obj, custom);
         }
@@ -366,7 +366,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Info(object obj, IDictionary<string, object>? custom)
+        ILogger ILogger.Info(object obj, IDictionary<string, object?>? custom)
         {
             return this.Info(obj, custom);
         }
@@ -377,7 +377,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Debug(object obj, IDictionary<string, object>? custom)
+        ILogger ILogger.Debug(object obj, IDictionary<string, object?>? custom)
         {
             return this.Debug(obj, custom);
         }
@@ -408,7 +408,7 @@
         internal ILogger Enqueue(
             object dataObject,
             ErrorLevel level,
-            IDictionary<string, object>? custom,
+            IDictionary<string, object?>? custom,
             TimeSpan? timeout = null,
             SemaphoreSlim? signal = null
             )
@@ -429,7 +429,7 @@
         internal PayloadBundle? EnqueueData(
             object dataObject,
             ErrorLevel level,
-            IDictionary<string, object>? custom,
+            IDictionary<string, object?>? custom,
             TimeSpan? timeout = null,
             SemaphoreSlim? signal = null
             )
@@ -547,7 +547,7 @@
         private PayloadBundle CreatePayloadBundle(
             object dataObject,
             ErrorLevel level,
-            IDictionary<string, object>? custom,
+            IDictionary<string, object?>? custom,
             TimeSpan? timeout = null,
             SemaphoreSlim? signal = null
             )

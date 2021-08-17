@@ -34,7 +34,7 @@
         /// <summary>
         /// The arbitrary key value pairs
         /// </summary>
-        private readonly IDictionary<string, object>? _arbitraryKeyValuePairs;
+        private readonly IDictionary<string, object?>? _arbitraryKeyValuePairs;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpRequestMessagePackageDecorator"/> class.
@@ -63,7 +63,7 @@
             IRollbarPackage packageToDecorate,
             HttpRequestMessage httpRequestMessage,
             IRollbarLoggerConfig rollbarConfig,
-            IDictionary<string, object> arbitraryKeyValuePairs
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : this(packageToDecorate, httpRequestMessage, rollbarConfig, arbitraryKeyValuePairs, false)
         {
@@ -100,7 +100,7 @@
             IRollbarPackage packageToDecorate, 
             HttpRequestMessage  httpRequestMessage, 
             IRollbarLoggerConfig rollbarConfig,
-            IDictionary<string, object>? arbitraryKeyValuePairs,
+            IDictionary<string, object?>? arbitraryKeyValuePairs,
             bool mustApplySynchronously
             ) 
             : base(packageToDecorate, mustApplySynchronously)

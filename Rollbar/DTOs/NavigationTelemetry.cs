@@ -40,7 +40,7 @@
         /// <param name="from">From.</param>
         /// <param name="to">To.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public NavigationTelemetry(string from, string to, IDictionary<string, object>? arbitraryKeyValuePairs)
+        public NavigationTelemetry(string from, string to, IDictionary<string, object?>? arbitraryKeyValuePairs)
             : base(TelemetryType.Navigation, arbitraryKeyValuePairs)
         {
             this.From = from;

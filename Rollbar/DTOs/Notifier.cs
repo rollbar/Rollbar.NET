@@ -111,7 +111,7 @@
         /// Initializes a new instance of the <see cref="Notifier"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Notifier(IDictionary<string, object>? arbitraryKeyValuePairs) 
+        public Notifier(IDictionary<string, object?>? arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
             this.Name = Notifier.notifierName;

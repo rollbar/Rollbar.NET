@@ -144,7 +144,7 @@
             , DateTime? eventEnd
             , int? statusCode
             , string? subtype
-            , IDictionary<string, object>? arbitraryKeyValuePairs
+            , IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(TelemetryType.Network, arbitraryKeyValuePairs)
         {

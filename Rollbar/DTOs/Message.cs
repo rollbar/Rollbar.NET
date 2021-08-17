@@ -39,7 +39,7 @@
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public Message(
             string? body, 
-            IDictionary<string, object>? arbitraryKeyValuePairs
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(arbitraryKeyValuePairs)
         {

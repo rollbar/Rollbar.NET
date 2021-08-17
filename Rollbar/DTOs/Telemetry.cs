@@ -66,7 +66,7 @@
             TelemetrySource source
             ,TelemetryLevel level
             ,TelemetryBody body
-            ,IDictionary<string, object>? arbitraryKeyValuePairs
+            ,IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(arbitraryKeyValuePairs)
         {

@@ -1,10 +1,6 @@
 ﻿namespace Rollbar
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Rollbar.DTOs;
 
     /// <summary>
@@ -31,7 +27,7 @@
             IRollbarPackage packageToDecorate,
             string personId,
             string personUsername,
-            string personEmail
+            string? personEmail = null
             )
             : this(packageToDecorate, new Person(personId) { UserName = personUsername, Email = personEmail })
         {

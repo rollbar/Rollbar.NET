@@ -41,7 +41,7 @@
         /// Initializes a new instance of the <see cref="HostBase"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        protected HostBase(IDictionary<string, object>? arbitraryKeyValuePairs)
+        protected HostBase(IDictionary<string, object?>? arbitraryKeyValuePairs)
             : base(arbitraryKeyValuePairs)
         {
             this.Cpu = HostBase.DetectedCpu;
