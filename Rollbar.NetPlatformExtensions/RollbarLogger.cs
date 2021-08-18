@@ -25,6 +25,11 @@
         /// </summary>
         private RollbarLogger()
         {
+            this._name = string.Empty;
+
+            this._rollbarOptions = new RollbarOptions();
+
+            this._rollbar = RollbarFactory.CreateNew(null);
         }
 
         /// <summary>
@@ -111,12 +116,14 @@
                 }
             }
 
-            IRollbarPackage rollbarPackage = this.ComposeRolbarPackage(eventId, state, exception, formatter);
+            IRollbarPackage? rollbarPackage = this.ComposeRollbarPackage(eventId, state, exception, formatter);
+            if(rollbarPackage != null)
+            {
+                var rollbarErrorLevel = ConverterUtil.ToRollbarErrorLevel(logLevel);
 
-            var rollbarErrorLevel = ConverterUtil.ToRollbarErrorLevel(logLevel);
-
-            //RollbarLocator.RollbarInstance.Log(rollbarErrorLevel, rollbarPackage);
-            this._rollbar.Log(rollbarErrorLevel, rollbarPackage);
+                //RollbarLocator.RollbarInstance.Log(rollbarErrorLevel, rollbarPackage);
+                this._rollbar.Log(rollbarErrorLevel, rollbarPackage);
+            }
         }
 
         /// <summary>
@@ -136,7 +143,7 @@
         }
 
         /// <summary>
-        /// Composes the rolbar package.
+        /// Composes the rollbar package.
         /// </summary>
         /// <typeparam name="TState">The type of the t state.</typeparam>
         /// <param name="eventId">The event identifier.</param>
@@ -144,34 +151,34 @@
         /// <param name="exception">The exception.</param>
         /// <param name="formatter">The formatter.</param>
         /// <returns>IRollbarPackage (if any) or null.</returns>
-        protected virtual IRollbarPackage ComposeRolbarPackage<TState>(
+        protected virtual IRollbarPackage? ComposeRollbarPackage<TState>(
             mslogging.EventId eventId
             , TState state
             , Exception exception
             , Func<TState, Exception, string> formatter
             )
         {
-            string message = null;
+            string? message = null;
             if (formatter != null)
             {
                 message = formatter(state, exception);
             }
 
-            IRollbarPackage rollbarPackage = null;
+            IRollbarPackage? rollbarPackage = null;
             if (exception != null)
             {
                 rollbarPackage = new ExceptionPackage(exception, exception.Message);
             }
             else if (!string.IsNullOrWhiteSpace(message))
             {
-                rollbarPackage = new MessagePackage(message, message);
+                rollbarPackage = new MessagePackage(message!, message!);
             }
             else
             {
                 return null; //nothing to report...
             }
             
-            Dictionary<string, object> customProperties = new Dictionary<string, object>();
+            Dictionary<string, object?> customProperties = new Dictionary<string, object?>();
             customProperties.Add(
                 "LogEventID"
                 , $"{eventId.Id}" + (string.IsNullOrWhiteSpace(eventId.Name) ? string.Empty : $" ({eventId.Name})")
