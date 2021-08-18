@@ -60,6 +60,6 @@
         /// <summary>
         /// Occurs when [internal event].
         /// </summary>
-        event EventHandler<RollbarEventArgs> InternalEvent;
+        event EventHandler<RollbarEventArgs>? InternalEvent;
     }
 }

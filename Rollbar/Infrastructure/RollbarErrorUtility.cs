@@ -22,7 +22,7 @@
             object? dataObject, 
             InternalRollbarError rollbarError, 
             string? message, 
-            Exception exception,
+            Exception? exception,
             IErrorCollector? errorCollector
             )
         {

@@ -123,7 +123,7 @@
             }
         }
 
-        internal RollbarApiErrorEventArgs(RollbarLogger logger, Payload payload, RollbarResponse response)
+        internal RollbarApiErrorEventArgs(RollbarLogger logger, Payload? payload, RollbarResponse response)
             : base(logger, payload, response)
         {
             Assumption.AssertNotNull(response, nameof(response));
