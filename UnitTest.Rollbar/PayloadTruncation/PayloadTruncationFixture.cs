@@ -64,8 +64,8 @@ namespace UnitTest.Rollbar.PayloadTruncation
                     ),
             };
 
-            TimeSpan blockingTimeout = TimeSpan.FromSeconds(1);
-            using (var logger = RollbarFactory.CreateNew().Configure(this._config.RollbarLoggerConfig))
+            TimeSpan blockingTimeout = TimeSpan.FromSeconds(10);
+            using (var logger = RollbarFactory.CreateNew(this._config.RollbarLoggerConfig))
             {
                 Assert.IsTrue(logger.Config.RollbarDeveloperOptions.Transmit);
 
@@ -84,7 +84,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
             truncationStrategy = new IterativeTruncationStrategy(400, iterations);
             AssertPayloadSizeReduction(false, testPayloads, truncationStrategy);
             AssertPayloadSizeReduction(false, testPayloads, truncationStrategy);
-            //using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            //using (var logger = RollbarFactory.CreateNew(this._config))
             //{
             //    foreach (var payload in testPayloads)
             //    {
@@ -105,7 +105,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
                 AssertPayloadSizeReduction(hasFramesToTrim, payload, truncationStrategy);
                 AssertPayloadSizeReduction(false, payload, truncationStrategy);
             }
-            //using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            //using (var logger = RollbarFactory.CreateNew(this._config))
             //{
             //    foreach (var payload in testPayloads)
             //    {
@@ -117,7 +117,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
             truncationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(true, testPayloads, truncationStrategy);
             AssertPayloadSizeReduction(false, testPayloads, truncationStrategy);
-            //using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            //using (var logger = RollbarFactory.CreateNew(this._config))
             //{
             //    foreach (var payload in testPayloads)
             //    {
@@ -129,7 +129,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
             truncationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(true, testPayloads, truncationStrategy);
             AssertPayloadSizeReduction(false, testPayloads, truncationStrategy);
-            //using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            //using (var logger = RollbarFactory.CreateNew(this._config))
             //{
             //    foreach (var payload in testPayloads)
             //    {
@@ -141,7 +141,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
             truncationStrategy = new IterativeTruncationStrategy(payloadByteSizeLimit, iterations);
             AssertPayloadSizeReduction(true, testPayloads, truncationStrategy);
             AssertPayloadSizeReduction(false, testPayloads, truncationStrategy);
-            //using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            //using (var logger = RollbarFactory.CreateNew(this._config))
             //{
             //    foreach (var payload in testPayloads)
             //    {
@@ -164,7 +164,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
                 AssertPayloadSizeReduction(false, payload, truncationStrategy);
             }
 
-            //using (var logger = RollbarFactory.CreateNew().Configure(this._config))
+            //using (var logger = RollbarFactory.CreateNew(this._config))
             //{
             //    foreach (var payload in testPayloads)
             //    {

@@ -55,11 +55,6 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         internal RollbarSingleThreadedLogger(bool isSingleton, IRollbarLoggerConfig? rollbarConfig)
         {
-            //if(!TelemetryCollector.Instance.IsAutocollecting)
-            //{
-            //    TelemetryCollector.Instance.StartAutocollection();
-            //}
-
             this.IsSingleton = isSingleton;
 
             if(rollbarConfig != null)
@@ -72,16 +67,6 @@
                 this._config = new RollbarLoggerConfig(this);
             }
 
-            // let's figure out where to keep the local payloads store:
-            //PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig) this._config).GetLocalPayloadStoreFullPathName();
-
-            // let's init proper Rollbar client:
-            //HttpClient httpClient = RollbarQueueController.Instance.ProvideHttpClient(
-            //    rollbarConfig.HttpProxyOptions.ProxyAddress,
-            //    rollbarConfig.HttpProxyOptions.ProxyUsername,
-            //    rollbarConfig.HttpProxyOptions.ProxyPassword
-            //    );
-
             HttpClient httpClient = 
                 HttpClientUtility.CreateHttpClient(
                     rollbarConfig?.HttpProxyOptions.ProxyAddress, 
@@ -89,10 +74,6 @@
                     rollbarConfig?.HttpProxyOptions.ProxyPassword
                     );
             this._rollbarClient = new RollbarBlazorClient(this, httpClient);
-
-            // let's init the corresponding queue and register it:
-            //this._payloadQueue = new PayloadQueue(this, rollbarClient);
-            //RollbarQueueController.Instance.Register(this._payloadQueue);
         }
 
         /// <summary>
@@ -100,11 +81,6 @@
         /// </summary>
         /// <value><c>true</c> if this instance is singleton; otherwise, <c>false</c>.</value>
         internal bool IsSingleton { get; private set; }
-
-        //internal PayloadQueue Queue
-        //{
-        //    get { return null; }//this._payloadQueue; }
-        //}
 
         #region IRollbar
 
@@ -158,7 +134,9 @@
         /// <returns>Blocking (fully synchronous) instance of an ILogger.
         /// It either completes logging calls within the specified timeout
         /// or throws a TimeoutException.</returns>
+#pragma warning disable IDE0060 // Remove unused parameter
         public ILogger AsBlockingLogger(TimeSpan timeout)
+#pragma warning restore IDE0060 // Remove unused parameter
         {
             //return new RollbarLoggerBlockingWrapper(this, timeout);
             return this;
@@ -267,16 +245,6 @@
         IRollbar IRollbar.Configure(IRollbarLoggerConfig settings)
         {
             return this.Configure(settings);
-        }
-
-        /// <summary>
-        /// Configures using the specified access token.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <returns>IRollbar.</returns>
-        IRollbar IRollbar.Configure(string accessToken)
-        {
-            return this.Configure(accessToken);
         }
 
         /// <summary>
@@ -446,7 +414,6 @@
             if (string.IsNullOrWhiteSpace(this._config.RollbarDestinationOptions.AccessToken)
                 || this._config.RollbarDeveloperOptions.Enabled == false
                 || (level < this._config.RollbarDeveloperOptions.LogLevel)
-                //|| ((this._payloadQueue.AccessTokenQueuesMetadata != null) && this._payloadQueue.AccessTokenQueuesMetadata.IsTransmissionSuspended)
                 )
             {
                 // nice shortcut:
@@ -524,7 +491,6 @@
             try
             {
                 _ = this._rollbarClient.PostAsJsonAsync(payloadBundle);
-                //this._payloadQueue.Enqueue(payloadBundle);
             }
 #pragma warning disable CA1031 // Do not catch general exception types
             catch (System.Exception exception)
@@ -592,7 +558,7 @@
         /// Validates the configuration.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        private void ValidateConfiguration(IRollbarLoggerConfig rollbarConfig)
+        private static void ValidateConfiguration(IRollbarLoggerConfig rollbarConfig)
         {
             switch (rollbarConfig)
             {

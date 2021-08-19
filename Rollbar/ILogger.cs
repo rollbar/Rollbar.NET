@@ -43,13 +43,6 @@
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
         ILogger Log(dto.Data data);
 
-        //ILogger Log(ErrorLevel level, object obj);
-        //ILogger Critical(object obj);
-        //ILogger Error(object obj);
-        //ILogger Warning(object obj);
-        //ILogger Info(object obj);
-        //ILogger Debug(object obj);
-
         /// <summary>
         /// Logs using the specified level.
         /// </summary>

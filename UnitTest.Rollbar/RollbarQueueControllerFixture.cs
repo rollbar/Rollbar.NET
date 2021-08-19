@@ -34,17 +34,22 @@ namespace UnitTest.Rollbar
             Assert.AreSame(RollbarQueueController.Instance, RollbarQueueController.Instance);
         }
 
-        private const int maxQueueRegisterationTestDurationInMillisec = 15 * 1000;
+        private const int maxQueueRegisterationTestDurationInMillisec = 60 * 1000;
         [TestMethod]
         [Timeout(maxQueueRegisterationTestDurationInMillisec)]
         public void QueueRegisterationTest()
         {
+            Console.WriteLine($"Unrealeased queues count: {RollbarQueueController.Instance.GetUnReleasedQueuesCount()}");
+
             // we need to make sure we are starting clean:
             RollbarQueueController.Instance.FlushQueues();
+            RollbarQueueController.Instance.Stop(true);
+            RollbarQueueController.Instance.Start();
             //while (RollbarQueueController.Instance.GetQueuesCount() > 0)
             //{
             //    Thread.Sleep(TimeSpan.FromMilliseconds(250));
             //}
+            Console.WriteLine($"Unreleased queues count: {RollbarQueueController.Instance.GetUnReleasedQueuesCount()}");
 
             RollbarDestinationOptions destinationOptions =
                 new RollbarDestinationOptions(
@@ -60,6 +65,8 @@ namespace UnitTest.Rollbar
             RollbarLoggerConfig loggerConfig2 =
                 new RollbarLoggerConfig();
             loggerConfig2.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            Console.WriteLine($"Unreleased queues count: {RollbarQueueController.Instance.GetUnReleasedQueuesCount()}");
 
             Assert.AreNotEqual(loggerConfig1.RollbarDestinationOptions.AccessToken, loggerConfig2.RollbarDestinationOptions.AccessToken);
 
@@ -129,8 +136,10 @@ namespace UnitTest.Rollbar
             // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles: 
             while ((initialCount + 0) != RollbarQueueController.Instance.GetQueuesCount())
             {
+                Console.WriteLine($"Unreleased queues count: {RollbarQueueController.Instance.GetUnReleasedQueuesCount()}");
                 Thread.Sleep(TimeSpan.FromMilliseconds(250));
             }
+
 
             // if everything is good, we should get here way before this test method times out:
             Assert.AreEqual(initialCount + 0, RollbarQueueController.Instance.GetQueuesCount());

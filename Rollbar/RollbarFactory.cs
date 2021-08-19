@@ -15,8 +15,8 @@
         /// <param name="blockingLoggingTimeout">The blocking logging timeout.</param>
         /// <returns>ILogger.</returns>
         public static ILogger CreateProper(
-            IRollbarLoggerConfig? config,
-            TimeSpan? blockingLoggingTimeout
+            IRollbarLoggerConfig? config = null,
+            TimeSpan? blockingLoggingTimeout = null
             )
         {
             IRollbar rollbar = RollbarFactory.CreateNew(config);
@@ -45,7 +45,7 @@
         /// </summary>
         /// <param name="config">The rollbar configuration.</param>
         /// <returns></returns>
-        public static IRollbar CreateNew(IRollbarLoggerConfig? config)
+        public static IRollbar CreateNew(IRollbarLoggerConfig? config = null)
         {
             return RollbarFactory.CreateNew(false, config);
         }
@@ -73,7 +73,7 @@
         /// <returns>IRollbar.</returns>
         internal static IRollbar CreateNew(
             bool isSingleton, 
-            IRollbarLoggerConfig? config
+            IRollbarLoggerConfig? config = null
             )
         {
 #if !NETFX_47nOlder

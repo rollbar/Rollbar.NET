@@ -19,13 +19,6 @@
         IRollbar Configure(IRollbarLoggerConfig settings);
 
         /// <summary>
-        /// Configures using the specified access token.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <returns></returns>
-        IRollbar Configure(string accessToken);
-
-        /// <summary>
         /// Gets the configuration.
         /// </summary>
         /// <value>

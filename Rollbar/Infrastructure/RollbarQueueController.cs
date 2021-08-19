@@ -359,6 +359,24 @@ namespace Rollbar
             return result;
         }
 
+
+        internal int GetUnReleasedQueuesCount()
+        {
+            int result = 0;
+            foreach(var md in this._queuesByAccessToken.Values)
+            {
+                foreach(var queue in md.PayloadQueues)
+                {
+                    if(!queue.IsReleased)
+                    {
+                        result++;
+                    }
+                }
+            }
+            return result;
+        }
+
+
         /// <summary>
         /// Gets the queues.
         /// </summary>

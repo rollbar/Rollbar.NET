@@ -263,16 +263,6 @@
         }
 
         /// <summary>
-        /// Configures using the specified access token.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <returns>IRollbar.</returns>
-        IRollbar IRollbar.Configure(string accessToken)
-        {
-            return this.Configure(accessToken);
-        }
-
-        /// <summary>
         /// Occurs when a Rollbar internal event happens.
         /// </summary>
         event EventHandler<RollbarEventArgs> IRollbar.InternalEvent
@@ -584,7 +574,7 @@
         /// Validates the configuration.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        private void ValidateConfiguration(IRollbarLoggerConfig rollbarConfig)
+        private static void ValidateConfiguration(IRollbarLoggerConfig rollbarConfig)
         {
             switch (rollbarConfig)
             {

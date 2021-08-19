@@ -513,6 +513,7 @@ namespace UnitTest.Rollbar
         {
             // we need to make sure we are starting clean:
             RollbarQueueController.Instance.FlushQueues();
+            RollbarQueueController.Instance.Start();
             var accessTokenQueues = 
                 RollbarQueueController.Instance.GetQueues(RollbarUnitTestSettings.AccessToken);
             while (accessTokenQueues.Count() > 0)
@@ -522,7 +523,18 @@ namespace UnitTest.Rollbar
                 Console.WriteLine(msg);
                 foreach(var queue in accessTokenQueues)
                 {
-                    queue.Release();
+                    msg = "---Payloads in a queue: " + queue.GetPayloadCount();
+                    System.Diagnostics.Trace.WriteLine(msg);
+                    Console.WriteLine(msg);
+
+                    if(!queue.IsReleased)
+                    {
+                        queue.Release();
+                    }
+                    else
+                    {
+                        queue.Flush();
+                    }
                 }
                 Thread.Sleep(TimeSpan.FromMilliseconds(250));
                 accessTokenQueues = 
