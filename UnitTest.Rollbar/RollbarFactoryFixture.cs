@@ -27,10 +27,10 @@ namespace UnitTest.Rollbar
         {
             var rollbar1 = RollbarFactory.CreateNew();
             Assert.IsNotNull(rollbar1);
+            Assert.AreNotSame(rollbar1, RollbarLocator.RollbarInstance);
 
             var rollbarLogger = rollbar1 as RollbarLogger;
             Assert.IsNotNull(rollbarLogger);
-            Assert.IsFalse(rollbarLogger.IsSingleton);
             rollbar1.Dispose();
 
         }

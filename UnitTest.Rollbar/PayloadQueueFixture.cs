@@ -35,7 +35,7 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ConstructionTest()
         {
-            using (var logger = new RollbarLogger(false))
+            using (var logger = new RollbarLogger())
             {
                 RollbarClient client = new RollbarClient(logger);
                 PayloadQueue pq = new PayloadQueue(logger, client);

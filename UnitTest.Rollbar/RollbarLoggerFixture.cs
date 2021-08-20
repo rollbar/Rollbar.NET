@@ -361,7 +361,7 @@ namespace UnitTest.Rollbar
 
             try
             {
-                using var rollbar = RollbarFactory.CreateNew(false,invalidConfig);
+                using var rollbar = RollbarFactory.CreateNew(invalidConfig);
             }
             catch (RollbarException ex)
             {

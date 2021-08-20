@@ -26,7 +26,7 @@
             {
             }
 
-            internal static readonly IRollbar Instance = RollbarFactory.CreateNew(true);
+            internal static readonly IRollbar Instance = RollbarFactory.CreateNew();
         }
     }
 }

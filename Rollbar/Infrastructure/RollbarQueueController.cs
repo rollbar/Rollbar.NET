@@ -297,10 +297,14 @@ namespace Rollbar
         /// <param name="queue">The queue.</param>
         private void Unregister(PayloadQueue queue)
         {
+            if(queue.Logger == RollbarLocator.RollbarInstance.Logger)
+            {
+                return; // we do not want to unregister the singleton's queue.
+            }
+
             lock(this._syncLock)
             {
                 Assumption.AssertNotNull(this._config, nameof(this._config));
-                Assumption.AssertTrue(!queue.Logger.IsSingleton, nameof(queue.Logger.IsSingleton));
                 Assumption.AssertTrue(this._allQueues.Contains(queue), nameof(queue));
 
                 this.DropIndexByToken(queue);

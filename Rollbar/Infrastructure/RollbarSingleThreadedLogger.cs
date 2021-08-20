@@ -42,21 +42,17 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
         /// </summary>
-        /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
-        internal RollbarSingleThreadedLogger(bool isSingleton)
-            : this(isSingleton, null)
+        internal RollbarSingleThreadedLogger()
+            : this(null)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
         /// </summary>
-        /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        internal RollbarSingleThreadedLogger(bool isSingleton, IRollbarLoggerConfig? rollbarConfig)
+        internal RollbarSingleThreadedLogger(IRollbarLoggerConfig? rollbarConfig)
         {
-            this.IsSingleton = isSingleton;
-
             if(rollbarConfig != null)
             {
                 ValidateConfiguration(rollbarConfig);
@@ -75,12 +71,6 @@
                     );
             this._rollbarClient = new RollbarBlazorClient(this, httpClient);
         }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is singleton.
-        /// </summary>
-        /// <value><c>true</c> if this instance is singleton; otherwise, <c>false</c>.</value>
-        internal bool IsSingleton { get; private set; }
 
         #region IRollbar
 
@@ -622,7 +612,10 @@
             // RollbarLogger type supports both paradigms: singleton-like (via RollbarLocator) and
             // multiple disposable instances (via RollbarFactory).
             // Here we want to make sure that the singleton instance is never disposed:
-            Assumption.AssertTrue(!this.IsSingleton, nameof(this.IsSingleton));
+            if(this == RollbarLocator.RollbarInstance.Logger)
+            {
+                return;
+            }
 
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);

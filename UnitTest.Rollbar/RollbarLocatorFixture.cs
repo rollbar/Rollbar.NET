@@ -32,8 +32,6 @@ namespace UnitTest.Rollbar
         {
             var rollbarLogger = RollbarLocator.RollbarInstance as RollbarLogger;
             Assert.IsNotNull(rollbarLogger);
-            Assert.IsFalse(rollbarLogger.IsSingleton);
-
         }
 
         [TestMethod]
