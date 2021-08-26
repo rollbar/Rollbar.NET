@@ -1,8 +1,6 @@
 ﻿namespace Rollbar.Serialization.Json
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Newtonsoft.Json.Serialization;
@@ -17,14 +15,14 @@
         /// </summary>
         /// <param name="jsonString">The json string.</param>
         /// <returns>System.Object.</returns>
-        public static object InterpretAsJsonObject(string jsonString)
+        public static object? InterpretAsJsonObject(string? jsonString)
         {
             if (string.IsNullOrWhiteSpace(jsonString))
             {
                 return null; //nothing to
             }
 
-            object jsonObject = null;
+            object? jsonObject = null;
             try
             {
                 jsonObject = JsonConvert.DeserializeObject(jsonString);
@@ -46,9 +44,7 @@
         /// <returns><c>true</c> if the string value is valid JSON; otherwise, <c>false</c>.</returns>
         public static bool IsValidJson(string stringValue)
         {
-#pragma warning disable IDE0059 // Variable is declared but never used
-            return JsonUtil.TryAsValidJson(stringValue, out JToken token);
-#pragma warning restore IDE0059 // Variable is declared but never used
+            return JsonUtil.TryAsValidJson(stringValue, out JToken? token);
         }
 
         /// <summary>
@@ -57,7 +53,7 @@
         /// <param name="stringValue">The string value.</param>
         /// <param name="jsonToken">The json token.</param>
         /// <returns><c>true</c> if the string value is a valid JSON string, <c>false</c> otherwise.</returns>
-        public static bool TryAsValidJson(string stringValue, out JToken jsonToken)
+        public static bool TryAsValidJson(string stringValue, out JToken? jsonToken)
         {
             jsonToken = null;
 
@@ -90,7 +86,7 @@
         /// </summary>
         /// <param name="obj">The object.</param>
         /// <returns>System.String.</returns>
-        public static string SerializeAsJsonString(object obj)
+        public static string SerializeAsJsonString(object? obj)
         {
             string jsonString = JsonConvert.SerializeObject(obj);
             return jsonString;

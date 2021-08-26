@@ -45,28 +45,29 @@
         /// Decorates the specified rollbar data.
         /// </summary>
         /// <param name="rollbarData">The rollbar data.</param>
-        protected override void Decorate(Data rollbarData)
+        protected override void Decorate(Data? rollbarData)
         {
-            if (this._rollbarHttpContext == null)
+            if(rollbarData == null)
+            {
+                return;
+            }
+
+            if(this._rollbarHttpContext == null)
             {
                 return; //nothing to decorate with...
             }
 
-            Dictionary<string, object> customRequestFields = null;
-            if (this._rollbarHttpContext != null)
+            Dictionary<string, object?>? customRequestFields = new Dictionary<string, object?>();
+            customRequestFields.Add("httpRequestTimestamp", this._rollbarHttpContext.Timestamp);
+            if(this._rollbarHttpContext.HttpAttributes != null)
             {
-                customRequestFields = new Dictionary<string, object>();
-                customRequestFields.Add("httpRequestTimestamp", this._rollbarHttpContext.Timestamp);
-                if (this._rollbarHttpContext.HttpAttributes != null)
-                {
-                    customRequestFields.Add("httpRequestID", this._rollbarHttpContext.HttpAttributes.RequestID);
-                    customRequestFields.Add("scheme", this._rollbarHttpContext.HttpAttributes.RequestScheme);
-                    customRequestFields.Add("protocol", this._rollbarHttpContext.HttpAttributes.RequestProtocol);
-                    customRequestFields.Add("statusCode", this._rollbarHttpContext.HttpAttributes.ResponseStatusCode);
-                }
+                customRequestFields.Add("httpRequestID", this._rollbarHttpContext.HttpAttributes.RequestID);
+                customRequestFields.Add("scheme", this._rollbarHttpContext.HttpAttributes.RequestScheme);
+                customRequestFields.Add("protocol", this._rollbarHttpContext.HttpAttributes.RequestProtocol);
+                customRequestFields.Add("statusCode", this._rollbarHttpContext.HttpAttributes.ResponseStatusCode);
             }
 
-            if (customRequestFields != null && customRequestFields.Count > 0)
+            if(customRequestFields != null && customRequestFields.Count > 0)
             {
                 if (rollbarData.Request == null)
                 {

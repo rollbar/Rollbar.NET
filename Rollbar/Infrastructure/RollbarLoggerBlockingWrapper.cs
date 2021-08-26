@@ -22,11 +22,11 @@
         private readonly RollbarLogger _asyncLogger;
         private readonly TimeSpan _timeout;
 
-        private void Report(object dataObject, ErrorLevel level, IDictionary<string, object> custom = null)
+        private void Report(object dataObject, ErrorLevel level, IDictionary<string, object?>? custom = null)
         {
             using (var signal = CreateSignalObject())
             {
-                PayloadBundle payloadBundle = this._asyncLogger.EnqueueData(dataObject, level, custom, this._timeout, signal);
+                PayloadBundle? payloadBundle = this._asyncLogger.EnqueueData(dataObject, level, custom, this._timeout, signal);
 
                 WaitAndCompleteReport(payloadBundle, signal);
             }
@@ -40,7 +40,7 @@
             return signal;
         }
 
-        private void WaitAndCompleteReport(PayloadBundle payloadBundle, SemaphoreSlim signal)
+        private void WaitAndCompleteReport(PayloadBundle? payloadBundle, SemaphoreSlim signal)
         {
             if (!signal.Wait(this._timeout))
             {
@@ -87,72 +87,11 @@
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
-        /// <returns>ILogger.</returns>
-        public ILogger Log(ErrorLevel level, object obj)
-        {
-            return this.Log(level, obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as critical.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>ILogger.</returns>
-        public ILogger Critical(object obj)
-        {
-            return this.Critical(obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as error.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>ILogger.</returns>
-        public ILogger Error(object obj)
-        {
-            return this.Error(obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as warning.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>ILogger.</returns>
-        public ILogger Warning(object obj)
-        {
-            return this.Warning(obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as info.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>ILogger.</returns>
-        public ILogger Info(object obj)
-        {
-            return this.Info(obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as debug.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>ILogger.</returns>
-        public ILogger Debug(object obj)
-        {
-            return this.Debug(obj, null);
-        }
-
-        /// <summary>
-        /// Logs using the specified level.
-        /// </summary>
-        /// <param name="level">The level.</param>
-        /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>ILogger.</returns>
-        public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
+        public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object?>? custom = null)
         {
-            if (this._asyncLogger.Config.LogLevel.HasValue && level < this._asyncLogger.Config.LogLevel.Value)
+            if (level < this._asyncLogger.Config.RollbarDeveloperOptions.LogLevel)
             {
                 // nice shortcut:
                 return this;
@@ -168,7 +107,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>ILogger.</returns>
-        public ILogger Critical(object obj, IDictionary<string, object> custom)
+        public ILogger Critical(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Log(ErrorLevel.Critical, obj, custom);
         }
@@ -179,7 +118,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>ILogger.</returns>
-        public ILogger Error(object obj, IDictionary<string, object> custom)
+        public ILogger Error(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Log(ErrorLevel.Error, obj, custom);
         }
@@ -190,7 +129,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>ILogger.</returns>
-        public ILogger Warning(object obj, IDictionary<string, object> custom)
+        public ILogger Warning(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Log(ErrorLevel.Warning, obj, custom);
         }
@@ -201,7 +140,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>ILogger.</returns>
-        public ILogger Info(object obj, IDictionary<string, object> custom)
+        public ILogger Info(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Log(ErrorLevel.Info, obj, custom);
         }
@@ -212,7 +151,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>ILogger.</returns>
-        public ILogger Debug(object obj, IDictionary<string, object> custom)
+        public ILogger Debug(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Log(ErrorLevel.Debug, obj, custom);
         }

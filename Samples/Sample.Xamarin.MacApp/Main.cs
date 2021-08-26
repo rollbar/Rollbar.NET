@@ -11,7 +11,7 @@
             NSApplication.Init();
 
             // Setup Rollbar SDK after the applicaion runtime is initialized above:
-            RollbarHelper.ConfigureRollbarSingleton();
+            RollbarHelper.ConfigureRollbar();
             RollbarHelper.RegisterForGlobalExceptionHandling();
 
             // First Rollbar SDK test usage:

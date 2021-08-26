@@ -7,21 +7,17 @@ namespace UnitTest.Rollbar
     using System;
     using System.Threading;
 
+    using UnitTest.RollbarTestCommon;
+
     [TestClass]
     [TestCategory(nameof(RollbarQueueControllerFixture))]
     public class RollbarQueueControllerFixture
     {
-        //private IRollbar _logger = null;
 
         [TestInitialize]
         public void SetupFixture()
         {
-            //SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            //RollbarConfig loggerConfig =
-            //    new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            //_logger = RollbarFactory.CreateNew().Configure(loggerConfig);
-
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
         }
 
         [TestCleanup]
@@ -38,58 +34,75 @@ namespace UnitTest.Rollbar
             Assert.AreSame(RollbarQueueController.Instance, RollbarQueueController.Instance);
         }
 
-        private const int maxQueueRegisterationTestDurationInMillisec = 15 * 1000;
+        private const int maxQueueRegisterationTestDurationInMillisec = 60 * 1000;
         [TestMethod]
         [Timeout(maxQueueRegisterationTestDurationInMillisec)]
         public void QueueRegisterationTest()
         {
-            // we need to make sure we are starting clean:
-            while (RollbarQueueController.Instance.GetQueuesCount() > 0)
-            {
-                Thread.Sleep(TimeSpan.FromMilliseconds(250));
-            }
+            Console.WriteLine($"Unrealeased queues count: {RollbarQueueController.Instance.GetUnReleasedQueuesCount()}");
 
-            RollbarConfig loggerConfig1 =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-                    {Environment = RollbarUnitTestSettings.Environment,};
-            RollbarConfig loggerConfig2 =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken.Replace('0', '1'))
-                    {Environment = RollbarUnitTestSettings.Environment,};
-            Assert.AreNotEqual(loggerConfig1.AccessToken, loggerConfig2.AccessToken);
+            // we need to make sure we are starting clean:
+            RollbarQueueController.Instance.FlushQueues();
+            RollbarQueueController.Instance.Stop(true);
+            RollbarQueueController.Instance.Start();
+            //while (RollbarQueueController.Instance.GetQueuesCount() > 0)
+            //{
+            //    Thread.Sleep(TimeSpan.FromMilliseconds(250));
+            //}
+            Console.WriteLine($"Unreleased queues count: {RollbarQueueController.Instance.GetUnReleasedQueuesCount()}");
+
+            RollbarDestinationOptions destinationOptions =
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken,
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig1 =
+                new RollbarLoggerConfig();
+            loggerConfig1.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            destinationOptions.AccessToken =
+                RollbarUnitTestSettings.AccessToken.Replace('0', '1');
+            RollbarLoggerConfig loggerConfig2 =
+                new RollbarLoggerConfig();
+            loggerConfig2.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            Console.WriteLine($"Unreleased queues count: {RollbarQueueController.Instance.GetUnReleasedQueuesCount()}");
+
+            Assert.AreNotEqual(loggerConfig1.RollbarDestinationOptions.AccessToken, loggerConfig2.RollbarDestinationOptions.AccessToken);
 
             int initialCount = RollbarQueueController.Instance.GetQueuesCount();
-            int initialCount1 = RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken);
-            int initialCount2 = RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken);
+            int initialCount1 = RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken);
+            int initialCount2 = RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken);
 
             Assert.AreEqual(initialCount + 0, RollbarQueueController.Instance.GetQueuesCount());
             Assert.AreEqual(initialCount1 + 0,
-                RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
+                RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
             Assert.AreEqual(initialCount2 + 0,
-                RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
 
             using (var logger1 = RollbarFactory.CreateNew().Configure(loggerConfig1))
             {
                 Assert.AreEqual(initialCount + 1, RollbarQueueController.Instance.GetQueuesCount());
                 Assert.AreEqual(initialCount1 + 1,
-                    RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
+                    RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
                 Assert.AreEqual(initialCount2 + 0,
-                    RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                    RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
 
                 using (var logger2 = RollbarFactory.CreateNew().Configure(loggerConfig1))
                 {
                     Assert.AreEqual(initialCount + 2, RollbarQueueController.Instance.GetQueuesCount());
                     Assert.AreEqual(initialCount1 + 2,
-                        RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
+                        RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
                     Assert.AreEqual(initialCount2 + 0,
-                        RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                        RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
 
                     using (var logger3 = RollbarFactory.CreateNew().Configure(loggerConfig2))
                     {
                         Assert.AreEqual(initialCount + 3, RollbarQueueController.Instance.GetQueuesCount());
                         Assert.AreEqual(initialCount1 + 2,
-                            RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
+                            RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
                         Assert.AreEqual(initialCount2 + 1,
-                            RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                            RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
                     }
 
                     // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles: 
@@ -101,9 +114,9 @@ namespace UnitTest.Rollbar
                     // if everything is good, we should get here way before this test method times out:
                     Assert.AreEqual(initialCount + 2, RollbarQueueController.Instance.GetQueuesCount());
                     Assert.AreEqual(initialCount1 + 2,
-                        RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
+                        RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
                     Assert.AreEqual(initialCount2 + 0,
-                        RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                        RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
                 }
 
                 // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles: 
@@ -115,53 +128,66 @@ namespace UnitTest.Rollbar
                 // if everything is good, we should get here way before this test method times out:
                 Assert.AreEqual(initialCount + 1, RollbarQueueController.Instance.GetQueuesCount());
                 Assert.AreEqual(initialCount1 + 1,
-                    RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
+                    RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
                 Assert.AreEqual(initialCount2 + 0,
-                    RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                    RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
             }
 
             // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles: 
             while ((initialCount + 0) != RollbarQueueController.Instance.GetQueuesCount())
             {
+                Console.WriteLine($"Unreleased queues count: {RollbarQueueController.Instance.GetUnReleasedQueuesCount()}");
                 Thread.Sleep(TimeSpan.FromMilliseconds(250));
             }
+
 
             // if everything is good, we should get here way before this test method times out:
             Assert.AreEqual(initialCount + 0, RollbarQueueController.Instance.GetQueuesCount());
             Assert.AreEqual(initialCount1 + 0,
-                RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
+                RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
             Assert.AreEqual(initialCount2 + 0,
-                RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
         }
 
         [TestMethod]
         public void ReconfigureRollbarTest()
         {
-            RollbarConfig loggerConfig1 =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            RollbarConfig loggerConfig2 =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken.Replace('0', '1')) { Environment = RollbarUnitTestSettings.Environment, };
-            Assert.AreNotEqual(loggerConfig1.AccessToken, loggerConfig2.AccessToken);
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarLoggerConfig loggerConfig1 =
+                new RollbarLoggerConfig();
+            loggerConfig1.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            destinationOptions.AccessToken = 
+                RollbarUnitTestSettings.AccessToken.Replace('0', '1');
+            RollbarLoggerConfig loggerConfig2 =
+                new RollbarLoggerConfig();
+            loggerConfig2.RollbarDestinationOptions.Reconfigure(destinationOptions);
+
+            Assert.AreNotEqual(loggerConfig1.RollbarDestinationOptions.AccessToken, loggerConfig2.RollbarDestinationOptions.AccessToken);
 
             int initialCount = RollbarQueueController.Instance.GetQueuesCount();
-            int initialCount1 = RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken);
-            int initialCount2 = RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken);
+            int initialCount1 = RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken);
+            int initialCount2 = RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken);
 
             Assert.AreEqual(initialCount  + 0, RollbarQueueController.Instance.GetQueuesCount());
-            Assert.AreEqual(initialCount1 + 0, RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
-            Assert.AreEqual(initialCount2 + 0, RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+            Assert.AreEqual(initialCount1 + 0, RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
+            Assert.AreEqual(initialCount2 + 0, RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
 
             using (var logger1 = RollbarFactory.CreateNew().Configure(loggerConfig1))
             {
                 Assert.AreEqual(initialCount  + 1, RollbarQueueController.Instance.GetQueuesCount());
-                Assert.AreEqual(initialCount1 + 1, RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
-                Assert.AreEqual(initialCount2 + 0, RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                Assert.AreEqual(initialCount1 + 1, RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
+                Assert.AreEqual(initialCount2 + 0, RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
 
                 logger1.Configure(loggerConfig2);
 
                 Assert.AreEqual(initialCount  + 1, RollbarQueueController.Instance.GetQueuesCount());
-                Assert.AreEqual(initialCount1 + 0, RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.AccessToken));
-                Assert.AreEqual(initialCount2 + 1, RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.AccessToken));
+                Assert.AreEqual(initialCount1 + 0, RollbarQueueController.Instance.GetQueuesCount(loggerConfig1.RollbarDestinationOptions.AccessToken));
+                Assert.AreEqual(initialCount2 + 1, RollbarQueueController.Instance.GetQueuesCount(loggerConfig2.RollbarDestinationOptions.AccessToken));
             }
         }
 

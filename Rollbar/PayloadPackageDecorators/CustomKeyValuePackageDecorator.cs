@@ -18,7 +18,7 @@
         /// <summary>
         /// The custom
         /// </summary>
-        private readonly IDictionary<string, object> _custom;
+        private readonly IDictionary<string, object?>? _custom;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomKeyValuePackageDecorator"/> class.
@@ -27,7 +27,7 @@
         /// <param name="custom">The custom.</param>
         public CustomKeyValuePackageDecorator(
             IRollbarPackage packageToDecorate, 
-            IDictionary<string, object> custom
+            IDictionary<string, object?>? custom
             )
             : this(packageToDecorate, custom, false)
         {
@@ -41,7 +41,7 @@
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public CustomKeyValuePackageDecorator(
             IRollbarPackage packageToDecorate, 
-            IDictionary<string, object> custom, 
+            IDictionary<string, object?>? custom, 
             bool mustApplySynchronously
             ) 
             : base(packageToDecorate, mustApplySynchronously)
@@ -53,8 +53,13 @@
         /// Decorates the specified rollbar data.
         /// </summary>
         /// <param name="rollbarData">The rollbar data.</param>
-        protected override void Decorate(Data rollbarData)
+        protected override void Decorate(Data? rollbarData)
         {
+            if(rollbarData == null)
+            {
+                return;
+            }
+
             if (this._custom == null || this._custom.Count == 0)
             {
                 return; // nothing to decorate with...

@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        protected TelemetryBody(TelemetryType type, IDictionary<string, object> arbitraryKeyValuePairs) 
+        protected TelemetryBody(TelemetryType type, IDictionary<string, object?>? arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
             this.Type = type;

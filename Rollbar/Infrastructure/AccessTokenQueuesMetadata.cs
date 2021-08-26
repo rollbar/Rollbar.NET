@@ -26,6 +26,7 @@
         /// </summary>
         private AccessTokenQueuesMetadata()
         {
+            this.AccessToken = string.Empty;
         }
 
         /// <summary>
@@ -63,7 +64,7 @@
         /// Updates the next time token usage.
         /// </summary>
         /// <param name="rollbarRateLimit">The rollbar rate limit.</param>
-        public void UpdateNextTimeTokenUsage(RollbarRateLimit rollbarRateLimit)
+        public void UpdateNextTimeTokenUsage(RollbarRateLimit? rollbarRateLimit)
         {
             if (rollbarRateLimit == null)
             {
@@ -98,9 +99,14 @@
         /// Registers the specified queue.
         /// </summary>
         /// <param name="queue">The queue.</param>
-        /// <returns><c>true</c> if the queue was actually reqistered during this call, <c>false</c> if the queue was already registered prior to this call.</returns>
-        public bool Register(PayloadQueue queue)
+        /// <returns><c>true</c> if the queue was actually registered during this call, <c>false</c> if the queue was already registered prior to this call.</returns>
+        public bool Register(PayloadQueue? queue)
         {
+            if(queue == null)
+            {
+                return true; // nothing to register - nothing bad...
+            }
+
             lock(this._queuesSyncLock)
             {
                 if (this._queues.Add(queue))
@@ -120,8 +126,13 @@
         /// </summary>
         /// <param name="queue">The queue.</param>
         /// <returns><c>true</c> if the queue was actually unregistered, <c>false</c> if the queue was not even registered in the first place.</returns>
-        public bool Unregister(PayloadQueue queue)
+        public bool Unregister(PayloadQueue? queue)
         {
+            if(queue == null)
+            {
+                return true; // nothing to unregister - nothing bad...
+            }
+
             lock(this._queuesSyncLock)
             {
                 if (this._queues.Remove(queue))

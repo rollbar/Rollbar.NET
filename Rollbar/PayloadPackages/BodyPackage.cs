@@ -2,9 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Rollbar.DTOs;
 
     /// <summary>
@@ -18,7 +15,7 @@
         /// <summary>
         /// The rollbar configuration
         /// </summary>
-        private readonly IRollbarConfig _rollbarConfig;
+        private readonly IRollbarLoggerConfig? _rollbarConfig;
         /// <summary>
         /// The body to package
         /// </summary>
@@ -26,14 +23,14 @@
         /// <summary>
         /// The custom
         /// </summary>
-        private readonly IDictionary<string, object> _custom;
+        private readonly IDictionary<string, object?>? _custom;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BodyPackage"/> class.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="bodyToPackage">The body to package.</param>
-        public BodyPackage(IRollbarConfig rollbarConfig, Body bodyToPackage)
+        public BodyPackage(IRollbarLoggerConfig? rollbarConfig, Body bodyToPackage)
             : this(rollbarConfig, bodyToPackage, null)
         {
         }
@@ -44,7 +41,7 @@
         /// <param name="rollbarConfig">The rollbar configuration.</param>
         /// <param name="bodyToPackage">The body to package.</param>
         /// <param name="custom">The custom.</param>
-        public BodyPackage(IRollbarConfig rollbarConfig, Body bodyToPackage, IDictionary<string, object> custom) 
+        public BodyPackage(IRollbarLoggerConfig? rollbarConfig, Body bodyToPackage, IDictionary<string, object?>? custom) 
             : base(false)
         {
             this._rollbarConfig = rollbarConfig;

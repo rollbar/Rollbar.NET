@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\RollbarSamplesSettings.cs" Link="RollbarSamplesSettings.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Rollbar.OfflinePersistence\Rollbar.OfflinePersistence.csproj" />
     <ProjectReference Include="..\..\Rollbar\Rollbar.csproj" />
   </ItemGroup>

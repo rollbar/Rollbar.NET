@@ -1,16 +1,17 @@
-﻿namespace Rollbar.Telemetry
+﻿namespace Rollbar
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
     using Rollbar.Common;
     using Rollbar.DTOs;
-    using System;
 
     /// <summary>
-    /// Defines telemetry configuration interface.
+    /// Defines telemetry configuration options interface.
     /// </summary>
-    public interface ITelemetryConfig
-        : IReconfigurable<ITelemetryConfig, ITelemetryConfig>
-        , IEquatable<ITelemetryConfig>
-        , ITraceable
+    public interface IRollbarTelemetryOptions
+        : IReconfigurable<IRollbarTelemetryOptions, IRollbarTelemetryOptions>
     {
         /// <summary>
         /// Gets a value indicating whether telemetry is enabled.
@@ -18,7 +19,10 @@
         /// <value>
         ///   <c>true</c> if telemetry is enabled; otherwise, <c>false</c>.
         /// </value>
-        bool TelemetryEnabled { get; }
+        bool TelemetryEnabled
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets the telemetry queue depth.
@@ -26,7 +30,10 @@
         /// <value>
         /// The telemetry queue depth.
         /// </value>
-        int TelemetryQueueDepth { get; }
+        int TelemetryQueueDepth
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets the telemetry automatic collection types.
@@ -34,7 +41,10 @@
         /// <value>
         /// The telemetry automatic collection types.
         /// </value>
-        TelemetryType TelemetryAutoCollectionTypes { get; }
+        TelemetryType TelemetryAutoCollectionTypes
+        {
+            get;
+        }
 
         /// <summary>
         /// Gets the telemetry automatic collection interval.
@@ -42,6 +52,9 @@
         /// <value>
         /// The telemetry automatic collection interval.
         /// </value>
-        TimeSpan TelemetryAutoCollectionInterval { get; }
+        TimeSpan TelemetryAutoCollectionInterval
+        {
+            get;
+        }
     }
 }

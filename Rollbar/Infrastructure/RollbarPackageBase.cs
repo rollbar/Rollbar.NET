@@ -21,12 +21,12 @@
         /// <summary>
         /// The must apply synchronously
         /// </summary>
-        protected readonly bool _mustApplySynchronously = false;
+        protected readonly bool applySynchronously = false;
 
         /// <summary>
         /// The rollbar data resulted from this package instance.
         /// </summary>
-        private Data _rollbarData;
+        private Data? _rollbarData;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarPackageBase"/> class from being created.
@@ -42,14 +42,14 @@
         /// <param name="mustApplySynchronously">if set to <c>true</c> the strategy must be apply synchronously.</param>
         protected RollbarPackageBase(bool mustApplySynchronously)
         {
-            this._mustApplySynchronously = mustApplySynchronously;
+            this.applySynchronously = mustApplySynchronously;
         }
 
         /// <summary>
         /// Produces the rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        protected abstract Data ProduceRollbarData();
+        protected abstract Data? ProduceRollbarData();
 
         /// <summary>
         /// Gets a value indicating whether to package synchronously (within the logging method call).
@@ -57,13 +57,13 @@
         /// the packaging strategy will be invoked during payload transmission on a dedicated worker thread.
         /// </summary>
         /// <value><c>true</c> if needs to package synchronously; otherwise, <c>false</c>.</value>
-        public virtual bool MustApplySynchronously { get { return this._mustApplySynchronously; } }
+        public virtual bool MustApplySynchronously { get { return this.applySynchronously; } }
 
         /// <summary>
         /// Gets the rollbar data packaged by this strategy (if any).
         /// </summary>
         /// <value>The rollbar data.</value>
-        public virtual Data RollbarData
+        public virtual Data? RollbarData
         {
             get { return this._rollbarData; }
         }
@@ -72,7 +72,7 @@
         /// Packages as rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        public virtual Data PackageAsRollbarData()
+        public virtual Data? PackageAsRollbarData()
         {
             if (this._rollbarData != null)
             {

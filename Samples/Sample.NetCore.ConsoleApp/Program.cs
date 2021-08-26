@@ -1,14 +1,15 @@
 namespace Sample.NetCore.ConsoleApp
 {
-    using Rollbar;
-    using Rollbar.DTOs;
-    using Rollbar.Telemetry;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
     using System.Threading;
+    using Samples;
+
+    using Rollbar;
     using Rollbar.Common;
+    using Rollbar.DTOs;
 
     class Program
     {
@@ -17,15 +18,14 @@ namespace Sample.NetCore.ConsoleApp
             InitEventCounters();
 
             ConfigureRollbarSingleton();
-            ConfigureRollbarTelemetry();
 
             DemonstrateRollbarUsage();
             //ManualPayloadPersistenceDemo();
 
             Thread.Sleep(TimeSpan.FromSeconds(10));
 
-            PrintEventCounters();
             PrintEvents();
+            PrintEventCounters();
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Sample.NetCore.ConsoleApp
         /// </summary>
         private static void DemonstrateRollbarUsage()
         {
-            TelemetryCollector.Instance.Capture(
+            RollbarInfrastructure.Instance.TelemetryCollector.Capture(
                 new Telemetry(
                     TelemetrySource.Client, 
                     TelemetryLevel.Info, 
@@ -52,10 +52,17 @@ namespace Sample.NetCore.ConsoleApp
             var exceptionWithData = new ArgumentNullException("Exception with Data");
             exceptionWithData.Data["argumentName"] = "requiredOne";
 
-            RollbarLocator.RollbarInstance
-                .Info("ConsoleApp sample: Basic info log example.", customFields);
+            int count = 3;
+            while(count-- > 0)
+            {
 
-            TelemetryCollector.Instance.Capture(
+                RollbarLocator.RollbarInstance
+                    .Info($"ConsoleApp sample: Basic info log example @ {DateTime.Now} - {count}.", customFields);
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+            }
+
+
+            RollbarInfrastructure.Instance.TelemetryCollector.Capture(
                 new Telemetry(
                     TelemetrySource.Client,
                     TelemetryLevel.Info,
@@ -65,7 +72,7 @@ namespace Sample.NetCore.ConsoleApp
             RollbarLocator.RollbarInstance
                 .Debug("ConsoleApp sample: First debug log.");
 
-            TelemetryCollector.Instance.Capture(
+            RollbarInfrastructure.Instance.TelemetryCollector.Capture(
                 new Telemetry(
                     TelemetrySource.Client,
                     TelemetryLevel.Error,
@@ -75,7 +82,7 @@ namespace Sample.NetCore.ConsoleApp
             RollbarLocator.RollbarInstance
                 .Error(new NullReferenceException("ConsoleApp sample: null reference exception."));
 
-            TelemetryCollector.Instance.Capture(
+            RollbarInfrastructure.Instance.TelemetryCollector.Capture(
                 new Telemetry(
                     TelemetrySource.Client,
                     TelemetryLevel.Error,
@@ -86,7 +93,7 @@ namespace Sample.NetCore.ConsoleApp
                 .Error(new System.Exception("ConsoleApp sample: trying out the TraceChain", new NullReferenceException()));
 
 
-            TelemetryCollector.Instance.Capture(
+            RollbarInfrastructure.Instance.TelemetryCollector.Capture(
                 new Telemetry(
                     TelemetrySource.Client,
                     TelemetryLevel.Error,
@@ -116,7 +123,7 @@ namespace Sample.NetCore.ConsoleApp
                     .Info("Via blocking mechanism.")
                     ;
             }
-            catch (System.TimeoutException ex)
+            catch(System.TimeoutException ex)
             {
                 msg = "*** Blocking call with too short timeout. Exception: " + Environment.NewLine + ex;
                 System.Diagnostics.Trace.WriteLine(msg);
@@ -134,7 +141,7 @@ namespace Sample.NetCore.ConsoleApp
                     .Info("Via blocking mechanism with short timeout.")
                     ;
             }
-            catch (System.TimeoutException ex)
+            catch(System.TimeoutException ex)
             {
                 msg = "*** 3. Blocking call with too short timeout. Exception: " + Environment.NewLine + ex;
                 System.Diagnostics.Trace.WriteLine(msg);
@@ -175,64 +182,59 @@ namespace Sample.NetCore.ConsoleApp
 
 
         /// <summary>
-        /// Configures the Rollbar telemetry.
-        /// </summary>
-        private static void ConfigureRollbarTelemetry()
-        {
-            TelemetryConfig telemetryConfig = new TelemetryConfig(
-                telemetryEnabled: true,
-                telemetryQueueDepth: 3
-                );
-            TelemetryCollector.Instance.Config.Reconfigure(telemetryConfig);
-        }
-
-        /// <summary>
         /// Configures the Rollbar singleton-like notifier.
         /// </summary>
         private static void ConfigureRollbarSingleton()
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
+            // minimally required Rollbar configuration:
+            RollbarInfrastructureConfig config = 
+                new RollbarInfrastructureConfig(
+                    RollbarSamplesSettings.AccessToken, 
+                    RollbarSamplesSettings.Environment
+                    );
 
-            var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
+            // optional:
+            RollbarOfflineStoreOptions offlineStoreOptions = new RollbarOfflineStoreOptions();
+            offlineStoreOptions.EnableLocalPayloadStore = true;
+            config.RollbarOfflineStoreOptions.Reconfigure(offlineStoreOptions);
+
+            // optional:
+            RollbarTelemetryOptions telemetryOptions = new RollbarTelemetryOptions(true, 3);
+            config.RollbarTelemetryOptions.Reconfigure(telemetryOptions);
+
+            // optional:
+            //HttpProxyOptions proxyOptions = new HttpProxyOptions("http://something.com");
+            //config.RollbarLoggerConfig.HttpProxyOptions.Reconfigure(proxyOptions);
+
+            // optional:
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            dataSecurityOptions.ScrubFields = new string[]
             {
-                Environment = rollbarEnvironment,
-                ScrubFields = new string[]
-                {
-                    "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
-                    "username",
-                    "criticalObj[Sample.NetCore.ConsoleApp.Program+InstanceType]._baseNullField",
-                    "data.custom.criticalObj[Sample.NetCore.ConsoleApp.Program+InstanceType].<TypeName>k__BackingField",
-                },
-                EnableLocalPayloadStore = true,
-                //ProxyAddress = "http://something.com",
+                "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
+                "username",
+                "criticalObj[Sample.NetCore.ConsoleApp.Program+InstanceType]._baseNullField",
+                "data.custom.criticalObj[Sample.NetCore.ConsoleApp.Program+InstanceType].<TypeName>k__BackingField",
             };
-            RollbarLocator.RollbarInstance
-                // minimally required Rollbar configuration:
-                .Configure(config)
-                // optional step if you would like to monitor this Rollbar instance's internal events within your application:
-                //.InternalEvent += OnRollbarInternalEvent
-                ;
+            config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+            // optional:
+            RollbarPayloadAdditionOptions payloadAdditionOptions = new RollbarPayloadAdditionOptions();
+            payloadAdditionOptions.Person = new Person() 
+            { 
+                Id = "007", 
+                Email = "jbond@mi6.uk", 
+                UserName = "JBOND", 
+            };
+            config.RollbarLoggerConfig.RollbarPayloadAdditionOptions.Reconfigure(payloadAdditionOptions);
+
+            // initialize the Rollbar Infrastructure:
+            RollbarInfrastructure.Instance.Init(config);
 
             // optional step if you would like to monitor all Rollbar instances' internal events within your application:
-            RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
+            RollbarInfrastructure.Instance.QueueController.InternalEvent += OnRollbarInternalEvent;
 
-            // Optional info about reporting Rollbar user:
-            SetRollbarReportingUser("007", "jbond@mi6.uk", "JBOND");
-        }
-
-        /// <summary>
-        /// Sets the Rollbar reporting user.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="email">The email.</param>
-        /// <param name="userName">Name of the user.</param>
-        private static void SetRollbarReportingUser(string id, string email, string userName)
-        {
-            Person person = new Person(id);
-            person.Email = email;
-            person.UserName = userName;
-            RollbarLocator.RollbarInstance.Config.Person = person;
+            // optional step if you would like to monitor this Rollbar instance's internal events within your application:
+            //RollbarLocator.RollbarInstance.InternalEvent += OnRollbarInternalEvent;
         }
 
         /// <summary>

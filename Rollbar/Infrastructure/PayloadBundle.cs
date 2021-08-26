@@ -22,12 +22,12 @@
         /// <summary>
         /// The payload object
         /// </summary>
-        private readonly object _payloadObject;
+        private readonly object? _payloadObject;
 
         /// <summary>
         /// The custom
         /// </summary>
-        private readonly IDictionary<string, object> _custom;
+        private readonly IDictionary<string, object?>? _custom;
 
         /// <summary>
         /// The level
@@ -37,7 +37,7 @@
         /// <summary>
         /// The rollbar logger
         /// </summary>
-        private readonly RollbarLogger _rollbarLogger;
+        private readonly IRollbar? _rollbarLogger;
 
         /// <summary>
         /// The timeout at
@@ -47,7 +47,7 @@
         /// <summary>
         /// The signal
         /// </summary>
-        private readonly SemaphoreSlim _signal;
+        private readonly SemaphoreSlim? _signal;
 
         #region one-time calculated caches
 
@@ -59,17 +59,17 @@
         /// <summary>
         /// The rollbar package
         /// </summary>
-        private IRollbarPackage _rollbarPackage;
+        private IRollbarPackage? _rollbarPackage;
 
         /// <summary>
         /// The payload
         /// </summary>
-        private Payload _payload;
+        private Payload? _payload;
 
         /// <summary>
         /// As HTTP content to send
         /// </summary>
-        private StringContent _asHttpContentToSend;
+        private StringContent? _asHttpContentToSend;
 
         #endregion one-time calculated caches
 
@@ -86,7 +86,7 @@
         /// Gets the signal.
         /// </summary>
         /// <value>The signal.</value>
-        internal SemaphoreSlim Signal
+        internal SemaphoreSlim? Signal
         {
             get { return this._signal; }
         }
@@ -95,7 +95,7 @@
         /// Gets or sets as HTTP content to send.
         /// </summary>
         /// <value>As HTTP content to send.</value>
-        internal StringContent AsHttpContentToSend
+        internal StringContent? AsHttpContentToSend
         {
             get
             {
@@ -122,7 +122,7 @@
         /// <param name="payloadPackage">The payload package.</param>
         /// <param name="level">The level.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level
             )
@@ -138,10 +138,10 @@
         /// <param name="level">The level.</param>
         /// <param name="custom">The custom.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
-            IDictionary<string, object> custom
+            IDictionary<string, object?>? custom
             )
             : this(rollbarLogger, payloadPackage, level, custom, null, null)
         {
@@ -156,11 +156,11 @@
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
             DateTime? timeoutAt,
-            SemaphoreSlim signal
+            SemaphoreSlim? signal
             )
             : this(rollbarLogger, payloadPackage, level, null, timeoutAt, signal)
         {
@@ -176,12 +176,12 @@
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             IRollbarPackage payloadPackage,
             ErrorLevel level,
-            IDictionary<string, object> custom,
+            IDictionary<string, object?>? custom,
             DateTime? timeoutAt,
-            SemaphoreSlim signal
+            SemaphoreSlim? signal
             )
             : this(rollbarLogger, payloadPackage as object, level, custom, timeoutAt, signal)
         {
@@ -199,7 +199,7 @@
         /// <param name="payloadObject">The payload object.</param>
         /// <param name="level">The level.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level
             )
@@ -215,10 +215,10 @@
         /// <param name="level">The level.</param>
         /// <param name="custom">The custom.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level,
-            IDictionary<string, object> custom
+            IDictionary<string, object?>? custom
             )
             : this(rollbarLogger, payloadObject, level, custom, null, null)
         {
@@ -233,11 +233,11 @@
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level,
             DateTime? timeoutAt,
-            SemaphoreSlim signal
+            SemaphoreSlim? signal
             )
             : this(rollbarLogger, payloadObject, level, null, timeoutAt, signal)
         {
@@ -253,12 +253,12 @@
         /// <param name="timeoutAt">The timeout at.</param>
         /// <param name="signal">The signal.</param>
         public PayloadBundle(
-            RollbarLogger rollbarLogger,
+            IRollbar rollbarLogger,
             object payloadObject,
             ErrorLevel level,
-            IDictionary<string, object> custom,
+            IDictionary<string, object?>? custom,
             DateTime? timeoutAt,
-            SemaphoreSlim signal
+            SemaphoreSlim? signal
             )
         {
             Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
@@ -284,7 +284,7 @@
                 {
                     GetPayload(); // it actually calculates and sets this._ignorable value...
                 }
-                return this._ignorable.Value;
+                return this._ignorable!.Value;
             }
         }
 
@@ -292,11 +292,11 @@
         /// Gets the payload.
         /// </summary>
         /// <returns>Payload.</returns>
-        public Payload GetPayload()
+        public Payload? GetPayload()
         {
             if (this._payload == null)
             {
-                Data data = this.GetPayloadData();
+                Data? data = this.GetPayloadData();
                 if (data != null)
                 {
                     data.Level = this._level;
@@ -304,13 +304,13 @@
                     //object-to-log capture timestamp:
                     data.Timestamp = DateTimeUtil.ConvertToUnixTimestampInSeconds(this._timeStamp);
 
-                    this._payload = new Payload(this._rollbarLogger.Config.AccessToken, data);
+                    this._payload = new Payload(this._rollbarLogger?.Config.RollbarDestinationOptions.AccessToken, data);
                     this._payload.PayloadBundle = this;
 
                     try // payload check-ignore:
                     {
-                        if (this._rollbarLogger.Config.CheckIgnore != null
-                            && this._rollbarLogger.Config.CheckIgnore.Invoke(this._payload)
+                        if (this._rollbarLogger?.Config.RollbarPayloadManipulationOptions.CheckIgnore != null
+                            && this._rollbarLogger.Config.RollbarPayloadManipulationOptions.CheckIgnore.Invoke(this._payload)
                             )
                         {
                             this._ignorable = true;
@@ -332,7 +332,7 @@
 
                     try // payload transformation:
                     {
-                        this._rollbarLogger.Config.Transform?.Invoke(this._payload);
+                        this._rollbarLogger?.Config.RollbarPayloadManipulationOptions.Transform?.Invoke(this._payload);
                     }
                     catch (System.Exception exception)
                     {
@@ -348,7 +348,7 @@
 
                     try // payload truncation:
                     {
-                        this._rollbarLogger.Config.Truncate?.Invoke(this._payload);
+                        this._rollbarLogger?.Config.RollbarPayloadManipulationOptions.Truncate?.Invoke(this._payload);
                     }
                     catch (System.Exception exception)
                     {
@@ -386,14 +386,14 @@
         /// Gets the payload data.
         /// </summary>
         /// <returns>Data.</returns>
-        private Data GetPayloadData()
+        private Data? GetPayloadData()
         {
-            Data data;
+            Data? data;
 
-            IRollbarPackage rollbarPackage = GetRollbarPackage();
+            IRollbarPackage? rollbarPackage = GetRollbarPackage();
             Assumption.AssertNotNull(rollbarPackage, nameof(rollbarPackage));
 
-            data = rollbarPackage.PackageAsRollbarData();
+            data = rollbarPackage?.PackageAsRollbarData();
             Assumption.AssertNotNull(data, nameof(data));
 
             return data;
@@ -403,14 +403,14 @@
         /// Gets the rollbar package.
         /// </summary>
         /// <returns>IRollbarPackage.</returns>
-        private IRollbarPackage GetRollbarPackage()
+        private IRollbarPackage? GetRollbarPackage()
         {
             if (this._rollbarPackage == null)
             {
                 this._rollbarPackage = CreateRollbarPackage(this._payloadObject);
                 if (this._rollbarPackage != null)
                 {
-                    IErrorCollector packageErrorCollector = this._rollbarPackage as IErrorCollector;
+                    IErrorCollector? packageErrorCollector = this._rollbarPackage as IErrorCollector;
                     if (packageErrorCollector != null)
                     {
                         foreach (var exception in this._bundleErrorCollector.Exceptions)
@@ -428,9 +428,9 @@
         /// Creates the rollbar package.
         /// </summary>
         /// <returns>IRollbarPackage.</returns>
-        private IRollbarPackage CreateRollbarPackage(object payloadObject)
+        private IRollbarPackage? CreateRollbarPackage(object? payloadObject)
         {
-            IRollbarPackage package = null;
+            IRollbarPackage? package = null;
 
             switch (payloadObject)
             {
@@ -443,7 +443,7 @@
                     package = ApplyCustomKeyValueDecorator(package);
                     return package;
                 case Body bodyObject:
-                    package = new BodyPackage(this._rollbarLogger.Config, bodyObject, this._custom);
+                    package = new BodyPackage(this._rollbarLogger?.Config, bodyObject, this._custom);
                     return package;
                 case System.Exception exceptionObject:
                     package = new ExceptionPackage(exceptionObject);
@@ -456,7 +456,7 @@
                     package = new MessagePackage(traceable.TraceAsString(), this._custom);
                     return package;
                 default:
-                    package = new MessagePackage(payloadObject.ToString(), this._custom);
+                    package = new MessagePackage(payloadObject?.ToString(), this._custom);
                     return package;
             }
         }
@@ -481,9 +481,9 @@
         /// </summary>
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <returns>IRollbarPackage.</returns>
-        private IRollbarPackage ApplyConfigPackageDecorator(IRollbarPackage packageToDecorate)
+        private IRollbarPackage? ApplyConfigPackageDecorator(IRollbarPackage? packageToDecorate)
         {
-            if (this._rollbarLogger.Config == null)
+            if (this._rollbarLogger?.Config == null)
             {
                 return packageToDecorate; // nothing to decorate with
             }
@@ -516,7 +516,7 @@
 
         private IErrorCollector GetPrimaryErrorCollector()
         {
-            IErrorCollector primaryErrorCollector = GetPackageErrorCollectorIfAny();
+            IErrorCollector? primaryErrorCollector = GetPackageErrorCollectorIfAny();
             if (primaryErrorCollector != null)
             {
                 return primaryErrorCollector;
@@ -525,9 +525,9 @@
             return this._bundleErrorCollector;
         }
 
-        private IErrorCollector GetPackageErrorCollectorIfAny()
+        private IErrorCollector? GetPackageErrorCollectorIfAny()
         {
-            IErrorCollector package = null;
+            IErrorCollector? package = null;
             if (this._rollbarPackage != null)
             {
                 package = this._rollbarPackage as IErrorCollector;

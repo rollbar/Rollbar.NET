@@ -20,21 +20,26 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Data.</returns>
-        public static Data PackageAsPayloadData(
+        public static Data? PackageAsPayloadData(
             DateTime utcTimestamp,
-            IRollbarConfig rollbarConfig, 
+            IRollbarLoggerConfig rollbarConfig, 
             ErrorLevel level, 
             object obj, 
-            IDictionary<string, object> custom = null
+            IDictionary<string, object?>? custom = null
             )
         {
-            if (rollbarConfig.LogLevel.HasValue && level < rollbarConfig.LogLevel.Value)
+            //if (rollbarConfig.RollbarDeveloperOptions.LogLevel.HasValue && level < rollbarConfig.RollbarDeveloperOptions.LogLevel.Value)
+            //{
+            //    // nice shortcut:
+            //    return null;
+            //}
+            if(!rollbarConfig.RollbarDeveloperOptions.Enabled)
             {
                 // nice shortcut:
                 return null;
             }
 
-            Data data = obj as Data;
+            Data? data = obj as Data;
             if (data != null)
             {
                 //we do not have to update the timestamp of the data here
@@ -44,13 +49,13 @@
                 return data;
             }
 
-            IRollbarPackage rollbarPackagingStrategy = obj as IRollbarPackage;
+            IRollbarPackage? rollbarPackagingStrategy = obj as IRollbarPackage;
             if (rollbarPackagingStrategy != null)
             {
                 data = rollbarPackagingStrategy.PackageAsRollbarData();
                 if (data != null)
                 {
-                    data.Environment = rollbarConfig?.Environment;
+                    data.Environment = rollbarConfig?.RollbarDestinationOptions.Environment;
                     data.Level = level;
                     //update the data timestamp from the data creation timestamp to the passed
                     //object-to-log capture timestamp:
@@ -59,7 +64,7 @@
                 return data;
             }
 
-            Body body = obj as Body;
+            Body? body = obj as Body;
             if (body == null)
             {
                 body = RollbarUtility.PackageAsPayloadBody(obj, ref custom);
@@ -79,22 +84,22 @@
         /// <param name="bodyObject">The body object.</param>
         /// <param name="custom">The custom.</param>
         /// <returns>Body.</returns>
-        public static Body PackageAsPayloadBody(object bodyObject, ref IDictionary<string, object> custom)
+        public static Body PackageAsPayloadBody(object bodyObject, ref IDictionary<string, object?>? custom)
         {
-            System.Exception exception = bodyObject as System.Exception;
+            System.Exception? exception = bodyObject as System.Exception;
             if (exception != null)
             {
                 RollbarUtility.SnapExceptionDataAsCustomData(exception, ref custom);
                 return new Body(exception);
             }
 
-            string messageString = bodyObject as string;
+            string? messageString = bodyObject as string;
             if (messageString != null)
             {
                 return new Body(new Message(messageString));
             }
 
-            ITraceable traceable = bodyObject as ITraceable;
+            ITraceable? traceable = bodyObject as ITraceable;
             if (traceable != null)
             {
                 return new Body(traceable.TraceAsString());
@@ -110,13 +115,13 @@
         /// <param name="custom">The custom.</param>
         public static void SnapExceptionDataAsCustomData(
             System.Exception e,
-            ref IDictionary<string, object> custom
+            ref IDictionary<string, object?>? custom
             )
         {
             if (custom == null)
             {
                 custom =
-                    new Dictionary<string, object>(capacity: e.Data != null ? e.Data.Count : 0);
+                    new Dictionary<string, object?>(capacity: e.Data != null ? e.Data.Count : 0);
             }
 
             const string nullObjPresentation = "<null>";
@@ -125,15 +130,12 @@
                 string customKeyPrefix = $"{e.GetType().Name}.Data.";
                 foreach (var key in e.Data.Keys)
                 {
-                    // Some of the null-checks here may look unnecessary for the way an IDictionary
-                    // is implemented today. 
-                    // But the things could change tomorrow and we want to stay safe always:
-                    object valueObj = e.Data[key];
-                    if (valueObj == null && key == null)
+                    if(key == null)
                     {
                         continue;
                     }
-                    string keyName = (key != null) ? key.ToString() : nullObjPresentation;
+                    object? valueObj = e.Data[key];
+                    string keyName = key.ToString() ?? nullObjPresentation;
                     string customKey = $"{customKeyPrefix}{keyName}";
                     custom[customKey] = valueObj ?? nullObjPresentation;
                 }
@@ -145,7 +147,7 @@
             }
 
             // there could be more Data to capture in case of an AggregateException:
-            AggregateException aggregateException = e as AggregateException;
+            AggregateException? aggregateException = e as AggregateException;
             if (aggregateException != null && aggregateException.InnerExceptions != null)
             {
                 foreach (var aggregatedException in aggregateException.InnerExceptions)

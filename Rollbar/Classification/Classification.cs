@@ -82,6 +82,9 @@
         /// </summary>
         private Classification()
         {
+            this._classifiers = new HashSet<Classifier>();
+            this._classifierTypes = new HashSet<Type>();
+            this.ID = this.GenerateID(this._classifiers);
         }
 
         /// <summary>

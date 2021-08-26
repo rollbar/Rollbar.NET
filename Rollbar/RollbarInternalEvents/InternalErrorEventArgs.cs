@@ -11,9 +11,9 @@
         : RollbarEventArgs
     {
         internal InternalErrorEventArgs(
-            RollbarLogger logger,
-            object dataObject,
-            Exception error,
+            IRollbar? logger,
+            object? dataObject,
+            Exception? error,
             string details
             ) 
             : base(logger, dataObject)
@@ -28,7 +28,7 @@
         /// <value>
         /// The error.
         /// </value>
-        public Exception Error { get; private set; }
+        public Exception? Error { get; private set; }
         /// <summary>
         /// Gets the details.
         /// </summary>

@@ -8,6 +8,7 @@
     /// Implements the <see cref="System.Exception" />
     /// </summary>
     /// <seealso cref="System.Exception" />
+    [Serializable]
     public class RollbarException
         : Exception
     {
@@ -37,7 +38,7 @@
         /// </summary>
         /// <param name="rollbarError">The rollbar error.</param>
         /// <param name="innerException">The inner exception.</param>
-        internal RollbarException(InternalRollbarError rollbarError, Exception innerException)
+        internal RollbarException(InternalRollbarError rollbarError, Exception? innerException)
             : this(rollbarError, rollbarError.ToString(), innerException)
         {
         }
@@ -59,7 +60,7 @@
         /// <param name="rollbarError">The rollbar error.</param>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
-        internal RollbarException(InternalRollbarError rollbarError, string message, Exception innerException) 
+        internal RollbarException(InternalRollbarError rollbarError, string message, Exception? innerException) 
             : base(message, innerException)
         {
             this._rollbarError = rollbarError;

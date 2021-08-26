@@ -10,12 +10,13 @@
     /// Implements the <see cref="System.IDisposable" />
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    public class ConnectivityMonitor
-        : IDisposable
+    internal class RollbarConnectivityMonitor
+        : IRollbarConnectivityMonitor
+        , IDisposable
     {
         private readonly object _connectivityStatusSyncLock = new object();
         private TimeSpan _currentMonitoringInterval;
-        private Timer _monitoringTimer;
+        private Timer? _monitoringTimer;
         private readonly TimeSpan _initialDelay;
         private readonly TimeSpan _minMonitoringInterval;
         private readonly TimeSpan _maxMonitoringInterval;
@@ -26,7 +27,7 @@
         /// Gets the instance.
         /// </summary>
         /// <value>The instance.</value>
-        public static ConnectivityMonitor Instance
+        public static RollbarConnectivityMonitor? Instance
         {
             get
             {
@@ -35,9 +36,9 @@
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="ConnectivityMonitor"/> class from being created.
+        /// Prevents a default instance of the <see cref="RollbarConnectivityMonitor"/> class from being created.
         /// </summary>
-        private ConnectivityMonitor()
+        private RollbarConnectivityMonitor()
         {
             this._initialDelay = TimeSpan.Zero;
             this._minMonitoringInterval = TimeSpan.FromSeconds(10);
@@ -47,9 +48,9 @@
             this._currentMonitoringInterval = this._minMonitoringInterval;
 
             this._monitoringTimer = new Timer(
-                CheckConnectivityStatus, 
-                null, 
-                this._initialDelay, 
+                CheckConnectivityStatus,
+                null,
+                this._initialDelay,
                 this._currentMonitoringInterval
             );
 
@@ -71,8 +72,9 @@
             /// <summary>
             /// The instance
             /// </summary>
-            internal static readonly ConnectivityMonitor Instance =
-                new ConnectivityMonitor();
+            internal static readonly RollbarConnectivityMonitor? Instance =
+                RollbarInfrastructure.Instance.IsInitialized ? new RollbarConnectivityMonitor()
+                : null;
         }
 
         #endregion singleton implementation
@@ -81,10 +83,14 @@
         /// Gets a value indicating whether this instance is connectivity on.
         /// </summary>
         /// <value><c>true</c> if this instance is connectivity on; otherwise, <c>false</c>.</value>
-        public bool IsConnectivityOn 
-        { 
+        public bool IsConnectivityOn
+        {
             get;
             private set;
+
+            // Simple way to fake no-connectivity:
+            //get { return false; }
+            //private set { }
         }
 
         /// <summary>
@@ -92,13 +98,13 @@
         /// </summary>
         public void OverrideAsOffline()
         {
-            if (this.IsConnectivityOn) 
+            if(this.IsConnectivityOn)
             {
-                lock (this._connectivityStatusSyncLock)
+                lock(this._connectivityStatusSyncLock)
                 {
                     // we do not want to override anything as offline 
                     // if the monitoring timer does not exist:
-                    if (this._monitoringTimer != null)
+                    if(this._monitoringTimer != null)
                     {
                         this.IsConnectivityOn = false;
                     }
@@ -111,9 +117,9 @@
         /// </summary>
         public void Disable()
         {
-            lock (this._connectivityStatusSyncLock)
+            lock(this._connectivityStatusSyncLock)
             {
-                if (this._monitoringTimer != null)
+                if(this._monitoringTimer != null)
                 {
                     this._monitoringTimer.Change(Timeout.Infinite, Timeout.Infinite);
                     this._monitoringTimer.Dispose();
@@ -129,14 +135,17 @@
         /// <value><c>true</c> if this instance is disabled; otherwise, <c>false</c>.</value>
         public bool IsDisabled
         {
-            get { return (this._monitoringTimer == null);}
+            get
+            {
+                return (this._monitoringTimer == null);
+            }
         }
 
         /// <summary>
         /// Checks the connectivity status.
         /// </summary>
         /// <param name="state">The state.</param>
-        private void CheckConnectivityStatus(object state)
+        private void CheckConnectivityStatus(object? state)
         {
             try
             {
@@ -146,11 +155,11 @@
             catch(Exception ex)
             {
                 RollbarErrorUtility.Report(
-                    null, 
-                    null, 
-                    InternalRollbarError.ConnectivityMonitorError, 
-                    null, 
-                    ex, 
+                    null,
+                    null,
+                    InternalRollbarError.ConnectivityMonitorError,
+                    null,
+                    ex,
                     null
                     );
             }
@@ -162,9 +171,9 @@
         /// </summary>
         private void DoCheckConnectivityStatus()
         {
-            lock (this._connectivityStatusSyncLock)
+            lock(this._connectivityStatusSyncLock)
             {
-                if (this._monitoringTimer == null)
+                if(this._monitoringTimer == null)
                 {
                     this.IsConnectivityOn = true;
                     return;
@@ -172,7 +181,7 @@
 
                 bool isConnectedNow = TestApiServer();
 
-                if (isConnectedNow)
+                if(isConnectedNow)
                 {
                     this.ResetMonitoringInterval();
                 }
@@ -192,11 +201,11 @@
         {
             // Keep incrementing the monitoring interval until max monitoring interval is reached.
             // Then, keep the max monitoring interval:
-            if (this._monitoringTimer != null
-                && !this.IsConnectivityOn 
+            if(this._monitoringTimer != null
+                && !this.IsConnectivityOn
                 && this._currentMonitoringInterval < this._maxMonitoringInterval)
             {
-                this._currentMonitoringInterval = 
+                this._currentMonitoringInterval =
                     TimeSpan.FromTicks(Math.Min(this._maxMonitoringInterval.Ticks, 2 * this._currentMonitoringInterval.Ticks));
 
                 this._monitoringTimer.Change(this._currentMonitoringInterval, this._currentMonitoringInterval);
@@ -209,7 +218,7 @@
         private void ResetMonitoringInterval()
         {
             // Making sure we are using shortest monitoring interval:
-            if (this._monitoringTimer != null 
+            if(this._monitoringTimer != null
                 && this._currentMonitoringInterval > this._minMonitoringInterval)
             {
                 this._currentMonitoringInterval = this._minMonitoringInterval;
@@ -227,13 +236,13 @@
         public static bool TestApiServer()
         {
             bool result = false;
-            TcpClient client = null;
+            TcpClient? client = null;
             try
             {
-                client = new TcpClient("www.rollbar.com",80);
+                client = new TcpClient("www.rollbar.com", 80);
                 result = true;
             }
-            catch (SocketException ex)
+            catch(SocketException ex)
             {
                 Debug.WriteLine($"EXCEPTION: {ex}");
                 result = false;
@@ -260,12 +269,12 @@
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!_disposedValue)
+            if(!_disposedValue)
             {
-                if (disposing)
+                if(disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    if (this._monitoringTimer != null)
+                    if(this._monitoringTimer != null)
                     {
                         this._monitoringTimer.Dispose();
                         this._monitoringTimer = null;

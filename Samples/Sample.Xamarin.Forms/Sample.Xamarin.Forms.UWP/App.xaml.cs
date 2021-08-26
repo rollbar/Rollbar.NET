@@ -31,7 +31,7 @@ namespace Sample.Xamarin.Forms.UWP
         /// </summary>
         public App()
         {
-            RollbarHelper.ConfigureRollbarSingleton();
+            RollbarHelper.ConfigureRollbar();
 
             RollbarLocator.RollbarInstance
                 .Info("Xamarin.Forms sample: Hello world! Xamarin is here...");

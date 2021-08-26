@@ -18,8 +18,8 @@
         /// <param name="error">The error.</param>
         /// <param name="retriesLeft">The retries left.</param>
         internal CommunicationErrorEventArgs(
-            RollbarLogger logger, 
-            string payload, 
+            RollbarLogger? logger, 
+            string? payload, 
             System.Exception error, 
             int retriesLeft
             ) 
@@ -37,7 +37,7 @@
         /// <param name="error">The error.</param>
         /// <param name="retriesLeft">The retries left.</param>
         internal CommunicationErrorEventArgs(
-            RollbarLogger logger, 
+            RollbarLogger? logger, 
             Payload payload, 
             System.Exception error, 
             int retriesLeft

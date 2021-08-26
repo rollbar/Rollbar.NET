@@ -4,7 +4,6 @@
     using System.IO;
     using Microsoft.Extensions.Configuration;
     using Rollbar.Diagnostics;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// A utility class aiding in reading in settings from the .NET Core appsettings.json files.
@@ -19,11 +18,11 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarConfig config)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings();
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings();
             if (appSettingsConfig == null)
             {
                 return false;
@@ -39,11 +38,11 @@
         /// <param name="config">The configuration.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarConfig config, string appSettingsFileName)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, string appSettingsFileName)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFileName);
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFileName);
             if (appSettingsConfig == null)
             {
                 return false;
@@ -60,11 +59,11 @@
         /// <param name="appSettingsFolderPath">The application settings folder path.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarConfig config, string appSettingsFolderPath, string appSettingsFileName)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, string appSettingsFolderPath, string appSettingsFileName)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFolderPath, appSettingsFileName);
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFolderPath, appSettingsFileName);
             if (appSettingsConfig == null)
             {
                 return false;
@@ -80,7 +79,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="appSettings">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarConfig config, IConfiguration appSettings)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, IConfiguration appSettings)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -98,11 +97,11 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig config)
+        public static bool LoadAppSettings(RollbarTelemetryOptions config)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings();
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings();
             if (appSettingsConfig == null)
             {
                 return false;
@@ -118,11 +117,11 @@
         /// <param name="config">The configuration.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig config, string appSettingsFileName)
+        public static bool LoadAppSettings(RollbarTelemetryOptions config, string appSettingsFileName)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFileName);
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFileName);
             if (appSettingsConfig == null)
             {
                 return false;
@@ -139,11 +138,11 @@
         /// <param name="appSettingsFolderPath">The application settings folder path.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig config, string appSettingsFolderPath, string appSettingsFileName)
+        public static bool LoadAppSettings(RollbarTelemetryOptions config, string appSettingsFolderPath, string appSettingsFileName)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
-            IConfiguration appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFolderPath, appSettingsFileName);
+            IConfiguration? appSettingsConfig = AppSettingsUtility.LoadAppSettings(appSettingsFolderPath, appSettingsFileName);
             if (appSettingsConfig == null)
             {
                 return false;
@@ -159,7 +158,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="appSettings">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig config, IConfiguration appSettings)
+        public static bool LoadAppSettings(RollbarTelemetryOptions config, IConfiguration appSettings)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -174,7 +173,7 @@
         /// Loads the application settings.
         /// </summary>
         /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
-        private static IConfiguration LoadAppSettings()
+        private static IConfiguration? LoadAppSettings()
         {
             return AppSettingsUtility.LoadAppSettings("appsettings.json");
         }
@@ -184,7 +183,7 @@
         /// </summary>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
-        private static IConfiguration LoadAppSettings(string appSettingsFileName)
+        private static IConfiguration? LoadAppSettings(string appSettingsFileName)
         {
             return AppSettingsUtility.LoadAppSettings(
                 Directory.GetCurrentDirectory(),
@@ -198,7 +197,7 @@
         /// <param name="folderPath">The folder path.</param>
         /// <param name="appSettingsFileName">Name of the application settings file.</param>
         /// <returns>Microsoft.Extensions.Configuration.IConfiguration.</returns>
-        private static IConfiguration LoadAppSettings(string folderPath, string appSettingsFileName)
+        private static IConfiguration? LoadAppSettings(string folderPath, string appSettingsFileName)
         {
             if (!Directory.Exists(folderPath))
             {

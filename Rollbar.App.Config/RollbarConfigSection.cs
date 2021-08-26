@@ -22,11 +22,11 @@
         /// Gets the configuration.
         /// </summary>
         /// <returns></returns>
-        public static RollbarConfigSection GetConfiguration()
+        public static RollbarConfigSection? GetConfiguration()
         {
             try
             {
-                RollbarConfigSection configuration =
+                RollbarConfigSection? configuration =
                     ConfigurationManager.GetSection("rollbar")
                     as RollbarConfigSection;
                 return configuration;
@@ -49,7 +49,7 @@
         /// The access token.
         /// </value>
         [ConfigurationProperty("accessToken", IsRequired = false)]
-        public string AccessToken 
+        public string? AccessToken 
             => this["accessToken"] as string;
 
         /// <summary>
@@ -59,7 +59,7 @@
         /// The end point.
         /// </value>
         [ConfigurationProperty("endPoint", IsRequired = false)]
-        public string EndPoint 
+        public string? EndPoint 
             => this["endPoint"] as string;
 
         /// <summary>
@@ -69,26 +69,15 @@
         /// The scrub fields.
         /// </value>
         [ConfigurationProperty("scrubFields", IsRequired = false)]
-        public string ScrubFields 
+        public string? ScrubFields 
             => this["scrubFields"] as string;
-
-        /// <summary>
-        /// Gets or sets the scrub fields.
-        /// </summary>
-        /// <value>
-        /// The scrub fields.
-        /// </value>
-        [Obsolete("Use the ScrubSafelistFields property instead.")]
-        [ConfigurationProperty("scrubWhitelistFields", IsRequired = false)]
-        public string ScrubWhitelistFields 
-            => this.ScrubSafelistFields;
 
         /// <summary>
         /// Gets the scrub safelist fields.
         /// </summary>
         /// <value>The scrub safelist fields.</value>
         [ConfigurationProperty("scrubSafelistFields", IsRequired = false)]
-        public string ScrubSafelistFields 
+        public string? ScrubSafelistFields 
             => this["scrubSafelistFields"] as string;
 
         /// <summary>
@@ -140,7 +129,7 @@
         /// </summary>
         /// <value>The name of the local payload store file.</value>
         [ConfigurationProperty("localPayloadStoreFileName", IsRequired = false)]
-        public string LocalPayloadStoreFileName 
+        public string? LocalPayloadStoreFileName 
             => this["localPayloadStoreFileName"] as string;
 
         /// <summary>
@@ -148,7 +137,7 @@
         /// </summary>
         /// <value>The local payload store location path.</value>
         [ConfigurationProperty("localPayloadStoreLocationPath", IsRequired = false)]
-        public string LocalPayloadStoreLocationPath
+        public string? LocalPayloadStoreLocationPath
             => this["localPayloadStoreLocationPath"] as string;
 
         /// <summary>
@@ -158,7 +147,7 @@
         /// The environment.
         /// </value>
         [ConfigurationProperty("environment", IsRequired = false)]
-        public string Environment 
+        public string? Environment 
             => this["environment"] as string;
 
         /// <summary>
@@ -168,7 +157,7 @@
         /// The proxy address.
         /// </value>
         [ConfigurationProperty("proxyAddress", IsRequired = false)]
-        public string ProxyAddress 
+        public string? ProxyAddress 
             => this["proxyAddress"] as string;
 
         /// <summary>
@@ -176,7 +165,7 @@
         /// </summary>
         /// <value>The proxy username.</value>
         [ConfigurationProperty("proxyUsername", IsRequired = false)]
-        public string ProxyUsername 
+        public string? ProxyUsername 
             => this["proxyUsername"] as string;
 
         /// <summary>
@@ -184,7 +173,7 @@
         /// </summary>
         /// <value>The proxy password.</value>
         [ConfigurationProperty("proxyPassword", IsRequired = false)]
-        public string ProxyPassword 
+        public string? ProxyPassword 
             => this["proxyPassword"] as string;
 
         /// <summary>

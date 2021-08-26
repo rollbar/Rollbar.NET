@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace UnitTest.Rollbar
 {
@@ -10,6 +10,7 @@ namespace UnitTest.Rollbar
     using System.Collections.Concurrent;
     using System.Diagnostics;
     using System.Threading;
+    using UnitTest.RollbarTestCommon;
 
     /// <summary>
     /// Defines test class RollbarLiveFixtureBase.
@@ -29,7 +30,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// The logger configuration
         /// </summary>
-        private RollbarConfig _loggerConfig;
+        private IRollbarLoggerConfig _loggerConfig;
 
         /// <summary>
         /// The disposable rollbar instances
@@ -41,19 +42,19 @@ namespace UnitTest.Rollbar
         /// </summary>
         protected static readonly TimeSpan defaultRollbarTimeout = TimeSpan.FromSeconds(3);
 
+        protected static readonly RollbarInfrastructureConfig infrastructureConfig;
+        static RollbarLiveFixtureBase()
+        {
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
+        }
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLiveFixtureBase"/> class.
         /// </summary>
         protected RollbarLiveFixtureBase()
         {
             RollbarQueueController.Instance.InternalEvent += OnRollbarInternalEvent;
-
-            this._loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-                {
-                    Environment = RollbarUnitTestSettings.Environment, 
-                    ScrubFields = new string[] { "secret", "super_secret", }
-                };
         }
 
         /// <summary>
@@ -62,7 +63,17 @@ namespace UnitTest.Rollbar
         //[TestInitialize]
         public virtual void SetupFixture()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
+
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+            dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
+            RollbarInfrastructure.Instance
+                .Config
+                .RollbarLoggerConfig
+                .RollbarDataSecurityOptions
+                .Reconfigure(dataSecurityOptions);
+
+            this._loggerConfig = RollbarInfrastructure.Instance.Config.RollbarLoggerConfig;
 
             this.Reset();
         }
@@ -125,6 +136,8 @@ namespace UnitTest.Rollbar
         {
             this.ClearAllExpectedEventCounts();
             this.ClearAllRollbarEvents();
+
+            RollbarInfrastructure.Instance.QueueController.FlushQueues();
         }
 
 
@@ -318,7 +331,7 @@ namespace UnitTest.Rollbar
         /// Provides the live rollbar configuration.
         /// </summary>
         /// <returns>IRollbarConfig.</returns>
-        protected IRollbarConfig ProvideLiveRollbarConfig()
+        protected IRollbarLoggerConfig ProvideLiveRollbarConfig()
         {
             return this.ProvideLiveRollbarConfig(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
         }
@@ -329,12 +342,21 @@ namespace UnitTest.Rollbar
         /// <param name="rollbarAccessToken">The rollbar access token.</param>
         /// <param name="rollbarEnvironment">The rollbar environment.</param>
         /// <returns>IRollbarConfig.</returns>
-        protected IRollbarConfig ProvideLiveRollbarConfig(string rollbarAccessToken, string rollbarEnvironment)
+        protected IRollbarLoggerConfig ProvideLiveRollbarConfig(string rollbarAccessToken, string rollbarEnvironment)
         {
             if (this._loggerConfig == null)
             {
-                this._loggerConfig =
-                    new RollbarConfig(rollbarAccessToken) { Environment = rollbarEnvironment, ScrubFields = new string[] {"secret", "super_secret", } };
+                RollbarDestinationOptions destinationOptions = 
+                    new RollbarDestinationOptions(rollbarAccessToken, rollbarEnvironment);
+
+                RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+                dataSecurityOptions.ScrubFields = new string[] { "secret", "super_secret", };
+
+                RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
+                loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+                loggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+                this._loggerConfig = loggerConfig;
             }
             return this._loggerConfig;
         }
@@ -345,7 +367,7 @@ namespace UnitTest.Rollbar
         /// <returns>IRollbar.</returns>
         protected IRollbar ProvideDisposableRollbar()
         {
-            IRollbar rollbar = RollbarFactory.CreateNew(isSingleton: false, rollbarConfig: this.ProvideLiveRollbarConfig());
+            IRollbar rollbar = RollbarFactory.CreateNew(config: this.ProvideLiveRollbarConfig());
             this._disposableRollbarInstances.Add(rollbar);
             return rollbar;
         }

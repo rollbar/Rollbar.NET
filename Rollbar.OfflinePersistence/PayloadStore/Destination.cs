@@ -20,13 +20,13 @@
         /// Gets or sets the endpoint.
         /// </summary>
         /// <value>The endpoint.</value>
-        public string Endpoint { get; set; }
+        public string? Endpoint { get; set; }
 
         /// <summary>
         /// Gets or sets the access token.
         /// </summary>
         /// <value>The access token.</value>
-        public string AccessToken { get; set; }
+        public string? AccessToken { get; set; }
 
         /// <summary>
         /// Gets or sets the payload records.

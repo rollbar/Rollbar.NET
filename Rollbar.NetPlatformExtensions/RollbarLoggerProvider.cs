@@ -4,7 +4,6 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar.AppSettings.Json;
-    using Rollbar.Telemetry;
 
     using System;
     using System.Collections.Concurrent;
@@ -23,18 +22,38 @@
         /// <summary>
         /// The rollbar options
         /// </summary>
-        protected readonly RollbarOptions _rollbarOptions;
+        protected readonly RollbarOptions? _rollbarOptions;
 
         /// <summary>
-        /// The rollbar configuration
+        /// The rollbar infrastructure configuration
         /// </summary>
-        protected readonly IRollbarConfig _rollbarConfig;
+        protected readonly IRollbarInfrastructureConfig? _rollbarInfrastructureConfig;
+
+        /// <summary>
+        /// The rollbar logger configuration
+        /// </summary>
+        protected readonly IRollbarLoggerConfig? _rollbarLoggerConfig;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.
+        /// </summary>
+        /// <param name="config">The configuration.</param>
+        /// <param name="options">The options.</param>
+        public RollbarLoggerProvider(IRollbarLoggerConfig config, IOptions<RollbarOptions>? options = null)
+        {
+            this._rollbarLoggerConfig = config;
+
+            if(options != null)
+            {
+                this._rollbarOptions = options.Value;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLoggerProvider"/> class.
         /// </summary>
         public RollbarLoggerProvider()
-            : this(null,null)
+            : this(null as IConfiguration, null)
         {
         }
 
@@ -44,15 +63,23 @@
         /// <param name="configuration">The configuration.</param>
         /// <param name="options">The options.</param>
         public RollbarLoggerProvider(
-                    IConfiguration configuration,
-                    IOptions<RollbarOptions> options
+                    IConfiguration? configuration,
+                    IOptions<RollbarOptions>? options = default
                     )
         {
-            if(configuration!= null)
+            if(configuration != null)
             {
+                this._rollbarInfrastructureConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
+                if(RollbarInfrastructure.Instance.IsInitialized)
+                {
+                    RollbarInfrastructure.Instance.Config.Reconfigure(this._rollbarInfrastructureConfig);
+                }
+                else
+                {
+                    RollbarInfrastructure.Instance.Init(this._rollbarInfrastructureConfig);
+                }
                 RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-                TelemetryCollector.Instance.StartAutocollection();
-                this._rollbarConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
+                _ = Rollbar.RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
             }
 
             if(options != null)
@@ -78,11 +105,30 @@
         /// <returns>ILogger.</returns>
         protected virtual ILogger CreateLoggerImplementation(string name)
         {
-            return new RollbarLogger(
-                name
-                , this._rollbarConfig
-                , this._rollbarOptions
-                );
+            if(this._rollbarInfrastructureConfig != null
+                && this._rollbarInfrastructureConfig.RollbarLoggerConfig != null
+                )
+            {
+                return new RollbarLogger(
+                    name
+                    , this._rollbarInfrastructureConfig.RollbarLoggerConfig
+                    , this._rollbarOptions
+                    );
+            }
+            else if(this._rollbarLoggerConfig != null)
+            {
+                return new RollbarLogger(
+                    name
+                    , this._rollbarLoggerConfig
+                    , this._rollbarOptions
+                    );
+            }
+            else
+            {
+                throw new RollbarException(
+                    InternalRollbarError.InfrastructureError, 
+                    $"{this.GetType().FullName}: Failed to create ILogger!");
+            }
         }
 
         #region IDisposable Support
@@ -101,11 +147,11 @@
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects).
-                    foreach(var item in this._loggers?.Values)
+                    foreach(var item in this._loggers.Values)
                     {
                         (item as IDisposable)?.Dispose();
                     }
-                    this._loggers?.Clear();
+                    this._loggers.Clear();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

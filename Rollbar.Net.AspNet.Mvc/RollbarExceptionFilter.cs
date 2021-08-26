@@ -17,7 +17,7 @@
         /// <summary>
         /// The common rollbar data title
         /// </summary>
-        private readonly string _commonRollbarDataTitle;
+        private readonly string? _commonRollbarDataTitle;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarExceptionFilter" /> class.
@@ -32,7 +32,7 @@
         /// Initializes a new instance of the <see cref="RollbarExceptionFilter" /> class.
         /// </summary>
         /// <param name="commonRollbarDataTitle">The common rollbar data title.</param>
-        public RollbarExceptionFilter(string commonRollbarDataTitle)
+        public RollbarExceptionFilter(string? commonRollbarDataTitle)
         {
             this._commonRollbarDataTitle = commonRollbarDataTitle;
         }

@@ -19,6 +19,6 @@
         /// </summary>
         /// <param name="measuredTime">The measured time.</param>
         /// <param name="measurementClassification">The measurement classification.</param>
-        void Capture(TimeSpan measuredTime, IClassification measurementClassification);
+        void Capture(TimeSpan measuredTime, IClassification? measurementClassification);
     }
 }

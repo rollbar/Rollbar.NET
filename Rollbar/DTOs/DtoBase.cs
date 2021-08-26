@@ -55,8 +55,8 @@
         {
             foreach(var property in this.StringProperties)
             {
-                string originalString = property.GetValue(this) as string;
-                string truncatedString = StringUtility.Truncate(originalString, encoding, stringBytesLimit);
+                string? originalString = property.GetValue(this) as string;
+                string? truncatedString = StringUtility.Truncate(originalString, encoding, stringBytesLimit);
                 if (!object.ReferenceEquals(originalString, truncatedString))
                 {
                     property.SetValue(this, truncatedString);
@@ -65,7 +65,7 @@
 
             foreach (var property in this.DictionaryProperties)
             {
-                var objectDictionary = property.GetValue(this) as IDictionary<string, object>;
+                var objectDictionary = property.GetValue(this) as IDictionary<string, object?>;
                 if (objectDictionary != null)
                 {
                     TruncateStringValues(objectDictionary, encoding, stringBytesLimit);
@@ -73,7 +73,7 @@
                     continue;
                 }
 
-                var stringDictionary = property.GetValue(this) as IDictionary<string, string>;
+                var stringDictionary = property.GetValue(this) as IDictionary<string, string?>;
                 if (stringDictionary != null)
                 {
                     TruncateStringValues(stringDictionary, encoding, stringBytesLimit);
@@ -84,7 +84,7 @@
 
             foreach (var property in this.DtoProperties)
             {
-                DtoBase dto = property.GetValue(this) as DtoBase;
+                DtoBase? dto = property.GetValue(this) as DtoBase;
                 if (dto != null)
                 {
                     dto.TruncateStrings(encoding, stringBytesLimit);
@@ -122,7 +122,7 @@
                     {
                         continue;
                     }
-                    List<string> truncatedStrings = new List<string>(); 
+                    List<string?> truncatedStrings = new List<string?>(); 
                     foreach(var str in stringArray)
                     {
                         truncatedStrings.Add(StringUtility.Truncate(str, encoding, stringBytesLimit));
@@ -140,17 +140,17 @@
         /// <param name="dictionary">The dictionary.</param>
         /// <param name="encoding">The encoding.</param>
         /// <param name="stringBytesLimit">The string bytes limit.</param>
-        protected void TruncateStringValues(IDictionary<string, object> dictionary, Encoding encoding, int stringBytesLimit)
+        protected void TruncateStringValues(IDictionary<string, object?> dictionary, Encoding encoding, int stringBytesLimit)
         {
             Assumption.AssertNotNull(dictionary, nameof(dictionary));
 
             var keys = dictionary.Keys.ToArray();
             foreach (var key in keys)
             {
-                string originalString = dictionary[key] as string;
+                string? originalString = dictionary[key] as string;
                 if (originalString != null)
                 {
-                    string truncatedString = StringUtility.Truncate(originalString, encoding, stringBytesLimit);
+                    string? truncatedString = StringUtility.Truncate(originalString, encoding, stringBytesLimit);
                     if (!object.ReferenceEquals(originalString, truncatedString))
                     {
                         dictionary[key] = truncatedString;
@@ -158,14 +158,14 @@
                     continue;
                 }
 
-                var objectDictionary = dictionary[key] as IDictionary<string, object>;
+                var objectDictionary = dictionary[key] as IDictionary<string, object?>;
                 if (objectDictionary != null)
                 {
                     TruncateStringValues(objectDictionary, encoding, stringBytesLimit);
                     continue;
                 }
 
-                var stringDictionary = dictionary[key] as IDictionary<string, string>;
+                var stringDictionary = dictionary[key] as IDictionary<string, string?>;
                 if (stringDictionary != null)
                 {
                     TruncateStringValues(stringDictionary, encoding, stringBytesLimit);
@@ -181,17 +181,17 @@
         /// <param name="dictionary">The dictionary.</param>
         /// <param name="encoding">The encoding.</param>
         /// <param name="stringBytesLimit">The string bytes limit.</param>
-        protected static void TruncateStringValues(IDictionary<string, string> dictionary, Encoding encoding, int stringBytesLimit)
+        protected static void TruncateStringValues(IDictionary<string, string?> dictionary, Encoding encoding, int stringBytesLimit)
         {
             Assumption.AssertNotNull(dictionary, nameof(dictionary));
 
             var keys = dictionary.Keys.ToArray();
             foreach (var key in keys)
             {
-                string original = dictionary[key];
+                string? original = dictionary[key];
                 if (original != null)
                 {
-                    string truncated = StringUtility.Truncate(original, encoding, stringBytesLimit);
+                    string? truncated = StringUtility.Truncate(original, encoding, stringBytesLimit);
                     if (!object.ReferenceEquals(original, truncated))
                     {
                         dictionary[key] = truncated;
@@ -321,7 +321,7 @@
         /// </returns>
         public virtual string TraceAsString(string indent)
         {
-            return this.ToString();
+            return this.ToString() ?? string.Empty;
         }
 
         /// <summary>
@@ -348,7 +348,7 @@
         /// </summary>
         /// <returns>Validator.</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public virtual Validator GetValidator()
+        public virtual Validator? GetValidator()
         {
             return null;
         }

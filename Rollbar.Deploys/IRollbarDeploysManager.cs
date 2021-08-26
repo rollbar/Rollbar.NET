@@ -19,7 +19,7 @@
         /// </summary>
         /// <param name="deploymentID">The deployment identifier.</param>
         /// <returns></returns>
-        Task<IDeploymentDetails> GetDeploymentAsync(string deploymentID);
+        Task<IDeploymentDetails?> GetDeploymentAsync(string deploymentID);
 
         /// <summary>
         /// Gets the deployments page asynchronously.
@@ -27,6 +27,6 @@
         /// <param name="environment">The environment.</param>
         /// <param name="pageNumber">The page number.</param>
         /// <returns></returns>
-        Task<IDeploymentDetails[]> GetDeploymentsPageAsync(string environment, int pageNumber);
+        Task<IDeploymentDetails[]?> GetDeploymentsPageAsync(string environment, int pageNumber);
     }
 }

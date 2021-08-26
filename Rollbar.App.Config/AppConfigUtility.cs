@@ -1,7 +1,7 @@
 ﻿namespace Rollbar.App.Config
 {
-    using Rollbar.Telemetry;
     using System;
+    using System.Diagnostics;
 
     /// <summary>
     /// Class AppConfigUtility.
@@ -16,148 +16,209 @@
         /// <summary>
         /// Loads the application settings.
         /// </summary>
-        /// <param name="rollbarConfig">The Rollbar configuration.</param>
+        /// <param name="config">The configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarConfig rollbarConfig)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config)
         {
-            return AppConfigUtility.LoadAppSettings(rollbarConfig, RollbarConfigSection.GetConfiguration());
+            return AppConfigUtility.LoadAppSettings(config, RollbarConfigSection.GetConfiguration());
         }
 
         /// <summary>
         /// Loads the application settings.
         /// </summary>
-        /// <param name="rollbarConfig">The configuration.</param>
+        /// <param name="config">The configuration.</param>
         /// <param name="rollbarConfigSection">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(RollbarConfig rollbarConfig, RollbarConfigSection rollbarConfigSection)
+        public static bool LoadAppSettings(RollbarInfrastructureConfig config, RollbarConfigSection? rollbarConfigSection)
         {
             if (rollbarConfigSection == null)
             {
                 return false;
             }
 
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.AccessToken))
+            // infrastructure options:
+            //////////////////////////
+            
+            RollbarInfrastructureOptions infrastructureOptions = new RollbarInfrastructureOptions();
+
+            if(rollbarConfigSection.MaxReportsPerMinute.HasValue)
             {
-                rollbarConfig.AccessToken = rollbarConfigSection.AccessToken;
+                infrastructureOptions.MaxReportsPerMinute = rollbarConfigSection.MaxReportsPerMinute.Value;
             }
 
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.Environment))
+            if(rollbarConfigSection.ReportingQueueDepth.HasValue)
             {
-                rollbarConfig.Environment = rollbarConfigSection.Environment;
+                infrastructureOptions.ReportingQueueDepth = rollbarConfigSection.ReportingQueueDepth.Value;
             }
-            
-            if (rollbarConfigSection.Enabled.HasValue)
+
+            if(rollbarConfigSection.MaxItems.HasValue)
             {
-                rollbarConfig.Enabled = rollbarConfigSection.Enabled.Value;
+                infrastructureOptions.MaxItems = rollbarConfigSection.MaxItems.Value;
             }
-            
-            if (rollbarConfigSection.Transmit.HasValue)
+
+            if(rollbarConfigSection.CaptureUncaughtExceptions.HasValue)
             {
-                rollbarConfig.Transmit = rollbarConfigSection.Transmit.Value;
+                infrastructureOptions.CaptureUncaughtExceptions = rollbarConfigSection.CaptureUncaughtExceptions.Value;
             }
-            
-            if (rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
+
+            if(rollbarConfigSection.PayloadPostTimeout.HasValue)
             {
-                rollbarConfig.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
+                infrastructureOptions.PayloadPostTimeout = rollbarConfigSection.PayloadPostTimeout.Value;
             }
-            
-            if (rollbarConfigSection.EnableLocalPayloadStore.HasValue)
+
+            config.RollbarInfrastructureOptions.Reconfigure(infrastructureOptions);
+
+            // telemetry options:
+            /////////////////////
+
+            RollbarTelemetryOptions telemetryOptions = new RollbarTelemetryOptions();
+            if(AppConfigUtility.LoadAppSettings(telemetryOptions))
             {
-                rollbarConfig.EnableLocalPayloadStore = rollbarConfigSection.EnableLocalPayloadStore.Value;
+                config.RollbarTelemetryOptions.Reconfigure(telemetryOptions);
             }
-            
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreFileName))
+
+            //if(telemetryConfigSection.TelemetryEnabled.HasValue)
+            //{
+            //    telemetryOptions.TelemetryEnabled = telemetryConfigSection.TelemetryEnabled.Value;
+            //}
+            //if(telemetryConfigSection.TelemetryQueueDepth.HasValue)
+            //{
+            //    telemetryOptions.TelemetryQueueDepth = telemetryConfigSection.TelemetryQueueDepth.Value;
+            //}
+            //if(telemetryConfigSection.TelemetryAutoCollectionTypes.HasValue)
+            //{
+            //    telemetryOptions.TelemetryAutoCollectionTypes = telemetryConfigSection.TelemetryAutoCollectionTypes.Value;
+            //}
+            //if(telemetryConfigSection.TelemetryAutoCollectionInterval.HasValue)
+            //{
+            //    telemetryOptions.TelemetryAutoCollectionInterval = telemetryConfigSection.TelemetryAutoCollectionInterval.Value;
+            //}
+
+            //config.RollbarTelemetryOptions.Reconfigure(telemetryOptions);
+
+            // offline payload store options:
+            /////////////////////////////////
+
+            RollbarOfflineStoreOptions offlineStoreOptions = new RollbarOfflineStoreOptions();
+
+            if(rollbarConfigSection.EnableLocalPayloadStore.HasValue)
             {
-                rollbarConfig.LocalPayloadStoreFileName = rollbarConfigSection.LocalPayloadStoreFileName;
+                offlineStoreOptions.EnableLocalPayloadStore = rollbarConfigSection.EnableLocalPayloadStore.Value;
             }
-            
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreLocationPath))
+
+            if(!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreFileName))
             {
-                rollbarConfig.LocalPayloadStoreLocationPath = rollbarConfigSection.LocalPayloadStoreLocationPath;
+                offlineStoreOptions.LocalPayloadStoreFileName = rollbarConfigSection.LocalPayloadStoreFileName;
             }
-            
-            if (rollbarConfigSection.MaxReportsPerMinute.HasValue)
+
+            if(!string.IsNullOrWhiteSpace(rollbarConfigSection.LocalPayloadStoreLocationPath))
             {
-                rollbarConfig.MaxReportsPerMinute = rollbarConfigSection.MaxReportsPerMinute.Value;
+                offlineStoreOptions.LocalPayloadStoreLocationPath = rollbarConfigSection.LocalPayloadStoreLocationPath;
             }
-            
-            if (rollbarConfigSection.ReportingQueueDepth.HasValue)
+
+            config.RollbarOfflineStoreOptions.Reconfigure(offlineStoreOptions);
+
+            // logger destination options:
+            //////////////////////////////
+
+            if(!string.IsNullOrWhiteSpace(rollbarConfigSection.AccessToken))
             {
-                rollbarConfig.ReportingQueueDepth = rollbarConfigSection.ReportingQueueDepth.Value;
+                RollbarDestinationOptions destinationOptions = 
+                    new RollbarDestinationOptions(rollbarConfigSection.AccessToken);
+
+                if(!string.IsNullOrWhiteSpace(rollbarConfigSection.Environment))
+                {
+                    destinationOptions.Environment = rollbarConfigSection.Environment;
+                }
+
+                if(!string.IsNullOrWhiteSpace(rollbarConfigSection.EndPoint))
+                {
+                    destinationOptions.EndPoint = rollbarConfigSection.EndPoint;
+                }
+
+                config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
             }
+
+            // logger developer options:
+            ////////////////////////////
             
-            if (rollbarConfigSection.MaxItems.HasValue)
+            if(rollbarConfigSection.Enabled.HasValue)
             {
-                rollbarConfig.MaxItems = rollbarConfigSection.MaxItems.Value;
+                config.RollbarLoggerConfig.RollbarDeveloperOptions.Enabled = rollbarConfigSection.Enabled.Value;
             }
-            
-            if (rollbarConfigSection.CaptureUncaughtExceptions.HasValue)
+
+            if(rollbarConfigSection.Transmit.HasValue)
             {
-                rollbarConfig.CaptureUncaughtExceptions = rollbarConfigSection.CaptureUncaughtExceptions.Value;
+                config.RollbarLoggerConfig.RollbarDeveloperOptions.Transmit = rollbarConfigSection.Transmit.Value;
             }
-            
-            if (rollbarConfigSection.LogLevel.HasValue)
+
+            if(rollbarConfigSection.RethrowExceptionsAfterReporting.HasValue)
             {
-                rollbarConfig.LogLevel = rollbarConfigSection.LogLevel.Value;
+                config.RollbarLoggerConfig.RollbarDeveloperOptions.RethrowExceptionsAfterReporting = rollbarConfigSection.RethrowExceptionsAfterReporting.Value;
             }
-            
-            if (rollbarConfigSection.ScrubFields != null && rollbarConfigSection.ScrubFields.Length > 0)
+
+            if(rollbarConfigSection.LogLevel.HasValue)
             {
-                rollbarConfig.ScrubFields =
+                config.RollbarLoggerConfig.RollbarDeveloperOptions.LogLevel = rollbarConfigSection.LogLevel.Value;
+            }
+
+            // logger HTTP proxy options:
+            /////////////////////////////
+
+            if(!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyAddress))
+            {
+                HttpProxyOptions httpProxyOptions = new HttpProxyOptions(rollbarConfigSection.ProxyAddress);
+
+                if(!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyUsername))
+                {
+                    httpProxyOptions.ProxyUsername = rollbarConfigSection.ProxyUsername;
+                }
+
+                if(!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyPassword))
+                {
+                    httpProxyOptions.ProxyPassword = rollbarConfigSection.ProxyPassword;
+                }
+
+                config.RollbarLoggerConfig.HttpProxyOptions.Reconfigure(httpProxyOptions);
+            }
+
+            // logger data security options:
+            ////////////////////////////////
+
+            RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+
+            if(rollbarConfigSection.ScrubFields != null && rollbarConfigSection.ScrubFields.Length > 0)
+            {
+                dataSecurityOptions.ScrubFields =
                     string.IsNullOrEmpty(rollbarConfigSection.ScrubFields) ? new string[0]
                     : rollbarConfigSection.ScrubFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
             }
-            
-            if (rollbarConfigSection.ScrubSafelistFields != null && rollbarConfigSection.ScrubSafelistFields.Length > 0)
+
+            if(rollbarConfigSection.ScrubSafelistFields != null && rollbarConfigSection.ScrubSafelistFields.Length > 0)
             {
-                rollbarConfig.ScrubSafelistFields =
+                dataSecurityOptions.ScrubSafelistFields =
                     string.IsNullOrEmpty(rollbarConfigSection.ScrubSafelistFields) ? new string[0]
                     : rollbarConfigSection.ScrubSafelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
             }
 
-            if (rollbarConfigSection.ScrubWhitelistFields != null && rollbarConfigSection.ScrubWhitelistFields.Length > 0)
+            if(rollbarConfigSection.PersonDataCollectionPolicies.HasValue)
             {
-                rollbarConfig.ScrubWhitelistFields =
-                    string.IsNullOrEmpty(rollbarConfigSection.ScrubWhitelistFields) ? new string[0]
-                    : rollbarConfigSection.ScrubWhitelistFields.Split(listValueSplitters, StringSplitOptions.RemoveEmptyEntries);
-            }
-            
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.EndPoint))
-            {
-                rollbarConfig.EndPoint = rollbarConfigSection.EndPoint;
-            }
-            
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyAddress))
-            {
-                rollbarConfig.ProxyAddress = rollbarConfigSection.ProxyAddress;
-            }
-            
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyUsername))
-            {
-                rollbarConfig.ProxyUsername = rollbarConfigSection.ProxyUsername;
-            }
-            
-            if (!string.IsNullOrWhiteSpace(rollbarConfigSection.ProxyPassword))
-            {
-                rollbarConfig.ProxyPassword = rollbarConfigSection.ProxyPassword;
-            }
-            
-            if (rollbarConfigSection.PayloadPostTimeout.HasValue)
-            {
-                rollbarConfig.PayloadPostTimeout = rollbarConfigSection.PayloadPostTimeout.Value;
+                dataSecurityOptions.PersonDataCollectionPolicies = rollbarConfigSection.PersonDataCollectionPolicies.Value;
             }
 
-            if (rollbarConfigSection.PersonDataCollectionPolicies.HasValue)
+            if(rollbarConfigSection.IpAddressCollectionPolicy.HasValue)
             {
-                rollbarConfig.PersonDataCollectionPolicies = rollbarConfigSection.PersonDataCollectionPolicies.Value;
-            }
-            
-            if (rollbarConfigSection.IpAddressCollectionPolicy.HasValue)
-            {
-                rollbarConfig.IpAddressCollectionPolicy = rollbarConfigSection.IpAddressCollectionPolicy.Value;
+                dataSecurityOptions.IpAddressCollectionPolicy = rollbarConfigSection.IpAddressCollectionPolicy.Value;
             }
 
-            return true;
+            config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+
+
+            var validationResults = config.Validate();
+            bool configLoadingResult = 
+                (validationResults == null) || (validationResults.Count == 0);
+            Debug.Assert(configLoadingResult);
+            return configLoadingResult;
         }
 
         #endregion RollbarConfig
@@ -169,7 +230,7 @@
         /// </summary>
         /// <param name="telemetryConfig">The configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig telemetryConfig)
+        public static bool LoadAppSettings(RollbarTelemetryOptions telemetryConfig)
         {
             return AppConfigUtility.LoadAppSettings(telemetryConfig, RollbarTelemetryConfigSection.GetConfiguration());
         }
@@ -180,7 +241,7 @@
         /// <param name="telemetryConfig">The configuration.</param>
         /// <param name="telemetryConfigSection">The application settings.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
-        public static bool LoadAppSettings(TelemetryConfig telemetryConfig, RollbarTelemetryConfigSection telemetryConfigSection)
+        public static bool LoadAppSettings(RollbarTelemetryOptions telemetryConfig, RollbarTelemetryConfigSection? telemetryConfigSection)
         {
             if (telemetryConfigSection == null)
             {

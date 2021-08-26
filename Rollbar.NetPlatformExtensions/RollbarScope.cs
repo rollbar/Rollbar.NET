@@ -23,7 +23,7 @@
         /// <summary>
         /// The state
         /// </summary>
-        private readonly object _state;
+        private readonly object? _state;
 
         /// <summary>
         /// The log items count per this scope
@@ -35,7 +35,7 @@
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="state">The state.</param>
-        public RollbarScope(string name, object state)
+        public RollbarScope(string name, object? state)
         {
             this._name = name;
             this._state = state;
@@ -46,19 +46,19 @@
         /// Gets or sets the next.
         /// </summary>
         /// <value>The next.</value>
-        public RollbarScope Next { get; private set; }
+        public RollbarScope? Next { get; private set; }
 
         /// <summary>
         /// The current scope
         /// </summary>
-        private static AsyncLocal<RollbarScope> currentScope =
-            new AsyncLocal<RollbarScope>();
+        private static AsyncLocal<RollbarScope?> currentScope =
+            new AsyncLocal<RollbarScope?>();
 
         /// <summary>
         /// Gets or sets the current.
         /// </summary>
         /// <value>The current.</value>
-        public static RollbarScope Current
+        public static RollbarScope? Current
         {
             set { currentScope.Value = value; }
             get { return currentScope.Value; }
@@ -94,7 +94,7 @@
         /// Gets the state.
         /// </summary>
         /// <value>The state.</value>
-        public object State
+        public object? State
         {
             get { return this._state; }
         }

@@ -9,6 +9,7 @@ namespace UnitTest.Rollbar
     using System.Threading;
     using global::Rollbar.DTOs;
     using Exception = System.Exception;
+    using UnitTest.RollbarTestCommon;
 
     [TestClass]
     [TestCategory(nameof(RollbarLoggerBlockingWrapperFixture))]
@@ -20,15 +21,12 @@ namespace UnitTest.Rollbar
         [TestInitialize]
         public void SetupFixture()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
 
             RollbarQueueController.Instance.FlushQueues();
             //RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
 
-            RollbarConfig loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
-            _logger = RollbarFactory.CreateNew().Configure(loggerConfig);
-
+            _logger = RollbarFactory.CreateNew().Configure(RollbarInfrastructure.Instance.Config.RollbarLoggerConfig);
         }
 
         [TestCleanup]
@@ -120,7 +118,7 @@ namespace UnitTest.Rollbar
         {
             RollbarQueueController.Instance.InternalEvent += Instance_InternalEvent;
 
-            RollbarConfig badConfig = new RollbarConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
+            RollbarLoggerConfig badConfig = new RollbarLoggerConfig("MISCONFIGURED_TOKEN"); // this is clearly wrong token...
             using (IRollbar logger = RollbarFactory.CreateNew(badConfig))
             {
                 try
@@ -154,12 +152,16 @@ namespace UnitTest.Rollbar
                 acctualLogLevel = payload.Data.Level.Value;
             }
 
-            var loggerConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken)
-            {
-                Environment = RollbarUnitTestSettings.Environment,
-                Transform = Transform,
-
-            };
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.Environment
+                    );
+            RollbarPayloadManipulationOptions payloadManipulationOptions = 
+                new RollbarPayloadManipulationOptions(Transform);
+            var loggerConfig = new RollbarLoggerConfig();
+            loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
+            loggerConfig.RollbarPayloadManipulationOptions.Reconfigure(payloadManipulationOptions);
             using (var logger = RollbarFactory.CreateNew().Configure(loggerConfig))
             {
                 try

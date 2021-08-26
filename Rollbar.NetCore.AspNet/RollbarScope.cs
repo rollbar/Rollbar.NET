@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="name">The name.</param>
         /// <param name="state">The state.</param>
-        public RollbarScope(string name, object state)
+        public RollbarScope(string name, object? state)
             : base(name, state)
         {
         }
@@ -23,12 +23,12 @@
         /// Gets or sets the HTTP context.
         /// </summary>
         /// <value>The HTTP context.</value>
-        public RollbarHttpContext HttpContext { get; set; }
+        public RollbarHttpContext? HttpContext { get; set; }
 
-        private static AsyncLocal<RollbarScope> currentScope =
-            new AsyncLocal<RollbarScope>();
+        private static AsyncLocal<RollbarScope?> currentScope =
+            new AsyncLocal<RollbarScope?>();
 
-        public static new RollbarScope Current
+        public static new RollbarScope? Current
         {
             set
             {

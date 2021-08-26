@@ -27,7 +27,7 @@
             string rollbarAccessToken, 
             string rollbarEnvironment,
             TimeSpan? rollbarBlockingLoggingTimeout,
-            IFormatProvider formatProvider
+            IFormatProvider? formatProvider
             )
             : this(
                   RollbarPlugInCore.CreateConfig(rollbarAccessToken: rollbarAccessToken, rollbarEnvironment: rollbarEnvironment),
@@ -44,9 +44,9 @@
         /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
         /// <param name="formatProvider">The format provider.</param>
         public RollbarSink(
-            IRollbarConfig rollbarConfig,
+            IRollbarInfrastructureConfig rollbarConfig,
             TimeSpan? rollbarBlockingLoggingTimeout,
-            IFormatProvider formatProvider
+            IFormatProvider? formatProvider
             )
         {
             this._rollbarPlugIn = 

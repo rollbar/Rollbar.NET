@@ -1,7 +1,6 @@
 ﻿namespace Rollbar
 {
     using Rollbar.DTOs;
-    using System.Collections.Generic;
 
     /// <summary>
     /// Interface IRollbarPackage
@@ -19,7 +18,7 @@
         /// Packages as rollbar data.
         /// </summary>
         /// <returns>Rollbar Data DTO or null (if packaging is not applicable in some cases).</returns>
-        Data PackageAsRollbarData();
+        Data? PackageAsRollbarData();
 
         /// <summary>
         /// Gets a value indicating whether to package synchronously (within the logging method call).
@@ -34,6 +33,6 @@
         /// Gets the rollbar data packaged by this strategy (if any).
         /// </summary>
         /// <value>The rollbar data.</value>
-        Data RollbarData { get; }
+        Data? RollbarData { get; }
     }
 }

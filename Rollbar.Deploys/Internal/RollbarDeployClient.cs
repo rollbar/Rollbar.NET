@@ -15,10 +15,10 @@
     {
         private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarDeployClient).FullName);
 
-        private readonly RollbarConfig _config;
-        private readonly HttpClient _httpClient;
+        private readonly RollbarLoggerConfig _config;
+        private readonly HttpClient? _httpClient;
 
-        public RollbarDeployClient(RollbarConfig config, HttpClient httpClient = null)
+        public RollbarDeployClient(RollbarLoggerConfig config, HttpClient? httpClient = null)
         {
             Assumption.AssertNotNull(config, nameof(config));
 
@@ -26,7 +26,7 @@
 
             this._httpClient = httpClient;
 
-            var sp = ServicePointManager.FindServicePoint(new Uri(this._config.EndPoint));
+            var sp = ServicePointManager.FindServicePoint(new Uri(this._config.RollbarDestinationOptions.EndPoint));
             try
             {
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
@@ -41,7 +41,7 @@
 
         }
 
-        public RollbarConfig Config { get { return this._config; } }
+        public RollbarLoggerConfig Config { get { return this._config; } }
 
         private HttpClient ProvideHttpClient()
         {
@@ -50,7 +50,10 @@
                 return this._httpClient;
             }
 
-            return HttpClientUtility.CreateHttpClient(this._config.ProxyAddress, this._config.ProxyUsername, this._config.ProxyPassword);
+            return HttpClientUtility.CreateHttpClient(
+                this._config.HttpProxyOptions.ProxyAddress, 
+                this._config.HttpProxyOptions.ProxyUsername, 
+                this._config.HttpProxyOptions.ProxyPassword);
         }
 
         private bool Release(HttpClient httpClient)
@@ -78,13 +81,25 @@
         /// <returns></returns>
         public async Task PostAsync(IDeployment deployment)
         {
+            if(deployment == null)
+            {
+                return; //no-op
+            }
+
             Assumption.AssertNotNull(this._config, nameof(this._config));
-            Assumption.AssertNotNullOrWhiteSpace(this._config.AccessToken, nameof(this._config.AccessToken));
-            Assumption.AssertFalse(string.IsNullOrWhiteSpace(deployment.Environment) && string.IsNullOrWhiteSpace(this._config.Environment), nameof(deployment.Environment));
+            Assumption.AssertNotNullOrWhiteSpace(
+                this._config.RollbarDestinationOptions.AccessToken, 
+                nameof(this._config.RollbarDestinationOptions.AccessToken)
+                );
+            Assumption.AssertFalse(
+                string.IsNullOrWhiteSpace(deployment.Environment) 
+                && string.IsNullOrWhiteSpace(this._config.RollbarDestinationOptions.Environment), 
+                nameof(deployment.Environment)
+                );
             Assumption.AssertNotNullOrWhiteSpace(deployment.Revision, nameof(deployment.Revision));
 
             Assumption.AssertLessThan(
-                deployment.Environment.Length, 256,
+                deployment.Environment!.Length, 256,
                 nameof(deployment.Environment.Length)
                 );
             Assumption.AssertTrue(
@@ -96,11 +111,11 @@
                 nameof(deployment.Comment)
                 );
 
-            var uri = new Uri(this._config.EndPoint + RollbarDeployClient.deployApiPath);
+            var uri = new Uri(this._config.RollbarDestinationOptions.EndPoint + RollbarDeployClient.deployApiPath);
 
-            var parameters = new Dictionary<string, string> {
-                    { "access_token", this._config.AccessToken },
-                    { "environment", (!string.IsNullOrWhiteSpace(deployment.Environment)) ? deployment.Environment : this._config.Environment  },
+            var parameters = new Dictionary<string, string?> {
+                    { "access_token", this._config.RollbarDestinationOptions.AccessToken },
+                    { "environment", (!string.IsNullOrWhiteSpace(deployment.Environment)) ? deployment.Environment! : this._config.RollbarDestinationOptions.Environment!  },
                     { "revision", deployment.Revision },
                     { "rollbar_username", deployment.RollbarUsername },
                     { "local_username", deployment.LocalUsername },
@@ -131,13 +146,13 @@
         /// <param name="readAccessToken">The read access token.</param>
         /// <param name="deploymentID">The deployment identifier.</param>
         /// <returns></returns>
-        public async Task<DeployResponse> GetDeploymentAsync(string readAccessToken, string deploymentID)
+        public async Task<DeployResponse?> GetDeploymentAsync(string readAccessToken, string deploymentID)
         {
             Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
             Assumption.AssertNotNullOrWhiteSpace(deploymentID, nameof(deploymentID));
 
             var uri = new Uri(
-                this._config.EndPoint
+                this._config.RollbarDestinationOptions.EndPoint
                 + RollbarDeployClient.deployApiPath + deploymentID + @"/"
                 + $"?access_token={readAccessToken}"
                 );
@@ -145,7 +160,7 @@
             var httpClient = ProvideHttpClient();
             var httpResponse = await httpClient.GetAsync(uri);
 
-            DeployResponse response = null;
+            DeployResponse? response = null;
             if (httpResponse.IsSuccessStatusCode)
             {
                 string reply = await httpResponse.Content.ReadAsStringAsync();
@@ -169,12 +184,12 @@
         /// <param name="readAccessToken">The read access token.</param>
         /// <param name="pageNumber">The page number.</param>
         /// <returns></returns>
-        public async Task<DeploysPageResponse> GetDeploymentsAsync(string readAccessToken, int pageNumber = 1)
+        public async Task<DeploysPageResponse?> GetDeploymentsAsync(string readAccessToken, int pageNumber = 1)
         {
             Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
 
             var uri = new Uri(
-                this._config.EndPoint
+                this._config.RollbarDestinationOptions.EndPoint
                 + RollbarDeployClient.deploysQueryApiPath
                 + $"?access_token={readAccessToken}&page={pageNumber}"
                 );
@@ -182,7 +197,7 @@
             var httpClient = ProvideHttpClient();
             var httpResponse = await httpClient.GetAsync(uri);
 
-            DeploysPageResponse response = null;
+            DeploysPageResponse? response = null;
             if (httpResponse.IsSuccessStatusCode)
             {
                 string reply = await httpResponse.Content.ReadAsStringAsync();

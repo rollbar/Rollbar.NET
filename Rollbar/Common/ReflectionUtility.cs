@@ -26,7 +26,7 @@
             }
 
             List<Type> relevantTypes = new List<Type>();
-            Type relevantType = type;
+            Type? relevantType = type;
             while (relevantType != null)
             {
                 relevantTypes.Add(relevantType);
@@ -100,13 +100,19 @@
         /// <typeparam name="TFieldDataType">The type of the field data type.</typeparam>
         /// <param name="staticField">The static field.</param>
         /// <returns></returns>
-        public static TFieldDataType GetStaticFieldValue<TFieldDataType>(FieldInfo staticField)
+        public static TFieldDataType? GetStaticFieldValue<TFieldDataType>(FieldInfo staticField)
         {
             Assumption.AssertTrue(staticField.IsStatic, nameof(staticField.IsStatic));
 
-            TFieldDataType result  = (TFieldDataType)staticField.GetValue(null);
+            object? valueObject = staticField.GetValue(null);
+            if(valueObject != null)
+            {
+                TFieldDataType result = (TFieldDataType) valueObject;
 
-            return result;
+                return result;
+            }
+
+            return default(TFieldDataType);
         }
 
         /// <summary>
@@ -115,15 +121,17 @@
         /// <typeparam name="TField">The type of the field.</typeparam>
         /// <param name="type">The type.</param>
         /// <returns>All the field values.</returns>
-        public static TField[] GetAllPublicStaticFieldValues<TField>(Type type)
+        public static TField?[] GetAllPublicStaticFieldValues<TField>(Type type)
         {
             var memberInfos =
                 type.GetFields(BindingFlags.GetField | BindingFlags.Static | BindingFlags.Public);
 
-            var values = new List<TField>(memberInfos.Length);
+            var values = new List<TField?>(memberInfos.Length);
             foreach (var memberInfo in memberInfos)
             {
-                values.Add((TField)memberInfo.GetValue(null));
+                object? valueObject = memberInfo.GetValue(null);
+                TField? value = valueObject != null ? (TField) valueObject : default(TField);
+                values.Add(value);
             }
             return values.ToArray();
         }
@@ -148,7 +156,7 @@
         /// <param name="nestedTypeName">Name of the nested type (without its namespace).</param>
         /// <param name="nestedTypeBindingFlags">The nested type binding flags.</param>
         /// <returns></returns>
-        public static Type GetNestedTypeByName(Type hostType, string nestedTypeName, BindingFlags nestedTypeBindingFlags = BindingFlags.Public)
+        public static Type? GetNestedTypeByName(Type hostType, string nestedTypeName, BindingFlags nestedTypeBindingFlags = BindingFlags.Public)
         {
             return hostType.GetNestedType(nestedTypeName, nestedTypeBindingFlags);
         }
@@ -203,7 +211,7 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>Type[].</returns>
-        public static Type[] GetTypesHierarchy(Type type)
+        public static Type[] GetTypesHierarchy(Type? type)
         {
             if(type == null)
             {
@@ -224,7 +232,7 @@
         /// <returns>Type[].</returns>
         public static Type[] GetBaseTypesHierarchy(Type type)
         {
-            Type baseType = type?.BaseType;
+            Type? baseType = type?.BaseType;
             if(type == null || baseType == null)
             {
                 return new Type[0];
@@ -254,7 +262,7 @@
         /// <param name="lType">Type of the left type.</param>
         /// <param name="rType">Type of the right type</param>
         /// <returns>Type.</returns>
-        public static Type GetTopCommonSuperType(Type lType, Type rType)
+        public static Type? GetTopCommonSuperType(Type lType, Type rType)
         {
             var lBases = ReflectionUtility.GetTypesHierarchy(lType);
             var rBases = ReflectionUtility.GetTypesHierarchy(rType);

@@ -3,7 +3,6 @@
     using Rollbar.Common;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
-    using Rollbar.Telemetry;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -27,7 +26,7 @@
         /// <summary>
         /// The configuration
         /// </summary>
-        private readonly IRollbarConfig _config;
+        private readonly IRollbarLoggerConfig _config;
         /// <summary>
         /// The payload queue
         /// </summary>
@@ -36,57 +35,52 @@
         /// <summary>
         /// Occurs when a Rollbar internal event happens.
         /// </summary>
-        public event EventHandler<RollbarEventArgs> InternalEvent;
+        public event EventHandler<RollbarEventArgs>? InternalEvent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
         /// </summary>
-        /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
-        internal RollbarLogger(bool isSingleton)
-            : this(isSingleton, null)
+        internal RollbarLogger()
+            : this(null)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
         /// </summary>
-        /// <param name="isSingleton">if set to <c>true</c> [is singleton].</param>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        internal RollbarLogger(bool isSingleton, IRollbarConfig rollbarConfig)
+        internal RollbarLogger(IRollbarLoggerConfig? rollbarConfig)
         {
-            if (!TelemetryCollector.Instance.IsAutocollecting)
-            {
-                TelemetryCollector.Instance.StartAutocollection();
-            }
+            Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
 
-            this.IsSingleton = isSingleton;
+            if (RollbarTelemetryCollector.Instance != null 
+                && !RollbarTelemetryCollector.Instance.IsAutocollecting
+                )
+            {
+                RollbarTelemetryCollector.Instance.StartAutocollection();
+            }
 
             if (rollbarConfig != null)
             {
                 ValidateConfiguration(rollbarConfig);
-                this._config = new RollbarConfig(this).Reconfigure(rollbarConfig);
+                this._config = new RollbarLoggerConfig(this).Reconfigure(rollbarConfig);
             }
             else
             {
-                this._config = new RollbarConfig(this);
+                this._config = new RollbarLoggerConfig(this);
             }
 
             // let's figure out where to keep the local payloads store:
-            PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarConfig)this._config).GetLocalPayloadStoreFullPathName();
+            //TODO: RollbarConfig - use the infrastructure related payload store settings...
+            //PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig)this._config).GetLocalPayloadStoreFullPathName();
 
             // let's init proper Rollbar client:
             var rollbarClient = new RollbarClient(this);
 
             // let's init the corresponding queue and register it:
             this._payloadQueue = new PayloadQueue(this, rollbarClient);
-            RollbarQueueController.Instance.Register(this._payloadQueue);
+            RollbarQueueController.Instance?.Register(this._payloadQueue);
         }
-
-        /// <summary>
-        /// Gets a value indicating whether this instance is singleton.
-        /// </summary>
-        /// <value><c>true</c> if this instance is singleton; otherwise, <c>false</c>.</value>
-        internal bool IsSingleton { get; private set; }
 
         /// <summary>
         /// Gets the queue.
@@ -109,7 +103,7 @@
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public IRollbarConfig Config
+        public IRollbarLoggerConfig Config
         {
             get { return this._config; }
         }
@@ -119,7 +113,7 @@
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <returns>IRollbar.</returns>
-        public IRollbar Configure(IRollbarConfig settings)
+        public IRollbar Configure(IRollbarLoggerConfig settings)
         {
             ValidateConfiguration(settings);
 
@@ -135,7 +129,7 @@
         /// <returns>IRollbar.</returns>
         public IRollbar Configure(string accessToken)
         {
-            return this.Configure(new RollbarConfig(accessToken));
+            return this.Configure(new RollbarLoggerConfig(accessToken));
         }
 
         #endregion IRollbar
@@ -155,67 +149,6 @@
         }
 
         /// <summary>
-        /// Logs using the specified level.
-        /// </summary>
-        /// <param name="level">The level.</param>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Log(ErrorLevel level, object obj)
-        {
-            return this.Log(level, obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as critical.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Critical(object obj)
-        {
-            return this.Critical(obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as error.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Error(object obj)
-        {
-            return this.Error(obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as warning.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Warning(object obj)
-        {
-            return this.Warning(obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as info.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Info(object obj)
-        {
-            return this.Info(obj, null);
-        }
-
-        /// <summary>
-        /// Logs the specified object as debug.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Debug(object obj)
-        {
-            return this.Debug(obj, null);
-        }
-
-        /// <summary>
         /// Logs the specified rollbar data.
         /// </summary>
         /// <param name="rollbarData">The rollbar data.</param>
@@ -232,7 +165,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
+        public ILogger Log(ErrorLevel level, object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, level, custom);
         }
@@ -244,7 +177,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Critical(object obj, IDictionary<string, object> custom)
+        public ILogger Critical(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Critical, custom);
         }
@@ -255,7 +188,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Error(object obj, IDictionary<string, object> custom)
+        public ILogger Error(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Error, custom);
         }
@@ -266,7 +199,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Warning(object obj, IDictionary<string, object> custom)
+        public ILogger Warning(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Warning, custom);
         }
@@ -277,7 +210,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Info(object obj, IDictionary<string, object> custom)
+        public ILogger Info(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Info, custom);
         }
@@ -288,7 +221,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        public ILogger Debug(object obj, IDictionary<string, object> custom)
+        public ILogger Debug(object obj, IDictionary<string, object?>? custom = null)
         {
             return this.Enqueue(obj, ErrorLevel.Debug, custom);
         }
@@ -301,7 +234,7 @@
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        IRollbarConfig IRollbar.Config { get { return this.Config; } }
+        IRollbarLoggerConfig IRollbar.Config { get { return this.Config; } }
 
         /// <summary>
         /// Gets the logger.
@@ -314,19 +247,9 @@
         /// </summary>
         /// <param name="settings">The settings.</param>
         /// <returns>IRollbar.</returns>
-        IRollbar IRollbar.Configure(IRollbarConfig settings)
+        IRollbar IRollbar.Configure(IRollbarLoggerConfig settings)
         {
             return this.Configure(settings);
-        }
-
-        /// <summary>
-        /// Configures using the specified access token.
-        /// </summary>
-        /// <param name="accessToken">The access token.</param>
-        /// <returns>IRollbar.</returns>
-        IRollbar IRollbar.Configure(string accessToken)
-        {
-            return this.Configure(accessToken);
         }
 
         /// <summary>
@@ -376,70 +299,9 @@
         /// </summary>
         /// <param name="level">The level.</param>
         /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Log(ErrorLevel level, object obj)
-        {
-            return this.Log(level, obj);
-        }
-
-        /// <summary>
-        /// Logs the specified object as critical.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Critical(object obj)
-        {
-            return this.Critical(obj);
-        }
-
-        /// <summary>
-        /// Logs the specified object as error.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Error(object obj)
-        {
-            return this.Error(obj);
-        }
-
-        /// <summary>
-        /// Logs the specified object as warning.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Warning(object obj)
-        {
-            return this.Warning(obj);
-        }
-
-        /// <summary>
-        /// Logs the specified object as info.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Info(object obj)
-        {
-            return this.Info(obj);
-        }
-
-        /// <summary>
-        /// Logs the specified object as debug.
-        /// </summary>
-        /// <param name="obj">The object.</param>
-        /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Debug(object obj)
-        {
-            return this.Debug(obj);
-        }
-
-        /// <summary>
-        /// Logs using the specified level.
-        /// </summary>
-        /// <param name="level">The level.</param>
-        /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Log(ErrorLevel level, object obj, IDictionary<string, object> custom)
+        ILogger ILogger.Log(ErrorLevel level, object obj, IDictionary<string, object?>? custom)
         {
             return this.Log(level, obj, custom);
         }
@@ -451,7 +313,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Critical(object obj, IDictionary<string, object> custom)
+        ILogger ILogger.Critical(object obj, IDictionary<string, object?>? custom)
         {
             return this.Critical(obj, custom);
         }
@@ -462,7 +324,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Error(object obj, IDictionary<string, object> custom)
+        ILogger ILogger.Error(object obj, IDictionary<string, object?>? custom)
         {
             return this.Error(obj, custom);
         }
@@ -473,7 +335,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Warning(object obj, IDictionary<string, object> custom)
+        ILogger ILogger.Warning(object obj, IDictionary<string, object?>? custom)
         {
             return this.Warning(obj, custom);
         }
@@ -484,7 +346,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Info(object obj, IDictionary<string, object> custom)
+        ILogger ILogger.Info(object obj, IDictionary<string, object?>? custom)
         {
             return this.Info(obj, custom);
         }
@@ -495,7 +357,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="custom">The custom data.</param>
         /// <returns>Instance of the same ILogger that was used for this call.</returns>
-        ILogger ILogger.Debug(object obj, IDictionary<string, object> custom)
+        ILogger ILogger.Debug(object obj, IDictionary<string, object?>? custom)
         {
             return this.Debug(obj, custom);
         }
@@ -526,9 +388,9 @@
         internal ILogger Enqueue(
             object dataObject,
             ErrorLevel level,
-            IDictionary<string, object> custom,
+            IDictionary<string, object?>? custom,
             TimeSpan? timeout = null,
-            SemaphoreSlim signal = null
+            SemaphoreSlim? signal = null
             )
         {
             this.EnqueueData(dataObject, level, custom, timeout, signal);
@@ -544,19 +406,19 @@
         /// <param name="timeout">The timeout.</param>
         /// <param name="signal">The signal.</param>
         /// <returns>PayloadBundle.</returns>
-        internal PayloadBundle EnqueueData(
+        internal PayloadBundle? EnqueueData(
             object dataObject,
             ErrorLevel level,
-            IDictionary<string, object> custom,
+            IDictionary<string, object?>? custom,
             TimeSpan? timeout = null,
-            SemaphoreSlim signal = null
+            SemaphoreSlim? signal = null
             )
         {
             // here is the last chance to decide if we need to actually send this payload
             // based on the current config settings and rate-limit conditions:
-            if (string.IsNullOrWhiteSpace(this._config.AccessToken)
-                || this._config.Enabled == false
-                || (this._config.LogLevel.HasValue && level < this._config.LogLevel.Value)
+            if (string.IsNullOrWhiteSpace(this._config.RollbarDestinationOptions.AccessToken)
+                || this._config.RollbarDeveloperOptions.Enabled == false
+                || (level < this._config.RollbarDeveloperOptions.LogLevel)
                 || ((this._payloadQueue.AccessTokenQueuesMetadata != null) && this._payloadQueue.AccessTokenQueuesMetadata.IsTransmissionSuspended)
                 )
             {
@@ -564,9 +426,9 @@
                 return null;
             }
 
-            if (this._config.RethrowExceptionsAfterReporting)
+            if (this._config.RollbarDeveloperOptions.RethrowExceptionsAfterReporting)
             {
-                System.Exception exception = dataObject as System.Exception;
+                System.Exception? exception = dataObject as System.Exception;
                 if (exception == null)
                 {
                     if (dataObject is Data data && data.Body != null)
@@ -584,9 +446,9 @@
                         // Because we will be re-throwing the exception after reporting, let's report it fully-synchronously.
                         // This logic is on a heavy side. But, fortunately, RethrowExceptionsAfterReporting is intended to be
                         // a development time option:
-                        var config = new RollbarConfig();
+                        var config = new RollbarLoggerConfig();
                         config.Reconfigure(this._config);
-                        config.RethrowExceptionsAfterReporting = false;
+                        config.RollbarDeveloperOptions.RethrowExceptionsAfterReporting = false;
                         using var rollbar = RollbarFactory.CreateNew(config);
                         rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level, dataObject, custom);
                     }
@@ -603,13 +465,8 @@
                         if (exception is AggregateException aggregateException)
                         {
                             exception = aggregateException.Flatten();
-                            ExceptionDispatchInfo.Capture(
-                                exception.InnerException).Throw();
                         }
-                        else
-                        {
-                            ExceptionDispatchInfo.Capture(exception).Throw();
-                        }
+                        ExceptionDispatchInfo.Capture(exception).Throw();
                     }
 
                     return null;
@@ -617,7 +474,7 @@
             }
 
 
-            PayloadBundle payloadBundle = null;
+            PayloadBundle? payloadBundle = null;
             try
             {
                 payloadBundle = CreatePayloadBundle(dataObject, level, custom, timeout, signal);
@@ -670,9 +527,9 @@
         private PayloadBundle CreatePayloadBundle(
             object dataObject,
             ErrorLevel level,
-            IDictionary<string, object> custom,
+            IDictionary<string, object?>? custom,
             TimeSpan? timeout = null,
-            SemaphoreSlim signal = null
+            SemaphoreSlim? signal = null
             )
         {
             DateTime? timeoutAt = null;
@@ -707,7 +564,7 @@
         /// Validates the configuration.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        private void ValidateConfiguration(IRollbarConfig rollbarConfig)
+        private static void ValidateConfiguration(IRollbarLoggerConfig rollbarConfig)
         {
             switch (rollbarConfig)
             {
@@ -771,7 +628,10 @@
             // RollbarLogger type supports both paradigms: singleton-like (via RollbarLocator) and
             // multiple disposable instances (via RollbarFactory).
             // Here we want to make sure that the singleton instance is never disposed:
-            Assumption.AssertTrue(!this.IsSingleton, nameof(this.IsSingleton));
+            if(this == RollbarLocator.RollbarInstance.Logger)
+            {
+                return;
+            }
 
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);

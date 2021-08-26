@@ -36,8 +36,13 @@
         /// <returns>
         /// Payload size (in bytes) after the truncation.
         /// </returns>
-        public override int Truncate(Payload payload)
+        public override int Truncate(Payload? payload)
         {
+            if(payload == null)
+            {
+                return 0;
+            }
+
             payload.TruncateStrings(Encoding.UTF8, _stringBytesLimit);
 
             return GetSizeInBytes(payload);

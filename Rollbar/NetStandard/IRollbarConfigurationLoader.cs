@@ -1,7 +1,5 @@
 ﻿namespace Rollbar.NetStandard
 {
-    using Rollbar.Telemetry;
-
     /// <summary>
     /// Interface IRollbarConfigurationLoader
     /// </summary>
@@ -12,26 +10,26 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        bool Load(RollbarConfig config);
+        bool Load(RollbarInfrastructureConfig config);
 
         /// <summary>
         /// Loads the provided configuration object based on found configuration store (if any).
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        bool Load(TelemetryConfig config);
+        bool Load(RollbarTelemetryOptions config);
 
         /// <summary>
         /// Loads the rollbar configuration.
         /// </summary>
         /// <returns>IRollbarConfig or null if no configuration store was found.</returns>
-        IRollbarConfig LoadRollbarConfig();
+        IRollbarInfrastructureConfig? LoadRollbarConfig();
 
         /// <summary>
         /// Loads the telemetry configuration.
         /// </summary>
         /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        ITelemetryConfig LoadTelemetryConfig();
+        IRollbarTelemetryOptions? LoadTelemetryConfig();
 
     }
 }

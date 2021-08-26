@@ -27,7 +27,7 @@
         /// Initializes a new instance of the <see cref="Frame" /> class.
         /// </summary>
         /// <param name="frameString">The frame string.</param>
-        public Frame(string frameString)
+        public Frame(string? frameString)
         {
             if (string.IsNullOrWhiteSpace(frameString))
             {
@@ -35,7 +35,7 @@
             }
 
             string token = @"at ";
-            int tokenIndex = frameString.IndexOf(token, StringComparison.InvariantCulture);
+            int tokenIndex = frameString!.IndexOf(token, StringComparison.InvariantCulture);
             frameString = frameString.Remove(tokenIndex, token.Length);
             frameString = frameString.Trim();
             string[] components = frameString.Split(new [] { " in ", }, StringSplitOptions.None);
@@ -69,7 +69,7 @@
         /// Initializes a new instance of the <see cref="Frame"/> class.
         /// </summary>
         /// <param name="frame">The frame.</param>
-        public Frame(StackFrame frame)
+        public Frame(StackFrame? frame)
         {
             if (frame == null)
             {
@@ -89,7 +89,7 @@
         /// The name of the file.
         /// </value>
         [JsonProperty("filename", Required = Required.Always)]
-        public string FileName { get; private set; }
+        public string? FileName { get; private set; }
 
         /// <summary>
         /// Gets or sets the line number.
@@ -116,7 +116,7 @@
         /// The method.
         /// </value>
         [JsonProperty("method", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Method { get; set; }
+        public string? Method { get; set; }
 
         #region Unautomatable
 
@@ -131,7 +131,7 @@
         /// The code.
         /// </value>
         [JsonProperty("code", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
         /// <summary>
         /// Gets or sets the context.
@@ -140,7 +140,7 @@
         /// The context.
         /// </value>
         [JsonProperty("context", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public CodeContext Context { get; set; }
+        public CodeContext? Context { get; set; }
 
         /// <summary>
         /// Gets or sets the arguments.
@@ -149,7 +149,7 @@
         /// The arguments.
         /// </value>
         [JsonProperty("args", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string[] Args { get; set; }
+        public string[]? Args { get; set; }
 
         /// <summary>
         /// Gets or sets the kwargs.
@@ -158,7 +158,7 @@
         /// The kwargs.
         /// </value>
         [JsonProperty("kwargs", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public IDictionary<string, object> Kwargs { get; set; }
+        public IDictionary<string, object>? Kwargs { get; set; }
 
         #endregion Unautomatable
 
@@ -168,7 +168,7 @@
         {
             Assumption.AssertNotNull(frame, nameof(frame));
 
-            string returnVal = defaultFileName;
+            string? returnVal = defaultFileName;
 
             if (frame == null)
             {
@@ -181,7 +181,7 @@
                 return returnVal;
             }
 
-            MethodBase method = frame.GetMethod();
+            MethodBase? method = frame.GetMethod();
             if (method != null && method.ReflectedType != null)
             {
                 returnVal = method.ReflectedType.FullName ;
@@ -225,7 +225,7 @@
         {
             Assumption.AssertNotNull(frame, nameof(frame));
 
-            MethodBase method = frame.GetMethod();
+            MethodBase? method = frame.GetMethod();
             if (method == null)
             {
                 return frame.ToString();

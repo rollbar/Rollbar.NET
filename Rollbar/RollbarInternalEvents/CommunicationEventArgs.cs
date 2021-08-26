@@ -16,7 +16,7 @@
         /// <param name="logger">The logger.</param>
         /// <param name="payload">The payload.</param>
         /// <param name="response">The response.</param>
-        internal CommunicationEventArgs(RollbarLogger logger, string payload, RollbarResponse response) 
+        internal CommunicationEventArgs(RollbarLogger? logger, string? payload, RollbarResponse response) 
             : base(logger, payload)
         {
             this.Response = response;
@@ -28,7 +28,7 @@
         /// <param name="logger">The logger.</param>
         /// <param name="payload">The payload.</param>
         /// <param name="response">The response.</param>
-        internal CommunicationEventArgs(RollbarLogger logger, Payload payload, RollbarResponse response) 
+        internal CommunicationEventArgs(RollbarLogger? logger, Payload? payload, RollbarResponse response) 
             : base(logger, payload)
         {
             this.Response = response;

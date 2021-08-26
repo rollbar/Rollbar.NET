@@ -1,18 +1,21 @@
-﻿namespace Rollbar.Telemetry
+﻿namespace Rollbar
 {
     using System;
     using System.Diagnostics;
     using System.Threading;
+
+    using Rollbar;
     using Rollbar.DTOs;
 
     /// <summary>
     /// Implements Rollbar telemetry collector service.
     /// </summary>
-    public class TelemetryCollector
-        : ITelemetryCollector
+    internal class RollbarTelemetryCollector
+        : IRollbarTelemetryCollector
         , IDisposable
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(TelemetryCollector).FullName);
+        private static readonly TraceSource traceSource = 
+            new TraceSource(typeof(RollbarTelemetryCollector).FullName);
         
         #region singleton implementation
 
@@ -22,7 +25,7 @@
         /// <value>
         /// The instance.
         /// </value>
-        public static TelemetryCollector Instance
+        public static RollbarTelemetryCollector? Instance
         {
             get
             {
@@ -31,14 +34,10 @@
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="TelemetryCollector"/> class from being created.
+        /// Prevents a default instance of the <see cref="RollbarTelemetryCollector"/> class from being created.
         /// </summary>
-        private TelemetryCollector()
+        private RollbarTelemetryCollector()
         {
-            this._config = new TelemetryConfig();
-            this._config.Reconfigured += _config_Reconfigured;
-
-            this.StartAutocollection();
         }
 
         private sealed class NestedSingleInstance
@@ -50,20 +49,39 @@
             /// <summary>
             /// The singleton-like instance of the service.
             /// </summary>
-            internal static readonly TelemetryCollector Instance =
-                new TelemetryCollector();
+            internal static readonly RollbarTelemetryCollector? Instance =
+                RollbarInfrastructure.Instance.IsInitialized ? new RollbarTelemetryCollector()
+                : null;
         }
 
         #endregion singleton implementation
+
+        internal void Init(IRollbarTelemetryOptions options)
+        {
+            if(this._config != null)
+            {
+                this.StopAutocollection(false);
+                this.FlushQueue();
+                this._config.Reconfigured -= _config_Reconfigured;
+            }
+
+            this._config = options;
+            
+            if(this._config != null)
+            {
+                this._config.Reconfigured += _config_Reconfigured;
+                this.StartAutocollection();
+            }
+        }
 
         /// <summary>
         /// Captures the specified telemetry.
         /// </summary>
         /// <param name="telemetry">The telemetry.</param>
         /// <returns></returns>
-        public TelemetryCollector Capture(Telemetry telemetry)
+        public RollbarTelemetryCollector Capture(Telemetry telemetry)
         {
-            if (this.Config.TelemetryEnabled)
+            if (this.Config != null && this.Config.TelemetryEnabled)
             {
                 this._telemetryQueue.Enqueue(telemetry);
             }
@@ -75,7 +93,7 @@
         /// </summary>
         /// <param name="telemetry">The telemetry.</param>
         /// <returns></returns>
-        ITelemetryCollector ITelemetryCollector.Capture(Telemetry telemetry)
+        IRollbarTelemetryCollector IRollbarTelemetryCollector.Capture(Telemetry telemetry)
         {
             return this.Capture(telemetry);
         }
@@ -102,7 +120,7 @@
         /// Flushes the queue.
         /// </summary>
         /// <returns></returns>
-        public ITelemetryCollector FlushQueue()
+        public IRollbarTelemetryCollector FlushQueue()
         {
             this._telemetryQueue.Flush();
             return this;
@@ -114,13 +132,18 @@
         /// <value>
         /// The configuration.
         /// </value>
-        public TelemetryConfig Config { get { return this._config; } }
+        public IRollbarTelemetryOptions? Config { get { return this._config; } }
 
         /// <summary>
         /// Starts the auto-collection.
         /// </summary>
-        public ITelemetryCollector StartAutocollection()
+        public IRollbarTelemetryCollector StartAutocollection()
         {
+            if(this.Config == null)
+            {
+                return this;
+            }
+
             if (!this.Config.TelemetryEnabled)
             {
                 return this; // no need to start at all...
@@ -159,7 +182,7 @@
         /// Stops the auto-collection.
         /// </summary>
         /// <param name="immediate">if set to <c>true</c> [immediate].</param>
-        public ITelemetryCollector StopAutocollection(bool immediate)
+        public IRollbarTelemetryCollector StopAutocollection(bool immediate)
         {
             lock(_syncRoot)
             {
@@ -203,17 +226,28 @@
         /// </value>
         public int QueueDepth { get { return this._telemetryQueue.QueueDepth; } }
 
-        private Thread _telemetryThread;
-        private CancellationTokenSource _cancellationTokenSource;
-        private readonly TelemetryConfig _config;
+        private Thread? _telemetryThread;
+        private CancellationTokenSource? _cancellationTokenSource;
+        private IRollbarTelemetryOptions? _config;
         private readonly TelemetryQueue _telemetryQueue = new TelemetryQueue();
         private readonly object _syncRoot = new object();
 
-        private void _config_Reconfigured(object sender, EventArgs e)
+        private void _config_Reconfigured(object? sender, EventArgs e)
         {
+            if(this._config == null)
+            {
+                this.StopAutocollection(false);
+                return;
+            }
+
             this._telemetryQueue.QueueDepth = this._config.TelemetryQueueDepth;
 
-            if (this.IsAutocollecting && this._config.TelemetryAutoCollectionInterval == TimeSpan.Zero)
+            if (this.IsAutocollecting 
+                && (!this._config.TelemetryEnabled 
+                    || this._config.TelemetryAutoCollectionInterval == TimeSpan.Zero 
+                    || this._config.TelemetryAutoCollectionTypes == TelemetryType.None
+                    )
+               )
             {
                 this.StopAutocollection(false);
             }
@@ -237,7 +271,7 @@
             //TBD...
         }
 
-        private void KeepCollectingTelemetry(object data)
+        private void KeepCollectingTelemetry(object? data)
         {
             //for now, until AutoCollectTelemetry() is implemented:
             return;

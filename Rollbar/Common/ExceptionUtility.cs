@@ -28,27 +28,40 @@
         /// <returns>System.String.</returns>
         public static string SnapLocalVariables(StackTrace stackTrace)
         {
-            StackFrame[] stackFrames = stackTrace.GetFrames();
-            StringBuilder sb = new StringBuilder();
-            foreach (StackFrame frame in stackFrames)
+            StackFrame?[] stackFrames = stackTrace.GetFrames();
+            if(stackFrames == null)
             {
-                MethodInfo method = frame.GetMethod() as MethodInfo;
-                sb.AppendLine("----------------");
-                sb.AppendLine($"Method: {method.Name}");
-                sb.AppendLine(" Parameters:");
-                ParameterInfo[] pis = method.GetParameters();
-                foreach (ParameterInfo pi in pis)
-                {
-                    sb.AppendLine($" Name:{pi.Name} Type:{pi.ParameterType.ToString()}");
-                }
-                sb.AppendLine(" Local Variables:");
+                return string.Empty;
+            }
 
-                MethodBody method_body = method.GetMethodBody();
-                if (method_body != null)
+            StringBuilder sb = new StringBuilder();
+            foreach (StackFrame? frame in stackFrames)
+            {
+                if(frame == null)
                 {
-                    foreach (LocalVariableInfo lvi in method_body.LocalVariables)
+                    continue;
+                }
+
+                MethodInfo? method = frame.GetMethod() as MethodInfo;
+                if(method != null)
+                {
+                    sb.AppendLine("----------------");
+                    sb.AppendLine($"Method: {method.Name}");
+                    sb.AppendLine(" Parameters:");
+                    ParameterInfo[] pis = method.GetParameters();
+                    foreach(ParameterInfo pi in pis)
                     {
-                        sb.AppendLine($" Index:{lvi.LocalIndex} Type:{lvi.LocalType.ToString()}");
+                        sb.AppendLine($" Name:{pi.Name} Type:{pi.ParameterType.ToString()}");
+                    }
+                    sb.AppendLine(" Local Variables:");
+
+                    MethodBody? method_body = method.GetMethodBody();
+                    if(method_body != null)
+                    {
+                        foreach(LocalVariableInfo lvi in method_body.LocalVariables)
+                        {
+                            sb.AppendLine($" Index:{lvi.LocalIndex} Type:{lvi.LocalType.ToString()}");
+                        }
                     }
                 }
             }

@@ -5,8 +5,11 @@
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
+    using System.Text;
+
     using Xamarin.iOS.Foundation;
 
     /// <summary>
@@ -34,7 +37,7 @@
         /// </returns>
         public virtual T Reconfigure(T likeMe)
         {
-            base.Reconfigure(likeMe, this._thisInstanceType);
+            base.Reconfigure(likeMe, this.thisInstanceType);
 
             return (T) this;
         }
@@ -44,9 +47,9 @@
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-        public bool Equals(T other)
+        public bool Equals(T? other)
         {
-            return base.Equals(other, this._thisInstanceType);
+            return base.Equals(other, this.thisInstanceType);
         }
 
         /// <summary>
@@ -54,7 +57,7 @@
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as T);
         }
@@ -111,7 +114,7 @@
         {
             base.Reconfigure(likeMe, this._baseInstanceType);
 
-            return this as T;
+            return (T) this;
         }
 
         /// <summary>
@@ -119,7 +122,7 @@
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-        public bool Equals(TBase other)
+        public bool Equals(TBase? other)
         {
             return base.Equals(other, this._baseInstanceType);
         }
@@ -129,7 +132,7 @@
         /// </summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return this.Equals(obj as TBase);
         }
@@ -140,13 +143,7 @@
         /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
-            switch(this)
-            {
-                case TBase baseInstance:
-                    return baseInstance.GetHashCode();
-                default:
-                    return (this as T)?.GetHashCode() ?? 0;
-            }
+            return base.GetHashCode();
         }
     }
 
@@ -160,21 +157,50 @@
     /// <seealso cref="Rollbar.Common.IReconfigurable{T}" />
     /// <seealso cref="System.IEquatable{T}" />
     public abstract class ReconfigurableBase
+        : ITraceable
+        , IValidatable
     {
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType
-            = new ConcurrentDictionary<Type, PropertyInfo[]>();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType = 
+            new ConcurrentDictionary<Type, PropertyInfo[]>();
+
+        /// <summary>
+        /// The reconfigurable properties
+        /// </summary>
+        protected readonly List<ReconfigurableBase> reconfigurableProperties;
 
         /// <summary>
         /// The this instance type (most specific one).
         /// </summary>
-        protected readonly Type _thisInstanceType;
+        protected readonly Type thisInstanceType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReconfigurableBase"/> class.
         /// </summary>
         protected ReconfigurableBase()
         {
-            this._thisInstanceType = this.GetType();
+            this.thisInstanceType = this.GetType();
+
+            PropertyInfo[] thisInstanceProperyInfos = 
+                ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType);
+            List<object?> propertyValues = 
+                thisInstanceProperyInfos
+                .Select(i => i.GetValue(this))
+                .Cast<object?>()
+                .ToList();
+            this.reconfigurableProperties = 
+                propertyValues
+                .Where(i => i is ReconfigurableBase)
+                .Cast<ReconfigurableBase>()
+                .ToList();
+            foreach(var reconfigurable in this.reconfigurableProperties)
+            {
+                reconfigurable.Reconfigured += Reconfigurable_Reconfigured;
+            }
+        }
+
+        private void Reconfigurable_Reconfigured(object? sender, EventArgs e)
+        {
+            this.OnReconfigured(new EventArgs());
         }
 
         /// <summary>
@@ -184,7 +210,7 @@
         /// <returns>PropertyInfo[].</returns>
         protected static PropertyInfo[] ListInstancePublicProperties(Type objectType)
         {
-            if(!publicPropertyInfosByType.TryGetValue(objectType,out PropertyInfo[] properties))
+            if(!publicPropertyInfosByType.TryGetValue(objectType, out var properties))
             {
                 properties = ReflectionUtility.GetAllPublicInstanceProperties(objectType);
                 publicPropertyInfosByType.TryAdd(objectType,properties);
@@ -200,7 +226,7 @@
         protected virtual void Reconfigure(object likeMe, Type likeMeTypeOfInterest)
         {
             Assumption.AssertNotNull(likeMe, nameof(likeMe));
-            Assumption.AssertTrue(likeMeTypeOfInterest.IsAssignableFrom(this._thisInstanceType), nameof(likeMeTypeOfInterest));
+            Assumption.AssertTrue(likeMeTypeOfInterest.IsAssignableFrom(this.thisInstanceType), nameof(likeMeTypeOfInterest));
 
             // In general we could be reconfiguring the destination object 
             // based on a source object that is a subtype of the destination type.
@@ -211,6 +237,19 @@
 
             foreach (var property in properties)
             {
+                // Let's see first if the property value is a Reconfigurable object:
+                ReconfigurableBase? targetPropertyValue = property.GetValue(this) as ReconfigurableBase;
+                if(targetPropertyValue != null)
+                {
+                    object? sourcePropertyValue = property.GetValue(likeMe);
+                    if(sourcePropertyValue != null)
+                    {
+                        targetPropertyValue.Reconfigure(sourcePropertyValue, sourcePropertyValue.GetType());
+                    }
+                    continue;
+                }
+
+                // For non-Reconfigurable properties, let's clone the property value:
                 if (property.CanWrite)
                 {
                     property.SetValue(this, property.GetValue(likeMe));
@@ -220,7 +259,7 @@
                     // This case handles situations when the reconfiguration source object has read-only
                     // property but the destination object could have an equivalent read-write property:
                     var destinationProperty
-                        = ReconfigurableBase.ListInstancePublicProperties(this._thisInstanceType)
+                        = ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType)
                             .SingleOrDefault(p => p.Name == property.Name);
                     if (destinationProperty.CanWrite)
                     {
@@ -229,7 +268,7 @@
                 }
             }
 
-            OnReconfigured(new EventArgs());
+            this.OnReconfigured(new EventArgs());
         }
 
         /// <summary>
@@ -238,7 +277,7 @@
         /// <param name="other">The other.</param>
         /// <param name="otherType">Type of the other.</param>
         /// <returns><c>true</c> if not equal, <c>false</c> otherwise.</returns>
-        protected bool Equals(object other, Type otherType)
+        protected bool Equals(object? other, Type otherType)
         {
             if (other == null)
             {
@@ -250,7 +289,7 @@
                 return true;
             }
 
-            if (!otherType.IsAssignableFrom(this._thisInstanceType))
+            if (!otherType.IsAssignableFrom(this.thisInstanceType))
             {
                 return false;
             }
@@ -261,7 +300,7 @@
             return this.HaveEqualPropertyValues(this, other, properties);
         }
 
-        private bool HaveEqualPropertyValues(object left, object right, IEnumerable<PropertyInfo> properties)
+        private bool HaveEqualPropertyValues(object? left, object? right, IEnumerable<PropertyInfo> properties)
         {
             if (left == null && right == null)
             {
@@ -279,8 +318,8 @@
             foreach (var property in properties)
             {
                 //compare this instance property values to other's:
-                object leftPropertyValue = property.GetValue(left);
-                object rightPropertyValue = property.GetValue(right);
+                object? leftPropertyValue = property.GetValue(left);
+                object? rightPropertyValue = property.GetValue(right);
 
                 if (leftPropertyValue == rightPropertyValue)
                 {
@@ -304,7 +343,7 @@
                 {
                     return false;
                 }
-                if (property.PropertyType.GetInterface(typeof(IEnumerable).FullName) != null)
+                if (property.PropertyType.GetInterface(typeof(IEnumerable).FullName!) != null)
                 {
 #pragma warning disable IDE0019 // Use pattern matching
                     var leftCollection = leftPropertyValue as ICollection;
@@ -316,22 +355,30 @@
                     }
                     var leftEnumeration = leftPropertyValue as IEnumerable;
                     var rightEnumeration = rightPropertyValue as IEnumerable;
+                    if(leftEnumeration == null && rightEnumeration == null)
+                    {
+                        return true;
+                    }
+                    else if(leftEnumeration == null || rightEnumeration == null)
+                    {
+                        return false;
+                    }
                     foreach (var leftItem in leftEnumeration)
                     {
                         bool hasMatchingItem = false;
                         foreach (var rightItem in rightEnumeration)
                         {
-                            Type leftItemType = leftItem.GetType();
-                            Type rightItemType = rightItem.GetType();
+                            Type? leftItemType = leftItem?.GetType();
+                            Type? rightItemType = rightItem?.GetType();
 
                             if (leftItemType != rightItemType)
                             {
                                 continue;
                             }
 
-                            if (leftItemType.IsPrimitive || leftItemType == typeof(string) || leftItemType == typeof(Guid))
+                            if (leftItemType != null && (leftItemType.IsPrimitive || leftItemType == typeof(string) || leftItemType == typeof(Guid)))
                             {
-                                if (leftItem.Equals(rightItem))
+                                if (leftItem != null && leftItem.Equals(rightItem))
                                 {
                                     hasMatchingItem = true;
                                     break;
@@ -342,11 +389,14 @@
                                 }
                             }
 
-                            var itemProperties = ListInstancePublicProperties(rightItem.GetType());
-                            if (HaveEqualPropertyValues(leftItem, rightItem, itemProperties))
+                            if(rightItem != null)
                             {
-                                hasMatchingItem = true;
-                                break;
+                                var itemProperties = ListInstancePublicProperties(rightItem.GetType());
+                                if(HaveEqualPropertyValues(leftItem, rightItem, itemProperties))
+                                {
+                                    hasMatchingItem = true;
+                                    break;
+                                }
                             }
                         }
                         if (!hasMatchingItem)
@@ -369,7 +419,7 @@
         /// <summary>
         /// Occurs when this instance reconfigured.
         /// </summary>
-        public event EventHandler Reconfigured;
+        public event EventHandler? Reconfigured;
 
         /// <summary>
         /// Raises the <see cref="E:Reconfigured" /> event.
@@ -379,6 +429,108 @@
         {
             Reconfigured?.Invoke(this,e);
         }
-    }
 
+        #region ITraceable
+
+        /// <summary>
+        /// Traces as string.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public string TraceAsString()
+        {
+            return this.TraceAsString(string.Empty);
+        }
+
+        /// <summary>
+        /// Traces as a string.
+        /// </summary>
+        /// <param name="indent">The indent.</param>
+        /// <returns>String rendering of this instance.</returns>
+        public virtual string TraceAsString(string indent)
+        {
+            StringBuilder sb = new StringBuilder();
+            //string traceString = this.RenderAsString(indent);
+            sb.AppendLine("{" + this.thisInstanceType.FullName + "}");
+
+            //indent += "  ";
+            PropertyInfo[] properties
+                = ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType);
+
+            foreach(var property in properties)
+            {
+                object? propertyValue = property.GetValue(this);
+                string? propertyValueTrace = "<null>";
+                switch(propertyValue)
+                {
+                    case null:
+                        break;
+                    case ICollection collection:
+                        StringBuilder collectionTrace = new StringBuilder();
+                        collectionTrace.AppendLine("[");
+                        foreach(var item in collection)
+                        {
+                            switch(item)
+                            {
+                                case ITraceable traceable:
+                                    collectionTrace.AppendLine($"{indent}    {traceable.TraceAsString()},");
+                                    break;
+                                default:
+                                    collectionTrace.AppendLine($"{indent}    {item},");
+                                    break;
+                            }
+                        }
+                        collectionTrace.Append($"{indent}  ]");
+                        propertyValueTrace = collectionTrace.ToString();
+                        break;
+                    case ITraceable traceable:
+                        propertyValueTrace = traceable.TraceAsString(indent + "  ");
+                        int newLineSuffixIndex = propertyValueTrace.LastIndexOf(Environment.NewLine);
+                        if(newLineSuffixIndex >= 0)
+                        {
+                            propertyValueTrace = propertyValueTrace.Remove(newLineSuffixIndex, Environment.NewLine.Length);
+                        }
+                        break;
+                    default:
+                        propertyValueTrace = propertyValue.ToString();
+                        break;
+                }
+                sb.AppendLine($"{indent}  {property.Name}: {propertyValueTrace}");
+            }
+
+            return sb.ToString();
+        }
+
+        #endregion ITraceable
+
+        #region IValidatable
+
+        /// <summary>
+        /// Validates this instance.
+        /// </summary>
+        /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules.</returns>
+        public IReadOnlyCollection<ValidationResult> Validate()
+        {
+            var validator = this.GetValidator();
+
+            if(validator != null)
+            {
+                var failedValidations = validator.Validate(this);
+
+                return failedValidations;
+            }
+            else
+            {
+                return new ValidationResult[0];
+            }
+
+        }
+
+        /// <summary>
+        /// Gets the proper validator.
+        /// </summary>
+        /// <returns>Validator.</returns>
+        public abstract Validator? GetValidator();
+
+        #endregion IValidatable
+    }
 }

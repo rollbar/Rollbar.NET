@@ -26,7 +26,7 @@
             HostBase.DetectedCpu = RuntimeEnvironmentUtility.GetCpuArchitecture();
         }
 
-        private static readonly string DetectedCpu;
+        private static readonly string? DetectedCpu;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="HostBase"/> class from being created.
@@ -41,7 +41,7 @@
         /// Initializes a new instance of the <see cref="HostBase"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        protected HostBase(IDictionary<string, object> arbitraryKeyValuePairs)
+        protected HostBase(IDictionary<string, object?>? arbitraryKeyValuePairs)
             : base(arbitraryKeyValuePairs)
         {
             this.Cpu = HostBase.DetectedCpu;
@@ -57,7 +57,7 @@
         /// Optional: cpu
         /// A string up to 255 characters
         /// </remarks>
-        public string Cpu
+        public string? Cpu
         {
             get { return this[ReservedProperties.Cpu] as string; }
             set { this[ReservedProperties.Cpu] = value; }

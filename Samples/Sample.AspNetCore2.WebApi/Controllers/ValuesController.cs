@@ -8,7 +8,6 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
     using dto = Rollbar.DTOs;
-    using Rollbar.Telemetry;
     using System.IO;
     using System.Text;
 
@@ -22,16 +21,17 @@
 
         public ValuesController(ILogger<ValuesController> logger, IHttpContextAccessor httpContextAccessor)
         {
-            TelemetryCollector.Instance.Capture(new dto.Telemetry(
-                dto.TelemetrySource.Server,
-                dto.TelemetryLevel.Debug,
-                new dto.LogTelemetry($"Entering ValueConroller constructor"))
+            Rollbar.RollbarInfrastructure.Instance.TelemetryCollector.Capture(
+                new dto.Telemetry(
+                    dto.TelemetrySource.Server,
+                    dto.TelemetryLevel.Debug,
+                    new dto.LogTelemetry($"Entering ValueConroller constructor"))
                 );
 
             this._logger = logger;
             this._httpContextAccessor = httpContextAccessor;
 
-            TelemetryCollector.Instance.Capture(new dto.Telemetry(
+            Rollbar.RollbarInfrastructure.Instance.TelemetryCollector.Capture(new dto.Telemetry(
                 dto.TelemetrySource.Server,
                 dto.TelemetryLevel.Debug,
                 new dto.LogTelemetry($"Exiting ValueConroller constructor"))
@@ -63,10 +63,11 @@
             catch(Exception ex)
             {
                 this._logger.Log(logLevel: LogLevel.Critical, exception: ex, message: "Got one!");
-                TelemetryCollector.Instance.Capture(new dto.Telemetry(
-                    dto.TelemetrySource.Server,
-                    dto.TelemetryLevel.Error,
-                    new dto.ErrorTelemetry(ex))
+                Rollbar.RollbarInfrastructure.Instance.TelemetryCollector.Capture(
+                    new dto.Telemetry(
+                        dto.TelemetrySource.Server,
+                        dto.TelemetryLevel.Error,
+                        new dto.ErrorTelemetry(ex))
                     );
             }
 

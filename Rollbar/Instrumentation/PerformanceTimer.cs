@@ -13,6 +13,7 @@
     /// <seealso cref="System.IDisposable" />
     [Conditional(InstrumentationCondition.Instrument)]
     [AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false, Inherited = false)]
+    [CLSCompliant(false)]
     public class PerformanceTimer
         : Attribute
         , IDisposable
@@ -20,22 +21,29 @@
         /// <summary>
         /// The timer
         /// </summary>
-        private readonly Stopwatch _timer;
+        private readonly Stopwatch? _timer;
         /// <summary>
         /// The performance monitor
         /// </summary>
-        private readonly IPerformanceMonitor _performanceMonitor;
+        private readonly IPerformanceMonitor? _performanceMonitor;
         /// <summary>
         /// The measurement classification
         /// </summary>
-        private readonly IClassification _measurementClassification;
+        private readonly IClassification? _measurementClassification;
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="PerformanceTimer"/> class from being created.
+        /// </summary>
+        private PerformanceTimer()
+        {
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PerformanceTimer"/> class.
         /// </summary>
         /// <param name="performanceMonitor">The performance monitor.</param>
         /// <param name="measurementClassification">The measurement classification.</param>
-        private PerformanceTimer(IPerformanceMonitor performanceMonitor, IClassification measurementClassification = null)
+        private PerformanceTimer(IPerformanceMonitor performanceMonitor, IClassification? measurementClassification = null)
         {
             this._performanceMonitor = performanceMonitor;
             this._measurementClassification = measurementClassification;
@@ -62,11 +70,11 @@
         /// <returns>PerformanceTimer.</returns>
         public static PerformanceTimer StartNew(
             IPerformanceMonitor performanceMonitor, 
-            IClassification measurementClassification
+            IClassification? measurementClassification
             )
         {
             var timer = new PerformanceTimer(performanceMonitor, measurementClassification);
-            timer._timer.Start();
+            timer._timer?.Start();
             return timer;
         }
 
@@ -80,9 +88,12 @@
         /// </summary>
         public void Dispose()
         {
-            this._timer.Stop();
+            if(this._timer != null)
+            {
+                this._timer.Stop();
 
-            this._performanceMonitor.Capture(this._timer.Elapsed, this._measurementClassification);
+                this._performanceMonitor?.Capture(this._timer.Elapsed, this._measurementClassification);
+            }
         }
 
         #endregion

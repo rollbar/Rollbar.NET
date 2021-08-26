@@ -19,10 +19,10 @@
         public static IDeployment CreateDeployment(
             string environment, 
             string revision, 
-            string comment = null,
-            string localUserName = null, 
-            string rollbarUserName = null, 
-            string writeAccessToken = null
+            string? comment = null,
+            string? localUserName = null, 
+            string? rollbarUserName = null, 
+            string? writeAccessToken = null
             )
         {
 #pragma warning disable CS0618 // Type or member is obsolete

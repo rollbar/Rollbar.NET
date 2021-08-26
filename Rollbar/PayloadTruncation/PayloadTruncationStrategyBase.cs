@@ -18,16 +18,21 @@
         /// <returns>
         /// Payload size (in bytes) after the truncation.
         /// </returns>
-        public abstract int Truncate(Payload payload);
+        public abstract int Truncate(Payload? payload);
 
         /// <summary>
         /// Gets the size in bytes.
         /// </summary>
         /// <param name="payload">The payload.</param>
         /// <returns></returns>
-        protected static int GetSizeInBytes(Payload payload)
+        protected static int GetSizeInBytes(Payload? payload)
         {
             int result = 0;
+
+            if(payload == null)
+            {
+                return result;
+            }
 
             var jsonData = JsonConvert.SerializeObject(payload);
 

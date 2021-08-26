@@ -24,7 +24,7 @@
         /// </summary>
         /// <param name="class">The class.</param>
         /// <param name="message">The message.</param>
-        public Exception(string @class, string message)
+        public Exception(string @class, string? message)
             : this(@class, message, null)
         {
         }
@@ -35,7 +35,7 @@
         /// <param name="class">The class.</param>
         /// <param name="message">The message.</param>
         /// <param name="description">The description.</param>
-        public Exception(string @class, string message, string description)
+        public Exception(string @class, string? message, string? description)
         {
             this.Class = @class;
             this.Message = message;
@@ -61,7 +61,7 @@
         /// The class.
         /// </value>
         [JsonProperty("class", Required = Required.Always)]
-        public string Class { get; private set; }
+        public string? Class { get; private set; }
 
         /// <summary>
         /// Gets or sets the message.
@@ -70,7 +70,7 @@
         /// The message.
         /// </value>
         [JsonProperty("message", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         /// <summary>
         /// Gets or sets the description.
@@ -79,6 +79,6 @@
         /// The description.
         /// </value>
         [JsonProperty("description", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
     }
 }

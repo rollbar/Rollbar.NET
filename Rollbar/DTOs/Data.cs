@@ -53,7 +53,7 @@
         /// <param name="custom">The custom.</param>
         public Data(
             Body body,
-            IDictionary<string, object> custom
+            IDictionary<string, object?>? custom
             )
             : this(null, body, custom, null)
         {
@@ -78,7 +78,7 @@
         /// <param name="config">The configuration.</param>
         /// <param name="body">The body.</param>
         public Data(
-            IRollbarConfig config,
+            IRollbarLoggerConfig? config,
             Body body
             )
             : this(config, body, null, null)
@@ -93,7 +93,7 @@
         /// <param name="body">The body.</param>
         /// <param name="request">The request.</param>
         public Data(
-            IRollbarConfig config,
+            IRollbarLoggerConfig? config,
             Body body,
             Request request
             )
@@ -109,9 +109,9 @@
         /// <param name="body">The body.</param>
         /// <param name="custom">The custom.</param>
         public Data(
-            IRollbarConfig config,
+            IRollbarLoggerConfig? config,
             Body body,
-            IDictionary<string, object> custom
+            IDictionary<string, object?>? custom
             )
             : this(config, body, custom, null)
         {
@@ -126,10 +126,10 @@
         /// <param name="custom">The custom.</param>
         /// <param name="request">The request.</param>
         public Data(
-            IRollbarConfig config, 
+            IRollbarLoggerConfig? config, 
             Body body, 
-            IDictionary<string, object> custom, 
-            Request request
+            IDictionary<string, object?>? custom, 
+            Request? request
             )
         {
             Assumption.AssertNotNull(body, nameof(body));
@@ -137,10 +137,10 @@
             // snap config values:
             if (config != null)
             {
-                this.Environment = config.Environment;
-                this.Level = config.LogLevel;
-                this.Person = config.Person;
-                this.Server = config.Server;
+                this.Environment = config.RollbarDestinationOptions.Environment;
+                this.Level = config.RollbarDeveloperOptions.LogLevel;
+                this.Person = config.RollbarPayloadAdditionOptions.Person;
+                this.Server = config.RollbarPayloadAdditionOptions.Server;
             }
 
             // set explicit values:
@@ -172,7 +172,7 @@
         /// we'll detect them automatically.
         /// </remarks>
         [JsonProperty("environment", Required = Required.Always)]
-        public string Environment { get; set; }
+        public string? Environment { get; set; }
 
         /// <summary>
         /// Gets the body (REQUIRED).
@@ -234,7 +234,7 @@
         /// For most cases, just send it here.
         /// </remarks>
         [JsonProperty("code_version", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string CodeVersion { get; set; }
+        public string? CodeVersion { get; set; }
 
         /// <summary>
         /// Gets or sets the platform (OPTIONAL).
@@ -249,7 +249,7 @@
         /// If this is a client-side event, be sure to specify the platform and use a post_client_item access token.
         /// </remarks>
         [JsonProperty("platform", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Platform { get; set; }
+        public string? Platform { get; set; }
 
         /// <summary>
         /// Gets or sets the language (OPTIONAL).
@@ -266,7 +266,7 @@
         /// users of the language.
         /// </remarks>
         [JsonProperty("language", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Language { get; set; }
+        public string? Language { get; set; }
 
         /// <summary>
         /// Gets or sets the framework (OPTIONAL).
@@ -279,7 +279,7 @@
         /// The name of the framework your code uses
         /// </remarks>
         [JsonProperty("framework", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Framework { get; set; }
+        public string? Framework { get; set; }
 
         /// <summary>
         /// Gets or sets the context (OPTIONAL).
@@ -295,7 +295,7 @@
         /// In a single-page javascript app, it could be the name of the current screen or route.
         /// </remarks>
         [JsonProperty("context", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Context { get; set; }
+        public string? Context { get; set; }
 
         /// <summary>
         /// Gets or sets the request (OPTIONAL).
@@ -308,7 +308,7 @@
         /// Data about the request this event occurred in.
         /// </remarks>
         [JsonProperty("request", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Request Request { get; set; }
+        public Request? Request { get; set; }
 
         /// <summary>
         /// Gets or sets the response.
@@ -319,7 +319,7 @@
         /// Data about the relevant HTTP response (if any).
         /// </remarks>
         [JsonProperty("response", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Response Response { get; set; }
+        public Response? Response { get; set; }
 
         /// <summary>
         /// Gets or sets the person (OPTIONAL).
@@ -334,7 +334,7 @@
         /// same ID, the last received values will overwrite earlier ones.
         /// </remarks>
         [JsonProperty("person", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Person Person { get; set; }
+        public Person? Person { get; set; }
 
         /// <summary>
         /// Gets or sets the server.
@@ -347,7 +347,7 @@
         /// Data about the server related to this event.
         /// </remarks>
         [JsonProperty("server", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Server Server { get; set; }
+        public Server? Server { get; set; }
 
         /// <summary>
         /// Gets or sets the client (OPTIONAL).
@@ -362,7 +362,7 @@
         /// an HTML page), data should be namespaced by platform.
         /// </remarks>
         [JsonProperty("client", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Client Client { get; set; }
+        public Client? Client { get; set; }
 
         /// <summary>
         /// Gets or sets the custom (OPTIONAL).
@@ -375,7 +375,7 @@
         /// Any arbitrary metadata you want to send. "custom" itself should be an object.
         /// </remarks>
         [JsonProperty("custom", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public IDictionary<string, object> Custom { get; set; }
+        public IDictionary<string, object?>? Custom { get; set; }
 
         /// <summary>
         /// Gets or sets the fingerprint (OPTIONAL).
@@ -391,7 +391,7 @@
         /// If omitted, we'll determine this on the backend.
         /// </remarks>
         [JsonProperty("fingerprint", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Fingerprint { get; set; }
+        public string? Fingerprint { get; set; }
 
         /// <summary>
         /// Gets or sets the title (OPTIONAL).
@@ -406,7 +406,7 @@
         /// If omitted, we'll determine this on the backend.
         /// </remarks>
         [JsonProperty("title", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// Gets or sets the UUID (OPTIONAL).
@@ -425,7 +425,7 @@
         /// While optional, it is recommended that all clients generate and provide this field
         /// </remarks>
         [JsonProperty("uuid", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string Uuid { get; set; }
+        public string? Uuid { get; set; }
 
         /// <summary>
         /// Gets or sets the unique identifier UUID (OPTIONAL).
@@ -490,22 +490,22 @@
                     .AddValidation(
                         Data.DataValidationRule.ValidClientIfAny,
                         (data) => data.Client,
-                        this.Client?.GetValidator() as Validator<Client>
+                        this.Client?.GetValidator() as Validator<Client?>
                         )
                     .AddValidation(
                         Data.DataValidationRule.ValidPersonIfAny,
                         (data) => data.Person,
-                        this.Person?.GetValidator() as Validator<Person>
+                        this.Person?.GetValidator() as Validator<Person?>
                         )
                     .AddValidation(
                         Data.DataValidationRule.ValidRequestIfAny,
                         (data) => data.Request,
-                        this.Request?.GetValidator() as Validator<Request>
+                        this.Request?.GetValidator() as Validator<Request?>
                         )
                     .AddValidation(
                         Data.DataValidationRule.ValidServerIfAny,
                         (data) => data.Server,
-                        this.Server?.GetValidator() as Validator<Server>
+                        this.Server?.GetValidator() as Validator<Server?>
                         )
                     .AddValidation(
                         Data.DataValidationRule.NotifierRequired,

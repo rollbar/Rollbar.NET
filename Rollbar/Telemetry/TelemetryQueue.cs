@@ -1,4 +1,4 @@
-﻿namespace Rollbar.Telemetry
+﻿namespace Rollbar
 {
     using System.Collections.Generic;
     using Rollbar.Diagnostics;
@@ -86,11 +86,11 @@
         /// Peeks this instance.
         /// </summary>
         /// <returns></returns>
-        internal Telemetry Peek()
+        internal Telemetry? Peek()
         {
             lock (this._syncLock)
             {
-                Telemetry result = null;
+                Telemetry? result = null;
 
                 if (this._queue.Count > 0)
                 {
@@ -105,11 +105,11 @@
         /// Dequeues this instance.
         /// </summary>
         /// <returns></returns>
-        internal Telemetry Dequeue()
+        internal Telemetry? Dequeue()
         {
             lock (this._syncLock)
             {
-                Telemetry result = null;
+                Telemetry? result = null;
 
                 if (this._queue.Count > 0)
                 {

@@ -24,7 +24,7 @@ namespace Sample.Xamarin.Forms.Droid
     {
         protected override void OnCreate(Bundle bundle)
         {
-            RollbarHelper.ConfigureRollbarSingleton();
+            RollbarHelper.ConfigureRollbar();
 
             // First informational log via Rollbar:
             RollbarLocator.RollbarInstance
@@ -49,8 +49,6 @@ namespace Sample.Xamarin.Forms.Droid
             var newExc = new System.Exception("UnhandledExceptionRaiser", e.Exception);
             RollbarLocator.RollbarInstance.AsBlockingLogger(RollbarHelper.RollbarTimeout).Critical(newExc);
         }
-
-
     }
 }
 

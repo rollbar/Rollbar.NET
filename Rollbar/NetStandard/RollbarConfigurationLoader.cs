@@ -6,7 +6,6 @@
     using System.Reflection;
 
     using Rollbar.Common;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// Class RollbarConfigurationLoader.
@@ -37,12 +36,12 @@
         /// <summary>
         /// The configuration loader type
         /// </summary>
-        private readonly static Type configurationLoaderType = null;
+        private readonly static Type? configurationLoaderType = null;
 
         /// <summary>
         /// The loader
         /// </summary>
-        private readonly IRollbarConfigurationLoader _loader = null;
+        private readonly IRollbarConfigurationLoader? _loader = null;
 
         /// <summary>
         /// Initializes static members of the <see cref="RollbarConfigurationLoader" /> class.
@@ -51,7 +50,7 @@
         {
             string sdkAssembliesPath = RuntimeEnvironmentUtility.GetSdkRuntimeLocationPath();
             traceSource.TraceInformation($"Rollbar SDK runtime location: {sdkAssembliesPath}");
-            Assembly assembly = null;
+            Assembly? assembly = null;
             foreach(var name in RollbarConfigurationLoader.knownAssemblyNames)
             {
                 string dllName = $"{name}.dll";
@@ -87,7 +86,7 @@
             if (RollbarConfigurationLoader.configurationLoaderType != null)
             {
                var ctor = RollbarConfigurationLoader.configurationLoaderType.GetConstructor(new Type[0]);
-               this._loader = (IRollbarConfigurationLoader) ctor?.Invoke(new object[0]);
+               this._loader = (ctor?.Invoke(new object[0])) as IRollbarConfigurationLoader;
             }
         }
 
@@ -96,7 +95,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        public bool Load(RollbarConfig config)
+        public bool Load(RollbarInfrastructureConfig config)
         {
             return (this._loader != null && this._loader.Load(config));
         }
@@ -106,7 +105,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns><c>true</c> if configuration was found, <c>false</c> otherwise.</returns>
-        public bool Load(TelemetryConfig config)
+        public bool Load(RollbarTelemetryOptions config)
         {
             return (this._loader != null && this._loader.Load(config));
         }
@@ -115,7 +114,7 @@
         /// Loads the rollbar configuration.
         /// </summary>
         /// <returns>IRollbarConfig or null if no configuration store was found.</returns>
-        public IRollbarConfig LoadRollbarConfig()
+        public IRollbarInfrastructureConfig? LoadRollbarConfig()
         {
             if (this._loader != null) 
                 return this._loader.LoadRollbarConfig();
@@ -127,7 +126,7 @@
         /// Loads the telemetry configuration.
         /// </summary>
         /// <returns>ITelemetryConfig or null if no configuration store was found.</returns>
-        public ITelemetryConfig LoadTelemetryConfig()
+        public IRollbarTelemetryOptions? LoadTelemetryConfig()
         {
             if (this._loader != null) 
                 return this._loader.LoadTelemetryConfig();

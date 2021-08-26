@@ -34,6 +34,7 @@
         /// Prevents a default instance of the <see cref="Classifier"/> class from being created.
         /// </summary>
         private Classifier()
+            : this(new object())
         {
         }
 

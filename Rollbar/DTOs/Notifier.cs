@@ -61,7 +61,7 @@
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>
-        public string Name
+        public string? Name
         {
             get { return this[ReservedProperties.Name] as string; }
             private set { this[ReservedProperties.Name] = value; }
@@ -71,7 +71,7 @@
         /// Gets the version.
         /// </summary>
         /// <value>The version.</value>
-        public string Version
+        public string? Version
         {
             get { return this[ReservedProperties.Version] as string; }
             private set { this[ReservedProperties.Version] = value; }
@@ -80,9 +80,9 @@
         /// Gets or sets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public IRollbarConfig Configuration
+        public IRollbarLoggerConfig? Configuration
         {
-            get { return this[ReservedProperties.Configuration] as IRollbarConfig; }
+            get { return this[ReservedProperties.Configuration] as IRollbarLoggerConfig; }
             set { this[ReservedProperties.Configuration] = value; }
         }
 
@@ -111,7 +111,7 @@
         /// Initializes a new instance of the <see cref="Notifier"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Notifier(IDictionary<string, object> arbitraryKeyValuePairs) 
+        public Notifier(IDictionary<string, object?>? arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
             this.Name = Notifier.notifierName;

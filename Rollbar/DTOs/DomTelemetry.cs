@@ -21,13 +21,22 @@
         }
 
         /// <summary>
+        /// Prevents a default instance of the <see cref="DomTelemetry"/> class from being created.
+        /// </summary>
+        private DomTelemetry()
+            : base(TelemetryType.Dom, null)
+        {
+            this.Element = string.Empty;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DomTelemetry"/> class.
         /// </summary>
         /// <param name="element">The element.</param>
         public DomTelemetry(
             string element
             )
-            : base(TelemetryType.Dom, null)
+            : this(element, null)
         {
 
         }
@@ -39,7 +48,7 @@
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public DomTelemetry(
             string element, 
-            IDictionary<string, object> arbitraryKeyValuePairs
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(TelemetryType.Dom, arbitraryKeyValuePairs)
         {
@@ -54,7 +63,7 @@
         /// </value>
         public string Element
         {
-            get { return this[ReservedProperties.Element] as string; }
+            get { return (this[ReservedProperties.Element] as string)!; }
             private set { this[ReservedProperties.Element] = value; }
         }
 

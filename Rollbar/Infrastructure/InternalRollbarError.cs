@@ -1,14 +1,17 @@
 ﻿namespace Rollbar
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
 
     /// <summary>
     /// Enum InternalRollbarError
     /// </summary>
     public enum InternalRollbarError
     {
+        /// <summary>
+        /// The infrastructure error
+        /// </summary>
+        InfrastructureError,
+
         /// <summary>
         /// The general error
         /// </summary>

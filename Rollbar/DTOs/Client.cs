@@ -27,7 +27,7 @@
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public Client(IDictionary<string, object> arbitraryKeyValuePairs) 
+        public Client(IDictionary<string, object?>? arbitraryKeyValuePairs) 
             : base(arbitraryKeyValuePairs)
         {
         }

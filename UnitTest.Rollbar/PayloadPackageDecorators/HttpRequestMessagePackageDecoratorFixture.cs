@@ -70,8 +70,8 @@ namespace UnitTest.Rollbar.PayloadPackageDecorators
         {
             IRollbarPackage package = new MessagePackage("Some message");
             
-            var rollbarConfig = new RollbarConfig(RollbarUnitTestSettings.AccessToken);
-            rollbarConfig.IpAddressCollectionPolicy = policy;
+            var rollbarConfig = new RollbarLoggerConfig(RollbarUnitTestSettings.AccessToken);
+            rollbarConfig.RollbarDataSecurityOptions.IpAddressCollectionPolicy = policy;
             var msg = FakeHttpRequestMessage(initialUserHost);
             package = new HttpRequestMessagePackageDecorator(package, msg, rollbarConfig);
 

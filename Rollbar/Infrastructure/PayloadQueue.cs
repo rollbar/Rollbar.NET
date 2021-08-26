@@ -23,12 +23,12 @@
         /// <summary>
         /// The logger
         /// </summary>
-        private readonly RollbarLogger _logger;
+        private readonly RollbarLogger? _logger;
 
         /// <summary>
         /// The client
         /// </summary>
-        private RollbarClient _client;
+        private RollbarClient? _client;
 
         /// <summary>
         /// The is released
@@ -38,13 +38,16 @@
         /// <summary>
         /// The access token queues metadata
         /// </summary>
-        private AccessTokenQueuesMetadata _accessTokenQueuesMetadata;
+        private AccessTokenQueuesMetadata? _accessTokenQueuesMetadata;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PayloadQueue"/> class from being created.
         /// </summary>
         private PayloadQueue()
         {
+            this._syncLock = new object();
+            this._queue = new Queue<PayloadBundle>();
+            this._isReleased = false;
         }
 
         /// <summary>
@@ -92,7 +95,7 @@
         /// <value>The logger.</value>
         public RollbarLogger Logger
         {
-            get { return this._logger; }
+            get { return this._logger!; }
         }
 
         /// <summary>
@@ -118,7 +121,7 @@
         /// <value>The client.</value>
         public RollbarClient Client
         {
-            get { return this._client; }
+            get { return this._client!; }
         }
 
         /// <summary>
@@ -136,7 +139,7 @@
 
             lock (this._syncLock)
             {
-                if (this._logger.Config.ReportingQueueDepth == this._queue.Count)
+                if (RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.ReportingQueueDepth == this._queue.Count)
                 {
                     this._queue.Dequeue();
                 }
@@ -148,11 +151,11 @@
         /// Peeks this instance.
         /// </summary>
         /// <returns>PayloadBundle, if any, otherwise null.</returns>
-        public PayloadBundle Peek()
+        public PayloadBundle? Peek()
         {
             lock(this._syncLock)
             {
-                PayloadBundle result = null;
+                PayloadBundle? result = null;
 
                 if (this._queue.Count > 0)
                 {
@@ -167,18 +170,18 @@
         /// Dequeues this instance.
         /// </summary>
         /// <returns>PayloadBundle, if any, otherwise null.</returns>
-        public PayloadBundle Dequeue()
+        public PayloadBundle? Dequeue()
         {
             lock (this._syncLock)
             {
-                PayloadBundle result = null;
+                PayloadBundle? result = null;
 
                 if (this._queue.Count > 0)
                 {
                     result = this._queue.Dequeue();
 
-                    TimeSpan delta = this.Logger.Config.MaxReportsPerMinute.HasValue ? 
-                        TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / this.Logger.Config.MaxReportsPerMinute.Value)
+                    TimeSpan delta = RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.HasValue ? 
+                        TimeSpan.FromTicks(TimeSpan.FromMinutes(1).Ticks / RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxReportsPerMinute.Value)
                         : TimeSpan.Zero;
                     this.NextDequeueTime = DateTimeOffset.Now.Add(delta);
                 }
@@ -220,7 +223,7 @@
         /// Gets or sets the access token queues metadata.
         /// </summary>
         /// <value>The access token queues metadata.</value>
-        public AccessTokenQueuesMetadata AccessTokenQueuesMetadata
+        public AccessTokenQueuesMetadata? AccessTokenQueuesMetadata
         {
             get { return this._accessTokenQueuesMetadata; }
             set { this._accessTokenQueuesMetadata = value; }

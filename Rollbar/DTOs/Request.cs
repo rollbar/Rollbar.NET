@@ -28,7 +28,7 @@ namespace Rollbar.DTOs
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public Request(
-            IDictionary<string, object> arbitraryKeyValuePairs
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(arbitraryKeyValuePairs)
         {
@@ -87,7 +87,7 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// url: full URL where this event occurred
         /// </remarks>
-        public string Url
+        public string? Url
         {
             get { return this[ReservedProperties.Url] as string; }
             set { this[ReservedProperties.Url] = value; }
@@ -102,7 +102,7 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// method: the request method
         /// </remarks>
-        public string Method
+        public string? Method
         {
             get { return this[ReservedProperties.Method] as string; }
             set { this[ReservedProperties.Method] = value; }
@@ -117,7 +117,7 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// headers: object containing the request headers
         /// </remarks>
-        public IDictionary<string, string> Headers
+        public IDictionary<string, string>? Headers
         {
             get { return this[ReservedProperties.Headers] as IDictionary<string, string>; }
             set { this[ReservedProperties.Headers] = value; }
@@ -132,7 +132,7 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// params: any routing parameters
         /// </remarks>
-        public IDictionary<string, object> Params
+        public IDictionary<string, object>? Params
         {
             get { return this[ReservedProperties.Params] as IDictionary<string, object>; }
             set { this[ReservedProperties.Params] = value; }
@@ -147,7 +147,7 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// GET: query string params
         /// </remarks>
-        public IDictionary<string, object> GetParams
+        public IDictionary<string, object>? GetParams
         {
             get { return this[ReservedProperties.GetParams] as IDictionary<string, object>; }
             set { this[ReservedProperties.GetParams] = value; }
@@ -162,7 +162,7 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// query_string: the raw query string
         /// </remarks>
-        public string QueryString
+        public string? QueryString
         {
             get { return this[ReservedProperties.QueryString] as string; }
             set { this[ReservedProperties.QueryString] = value; }
@@ -177,7 +177,7 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// POST: POST params
         /// </remarks>
-        public IDictionary<string, object> PostParams
+        public IDictionary<string, object>? PostParams
         {
             get { return this[ReservedProperties.PostParams] as IDictionary<string, object>; }
             set { this[ReservedProperties.PostParams] = value; }
@@ -192,7 +192,7 @@ namespace Rollbar.DTOs
         /// <remarks>
         /// body: the raw POST body
         /// </remarks>
-        public object PostBody
+        public object? PostBody
         {
             get { return this[ReservedProperties.PostBody]; }
             set { this[ReservedProperties.PostBody] = value; }
@@ -209,7 +209,7 @@ namespace Rollbar.DTOs
         /// Can also be the special value "$remote_ip", which will be replaced with the source IP of the API request.
         /// Will be indexed, as long as it is a valid IPv4 address.
         /// </remarks>
-        public string UserIp
+        public string? UserIp
         {
             get { return this[ReservedProperties.UserIp] as string; }
             set { this[ReservedProperties.UserIp] = value; }

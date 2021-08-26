@@ -7,7 +7,6 @@ namespace Rollbar.NetCore.AspNet
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar.DTOs;
-    using Rollbar.Telemetry;
     using Rollbar.AppSettings.Json;
     using System;
     using System.Threading.Tasks;
@@ -74,7 +73,7 @@ namespace Rollbar.NetCore.AspNet
             this._rollbarOptions = rollbarOptions.Value;
 
             RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-            TelemetryCollector.Instance.StartAutocollection();
+            RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
             RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
         }
 
@@ -83,10 +82,10 @@ namespace Rollbar.NetCore.AspNet
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>A middleware invocation/execution task.</returns>
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext? context)
         {
             // as we learned from a field issue, apparently a middleware can even be invoked without a valid HttPContext:
-            string requestId = null;
+            string? requestId = null;
             requestId = context?.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
@@ -99,23 +98,28 @@ namespace Rollbar.NetCore.AspNet
 
             using (_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
-                NetworkTelemetry networkTelemetry = null;
+                NetworkTelemetry? networkTelemetry = null;
 
                 try
                 {
-                    if (TelemetryCollector.Instance.IsAutocollecting && context != null && context.Request != null)
+                    if (RollbarInfrastructure.Instance != null
+                        && RollbarInfrastructure.Instance.TelemetryCollector != null 
+                        && RollbarInfrastructure.Instance.TelemetryCollector.IsAutocollecting
+                        && context != null 
+                        && context.Request != null
+                        )
                     {
                         int? telemetryStatusCode = null;
                         telemetryStatusCode = context?.Response?.StatusCode;
 
                         networkTelemetry = new NetworkTelemetry(
-                            method: context.Request.Method,
+                            method: context!.Request.Method,
                             url: context.Request.Host.Value + context.Request.Path,
                             eventStart: DateTime.UtcNow,
-                            eventEnd:null,
-                            statusCode:telemetryStatusCode
+                            eventEnd: null,
+                            statusCode: telemetryStatusCode
                             );
-                        TelemetryCollector.Instance.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
+                        RollbarInfrastructure.Instance.TelemetryCollector.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
                     }
 
                     if (RollbarScope.Current != null && RollbarScope.Current.HttpContext != null)
@@ -134,7 +138,7 @@ namespace Rollbar.NetCore.AspNet
                         networkTelemetry.FinalizeEvent();
                     }
 
-                    if (!RollbarLocator.RollbarInstance.Config.CaptureUncaughtExceptions)
+                    if (!RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.CaptureUncaughtExceptions)
                     {
                         // just rethrow since the Rollbar SDK is configured not to auto-capture 
                         // uncaught exceptions:
@@ -142,17 +146,17 @@ namespace Rollbar.NetCore.AspNet
                     }
 
                     if (RollbarScope.Current != null 
-                        && RollbarLocator.RollbarInstance.Config.MaxItems > 0
+                        && RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems > 0
                         )
                     {
                         RollbarScope.Current.IncrementLogItemsCount();
-                        if (RollbarScope.Current.LogItemsCount == RollbarLocator.RollbarInstance.Config.MaxItems)
+                        if (RollbarScope.Current.LogItemsCount == RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems)
                         {
                             // the Rollbar SDK just reached MaxItems limit, report this fact and pause further logging within this scope: 
                             RollbarLocator.RollbarInstance.Warning(RollbarScope.MaxItemsReachedWarning);
                             throw;
                         }
-                        else if (RollbarScope.Current.LogItemsCount > RollbarLocator.RollbarInstance.Config.MaxItems)
+                        else if (RollbarScope.Current.LogItemsCount > RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.MaxItems)
                         {
                             // just rethrow since the Rollbar SDK already exceeded MaxItems limit:
                             throw;

@@ -31,7 +31,7 @@
         /// <param name="obj">The object.</param>
         /// <param name="indentation">The indentation.</param>
         /// <returns>System.String.</returns>
-        public static string RenderAsString(this object obj, string indentation)
+        public static string RenderAsString(this object obj, string? indentation)
         {
             return RenderAsString(obj, indentation, new StringBuilder());
         }
@@ -43,7 +43,7 @@
         /// <param name="indentation">The indentation.</param>
         /// <param name="stringBuilder">The string builder.</param>
         /// <returns>System.String.</returns>
-        private static string RenderAsString(this object obj, string indentation, StringBuilder stringBuilder)
+        private static string RenderAsString(this object obj, string? indentation, StringBuilder stringBuilder)
         {
             if (stringBuilder == null)
             {
@@ -51,6 +51,12 @@
             }
 
             Type objType = obj.GetType();
+
+            if(objType.IsPrimitive)
+            {
+                stringBuilder.AppendLine($"{indentation ?? string.Empty}{obj}");
+                return stringBuilder.ToString();
+            }
 
             stringBuilder.AppendLine($"{indentation ?? string.Empty}{objType.FullName}:");
 
@@ -67,7 +73,7 @@
                 }
                 else
                 {
-                    stringBuilder.Append(property.GetValue(obj).RenderAsString(propertiesIndentation, stringBuilder));
+                    stringBuilder.Append(property.GetValue(obj)?.RenderAsString(propertiesIndentation, stringBuilder));
                 }
             }
 
@@ -84,7 +90,6 @@
         public static string RenderAsString(this HttpPostedFile httpPostedFile)
         {
             return RenderAsString(httpPostedFile, null);
-
         }
 
         /// <summary>
@@ -93,7 +98,7 @@
         /// <param name="httpPostedFile">The HTTP posted file.</param>
         /// <param name="indentation">The indentation.</param>
         /// <returns>System.String.</returns>
-        public static string RenderAsString(this HttpPostedFile httpPostedFile, string indentation)
+        public static string RenderAsString(this HttpPostedFile httpPostedFile, string? indentation)
         {
             if (httpPostedFile.ContentLength == 0 && string.IsNullOrEmpty(httpPostedFile.FileName))
                 return "[empty]";

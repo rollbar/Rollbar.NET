@@ -23,11 +23,11 @@
         /// Gets the configuration.
         /// </summary>
         /// <returns></returns>
-        public static RollbarTelemetryConfigSection GetConfiguration()
+        public static RollbarTelemetryConfigSection? GetConfiguration()
         {
             try
             {
-                RollbarTelemetryConfigSection configuration =
+                RollbarTelemetryConfigSection? configuration =
                     ConfigurationManager.GetSection("rollbarTelemetry")
                     as RollbarTelemetryConfigSection;
                 return configuration;

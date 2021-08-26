@@ -53,6 +53,10 @@
         /// </summary>
         private RollbarPayloadScrubber()
         {
+            this._payloadFieldNames = new string[0];
+            this._payloadFieldPaths = new string[0];
+            this._httpRequestBodyPaths = new string[0];
+            this._httpResponseBodyPaths = new string[0];
         }
 
         /// <summary>
@@ -88,14 +92,14 @@
         /// <param name="inputFields">The input fields.</param>
         /// <param name="criticalDataFields">The critical data fields.</param>
         /// <returns>Filtered input fields without the critical ones.</returns>
-        public static IEnumerable<string> FilterOutCriticalFields(string[] inputFields, string[] criticalDataFields)
+        public static IEnumerable<string> FilterOutCriticalFields(string[]? inputFields, string[]? criticalDataFields)
         {
             if (criticalDataFields == null)
             {
-                return inputFields;
+                return inputFields ?? new string[0];
             }
 
-            List<string> safeScrubFields = null;
+            List<string>? safeScrubFields = null;
 
             if (inputFields != null)
             {
@@ -109,7 +113,7 @@
                 }
             }
 
-            return safeScrubFields;
+            return safeScrubFields ?? new List<string>(0);
         }
 
         /// <summary>

@@ -30,11 +30,11 @@
         /// <summary>
         /// The rollbar configuration
         /// </summary>
-        private readonly IRollbarConfig _rollbarConfig;
+        private readonly IRollbarLoggerConfig _rollbarConfig;
         /// <summary>
         /// The arbitrary key value pairs
         /// </summary>
-        private readonly IDictionary<string, object> _arbitraryKeyValuePairs;
+        private readonly IDictionary<string, object?>? _arbitraryKeyValuePairs;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HttpRequestMessagePackageDecorator"/> class.
@@ -45,7 +45,7 @@
         public HttpRequestMessagePackageDecorator(
             IRollbarPackage packageToDecorate,
             HttpRequestMessage httpRequestMessage,
-            IRollbarConfig rollbarConfig
+            IRollbarLoggerConfig rollbarConfig
             )
             : this(packageToDecorate, httpRequestMessage, rollbarConfig, null, false)
         {
@@ -62,8 +62,8 @@
         public HttpRequestMessagePackageDecorator(
             IRollbarPackage packageToDecorate,
             HttpRequestMessage httpRequestMessage,
-            IRollbarConfig rollbarConfig,
-            IDictionary<string, object> arbitraryKeyValuePairs
+            IRollbarLoggerConfig rollbarConfig,
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : this(packageToDecorate, httpRequestMessage, rollbarConfig, arbitraryKeyValuePairs, false)
         {
@@ -80,7 +80,7 @@
         public HttpRequestMessagePackageDecorator(
             IRollbarPackage packageToDecorate,
             HttpRequestMessage httpRequestMessage,
-            IRollbarConfig rollbarConfig,
+            IRollbarLoggerConfig rollbarConfig,
             bool mustApplySynchronously
             )
             : this(packageToDecorate, httpRequestMessage, rollbarConfig, null, mustApplySynchronously)
@@ -99,8 +99,8 @@
         public HttpRequestMessagePackageDecorator(
             IRollbarPackage packageToDecorate, 
             HttpRequestMessage  httpRequestMessage, 
-            IRollbarConfig rollbarConfig,
-            IDictionary<string, object> arbitraryKeyValuePairs,
+            IRollbarLoggerConfig rollbarConfig,
+            IDictionary<string, object?>? arbitraryKeyValuePairs,
             bool mustApplySynchronously
             ) 
             : base(packageToDecorate, mustApplySynchronously)
@@ -117,9 +117,14 @@
         /// Decorates the specified rollbar data.
         /// </summary>
         /// <param name="rollbarData">The rollbar data.</param>
-        protected override void Decorate(Data rollbarData)
+        protected override void Decorate(Data? rollbarData)
         {
-            if (this._httpRequestMessage == null)
+            if(rollbarData == null)
+            {
+                return;
+            }
+
+            if(this._httpRequestMessage == null)
             {
                 return; // there is nothing to decorate with...
             }
@@ -165,12 +170,12 @@
                 return;
             }
 
-            string userIP = null;
+            string? userIP = null;
             const string HttpContextProperty = "MS_HttpContext";
             const string RemoteEndpointMessagePropery = "System.ServiceModel.Channels.RemoteEndpointMessageProperty";
             if (this._httpRequestMessage.Properties.ContainsKey(HttpContextProperty))
             {
-                HttpContextBase ctx = this._httpRequestMessage.Properties[HttpContextProperty] as HttpContextBase;
+                HttpContextBase? ctx = this._httpRequestMessage.Properties[HttpContextProperty] as HttpContextBase;
                 if (ctx != null)
                 {
                     userIP = ctx.Request.UserHostAddress;
@@ -178,7 +183,7 @@
             }
             else if (this._httpRequestMessage.Properties.ContainsKey(RemoteEndpointMessagePropery))
             {
-                RemoteEndpointMessageProperty remoteEndpoint =
+                RemoteEndpointMessageProperty? remoteEndpoint =
                     this._httpRequestMessage.Properties[RemoteEndpointMessagePropery] as RemoteEndpointMessageProperty;
                 if (remoteEndpoint != null)
                 {
@@ -187,7 +192,7 @@
             }
 
             rollbarData.Request.UserIp =
-                HttpRequestMessagePackageDecorator.DecideCollectableUserIPValue(userIP, this._rollbarConfig.IpAddressCollectionPolicy);
+                HttpRequestMessagePackageDecorator.DecideCollectableUserIPValue(userIP, this._rollbarConfig.RollbarDataSecurityOptions.IpAddressCollectionPolicy);
 #endif
 
         }
@@ -198,14 +203,22 @@
         /// <param name="initialIPAddress">The initial ip address.</param>
         /// <param name="ipAddressCollectionPolicy">The ip address collection policy.</param>
         /// <returns>The IP value as System.String.</returns>
-        private static string DecideCollectableUserIPValue(string initialIPAddress, IpAddressCollectionPolicy ipAddressCollectionPolicy)
+        private static string? DecideCollectableUserIPValue(
+            string? initialIPAddress, 
+            IpAddressCollectionPolicy ipAddressCollectionPolicy
+            )
         {
+            if(string.IsNullOrWhiteSpace(initialIPAddress))
+            {
+                return null;
+            }
+
             switch (ipAddressCollectionPolicy)
             {
                 case IpAddressCollectionPolicy.Collect:
                     return initialIPAddress;
                 case IpAddressCollectionPolicy.CollectAnonymized:
-                    return IpAddressUtility.Anonymize(initialIPAddress);
+                    return IpAddressUtility.Anonymize(initialIPAddress!);
                 case IpAddressCollectionPolicy.DoNotCollect:
                     return null;
                 default:

@@ -18,7 +18,7 @@
         /// <summary>
         /// The store context (the payload persistence infrastructure)
         /// </summary>
-        private StoreContext _storeContext = null;
+        private StoreContext _storeContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PayloadStoreRepository"/> class.
@@ -52,7 +52,7 @@
         /// <param name="endPoint">The end point.</param>
         /// <param name="accessToken">The access token.</param>
         /// <returns>Destination.</returns>
-        Destination GetDestination(string endPoint, string accessToken)
+        private Destination? GetDestination(string endPoint, string accessToken)
         {
             var destination = this._storeContext.Destinations.SingleOrDefault(d =>
                 d.Endpoint == endPoint &&
@@ -83,7 +83,7 @@
         /// </summary>
         /// <param name="destinationId">The destination identifier.</param>
         /// <returns>IPayloadRecord.</returns>
-        public IPayloadRecord GetOldestRecords(Guid destinationId)
+        public IPayloadRecord? GetOldestRecords(Guid destinationId)
         {
             return this._storeContext.PayloadRecords
                 .Where(r => r.DestinationID == destinationId)
@@ -120,12 +120,15 @@
             {
                 destination = new Destination() { Endpoint = destinationEndPoint, AccessToken = destinationAccessToken, };
                 this._storeContext.Destinations.Add(destination);
+                this._storeContext.SaveChanges();
             }
 
             foreach (var p in payloads.Cast<PayloadRecord>())
             {
                 destination.PayloadRecords.Add(p);
+                this._storeContext.PayloadRecords.Add(p);
             }
+            //this._storeContext.PayloadRecords.AddRange(destination.PayloadRecords);
 
             this._storeContext.SaveChanges();
         }

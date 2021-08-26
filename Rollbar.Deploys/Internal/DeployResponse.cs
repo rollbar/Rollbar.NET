@@ -16,6 +16,6 @@
         /// The deploy.
         /// </value>
         [JsonProperty("result", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public Deploy Deploy { get; set; }
+        public Deploy? Deploy { get; set; }
     }
 }

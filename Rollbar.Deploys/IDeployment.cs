@@ -11,7 +11,7 @@
         /// <value>
         /// The revision.
         /// </value>
-        string Revision { get; }
+        string? Revision { get; }
 
         /// <summary>
         /// Gets the environment.
@@ -19,7 +19,7 @@
         /// <value>
         /// The environment.
         /// </value>
-        string Environment { get; }
+        string? Environment { get; }
 
         /// <summary>
         /// Gets the comment.
@@ -27,7 +27,7 @@
         /// <value>
         /// The comment.
         /// </value>
-        string Comment { get; }
+        string? Comment { get; }
 
         /// <summary>
         /// Gets the local username.
@@ -35,7 +35,7 @@
         /// <value>
         /// The local username.
         /// </value>
-        string LocalUsername { get; }
+        string? LocalUsername { get; }
 
         /// <summary>
         /// Gets the rollbar username.
@@ -43,6 +43,6 @@
         /// <value>
         /// The rollbar username.
         /// </value>
-        string RollbarUsername { get; }
+        string? RollbarUsername { get; }
     }
 }

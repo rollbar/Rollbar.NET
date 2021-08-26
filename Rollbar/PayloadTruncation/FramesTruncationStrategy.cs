@@ -40,10 +40,10 @@
         /// <returns>
         /// Payload size (in bytes) after the truncation.
         /// </returns>
-        public override int Truncate(Payload payload)
+        public override int Truncate(Payload? payload)
         {
-            Trace[] traceChain = payload.Data.Body.TraceChain;
-            if (traceChain == null && (payload.Data.Body.Trace != null))
+            Trace[]? traceChain = payload?.Data.Body.TraceChain;
+            if (traceChain == null && (payload?.Data.Body.Trace != null))
             {
                 traceChain = new Trace[] { payload.Data.Body.Trace };
             }

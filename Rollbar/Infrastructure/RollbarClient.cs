@@ -26,12 +26,17 @@
         /// <summary>
         /// The rollbar logger
         /// </summary>
-        private readonly RollbarLogger _rollbarLogger;
+        private readonly IRollbar? _rollbarLogger;
+
+        /// <summary>
+        /// The rollbar logger configuration
+        /// </summary>
+        private readonly IRollbarLoggerConfig _rollbarLoggerConfig;
 
         /// <summary>
         /// The HTTP client
         /// </summary>
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient? _httpClient;
 
         /// <summary>
         /// The expected post to API timeout
@@ -46,12 +51,12 @@
         /// <summary>
         /// The payload truncation strategy
         /// </summary>
-        private readonly IterativeTruncationStrategy _payloadTruncationStrategy;
+        private readonly IterativeTruncationStrategy? _payloadTruncationStrategy;
 
         /// <summary>
         /// The payload scrubber
         /// </summary>
-        private readonly RollbarPayloadScrubber _payloadScrubber;
+        private readonly RollbarPayloadScrubber? _payloadScrubber;
 
         #endregion fields
 
@@ -61,7 +66,7 @@
         /// Initializes a new instance of the <see cref="RollbarClient" /> class.
         /// </summary>
         /// <param name="rollbarLogger">The rollbar logger.</param>
-        public RollbarClient(RollbarLogger rollbarLogger)
+        public RollbarClient(IRollbar rollbarLogger)
             : this(rollbarLogger.Config)
         {
             Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
@@ -69,47 +74,57 @@
             this._rollbarLogger = rollbarLogger;
 
             this._payloadTruncationStrategy = new IterativeTruncationStrategy();
-            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.GetFieldsToScrub());
+            this._payloadScrubber = new RollbarPayloadScrubber(this._rollbarLogger.Config.RollbarDataSecurityOptions.GetFieldsToScrub());
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarClient"/> class.
         /// </summary>
         /// <param name="rollbarConfig">The rollbar configuration.</param>
-        public RollbarClient(IRollbarConfig rollbarConfig)
+        public RollbarClient(IRollbarLoggerConfig rollbarConfig)
         {
             Assumption.AssertNotNull(rollbarConfig, nameof(rollbarConfig));
 
+            this._rollbarLoggerConfig = rollbarConfig;
+
             this._payloadPostUri = 
-                new Uri($"{rollbarConfig.EndPoint}item/");
+                new Uri($"{rollbarConfig.RollbarDestinationOptions.EndPoint}item/");
             this._httpClient = 
-                RollbarQueueController.Instance.ProvideHttpClient(
-                    rollbarConfig.ProxyAddress,
-                    rollbarConfig.ProxyUsername,
-                    rollbarConfig.ProxyPassword
+                RollbarQueueController.Instance?.ProvideHttpClient(
+                    rollbarConfig.HttpProxyOptions.ProxyAddress,
+                    rollbarConfig.HttpProxyOptions.ProxyUsername,
+                    rollbarConfig.HttpProxyOptions.ProxyPassword
                 );
 
-            this._expectedPostToApiTimeout = rollbarConfig.PayloadPostTimeout;
+            this._expectedPostToApiTimeout = 
+                RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.PayloadPostTimeout;
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
-            if (!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
+            if (this._httpClient != null 
+                && !this._httpClient.DefaultRequestHeaders.Accept.Contains(header)
+                )
             {
                 this._httpClient.DefaultRequestHeaders.Accept.Add(header);
             }
 
-            var sp = ServicePointManager.FindServicePoint(new Uri(rollbarConfig.EndPoint));
-            try
+            if(!string.IsNullOrWhiteSpace(rollbarConfig.RollbarDestinationOptions.EndPoint))
             {
-                sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
-            }
+                var sp = ServicePointManager.FindServicePoint(
+                    new Uri(rollbarConfig.RollbarDestinationOptions.EndPoint)
+                    );
+                try
+                {
+                    sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
+                }
 #pragma warning disable CS0168 // Variable is declared but never used
 #pragma warning disable IDE0059 // Variable is declared but never used
-            catch (NotImplementedException ex)
+                catch(NotImplementedException ex)
 #pragma warning restore CS0168 // Variable is declared but never used
 #pragma warning restore IDE0059 // Variable is declared but never used
-            {
-                // just a crash prevention.
-                // this is a work around the unimplemented property within Mono runtime...
+                {
+                    // just a crash prevention.
+                    // this is a work around the unimplemented property within Mono runtime...
+                }
             }
         }
 
@@ -119,7 +134,7 @@
         /// Gets the configuration.
         /// </summary>
         /// <value>The configuration.</value>
-        public IRollbarConfig Config { get { return this._rollbarLogger.Config; } }
+        public IRollbarLoggerConfig Config { get { return this._rollbarLoggerConfig; } }
 
         /// <summary>
         /// Ensures the HTTP content to send.
@@ -133,7 +148,7 @@
                 return true;
             }
 
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
             Assumption.AssertNotNull(payload, nameof(payload));
 
             if (!TruncatePayload(payloadBundle))
@@ -146,7 +161,7 @@
                 return false;
             }
 
-            string jsonData = SerializePayloadAsJsonString(payloadBundle);
+            string? jsonData = SerializePayloadAsJsonString(payloadBundle);
             if (string.IsNullOrWhiteSpace(jsonData))
             {
                 return false;
@@ -154,7 +169,7 @@
 
             try
             {
-                jsonData = ScrubPayload(jsonData);
+                jsonData = ScrubPayload(jsonData!);
             }
             catch (System.Exception exception)
             {
@@ -173,8 +188,16 @@
             payloadBundle.AsHttpContentToSend =
                 new StringContent(jsonData, Encoding.UTF8, "application/json"); //CONTENT-TYPE header
 
-            Assumption.AssertNotNull(payloadBundle.AsHttpContentToSend, nameof(payloadBundle.AsHttpContentToSend));
-            Assumption.AssertTrue(string.Equals(payload.AccessToken, this._rollbarLogger.Config.AccessToken), nameof(payload.AccessToken));
+            Assumption.AssertNotNull(
+                payloadBundle.AsHttpContentToSend, 
+                nameof(payloadBundle.AsHttpContentToSend)
+                );
+#pragma warning disable CA1307 // Specify StringComparison for clarity
+            _ = Assumption.AssertTrue(
+                string.Equals(payload!.AccessToken, this._rollbarLoggerConfig.RollbarDestinationOptions.AccessToken), 
+                nameof(payload.AccessToken)
+                );
+#pragma warning restore CA1307 // Specify StringComparison for clarity
 
             return true;
         }
@@ -184,13 +207,15 @@
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
         /// <returns>RollbarResponse.</returns>
-        public RollbarResponse PostAsJson(PayloadBundle payloadBundle)
+        public RollbarResponse? PostAsJson(PayloadBundle payloadBundle)
         {
             Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
             // first, let's run quick Internet availability check
             // to minimize potential timeout of the following JSON POST call: 
-            if (!ConnectivityMonitor.Instance.IsConnectivityOn)
+            if (RollbarConnectivityMonitor.Instance != null 
+                && !RollbarConnectivityMonitor.Instance.IsConnectivityOn
+                )
             {
                 throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
@@ -228,21 +253,28 @@
         /// <param name="accessToken">The access token.</param>
         /// <param name="jsonContent">Content of the json.</param>
         /// <returns>RollbarResponse.</returns>
-        public RollbarResponse PostAsJson(string accessToken, string jsonContent) 
+        public RollbarResponse? PostAsJson(string? accessToken, string? jsonContent) 
         {
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
 
+            if(string.IsNullOrWhiteSpace(accessToken))
+            {
+                return null;
+            }
+
             // first, let's run quick Internet availability check
             // to minimize potential timeout of the following JSON POST call: 
-            if (!ConnectivityMonitor.Instance.IsConnectivityOn)
+            if (RollbarConnectivityMonitor.Instance != null 
+                && !RollbarConnectivityMonitor.Instance.IsConnectivityOn
+                )
             {
                 throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
 
             using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
             {
-                var task = this.PostAsJsonAsync(accessToken, jsonContent, cancellationTokenSource.Token);
+                var task = this.PostAsJsonAsync(accessToken!, jsonContent!, cancellationTokenSource.Token);
 
                 try
                 {
@@ -274,7 +306,7 @@
         /// <param name="payloadBundle">The payload bundle.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        public async Task<RollbarResponse> PostAsJsonAsync(
+        public async Task<RollbarResponse?> PostAsJsonAsync(
             PayloadBundle payloadBundle, 
             CancellationToken cancellationToken
             )
@@ -282,14 +314,16 @@
             Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
 
             // make sure there anything meaningful to send:
-            if (!EnsureHttpContentToSend(payloadBundle))
+            if (string.IsNullOrWhiteSpace(this._rollbarLoggerConfig.RollbarDestinationOptions.AccessToken) 
+                || !EnsureHttpContentToSend(payloadBundle)
+                )
             {
                 return null;
             }
 
             return await PostAsJsonAsync(
-                this._rollbarLogger.Config.AccessToken,
-                payloadBundle.AsHttpContentToSend,
+                this._rollbarLoggerConfig.RollbarDestinationOptions.AccessToken!,
+                payloadBundle.AsHttpContentToSend!,
                 cancellationToken
                 );
         }
@@ -301,7 +335,7 @@
         /// <param name="jsonContent">Content of the json.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        public async Task<RollbarResponse> PostAsJsonAsync(
+        public async Task<RollbarResponse?> PostAsJsonAsync(
             string accessToken, 
             string jsonContent, 
             CancellationToken cancellationToken
@@ -324,7 +358,7 @@
         /// <param name="jsonContent">Content of the json.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns>Task&lt;RollbarResponse&gt;.</returns>
-        private async Task<RollbarResponse> PostAsJsonAsync(
+        private async Task<RollbarResponse?> PostAsJsonAsync(
             string accessToken, 
             StringContent jsonContent, 
             CancellationToken cancellationToken
@@ -333,6 +367,11 @@
             Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
             Assumption.AssertNotNull(jsonContent, nameof(jsonContent));
 
+            if(this._httpClient == null)
+            {
+                return null;
+            }
+
             // build an HTTP request:
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
             const string accessTokenHeader = "X-Rollbar-Access-Token";
@@ -340,8 +379,8 @@
             request.Content = jsonContent;
             
             // send the request:
-            HttpResponseMessage postResponse = null;
-            RollbarResponse response = null;
+            HttpResponseMessage? postResponse = null;
+            RollbarResponse? response = null;
             try 
             {
                 postResponse = await this._httpClient.SendAsync(request, cancellationToken);
@@ -385,9 +424,9 @@
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
         /// <returns>System.String.</returns>
-        private string SerializePayloadAsJsonString(PayloadBundle payloadBundle)
+        private string? SerializePayloadAsJsonString(PayloadBundle payloadBundle)
         {
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
 
             string jsonData;
             try
@@ -417,7 +456,7 @@
         /// Truncates the payload.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if truncated successfully, <c>false</c> otherwise.</returns>
         private bool TruncatePayload(PayloadBundle payloadBundle)
         {
             if (this._payloadTruncationStrategy == null)
@@ -425,7 +464,7 @@
                 return true; // as far as truncation is concerned - everything is good...
             }
 
-            Payload payload = payloadBundle.GetPayload();
+            Payload? payload = payloadBundle.GetPayload();
 
             if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
             {
@@ -473,15 +512,22 @@
         /// Scrubs the HTTP messages.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if scrubbed successfully, <c>false</c> otherwise.</returns>
         private bool ScrubHttpMessages(PayloadBundle payloadBundle)
         {
-            Payload payload = payloadBundle.GetPayload();
+            if(this._payloadScrubber == null)
+            {
+                return true;
+            }
 
-            DTOs.Request request = payload.Data.Request;
+            Payload? payload = payloadBundle.GetPayload();
+
+            DTOs.Request? request = payload?.Data.Request;
             if (request?.PostBody is string requestBody)
             {
-                if (request.Headers.TryGetValue("Content-Type", out string contentTypeHeader))
+                if (request.Headers != null 
+                    && request.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
+                    )
                 {
                     request.PostBody = 
                         this.ScrubHttpMessageBodyContentString(
@@ -493,10 +539,12 @@
                 }
             }
 
-            DTOs.Response response = payload.Data.Response;
+            DTOs.Response? response = payload?.Data.Response;
             if (response?.Body is string responseBody)
             {
-                if (response.Headers.TryGetValue("Content-Type", out string contentTypeHeader))
+                if (response.Headers != null 
+                    && response.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
+                    )
                 {
                     response.Body =
                         this.ScrubHttpMessageBodyContentString(
@@ -529,6 +577,7 @@
             )
         {
             string contentType = contentTypeHeaderValue.ToLower();
+#pragma warning disable CA1307 // Specify StringComparison for clarity
             if (contentType.Contains("json"))
             {
                 return new JsonStringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
@@ -545,6 +594,7 @@
             {
                 return new StringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
             }
+#pragma warning restore CA1307 // Specify StringComparison for clarity
         }
 
         #endregion payload scrubbing

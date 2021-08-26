@@ -39,7 +39,7 @@
         /// <param name="environment">The environment.</param>
         /// <param name="revision">The revision.</param>
         [Obsolete("This constructor is obsolete. Instead, use Rollbar.Deploys.DeploymentFactory.CreateDeployment(...)", false)]
-        public Deployment(string writeAccessToken, string environment, string revision)
+        public Deployment(string? writeAccessToken, string? environment, string? revision)
         {
             this.WriteAccessToken = writeAccessToken;
             this.Environment = environment;
@@ -52,7 +52,7 @@
         /// <value>
         /// The write access token.
         /// </value>
-        public string WriteAccessToken { get; private set; }
+        public string? WriteAccessToken { get; private set; }
 
         /// <summary>
         /// Gets the environment.
@@ -60,7 +60,7 @@
         /// <value>
         /// The environment.
         /// </value>
-        public string Environment { get; private set; }
+        public string? Environment { get; private set; }
 
         /// <summary>
         /// Gets the revision.
@@ -68,7 +68,7 @@
         /// <value>
         /// The revision.
         /// </value>
-        public string Revision { get; private set; }
+        public string? Revision { get; private set; }
 
         /// <summary>
         /// Gets the rollbar username.
@@ -76,7 +76,7 @@
         /// <value>
         /// The rollbar username.
         /// </value>
-        public string RollbarUsername { get; set; }
+        public string? RollbarUsername { get; set; }
 
         /// <summary>
         /// Gets the local username.
@@ -84,7 +84,7 @@
         /// <value>
         /// The local username.
         /// </value>
-        public string LocalUsername { get; set; }
+        public string? LocalUsername { get; set; }
 
         /// <summary>
         /// Gets the comment.
@@ -92,7 +92,7 @@
         /// <value>
         /// The comment.
         /// </value>
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
     }
 }

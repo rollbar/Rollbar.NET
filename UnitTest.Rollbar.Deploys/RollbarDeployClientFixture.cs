@@ -13,15 +13,21 @@ namespace UnitTest.Rollbar.Deploys
     [TestCategory(nameof(RollbarDeployClientFixture))]
     public class RollbarDeployClientFixture
     {
-        private RollbarConfig _loggerConfig;
+        private RollbarLoggerConfig _loggerConfig;
 
         [TestInitialize]
         public void SetupFixture()
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
+            RollbarDestinationOptions destinationOptions = 
+                new RollbarDestinationOptions(
+                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.Environment
+                    );
             this._loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) { Environment = RollbarUnitTestSettings.Environment, };
+                new RollbarLoggerConfig();
+            this._loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
         }
 
         [TestCleanup]
@@ -68,12 +74,12 @@ namespace UnitTest.Rollbar.Deploys
             RollbarDeployClient rollbarClient = new RollbarDeployClient(this._loggerConfig,httpClient);
 
             var deployment = DeploymentFactory.CreateDeployment(
-                environment: this._loggerConfig.Environment,
+                environment: this._loggerConfig.RollbarDestinationOptions.Environment,
                 revision: "99909a3a5a3dd4363f414161f340b582bb2e4161",
                 comment: "Some new unit test deployment",
                 localUserName: "UnitTestRunner",
                 rollbarUserName: "rollbar",
-                writeAccessToken: this._loggerConfig.AccessToken
+                writeAccessToken: this._loggerConfig.RollbarDestinationOptions.AccessToken
                 );
             var task = rollbarClient.PostAsync(deployment);
 

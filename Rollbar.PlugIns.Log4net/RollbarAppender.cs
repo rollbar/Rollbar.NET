@@ -49,7 +49,7 @@
         /// <param name="rollbarConfig">The Rollbar configuration.</param>
         /// <param name="rollbarBlockingLoggingTimeout">The Rollbar blocking logging timeout.</param>
         public RollbarAppender(
-            IRollbarConfig rollbarConfig,
+            IRollbarInfrastructureConfig? rollbarConfig,
             TimeSpan? rollbarBlockingLoggingTimeout
             )
         {
@@ -60,7 +60,7 @@
         /// Gets the rollbar configuration.
         /// </summary>
         /// <value>The rollbar configuration.</value>
-        public IRollbarConfig RollbarConfig
+        public IRollbarLoggerConfig? RollbarConfig
         {
             get { return this._rollbarPlugIn.RollbarConfig; }
         }

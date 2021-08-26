@@ -25,11 +25,11 @@
         /// <summary>
         /// The scrub fields
         /// </summary>
-        protected readonly string[] _scrubFields;
+        protected readonly string[]? _scrubFields;
         /// <summary>
         /// The scrub paths
         /// </summary>
-        protected readonly string[] _scrubPaths;
+        protected readonly string[]? _scrubPaths;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="StringScrubber"/> class from being created.
@@ -43,12 +43,14 @@
         /// </summary>
         /// <param name="scrubMask">The scrub mask.</param>
         /// <param name="scrubFields">The scrub fields.</param>
+#pragma warning disable CA1307 // Specify StringComparison for clarity
         public StringScrubber(string scrubMask, IEnumerable<string> scrubFields)
             : this(scrubMask, scrubFields.Where(n => !n.Contains('.')), scrubFields.Where(n => n.Contains('.')))
+#pragma warning restore CA1307 // Specify StringComparison for clarity
         {
-            Debug.Assert(scrubFields.Count() ==
-                         this._scrubFields.Length +
-                         this._scrubPaths.Length
+            Debug.Assert(
+                scrubFields.Count() ==
+                this._scrubFields!.Length + this._scrubPaths!.Length
             );
         }
         /// <summary>

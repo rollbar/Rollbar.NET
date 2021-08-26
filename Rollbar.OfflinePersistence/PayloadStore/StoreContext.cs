@@ -20,7 +20,7 @@
         /// <summary>
         /// The default rollbar store database file location
         /// </summary>
-        public static readonly string DefaultRollbarStoreDbFileLocation = 
+        public static readonly string? DefaultRollbarStoreDbFileLocation = 
             PayloadStoreConstants.DefaultRollbarStoreDbFileLocation;
 
         /// <summary>
@@ -36,6 +36,8 @@
         private static string sqliteConnectionString { get; set; } = 
             $"Filename={StoreContext.RollbarStoreDbFullName};";
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
         /// <summary>
         /// Gets or sets the destinations.
         /// </summary>
@@ -47,6 +49,8 @@
         /// </summary>
         /// <value>The payload records.</value>
         public DbSet<PayloadRecord> PayloadRecords { get; set; }
+
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         /// <summary>
         /// Makes the sure database exists and ready.

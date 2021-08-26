@@ -126,7 +126,7 @@
         /// 	this.uiElement = Assumption.AssertNotNull(uiElement, "uiElement");	
         /// }
         /// </example>
-        public static T AssertNotNull<T>(T value, string parameterName) where T : class
+        public static T AssertNotNull<T>(T value, string parameterName) //where T : class
         {
             if (value == null)
             {
@@ -149,7 +149,7 @@
         /// 	this.message = Assumption.AssertNotNullOrEmpty(message, "message");	
         /// }
         /// </example>
-        public static string AssertNotNullOrEmpty(string value, string parameterName)
+        public static string? AssertNotNullOrEmpty(string? value, string parameterName)
         {
             if (value == null)
             {
@@ -172,7 +172,7 @@
         /// <param name="value">The value.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns>The specified value.</returns>
-        public static IEnumerable AssertNotNullOrEmpty(IEnumerable value, string parameterName)
+        public static IEnumerable? AssertNotNullOrEmpty(IEnumerable? value, string parameterName)
         {
             if (value == null)
             {
@@ -207,7 +207,7 @@
         /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns></returns>
-        public static string AssertEqual(string value, string expectedValue, bool ignoreCase, string parameterName)
+        public static string? AssertEqual(string? value, string? expectedValue, bool ignoreCase, string parameterName)
         {
             if (value == null && expectedValue == null)
             {
@@ -233,7 +233,7 @@
         /// <param name="value">The value to test.</param>
         /// <param name="parameterName">Name of the parameter.</param>
         /// <returns>The specified value.</returns>
-        public static string AssertNotNullOrWhiteSpace(string value, string parameterName)
+        public static string? AssertNotNullOrWhiteSpace(string? value, string parameterName)
         {
             if (value == null || value.Trim().Length == 0)
             {
@@ -493,7 +493,7 @@
         /// 	this.message = Assumption.AssertNotNullAndOfType&lt;string&gt;(message, "message");	
         /// }
         /// </example>
-        public static T AssertNotNullAndOfType<T>(object value, string parameterName) where T : class
+        public static T? AssertNotNullAndOfType<T>(object? value, string parameterName) where T : class
         {
             if (value == null)
             {

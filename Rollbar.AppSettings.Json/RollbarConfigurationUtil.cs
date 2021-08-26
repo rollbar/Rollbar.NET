@@ -3,7 +3,6 @@
     using System;
     using Microsoft.Extensions.Configuration;
     using Rollbar.Diagnostics;
-    using Rollbar.Telemetry;
 
     /// <summary>
     /// Utility type aiding in Rollbar configuration options/alternatives.
@@ -15,11 +14,13 @@
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns></returns>
-        public static IRollbarConfig DeduceRollbarConfig(IConfiguration configuration)
+        public static IRollbarInfrastructureConfig DeduceRollbarConfig(IConfiguration configuration)
         {
-            if (RollbarLocator.RollbarInstance.Config.AccessToken != null)
+            //if (RollbarLocator.RollbarInstance.Config.RollbarDestinationOptions.AccessToken != null)
+            if (RollbarInfrastructure.Instance.Config?.RollbarLoggerConfig?.RollbarDestinationOptions?.AccessToken != null)
             {
-                return RollbarLocator.RollbarInstance.Config;
+                //return RollbarLocator.RollbarInstance.Config;
+                return RollbarInfrastructure.Instance.Config;
             }
 
             // Here we assume that the Rollbar singleton was not explicitly preconfigured 
@@ -29,17 +30,26 @@
             Assumption.AssertNotNull(configuration, nameof(configuration));
 
             const string defaultAccessToken = "none";
-            RollbarConfig rollbarConfig = new RollbarConfig(defaultAccessToken);
+            RollbarInfrastructureConfig rollbarConfig = new RollbarInfrastructureConfig(defaultAccessToken);
             AppSettingsUtility.LoadAppSettings(rollbarConfig, configuration);
 
-            if (rollbarConfig.AccessToken == defaultAccessToken)
+            if (rollbarConfig.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken == defaultAccessToken)
             {
                 const string error = "Rollbar.NET notifier is not configured properly. A valid access token needs to be specified.";
-                throw new Exception(error);
+                throw new RollbarException(InternalRollbarError.ConfigurationError, error);
+            }
+
+            if(RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructure.Instance.Config?.Reconfigure(rollbarConfig!);
+            }
+            else
+            {
+                RollbarInfrastructure.Instance.Init(rollbarConfig);
             }
 
             RollbarLocator.RollbarInstance
-                .Configure(rollbarConfig);
+                .Configure(rollbarConfig.RollbarLoggerConfig);
 
             return rollbarConfig;
         }
@@ -49,12 +59,12 @@
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns></returns>
-        public static ITelemetryConfig DeduceRollbarTelemetryConfig(IConfiguration configuration)
+        public static IRollbarTelemetryOptions DeduceRollbarTelemetryConfig(IConfiguration configuration)
         {
-            TelemetryConfig config = new TelemetryConfig();
+            RollbarTelemetryOptions config = new RollbarTelemetryOptions();
             AppSettingsUtility.LoadAppSettings(config, configuration);
 
-            TelemetryCollector.Instance.Config.Reconfigure(config);
+            RollbarTelemetryCollector.Instance?.Config?.Reconfigure(config);
 
             return config;
         }

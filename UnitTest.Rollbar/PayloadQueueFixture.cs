@@ -10,6 +10,16 @@ namespace UnitTest.Rollbar
     [TestCategory(nameof(PayloadQueueFixture))]
     public class PayloadQueueFixture
     {
+        private static readonly RollbarInfrastructureConfig infrastructureConfig;
+        static PayloadQueueFixture()
+        {
+            infrastructureConfig = new RollbarInfrastructureConfig(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
+            if(!RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarInfrastructure.Instance.Init(infrastructureConfig);
+            }
+        }
+
         [TestInitialize]
         public void SetupFixture()
         {
@@ -25,7 +35,7 @@ namespace UnitTest.Rollbar
         [TestMethod]
         public void ConstructionTest()
         {
-            using (var logger = new RollbarLogger(false))
+            using (var logger = new RollbarLogger())
             {
                 RollbarClient client = new RollbarClient(logger);
                 PayloadQueue pq = new PayloadQueue(logger, client);

@@ -19,7 +19,7 @@ namespace Rollbar.Common
         /// <returns>System.String.</returns>
         public static string GetSdkRuntimeLocationPath()
         {
-            string path = null;
+            string? path = null;
 
 #if (!NETFX || NETFX_461nNewer)
             path = AppContext.BaseDirectory;
@@ -28,7 +28,7 @@ namespace Rollbar.Common
             if (string.IsNullOrWhiteSpace(path))
             {
                 Assembly thisAssembly = Assembly.GetExecutingAssembly();
-                string sdkAssembliesPath = Path.GetDirectoryName(thisAssembly.Location);
+                string? sdkAssembliesPath = Path.GetDirectoryName(thisAssembly.Location);
                 path = sdkAssembliesPath;
             }
 
@@ -62,13 +62,21 @@ namespace Rollbar.Common
         /// <returns></returns>
         public static string GetTypeAssemblyVersion(Type theType)
         {
-            StringBuilder result = new StringBuilder(theType.Assembly.GetName().Version.ToString(3));
-            //var infoVersion = theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as AssemblyInformationalVersionAttribute;
+            //StringBuilder result = new StringBuilder(theType.Assembly.GetName().Version.ToString(3));
+            //return result.ToString();
+
+            var infoVersion = 
+                theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) 
+                as AssemblyInformationalVersionAttribute;
+
+            return (infoVersion != null) 
+                ? infoVersion.InformationalVersion 
+                : string.Empty;
+
             //if (infoVersion != null && infoVersion.InformationalVersion.StartsWith("LTS"))
             //{
             //    result.Append($" ({infoVersion.InformationalVersion.TrimEnd('-')})");
             //}
-            return result.ToString();
         }
 
         /// <summary>
@@ -117,7 +125,7 @@ namespace Rollbar.Common
         /// Gets the CPU architecture.
         /// </summary>
         /// <returns></returns>
-        public static string GetCpuArchitecture()
+        public static string? GetCpuArchitecture()
         {
 #if NETFX_47nOlder
             return null;

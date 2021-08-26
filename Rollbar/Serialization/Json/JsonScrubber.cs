@@ -31,7 +31,7 @@
         /// <param name="root">The root.</param>
         /// <param name="childPropertyName">Name of the child property.</param>
         /// <returns>JProperty.</returns>
-        public static JProperty GetChildPropertyByName(JContainer root, string childPropertyName)
+        public static JProperty? GetChildPropertyByName(JContainer root, string childPropertyName)
         {
             foreach(var child in root.Children())
             {
@@ -51,7 +51,7 @@
         /// <param name="scrubFields">The scrub fields.</param>
         /// <param name="scrubMask">The scrub mask.</param>
         /// <returns>System.String.</returns>
-        public static string ScrubJsonFieldsByName(string jsonData, IEnumerable<string> scrubFields, string scrubMask)
+        public static string ScrubJsonFieldsByName(string jsonData, IEnumerable<string>? scrubFields, string scrubMask)
         {
             if (scrubFields == null || !scrubFields.Any())
             {
@@ -71,9 +71,14 @@
         /// <param name="json">The json.</param>
         /// <param name="scrubFields">The scrub fields.</param>
         /// <param name="scrubMask">The scrub mask.</param>
-        public static void ScrubJsonFieldsByName(JToken json, IEnumerable<string> scrubFields, string scrubMask)
+        public static void ScrubJsonFieldsByName(JToken? json, IEnumerable<string> scrubFields, string scrubMask)
         {
-            if (json is JProperty property)
+            if(json == null)
+            {
+                return;
+            }
+
+            if(json is JProperty property)
             {
                 ScrubJsonFieldsByName(property, scrubFields, scrubMask);
                 return;
@@ -91,8 +96,13 @@
         /// <param name="json">The json.</param>
         /// <param name="scrubFields">The scrub fields.</param>
         /// <param name="scrubMask">The scrub mask.</param>
-        public static void ScrubJsonFieldsByName(JProperty json, IEnumerable<string> scrubFields, string scrubMask)
+        public static void ScrubJsonFieldsByName(JProperty? json, IEnumerable<string> scrubFields, string scrubMask)
         {
+            if(json == null)
+            {
+                return;
+            }
+
             var fields = scrubFields as string[] ?? scrubFields.ToArray();
             if (fields.Contains(json.Name))
             {
@@ -116,8 +126,13 @@
         /// <param name="scrubFieldsPaths">The scrub fields paths.</param>
         /// <param name="scrubMask">The scrub mask.</param>
         /// <returns>System.String.</returns>
-        public static string ScrubJsonFieldsByPaths(string jsonData, IEnumerable<string> scrubFieldsPaths, string scrubMask)
+        public static string ScrubJsonFieldsByPaths(string jsonData, IEnumerable<string>? scrubFieldsPaths, string scrubMask)
         {
+            if(scrubFieldsPaths == null)
+            {
+                return jsonData;
+            }
+
             var fieldsPaths = scrubFieldsPaths as string[] ?? scrubFieldsPaths.ToArray();
 
             if (fieldsPaths.LongLength == 0)
@@ -217,7 +232,7 @@
                 return;
             }
 
-            JToken jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, scrubPath);            
+            JToken? jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, scrubPath);            
             if (jToken != null)
             {
                 var jProperty = jToken.Parent as JProperty;
@@ -252,9 +267,9 @@
             }
         }
 
-        private static JToken FindJsonTokenSafelyUsingPath(JObject jsonData, string tokenPath)
+        private static JToken? FindJsonTokenSafelyUsingPath(JObject jsonData, string tokenPath)
         {
-            JToken jToken = null;
+            JToken? jToken = null;
             try
             {
                 jToken = jsonData.SelectToken(tokenPath);

@@ -14,7 +14,7 @@
             : NetPlatformExtensions.RollbarLogger
     {
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor? _httpContextAccessor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLogger" /> class.
@@ -24,9 +24,9 @@
         /// <param name="rollbarOptions">The options.</param>
         /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public RollbarLogger(string name
-            , IRollbarConfig rollbarConfig
-            ,NetPlatformExtensions.RollbarOptions rollbarOptions
-            , IHttpContextAccessor httpContextAccessor
+            , IRollbarLoggerConfig rollbarConfig
+            , NetPlatformExtensions.RollbarOptions? rollbarOptions
+            , IHttpContextAccessor? httpContextAccessor
             )
             : base(name, rollbarConfig, rollbarOptions)
         {
@@ -59,19 +59,21 @@
         /// <param name="exception">The exception.</param>
         /// <param name="formatter">The formatter.</param>
         /// <returns>IRollbarPackage (if any) or null.</returns>
-        protected override IRollbarPackage ComposeRolbarPackage<TState>(
+        protected override IRollbarPackage? ComposeRollbarPackage<TState>(
             mslogging.EventId eventId,
             TState state,
             Exception exception,
             Func<TState,Exception,string> formatter
             )
         {
-            IRollbarPackage package =  base.ComposeRolbarPackage(eventId,state,exception,formatter);
-
-            var currentContext = GetCurrentContext();
-            if (currentContext != null)
+            IRollbarPackage? package =  base.ComposeRollbarPackage(eventId,state,exception,formatter);
+            if(package != null)
             {
-                package = new RollbarHttpContextPackageDecorator(package, currentContext, true);
+                var currentContext = GetCurrentContext();
+                if(currentContext != null)
+                {
+                    package = new RollbarHttpContextPackageDecorator(package, currentContext, true);
+                }
             }
 
             return package;

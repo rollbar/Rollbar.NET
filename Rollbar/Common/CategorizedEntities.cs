@@ -12,6 +12,7 @@
     /// <seealso cref="Rollbar.Common.ICategorizedEntities{TCategory, TEntity}" />
     public class CategorizedEntities<TCategory, TEntity>
         : ICategorizedEntities<TCategory, TEntity>
+        where TCategory : notnull
     {
         /// <summary>
         /// The entities by category synchronize root
@@ -23,7 +24,7 @@
         /// The entities by category
         /// </summary>
         private readonly Dictionary<TCategory, HashSet<TEntity>> _entitiesByCategory =
-            new Dictionary<TCategory, HashSet<TEntity>>();
+            new();
 
         /// <summary>
         /// Clears this instance.
@@ -31,7 +32,7 @@
         /// <returns>ICategorizedEntities&lt;TCategory, TEntity&gt;.</returns>
         public ICategorizedEntities<TCategory, TEntity> Clear()
         {
-            IEnumerable<HashSet<TEntity>> entitySets = null;
+            IEnumerable<HashSet<TEntity>> entitySets;
             lock (_entitiesByCategorySyncRoot)
             {
                 entitySets = _entitiesByCategory.Values.ToArray();

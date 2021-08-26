@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.RollbarLocator">
+    <Position X="10.25" Y="0.5" Width="2.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="Rollbar.RollbarLocator.NestedSingleInstance" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>RollbarLocator.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RollbarLocator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rollbar.RollbarFactory">
+    <Position X="6.25" Y="4" Width="6.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RollbarFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Rollbar.IRollbar">
+    <Position X="0.5" Y="3.5" Width="5.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgIAAAAAQABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRollbar.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.ILogger">
+    <Position X="0.5" Y="0.5" Width="5.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAYAAAAAAABAAAAgAAAAAAAEAAEAAAAA=</HashCode>
+      <FileName>ILogger.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.ITraceable">
+    <Position X="4.5" Y="7.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>ITraceable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.IRollbarInfrastructureConfig">
+    <Position X="2" Y="9.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAABAAAAAAAAAAgAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>IRollbarInfrastructureConfig.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.IRollbarInfrastructureOptions">
+    <Position X="2" Y="11.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAEAAAAABAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>IRollbarInfrastructureOptions.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.IRollbarLoggerConfig">
+    <Position X="6.25" Y="9.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgQAAAAAQAACAgAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>IRollbarLoggerConfig.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Rollbar.ErrorLevel">
+    <Position X="6.5" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAYAAAAAAABAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>ErrorLevel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

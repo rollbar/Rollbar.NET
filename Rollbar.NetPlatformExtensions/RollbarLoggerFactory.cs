@@ -15,14 +15,14 @@
     {
         private readonly object _providersSync = new object();
         private readonly ICollection<ILoggerProvider> _providers = new HashSet<ILoggerProvider>();
-        private readonly RollbarLoggerProvider _loggerProvider;
+        private RollbarLoggerProvider? _loggerProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarLoggerFactory"/> class.
         /// </summary>
         /// <param name="loggerProviders">The logger providers.</param>
         public RollbarLoggerFactory(
-            ICollection<ILoggerProvider> loggerProviders
+            ICollection<ILoggerProvider>? loggerProviders = null
             )
         {
             if (loggerProviders != null)
@@ -30,6 +30,15 @@
                 lock(this._providersSync)
                 {
                     this._providers = loggerProviders;
+                    foreach(var provider in this._providers)
+                    {
+                        RollbarLoggerProvider? rollbarProvider = provider as RollbarLoggerProvider;
+                        if(rollbarProvider != null)
+                        {
+                            this._loggerProvider = rollbarProvider;
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -41,7 +50,7 @@
         /// <param name="loggerProviders">The logger providers.</param>
         public RollbarLoggerFactory(
             RollbarLoggerProvider rollbarLoggerProvider,
-            ICollection<ILoggerProvider> loggerProviders = null
+            ICollection<ILoggerProvider>? loggerProviders = null
             )
         {
             Assumption.AssertNotNull(rollbarLoggerProvider, nameof(rollbarLoggerProvider));
@@ -68,7 +77,7 @@
         public RollbarLoggerFactory(
             IConfiguration config,
             IOptions<RollbarOptions> rollbarOptions,
-            ICollection<ILoggerProvider> loggerProviders = null
+            ICollection<ILoggerProvider>? loggerProviders = null
             )
             : this(new RollbarLoggerProvider(config, rollbarOptions), loggerProviders)
         {
@@ -87,6 +96,10 @@
                     if (!this._providers.Contains(provider))
                     {
                         this._providers.Add(provider);
+                        if(this._loggerProvider == null && provider is RollbarLoggerProvider)
+                        {
+                            this._loggerProvider = provider as RollbarLoggerProvider;
+                        }
                     }
                 }
             }
@@ -99,9 +112,16 @@
         /// <returns>
         /// The <see cref="T:Microsoft.Extensions.Logging.ILogger" />.
         /// </returns>
-        public ILogger CreateLogger(string categoryName)
+        public ILogger? CreateLogger(string categoryName)
         {
-            return this._loggerProvider.CreateLogger(categoryName);
+            if(this._loggerProvider != null)
+            {
+                return this._loggerProvider.CreateLogger(categoryName);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         #region IDisposable Support

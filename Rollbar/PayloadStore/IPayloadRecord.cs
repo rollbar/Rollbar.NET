@@ -11,7 +11,7 @@
         /// Gets or sets the configuration json.
         /// </summary>
         /// <value>The configuration json.</value>
-        string ConfigJson { get; set; }
+        string? ConfigJson { get; set; }
 
         /// <summary>
         /// Gets or sets the identifier.
@@ -23,7 +23,7 @@
         /// Gets or sets the payload json.
         /// </summary>
         /// <value>The payload json.</value>
-        string PayloadJson { get; set; }
+        string? PayloadJson { get; set; }
 
         /// <summary>
         /// Gets or sets the timestamp.

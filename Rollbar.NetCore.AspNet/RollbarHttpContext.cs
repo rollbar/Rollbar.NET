@@ -13,7 +13,7 @@
         /// <value>
         /// The HTTP attributes.
         /// </value>
-        public RollbarHttpAttributes HttpAttributes { get; set; }
+        public RollbarHttpAttributes? HttpAttributes { get; set; }
 
         /// <summary>
         /// Gets the timestamp.

@@ -26,7 +26,7 @@
         /// Initializes a new instance of the <see cref="Message"/> class.
         /// </summary>
         /// <param name="body">The body.</param>
-        public Message(string body)
+        public Message(string? body)
             : this(body, null)
         {
 
@@ -38,8 +38,8 @@
         /// <param name="body">The body.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
         public Message(
-            string body, 
-            IDictionary<string, object> arbitraryKeyValuePairs
+            string? body, 
+            IDictionary<string, object?>? arbitraryKeyValuePairs
             )
             : base(arbitraryKeyValuePairs)
         {
@@ -54,7 +54,7 @@
         /// <value>
         /// The body.
         /// </value>
-        public string Body
+        public string? Body
         {
             get { return this[ReservedProperties.Body] as string; }
             private set { this[ReservedProperties.Body] = value; }

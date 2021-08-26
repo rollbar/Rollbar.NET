@@ -8,24 +8,17 @@ namespace UnitTest.Rollbar
     using System;
     using System.Threading;
     using System.Linq;
+    using UnitTest.RollbarTestCommon;
 
     [TestClass]
     [TestCategory(nameof(RollbarClientFixture))]
     public class RollbarClientFixture
     {
 
-        private RollbarConfig _loggerConfig;
-
         [TestInitialize]
         public void SetupFixture()
         {
-            SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-
-            this._loggerConfig =
-                new RollbarConfig(RollbarUnitTestSettings.AccessToken) 
-                { 
-                    Environment = RollbarUnitTestSettings.Environment, 
-                };
+            RollbarUnitTestEnvironmentUtil.SetupLiveTestRollbarInfrastructure();
         }
 
         [TestCleanup]
@@ -33,52 +26,85 @@ namespace UnitTest.Rollbar
         {
         }
 
-        [TestMethod]
-        public void BasicTest()
+        private MessagePackage CrateTestPackage()
         {
-            MessagePackage package = new MessagePackage($"{nameof(RollbarClientFixture)}.BasicTest");
+            MessagePackage package = 
+                new MessagePackage($"{nameof(RollbarClientFixture)}.BasicTest");
+            return package;
+        }
+
+        [TestMethod]
+        public void TestUsingDefaultConfig()
+        {
 
             // [DO]: let's send a payload with default config settings (including default value for the PayloadPostTimeout)
             // [EXPECT]: under all the good networking conditions sending a payload should succeed
-            RollbarConfig config = new RollbarConfig();
-            config.Reconfigure(this._loggerConfig);
-            using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
+            using(var logger = (RollbarLogger) RollbarFactory.CreateNew(RollbarInfrastructure.Instance.Config.RollbarLoggerConfig))
             {
+                RollbarUnitTestEnvironmentUtil.TraceCurrentRollbarInfrastructureConfig();
+                RollbarUnitTestEnvironmentUtil.Trace(logger.Config, "Logger_Config");
                 var client = new RollbarClient(logger);
-                var bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+                var bundle = new PayloadBundle(logger, this.CrateTestPackage(), ErrorLevel.Info);
                 client.EnsureHttpContentToSend(bundle);
                 var response = client.PostAsJson(bundle);
+                RollbarUnitTestEnvironmentUtil.Trace(response, "Rollbar API HTTP response");
                 Assert.IsNotNull(response);
                 Assert.AreEqual(0, response.Error);
                 Assert.AreEqual(0, bundle.Exceptions.Count);
             }
 
+        }
+
+        [TestMethod]
+        public void TestUsingUnreasonablyShortTimeout()
+        {
             // [DO]: let's send a payload using unreasonably short PayloadPostTimeout
             // [EXPECT]: even under all the good networking conditions sending a payload should not succeed
-            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(10); // too short
-            using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
+            RollbarInfrastructureOptions infrastructureOptions =
+                new RollbarInfrastructureOptions();
+            infrastructureOptions.PayloadPostTimeout = 
+                TimeSpan.FromMilliseconds(5); // short enough
+            RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions
+                .Reconfigure(infrastructureOptions);
+            using(var logger = (RollbarLogger) RollbarFactory.CreateNew(RollbarInfrastructure.Instance.Config.RollbarLoggerConfig))
             {
+                RollbarUnitTestEnvironmentUtil.TraceCurrentRollbarInfrastructureConfig();
+                RollbarUnitTestEnvironmentUtil.Trace(logger.Config, "Logger_Config");
                 var client = new RollbarClient(logger);
-                var bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+                var bundle = new PayloadBundle(logger, this.CrateTestPackage(), ErrorLevel.Info);
                 client.EnsureHttpContentToSend(bundle);
                 var response = client.PostAsJson(bundle);
+                RollbarUnitTestEnvironmentUtil.Trace(response, "Rollbar API HTTP response");
                 Assert.IsNull(response);
                 Assert.AreEqual(1, bundle.Exceptions.Count);
                 //Assert.AreEqual("While PostAsJson(PayloadBundle payloadBundle)...", bundle.Exceptions.First().Message);
                 //Assert.IsTrue(bundle.Exceptions.First().InnerException.Message.StartsWith("One or more errors occurred"));
                 //Assert.AreEqual("A task was canceled.",  bundle.Exceptions.First().InnerException.InnerException.Message);
             }
+        }
+
+        [TestMethod]
+        public void TestUsingLongEnoughTimeout()
+        {
 
             // [DO]: let's send a payload using reasonably long PayloadPostTimeout
             // [EXPECT]: even under all the good networking conditions sending a payload should succeed
-            config.PayloadPostTimeout = TimeSpan.FromMilliseconds(1000); // long enough
-            using (var logger = (RollbarLogger)RollbarFactory.CreateNew(config))
+            RollbarInfrastructureOptions infrastructureOptions =
+                new RollbarInfrastructureOptions();
+            infrastructureOptions.PayloadPostTimeout = 
+                TimeSpan.FromMilliseconds(2000); // long enough
+            RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions
+                .Reconfigure(infrastructureOptions);
+            using(var logger = (RollbarLogger)RollbarFactory.CreateNew(RollbarInfrastructure.Instance.Config.RollbarLoggerConfig))
             {
+                RollbarUnitTestEnvironmentUtil.TraceCurrentRollbarInfrastructureConfig();
+                RollbarUnitTestEnvironmentUtil.Trace(logger.Config, "Logger_Config");
                 var client = new RollbarClient(logger);
-                var bundle = new PayloadBundle(logger, package, ErrorLevel.Info);
+                var bundle = new PayloadBundle(logger, this.CrateTestPackage(), ErrorLevel.Info);
                 client.EnsureHttpContentToSend(bundle);
                 var response = client.PostAsJson(bundle);
-                Assert.IsNotNull(response);
+                RollbarUnitTestEnvironmentUtil.Trace(response, "Rollbar API HTTP response");
+                Assert.IsNotNull(response, "let's send a payload using reasonably long PayloadPostTimeout");
                 Assert.AreEqual(0, response.Error);
                 Assert.AreEqual(0, bundle.Exceptions.Count);
             }

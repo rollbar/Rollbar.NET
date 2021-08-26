@@ -1,14 +1,17 @@
-﻿using Rollbar;
-using System;
-
-namespace Sample.RollbarWithinStronglyNamedAssembly
+﻿namespace Sample.RollbarWithinStronglyNamedAssembly
 {
+    using System;
+
+    using Rollbar;
+
+    using Samples;
+
     class Program
     {
         static void Main(string[] args)
         {
-            const string rollbarAccessToken = "17965fa5041749b6bf7095a190001ded";
-            const string rollbarEnvironment = "RollbarNetSamples";
+            const string rollbarAccessToken = RollbarSamplesSettings.AccessToken;
+            const string rollbarEnvironment = RollbarSamplesSettings.Environment;
 
             var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
             {

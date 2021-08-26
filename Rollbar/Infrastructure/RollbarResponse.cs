@@ -25,7 +25,7 @@
         /// <value>
         /// The result.
         /// </value>
-        public RollbarResult Result { get; set; }
+        public RollbarResult? Result { get; set; }
 
         /// <summary>
         /// Gets or sets the HTTP details.
@@ -34,14 +34,14 @@
         /// The HTTP details.
         /// </value>
         [JsonIgnore]
-        public string HttpDetails { get; set; }
+        public string? HttpDetails { get; set; }
 
         /// <summary>
         /// Gets or sets the rollbar rate limit.
         /// </summary>
         /// <value>The rollbar rate limit.</value>
         [JsonIgnore]
-        public RollbarRateLimit RollbarRateLimit { get; set; }
+        public RollbarRateLimit? RollbarRateLimit { get; set; }
 
         /// <summary>
         /// Traces as string.
@@ -65,7 +65,7 @@
             sb.AppendLine(indent + this.GetType().Name + ":");
             sb.AppendLine(indent + "  Error: " + this.Error);
             sb.AppendLine(indent + "  Result: ");
-            sb.AppendLine(indent  + this.Result.TraceAsString(indent + "  "));
+            sb.AppendLine(indent  + this.Result?.TraceAsString(indent + "  "));
             sb.AppendLine(indent + "  Details: ");
             sb.AppendLine(indent + this.HttpDetails);
             return sb.ToString();

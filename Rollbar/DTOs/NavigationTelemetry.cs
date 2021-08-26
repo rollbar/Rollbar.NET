@@ -40,7 +40,7 @@
         /// <param name="from">From.</param>
         /// <param name="to">To.</param>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        public NavigationTelemetry(string from, string to, IDictionary<string, object> arbitraryKeyValuePairs)
+        public NavigationTelemetry(string from, string to, IDictionary<string, object?>? arbitraryKeyValuePairs)
             : base(TelemetryType.Navigation, arbitraryKeyValuePairs)
         {
             this.From = from;
@@ -53,7 +53,7 @@
         /// <value>
         /// From.
         /// </value>
-        public string From
+        public string? From
         {
             get { return this[ReservedProperties.From] as string; }
             private set { this[ReservedProperties.From] = value; }
@@ -65,7 +65,7 @@
         /// <value>
         /// To.
         /// </value>
-        public string To
+        public string? To
         {
             get { return this[ReservedProperties.To] as string; }
             private set { this[ReservedProperties.To] = value; }

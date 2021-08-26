@@ -9,34 +9,30 @@
     using System.Text;
     using Common;
 
-#pragma warning disable CS1584 // XML comment has syntactically incorrect cref attribute
-#pragma warning disable CS1658 // Warning is overriding an error
     /// <summary>
     /// Implements an abstract base for defining expendable DTO types.
     /// These types of DTOs can be extended with arbitrary extra 
     /// key-value pairs as needed.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.DtoBase" />
-    /// <seealso cref="System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String, System.Object}}" />
-    /// <seealso cref="System.Collections.Generic.IDictionary{System.String, System.Object}" />
+    /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
+    /// <seealso cref="System.Collections.Generic.IDictionary{TKey,TValue}" />
     public abstract class ExtendableDtoBase
-#pragma warning restore CS1658 // Warning is overriding an error
-#pragma warning restore CS1584 // XML comment has syntactically incorrect cref attribute
         : DtoBase,
-        IEnumerable<KeyValuePair<string, object>>,
-        IDictionary<string, object>
+        IEnumerable<KeyValuePair<string, object?>>,
+        IDictionary<string, object?>
     {
         internal const string reservedPropertiesNestedTypeName = "ReservedProperties";
 
         private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType;
 
-        private readonly ExtendableDtoMetadata _metadata;
+        private readonly ExtendableDtoMetadata? _metadata;
 
         /// <summary>
         /// The keyed values
         /// </summary>
-        private readonly IDictionary<string, object> _keyedValues = 
-            new Dictionary<string, object>();
+        private readonly IDictionary<string, object?> _keyedValues = 
+            new Dictionary<string, object?>();
 
         static ExtendableDtoBase()
         {
@@ -52,7 +48,7 @@
         /// Initializes a new instance of the <see cref="ExtendableDtoBase"/> class.
         /// </summary>
         /// <param name="arbitraryKeyValuePairs">The arbitrary key value pairs.</param>
-        protected ExtendableDtoBase(IDictionary<string, object> arbitraryKeyValuePairs)
+        protected ExtendableDtoBase(IDictionary<string, object?>? arbitraryKeyValuePairs)
         {
             this._metadata = ExtendableDtoBase.metadataByDerivedType[this.GetType()];
             Assumption.AssertNotNull(this._metadata, nameof(this._metadata));
@@ -74,19 +70,23 @@
         /// </value>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public object this[string key]
+        public object? this[string key]
         {
             get
             {
-                if (this._keyedValues.TryGetValue(key, out object result))
+                if (this._keyedValues.TryGetValue(key, out var result))
                 {
                     return result;
                 }
 
                 var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
+                if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey == null)
+                {
+                    return null;
+                }
                 if (concreteDtoMetadata
                     .ReservedPropertyInfoByReservedKey
-                    .TryGetValue(key, out PropertyInfo reservedPropertyInfo))
+                    .TryGetValue(key, out var reservedPropertyInfo))
                 {
                     //if we have matching reserved property of value type - return default for it:   
                     if(reservedPropertyInfo.PropertyType.IsValueType)
@@ -99,39 +99,48 @@
             }
             set
             {
+                bool isReservedProperty = 
+                    this._metadata?.ReservedPropertyInfoByReservedKey?.Keys.Contains(key) 
+                    ?? false;
+
                 Assumption.AssertTrue(
                     !this._keyedValues.ContainsKey(key)                                         // no such key preset yet
                     || this._keyedValues[key] == null                                           // OR its not initialized yet
                     || value != null                                                            // OR no-null value
-                    || !this._metadata.ReservedPropertyInfoByReservedKey.Keys.Contains(key),    // OR not about reserved property/key
+                    || !isReservedProperty,                                                     // OR not about reserved property/key
                     "conditional " + nameof(value) + " assessment"
                     );
 
                 var lowCaseKey = key.ToLower();
                 var concreteDtoMetadata = metadataByDerivedType[this.GetType()];
-                if (concreteDtoMetadata
+                if (concreteDtoMetadata.ReservedPropertyInfoByReservedKey != null 
+                    && concreteDtoMetadata
                     .ReservedPropertyInfoByReservedKey
-                    .TryGetValue(key, out PropertyInfo reservedPropertyInfo))
+                    .TryGetValue(key, out PropertyInfo? reservedPropertyInfo))
                 {
                     var reservedPropertyType = reservedPropertyInfo.PropertyType;
                     var valueType = value?.GetType();
-                    Assumption.AssertTrue(
-                        //we are not dealing with a reserved property, hence, anything works:
-                        !(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(key) || concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
-                        //OR we are dealing with a reserved property and the value and its type should make sense:  
-                        || value == null
-                        || reservedPropertyType == valueType
-                        || (reservedPropertyType.IsInterface 
-                            && ReflectionUtility.DoesTypeImplementInterface(valueType, reservedPropertyType))
-                        || (reservedPropertyType.IsGenericType                                // dealing with nullable type
-                            && reservedPropertyType.GenericTypeArguments.Length == 1
-                            && reservedPropertyType.GenericTypeArguments[0] == valueType)
-                        || valueType.IsSubclassOf(reservedPropertyType),
-                        nameof(value)
-                    );
+                    if(valueType != null)
+                    {
+                        Assumption.AssertTrue(
+                            //we are not dealing with a reserved property, hence, anything works:
+                            !(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(key) || concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
+                            //OR we are dealing with a reserved property and the value and its type should make sense:  
+                            || value == null
+                            || reservedPropertyType == valueType
+                            || (reservedPropertyType.IsInterface
+                                && ReflectionUtility.DoesTypeImplementInterface(valueType, reservedPropertyType))
+                            || (reservedPropertyType.IsGenericType                                // dealing with nullable type
+                                && reservedPropertyType.GenericTypeArguments.Length == 1
+                                && reservedPropertyType.GenericTypeArguments[0] == valueType)
+                            || valueType.IsSubclassOf(reservedPropertyType),
+                            nameof(value)
+                        );
+                    }
                 }
 
-                if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
+                if(concreteDtoMetadata.ReservedPropertyInfoByReservedKey != null
+                    && concreteDtoMetadata.ReservedPropertyInfoByReservedKey.ContainsKey(lowCaseKey))
                 {
                     // we are setting a reserved key when calling Bind(...) on an IConfigurationSection 
                     // that treats this instance of ExtendableDtoBase as a dictionary while binding to the targeted deserialization object:
@@ -154,7 +163,7 @@
         /// Gets an <see cref="T:System.Collections.Generic.ICollection`1"></see> 
         /// containing the values in the <see cref="T:System.Collections.Generic.IDictionary`2"></see>.
         /// </summary>
-        public ICollection<object> Values => this._keyedValues.Values;
+        public ICollection<object?> Values => this._keyedValues.Values;
 
         /// <summary>
         /// Gets the number of elements contained in the <see cref="T:System.Collections.Generic.ICollection`1"></see>.
@@ -172,7 +181,7 @@
         /// </summary>
         /// <param name="key">The object to use as the key of the element to add.</param>
         /// <param name="value">The object to use as the value of the element to add.</param>
-        public void Add(string key, object value)
+        public void Add(string key, object? value)
         {
             this._keyedValues[key] = value;
         }
@@ -183,7 +192,7 @@
         /// <param name="item">
         /// The object to add to the <see cref="T:System.Collections.Generic.ICollection`1"></see>.
         /// </param>
-        public void Add(KeyValuePair<string, object> item)
+        public void Add(KeyValuePair<string, object?> item)
         {
             this._keyedValues[item.Key] = item.Value;
         }
@@ -208,7 +217,7 @@
         /// the <see cref="T:System.Collections.Generic.ICollection`1"></see>; 
         /// otherwise, false.
         /// </returns>
-        public bool Contains(KeyValuePair<string, object> item)
+        public bool Contains(KeyValuePair<string, object?> item)
         {
             return this._keyedValues.Contains(item);
         }
@@ -242,7 +251,7 @@
         /// <param name="arrayIndex">
         /// The zero-based index in array at which copying begins.
         /// </param>
-        public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+        public void CopyTo(KeyValuePair<string, object?>[] array, int arrayIndex)
         {
             this._keyedValues.CopyTo(array, arrayIndex);
         }
@@ -253,7 +262,7 @@
         /// <returns>
         /// An enumerator that can be used to iterate through the collection.
         /// </returns>
-        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, object?>> GetEnumerator()
         {
             return this._keyedValues.GetEnumerator();
         }
@@ -288,7 +297,7 @@
         /// This method also returns false if <paramref name="item">item</paramref> is not found 
         /// in the original <see cref="T:System.Collections.Generic.ICollection`1"></see>.
         /// </returns>
-        public bool Remove(KeyValuePair<string, object> item)
+        public bool Remove(KeyValuePair<string, object?> item)
         {
             return this._keyedValues.Remove(item);
         }
@@ -307,7 +316,7 @@
         /// <see cref="T:System.Collections.Generic.IDictionary`2"></see> contains 
         /// an element with the specified key; otherwise, false.
         /// </returns>
-        public bool TryGetValue(string key, out object value)
+        public bool TryGetValue(string key, out object? value)
         {
             return this._keyedValues.TryGetValue(key, out value);
         }

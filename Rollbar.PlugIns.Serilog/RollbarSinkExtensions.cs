@@ -27,7 +27,7 @@
                   string rollbarAccessToken,
                   string rollbarEnvironment,
                   LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-                  LoggingLevelSwitch levelSwitch = null
+                  LoggingLevelSwitch? levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -58,7 +58,7 @@
                   string rollbarEnvironment,
                   IFormatProvider formatProvider,
                   LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-                  LoggingLevelSwitch levelSwitch = null
+                  LoggingLevelSwitch? levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -89,7 +89,7 @@
                   string rollbarEnvironment,
                   TimeSpan? rollbarBlockingLoggingTimeout,
                   LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-                  LoggingLevelSwitch levelSwitch = null
+                  LoggingLevelSwitch? levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -120,15 +120,14 @@
                   string rollbarAccessToken,
                   string rollbarEnvironment,
                   TimeSpan? rollbarBlockingLoggingTimeout,
-                  IFormatProvider formatProvider,
+                  IFormatProvider? formatProvider,
                   LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-                  LoggingLevelSwitch levelSwitch = null
+                  LoggingLevelSwitch? levelSwitch = null
             )
         {
-            IRollbarConfig config = new RollbarConfig(rollbarAccessToken)
-            {
-                Environment = rollbarEnvironment,
-            };
+            RollbarDestinationOptions destinationOptions = new RollbarDestinationOptions(rollbarAccessToken, rollbarEnvironment);
+            IRollbarInfrastructureConfig config = new RollbarInfrastructureConfig();
+            config.RollbarLoggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);
 
             return loggerConfiguration.RollbarSink(config, rollbarBlockingLoggingTimeout, formatProvider, restrictedToMinimumLevel, levelSwitch);
         }
@@ -145,9 +144,9 @@
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
-                  IRollbarConfig rollbarConfig,
+                  IRollbarInfrastructureConfig rollbarConfig,
                   LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-                  LoggingLevelSwitch levelSwitch = null
+                  LoggingLevelSwitch? levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -172,10 +171,10 @@
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
-                  IRollbarConfig rollbarConfig,
+                  IRollbarInfrastructureConfig rollbarConfig,
                   TimeSpan? rollbarBlockingLoggingTimeout,
                   LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-                  LoggingLevelSwitch levelSwitch = null
+                  LoggingLevelSwitch? levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -200,10 +199,10 @@
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
-                  IRollbarConfig rollbarConfig,
+                  IRollbarInfrastructureConfig rollbarConfig,
                   IFormatProvider formatProvider,
                   LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-                  LoggingLevelSwitch levelSwitch = null
+                  LoggingLevelSwitch? levelSwitch = null
                   )
         {
             return RollbarSink(
@@ -229,11 +228,11 @@
         /// <returns>LoggerConfiguration.</returns>
         public static LoggerConfiguration RollbarSink(
                   this LoggerSinkConfiguration loggerConfiguration,
-                  IRollbarConfig rollbarConfig,
+                  IRollbarInfrastructureConfig rollbarConfig,
                   TimeSpan? rollbarBlockingLoggingTimeout,
-                  IFormatProvider formatProvider,
+                  IFormatProvider? formatProvider,
                   LogEventLevel restrictedToMinimumLevel = LevelAlias.Minimum,
-                  LoggingLevelSwitch levelSwitch = null)
+                  LoggingLevelSwitch? levelSwitch = null)
         {
             return loggerConfiguration.Sink(
                 new RollbarSink(rollbarConfig, rollbarBlockingLoggingTimeout, formatProvider),
