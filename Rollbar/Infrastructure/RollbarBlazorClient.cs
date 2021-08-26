@@ -392,7 +392,7 @@
         /// Truncates the payload.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if successfully truncated, <c>false</c> otherwise.</returns>
         private bool TruncatePayload(PayloadBundle payloadBundle)
         {
             if (this._payloadTruncationStrategy == null)
@@ -448,7 +448,7 @@
         /// Scrubs the HTTP messages.
         /// </summary>
         /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if scrubbed successfully, <c>false</c> otherwise.</returns>
         private bool ScrubHttpMessages(PayloadBundle payloadBundle)
         {
             Payload? payload = payloadBundle.GetPayload();

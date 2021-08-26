@@ -17,7 +17,7 @@
         /// Loads the application settings.
         /// </summary>
         /// <param name="config">The configuration.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        /// <returns>false when the configuration was not found, otherwise true.</returns>
         public static bool LoadAppSettings(RollbarInfrastructureConfig config)
         {
             return AppConfigUtility.LoadAppSettings(config, RollbarConfigSection.GetConfiguration());

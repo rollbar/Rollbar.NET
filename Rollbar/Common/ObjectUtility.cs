@@ -15,7 +15,7 @@
         /// </summary>
         /// <param name="left">The left.</param>
         /// <param name="right">The right.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if references have similar values, <c>false</c> otherwise.</returns>
         public static bool AreSimilarReferences(object left, object right)
         {
             if(left == right)
@@ -37,7 +37,7 @@
         /// </summary>
         /// <param name="left">The left.</param>
         /// <param name="right">The right.</param>
-        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c> if objects are comparable based on their property values, <c>false</c> otherwise.</returns>
         public static bool AreComparableViaProperties(object left,object right)
         {
             if (!(left != null && right !=null))
