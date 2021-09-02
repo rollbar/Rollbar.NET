@@ -46,6 +46,32 @@ namespace Sample.WebForms.Site
         }
 
         /// <summary>
+        /// Handles the Error event on the Page level.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void Page_Error(object sender, EventArgs e)
+        {
+            // Get last error from the server.
+            Exception exception = Server.GetLastError();
+
+            // Let's report to Rollbar on the Page Level:
+            var metaData = new Dictionary<string, object>();
+            metaData.Add("reportLevel", "PageLevel");
+            RollbarLocator.RollbarInstance.Error(exception, metaData);
+
+            // Handle specific exception.
+            if(exception is InvalidOperationException)
+            {
+                // Pass the error on to the error page.
+                Server.Transfer(
+                  "ErrorPage.aspx?handler=Page_Error%20-%20Default.aspx",
+                  true
+                );
+            }
+        }
+
+        /// <summary>
         /// Configures the Rollbar singleton-like notifier.
         /// </summary>
         private void ConfigureRollbar()

@@ -1,9 +1,11 @@
-﻿namespace Sample.Xamarin.MacApp
-{
-    using System.Collections.Generic;
-    using AppKit;
-    using Rollbar;
+﻿using System.Collections.Generic;
 
+using AppKit;
+
+using Rollbar;
+
+namespace Sample.Xamarin.MacApp
+{
     static class MainClass
     {
         static void Main(string[] args)

@@ -13,6 +13,7 @@ namespace Sample.Xamarin.MacApp
         public override void DidFinishLaunching(NSNotification notification)
         {
             // Insert code here to initialize your application
+            throw new System.Exception("Simulated Exception from DidFinishLaunching(...)!");
         }
 
         public override void WillTerminate(NSNotification notification)

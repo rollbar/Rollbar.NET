@@ -15,7 +15,7 @@
     {
         protected void Application_Start()
         {
-            ConfigureRollbarSingleton();
+            ConfigureRollbarInfrastructure();
             RollbarLocator.RollbarInstance.Info("Rollbar.NET is ready to roll!");
 
 
@@ -39,9 +39,9 @@
 
 
         /// <summary>
-        /// Configures the Rollbar singleton-like notifier.
+        /// Configures the Rollbar infrastructure.
         /// </summary>
-        private static void ConfigureRollbarSingleton()
+        private static void ConfigureRollbarInfrastructure()
         {
             // minimally required Rollbar configuration:
             RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig(

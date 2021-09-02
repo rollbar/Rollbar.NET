@@ -13,19 +13,8 @@
             const string rollbarAccessToken = RollbarSamplesSettings.AccessToken;
             const string rollbarEnvironment = RollbarSamplesSettings.Environment;
 
-            var config = new RollbarConfig(rollbarAccessToken) // minimally required Rollbar configuration
-            {
-                Environment = rollbarEnvironment,
-                ScrubFields = new string[]
-                {
-                    "access_token", // normally, you do not want scrub this specific field (it is operationally critical), but it just proves safety net built into the notifier... 
-                    "username",
-                }
-            };
-            RollbarLocator.RollbarInstance
-                // minimally required Rollbar configuration:
-                .Configure(config)
-                ;
+            var config = new RollbarInfrastructureConfig(rollbarAccessToken, rollbarEnvironment); // minimally required Rollbar configuration
+            RollbarInfrastructure.Instance.Init(config);
 
             Console.WriteLine("Hello World!");
 
