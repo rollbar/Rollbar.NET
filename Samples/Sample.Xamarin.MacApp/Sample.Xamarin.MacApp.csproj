@@ -86,7 +86,5 @@
     <InterfaceDefinition Include="Main.storyboard" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
-  <ItemGroup>
-    <PackageReference Include="Rollbar" Version="3.6.3" />
-  </ItemGroup>
+        <PackageReference Include="Rollbar" Version="3.12.2" />
 </Project>

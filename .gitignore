@@ -290,3 +290,5 @@ Samples/Sample.AspNetCore2.WebApi/RollbarPayloadsStore.db
 Samples/Sample.AspNet.MvcApp/App_Data/RollbarPayloadsStore.db
 
 Rollbar.Net.AspNet.Mvc/comments.xml
+
+.DS_Store
