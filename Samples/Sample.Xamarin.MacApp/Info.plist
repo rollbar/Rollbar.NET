@@ -5,13 +5,13 @@
 	<key>CFBundleName</key>
 	<string>Sample.Xamarin.MacApp</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.widespectrumcomputing.Sample-Xamarin-MacApp</string>
+	<string>com.companyname.Sample-Xamarin-MacApp</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.15</string>
+	<string>10.14</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleInfoDictionaryVersion</key>
