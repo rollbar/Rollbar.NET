@@ -33,7 +33,7 @@
             };
         }
 
-        private static void ConfigureRollbar()
+        public static void ConfigureRollbar()
         {
             RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig(
                 RollbarSamplesSettings.AccessToken,

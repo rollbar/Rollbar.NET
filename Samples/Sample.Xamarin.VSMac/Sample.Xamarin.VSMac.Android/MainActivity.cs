@@ -17,7 +17,7 @@ namespace Sample.Xamarinoid.VSMac.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            RollbarHelper.ConfigureRollbarSingleton();
+            RollbarHelper.ConfigureRollbar();
 
             // First informational log via Rollbar:
             RollbarLocator.RollbarInstance
