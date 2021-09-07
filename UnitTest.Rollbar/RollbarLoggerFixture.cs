@@ -871,7 +871,7 @@ namespace UnitTest.Rollbar
         /// Defines the test method MultithreadedStressTest.
         /// </summary>
         [TestMethod]
-        [Timeout(90000)]
+        [Timeout(100000)]
         public void MultithreadedStressTest()
         {
             RollbarLoggerFixture.stressLogsCount = 0;
