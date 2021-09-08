@@ -75,9 +75,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.AppSettings.Json", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.App.Config", "Rollbar.App.Config\Rollbar.App.Config.csproj", "{8CA46207-E937-4C6F-9FA5-1C94E044FEEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Rollbar.App.Config", "UnitTest.Rollbar.App.Config\UnitTest.Rollbar.App.Config.csproj", "{28F61BC0-9A55-40AF-B9CB-E020E4F23E06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.App.Config", "UnitTest.Rollbar.App.Config\UnitTest.Rollbar.App.Config.csproj", "{28F61BC0-9A55-40AF-B9CB-E020E4F23E06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Rollbar.AppSettings.Json", "UnitTest.Rollbar.AppSettings.Json\UnitTest.Rollbar.AppSettings.Json.csproj", "{6045888B-A63F-4FE7-8001-7C21171329B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Rollbar.AppSettings.Json", "UnitTest.Rollbar.AppSettings.Json\UnitTest.Rollbar.AppSettings.Json.csproj", "{6045888B-A63F-4FE7-8001-7C21171329B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scaffold.Rollbar.OfflinePersistence", "Scaffold.Rollbar.OfflinePersistence\Scaffold.Rollbar.OfflinePersistence.csproj", "{3F0A5FDF-DFCE-4527-A64C-0CBE59608C4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -254,6 +256,12 @@ Global
 		{6045888B-A63F-4FE7-8001-7C21171329B0}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
 		{6045888B-A63F-4FE7-8001-7C21171329B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6045888B-A63F-4FE7-8001-7C21171329B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F0A5FDF-DFCE-4527-A64C-0CBE59608C4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F0A5FDF-DFCE-4527-A64C-0CBE59608C4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F0A5FDF-DFCE-4527-A64C-0CBE59608C4C}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F0A5FDF-DFCE-4527-A64C-0CBE59608C4C}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{3F0A5FDF-DFCE-4527-A64C-0CBE59608C4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F0A5FDF-DFCE-4527-A64C-0CBE59608C4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
