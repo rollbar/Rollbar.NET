@@ -109,6 +109,29 @@ namespace Rollbar.Common
         }
 
         /// <summary>
+        /// Gets the hosting CLR version.
+        /// </summary>
+        /// <returns>Version.</returns>
+        public static Version GetHostingClrVersion()
+        {
+            var ver = Environment.Version;
+            return ver;
+        }
+        /// <summary>
+        /// Gets the dot net runtime description.
+        /// </summary>
+        /// <returns>System.String.</returns>
+        public static string GetDotNetRuntimeDescription()
+        {
+#if NETFX_47nOlder
+            string dotNetRuntime = $".NET {Environment.Version}";
+#else
+            string dotNetRuntime = RuntimeInformation.FrameworkDescription;
+#endif
+            return dotNetRuntime;
+        }
+
+        /// <summary>
         /// Gets the OS description.
         /// </summary>
         /// <returns></returns>
