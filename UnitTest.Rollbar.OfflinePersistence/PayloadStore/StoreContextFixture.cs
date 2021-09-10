@@ -33,6 +33,8 @@ namespace UnitTest.Rollbar.PayloadStore
         {
             using (StoreContext storeContext = new StoreContext())
             {
+                storeContext.MakeSureDatabaseExistsAndReady();
+
                 var payloadRecords = storeContext.PayloadRecords.Where(i => true).ToArray();
                 storeContext.RemoveRange(payloadRecords);
 

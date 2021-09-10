@@ -25,8 +25,9 @@ namespace UnitTest.Rollbar.PayloadStore
         [TestMethod]
         public void GetRespositoryWorksFine()
         {
-            var repos = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
-            Assert.IsInstanceOfType(repos, typeof(PayloadStoreRepository));
+            var repo = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
+            Assert.IsNotNull(repo, "Repo instance not null");
+            Assert.IsInstanceOfType(repo, typeof(PayloadStoreRepository), "Valid repo type");
         }
     }
 }
