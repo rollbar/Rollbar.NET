@@ -93,7 +93,7 @@
 
             using HttpClient httpClient = new HttpClient();
             RollbarDeployClient rollbarClient = new RollbarDeployClient(config, httpClient);
-            var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken, pageNumber);
+            var result = await rollbarClient.GetDeploymentsAsync(this._readAccessToken, pageNumber).ConfigureAwait(false);
             return result?.DeploysPage?.Deploys;
         }
     }

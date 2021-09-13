@@ -2,6 +2,8 @@
 {
     using Microsoft.EntityFrameworkCore;
 
+    using Rollbar.Common;
+
     /// <summary>
     /// Class StoreContext.
     /// Implements the <see cref="Microsoft.EntityFrameworkCore.DbContext" />
@@ -12,9 +14,15 @@
     {
         static StoreContext()
         {
-#if (!NETFX || NETFX_461nNewer)
+            //string dotNetRuntime = RuntimeEnvironmentUtility.GetDotNetRuntimeDescription();
+            //if(!(dotNetRuntime.Contains("Framework") && (dotNetRuntime.Contains("4.5") || dotNetRuntime.Contains("4.6.0"))))
+            //            {
+            //#if(!NETFX || NETFX_461nNewer)
+            //                SQLitePCL.Batteries_V2.Init();
+            //#endif
+            //            }
+
             SQLitePCL.Batteries_V2.Init();
-#endif
         }
 
         /// <summary>

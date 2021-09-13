@@ -23,14 +23,11 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>5.0.0</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>5.0.1</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix>beta</SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - feat: optioanl RollbarInfrastructure concept
-      - feat: optional explicit RollbarInfrastructure initialization
-      - feat: structured Rollbar configuration
-      - feat: Blazor browser-side support
+      - refactor: Simplified and upgraded Rollbar.OfflinePersistence dependencies and project settings 
     </SdkReleaseNotes>                        
 
     <!--

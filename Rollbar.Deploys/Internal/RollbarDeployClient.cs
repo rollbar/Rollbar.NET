@@ -195,7 +195,7 @@
                 );
 
             var httpClient = ProvideHttpClient();
-            var httpResponse = await httpClient.GetAsync(uri);
+            var httpResponse = await httpClient.GetAsync(uri).ConfigureAwait(false);
 
             DeploysPageResponse? response = null;
             if (httpResponse.IsSuccessStatusCode)
