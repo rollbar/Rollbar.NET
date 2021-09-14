@@ -569,18 +569,7 @@
             switch (rollbarConfig)
             {
                 case IValidatable v:
-                    var failedValidationRules = v.Validate();
-                    if (failedValidationRules.Count > 0)
-                    {
-                        var exception =
-                            new RollbarException(
-                                InternalRollbarError.ConfigurationError,
-                                "Failed to configure using invalid configuration prototype!"
-                                );
-                        exception.Data[nameof(failedValidationRules)] = failedValidationRules.ToArray();
-
-                        throw exception;
-                    }
+                    Validator.Validate(v, InternalRollbarError.ConfigurationError, "Failed to configure using invalid configuration prototype!");
                     break;
             }
         }

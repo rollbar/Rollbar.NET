@@ -48,8 +48,8 @@
         /// </summary>
         /// <param name="rollbarError">The rollbar error.</param>
         /// <param name="message">The message.</param>
-        internal RollbarException(InternalRollbarError rollbarError, string message)
-            : base(message)
+        internal RollbarException(InternalRollbarError rollbarError, string? message)
+            : base(!string.IsNullOrWhiteSpace(message) ? message : rollbarError.ToString())
         {
             this._rollbarError = rollbarError;
         }
@@ -60,8 +60,8 @@
         /// <param name="rollbarError">The rollbar error.</param>
         /// <param name="message">The message.</param>
         /// <param name="innerException">The inner exception.</param>
-        internal RollbarException(InternalRollbarError rollbarError, string message, Exception? innerException) 
-            : base(message, innerException)
+        internal RollbarException(InternalRollbarError rollbarError, string? message, Exception? innerException) 
+            : base(!string.IsNullOrWhiteSpace(message) ? message : rollbarError.ToString(), innerException)
         {
             this._rollbarError = rollbarError;
         }

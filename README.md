@@ -21,7 +21,7 @@ A new major release v5 of the SDK is available. It is marked as BETA for now.
 It did pass our internal testing and we a looking for independent volunteers to try it out and give us a feedback. 
 The primary new feature of this release is support of Blazor Client/Webassembly/WASM.
 
-For detailed instructions see our [v5 specific documentation]((https://docs.rollbar.com/docs/net-v5).
+For detailed instructions see our [v5 specific documentation](https://docs.rollbar.com/docs/net-v5).
 
 ## Codebase status (code quality and CI build)
 
