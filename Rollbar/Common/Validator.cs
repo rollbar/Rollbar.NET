@@ -36,6 +36,31 @@
             [Description("A validation subject must match the expected type to be validated as such.")]
             MatchValidationSubjectType,
         }
+
+        /// <summary>
+        /// Validates the specified validatable.
+        /// </summary>
+        /// <param name="validatable">The validatable.</param>
+        /// <param name="errorTag">The error tag.</param>
+        /// <param name="errorMessage">The error message.</param>
+        public static void Validate(IValidatable? validatable, InternalRollbarError errorTag, string? errorMessage)
+        {
+            if(validatable != null)
+            {
+                var result = validatable.Validate();
+                if(result != null && result.Count > 0)
+                {
+                    if(string.IsNullOrWhiteSpace(errorMessage))
+                    {
+                        errorMessage = $"{errorTag}.";
+                    }
+                    errorMessage = $"{errorMessage}. See Data property of this exception for validation details.";
+                    RollbarException exception = new RollbarException(errorTag, errorMessage);
+                    exception.Data[errorTag] = result;
+                    throw exception;
+                }
+            }
+        }
     }
 
     /// <summary>

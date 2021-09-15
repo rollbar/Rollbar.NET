@@ -214,16 +214,7 @@
             }
 
             IValidatable? validatable = this._config as IValidatable;
-            if(validatable != null)
-            {
-                var result = validatable.Validate();
-                if(result != null && result.Count > 0)
-                {
-                    RollbarException exception = new RollbarException(InternalRollbarError.ConfigurationError, "Invalid Rollbar configuration!");
-                    exception.Data["RollbarConfig validation results"] = result;
-                    throw exception;
-                }
-            }
+            Validator.Validate(validatable, InternalRollbarError.ConfigurationError, "Failed to configure using invalid configuration prototype!");
         }
 
         private void _config_Reconfigured(object? sender, EventArgs e)
