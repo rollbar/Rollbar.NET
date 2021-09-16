@@ -27,6 +27,7 @@
     <SdkVersionSuffix>beta</SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
+      - refactor: resolve #587 - Update Rollbar.NET's dependency on Newtonsoft.Json package to current version 13.0
       - feat: resolve #408 - Invalid configuration file prototype error
       - docs: updated README.md
     </SdkReleaseNotes>                        
@@ -109,6 +110,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Package References">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.3" />
     <!--ADD here-->
   </ItemGroup>
 

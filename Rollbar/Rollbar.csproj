@@ -80,7 +80,7 @@
     </When>
     <Otherwise>
       <ItemGroup Label="EF Core for NetStandard 2.0 copmliant framework targets." Condition="!('$(TargetFramework)' == 'net46' Or '$(TargetFramework)' == 'net452' Or '$(TargetFramework)' == 'net451')">
-        <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       </ItemGroup>
     </Otherwise>
   </Choose>
