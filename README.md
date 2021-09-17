@@ -220,7 +220,7 @@ Each plug-in maintains its own versioning schema and is distributed as its own N
 ## More Information about the SDK
 
 More details about Rollbar.NET usage and API reference are available at [Rollbar.NET SDK Documentation](https://docs.rollbar.com/docs/dotnet).
- v5 specific documentation is available [here]((https://docs.rollbar.com/docs/net-v5).
+ v5 specific documentation is available [here](https://docs.rollbar.com/docs/net-v5).
 
 ## Help / Support
 

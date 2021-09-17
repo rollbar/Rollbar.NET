@@ -56,6 +56,15 @@
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to wrap reported exception with a Rollbar exception.
+        /// </summary>
+        /// <value><c>true</c> if to wrap reported exception with a Rollbar exception; otherwise, <c>false</c>.</value>
+        bool WrapReportedExceptionWithRollbarException
+        {
+            get; set;
+        }
+
+        /// <summary>
         /// Gets the payload POST timeout.
         /// </summary>
         /// <value>The payload POST timeout.</value>

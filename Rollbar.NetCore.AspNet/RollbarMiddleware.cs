@@ -179,7 +179,14 @@ namespace Rollbar.NetCore.AspNet
                         RollbarLocator.RollbarInstance.Critical(rollbarPackage);
                     }
 
-                    throw new RollbarMiddlewareException(ex);
+                    if(RollbarLocator.RollbarInstance.Config.RollbarDeveloperOptions.WrapReportedExceptionWithRollbarException)
+                    {
+                        throw new RollbarMiddlewareException(ex);
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
                 finally
                 {

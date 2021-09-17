@@ -20,21 +20,25 @@
         /// </summary>
         private readonly static TimeSpan defaultPayloadPostTimeout = TimeSpan.FromSeconds(30);
         /// <summary>
-        /// The default log level
+        /// The default value for log level
         /// </summary>
         private const ErrorLevel defaultLogLevel = ErrorLevel.Debug;
         /// <summary>
-        /// The default enabled
+        /// The default value for enabled
         /// </summary>
         private const bool defaultEnabled = true;
         /// <summary>
-        /// The default transmit
+        /// The default value for transmit
         /// </summary>
         private const bool defaultTransmit = true;
         /// <summary>
-        /// The default rethrow exceptions after reporting
+        /// The default value for rethrow exceptions after reporting
         /// </summary>
         private const bool defaultRethrowExceptionsAfterReporting = false;
+        /// <summary>
+        /// The default value for  wrap reported exception with rollbar exception
+        /// </summary>
+        private const bool defaultWrapReportedExceptionWithRollbarException = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarDeveloperOptions"/> class.
@@ -43,12 +47,22 @@
         /// <param name="enabled">if set to <c>true</c> [enabled].</param>
         /// <param name="transmit">if set to <c>true</c> [transmit].</param>
         /// <param name="rethrowExceptionsAfterReporting">if set to <c>true</c> [rethrow exceptions after reporting].</param>
+        /// <param name="wrapReportedExceptionWithRollbarException">if set to <c>true</c> [wrap reported exception with rollbar exception].</param>
         public RollbarDeveloperOptions(
             ErrorLevel logLevel = RollbarDeveloperOptions.defaultLogLevel,
             bool enabled = RollbarDeveloperOptions.defaultEnabled,
             bool transmit = RollbarDeveloperOptions.defaultTransmit,
-            bool rethrowExceptionsAfterReporting = RollbarDeveloperOptions.defaultRethrowExceptionsAfterReporting)
-            : this(logLevel, enabled, transmit, rethrowExceptionsAfterReporting, RollbarDeveloperOptions.defaultPayloadPostTimeout)
+            bool rethrowExceptionsAfterReporting = RollbarDeveloperOptions.defaultRethrowExceptionsAfterReporting,
+            bool wrapReportedExceptionWithRollbarException = RollbarDeveloperOptions.defaultWrapReportedExceptionWithRollbarException
+            )
+            : this(
+                  logLevel, 
+                  enabled, 
+                  transmit, 
+                  rethrowExceptionsAfterReporting, 
+                  wrapReportedExceptionWithRollbarException, 
+                  RollbarDeveloperOptions.defaultPayloadPostTimeout
+                  )
         {
         }
 
@@ -59,19 +73,23 @@
         /// <param name="enabled">if set to <c>true</c> [enabled].</param>
         /// <param name="transmit">if set to <c>true</c> [transmit].</param>
         /// <param name="rethrowExceptionsAfterReporting">if set to <c>true</c> [rethrow exceptions after reporting].</param>
+        /// <param name="wrapReportedExceptionWithRollbarException">if set to <c>true</c> wrap reported exception with a Rollbar exception.</param>
         /// <param name="payloadPostTimeout">The payload post timeout.</param>
         public RollbarDeveloperOptions(
             ErrorLevel logLevel, 
             bool enabled, 
             bool transmit, 
-            bool rethrowExceptionsAfterReporting, 
-            TimeSpan payloadPostTimeout)
+            bool rethrowExceptionsAfterReporting,
+            bool wrapReportedExceptionWithRollbarException,
+            TimeSpan payloadPostTimeout
+            )
         {
-            LogLevel = logLevel;
-            Enabled = enabled;
-            Transmit = transmit;
-            RethrowExceptionsAfterReporting = rethrowExceptionsAfterReporting;
-            PayloadPostTimeout = payloadPostTimeout;
+            this.LogLevel = logLevel;
+            this.Enabled = enabled;
+            this.Transmit = transmit;
+            this.RethrowExceptionsAfterReporting = rethrowExceptionsAfterReporting;
+            this.WrapReportedExceptionWithRollbarException = wrapReportedExceptionWithRollbarException;
+            this.PayloadPostTimeout = payloadPostTimeout;
         }
 
         /// <summary>
@@ -115,6 +133,16 @@
         public bool RethrowExceptionsAfterReporting
         {
             get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to wrap reported exception with a Rollbar exception.
+        /// </summary>
+        /// <value><c>true</c> if to wrap reported exception with a Rollbar exception; otherwise, <c>false</c>.</value>
+        public bool WrapReportedExceptionWithRollbarException
+        {
+            get; 
             set;
         }
 
