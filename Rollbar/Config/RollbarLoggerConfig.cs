@@ -121,6 +121,7 @@
             this._rollbarDeveloperOptions.Enabled = true;
             this._rollbarDeveloperOptions.Transmit = true;
             this._rollbarDeveloperOptions.RethrowExceptionsAfterReporting = false;
+            this._rollbarDeveloperOptions.WrapReportedExceptionWithRollbarException = true;
 
             this._httpProxyOptions.ProxyAddress = null;
             this._httpProxyOptions.ProxyUsername = null;

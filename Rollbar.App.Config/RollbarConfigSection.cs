@@ -117,6 +117,14 @@
             => this["rethrowExceptionsAfterReporting"] as bool?;
 
         /// <summary>
+        /// Gets or sets a value indicating whether to wrap reported exception with a Rollbar exception.
+        /// </summary>
+        /// <value><c>true</c> if to wrap reported exception with a Rollbar exception; otherwise, <c>false</c>.</value>
+        [ConfigurationProperty("wrapReportedExceptionWithRollbarException", IsRequired = false, DefaultValue = true)]
+        public bool? WrapReportedExceptionWithRollbarException
+            => this["wrapReportedExceptionWithRollbarException"] as bool?;
+
+        /// <summary>
         /// Gets a value indicating whether to enable local payload store.
         /// </summary>
         /// <value><c>null</c> if to enable local payload store contains no value, <c>true</c> if [enable local payload store]; otherwise, <c>false</c>.</value>
