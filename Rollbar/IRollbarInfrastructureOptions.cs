@@ -50,9 +50,9 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [capture uncaught exceptions].
+        /// Gets or sets a value indicating whether to capture uncaught exceptions.
         /// </summary>
-        /// <value><c>true</c> if [capture uncaught exceptions]; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if to capture uncaught exceptions; otherwise, <c>false</c>.</value>
         bool CaptureUncaughtExceptions
         {
             get; set;

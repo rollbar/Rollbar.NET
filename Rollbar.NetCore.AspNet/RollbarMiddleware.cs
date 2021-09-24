@@ -10,6 +10,8 @@ namespace Rollbar.NetCore.AspNet
     using Rollbar.AppSettings.Json;
     using System;
     using System.Threading.Tasks;
+    using System.Text;
+    using System.IO;
 
     /// <summary>
     /// Implements an Asp.Net Core middleware component
@@ -84,19 +86,19 @@ namespace Rollbar.NetCore.AspNet
         /// <returns>A middleware invocation/execution task.</returns>
         public async Task Invoke(HttpContext? context)
         {
-            // as we learned from a field issue, apparently a middleware can even be invoked without a valid HttPContext:
+            // as we learned from a field issue, apparently a middleware can even be invoked without a valid HttpContext:
             string? requestId = null;
             requestId = context?.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
 
-#if (NETSTANDARD2_1 || NETCOREAPP3_0)
-            context?.Request.EnableBuffering();
+#if(NETSTANDARD_2_0 || NETCORE_2_0)
+            context?.Request.EnableRewind();     // so that we can rewind the body stream once we are done
 #else
-            context?.Request.EnableRewind();
+            context?.Request.EnableBuffering();  // so that we can rewind the body stream once we are done
 #endif
 
-            using (_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
+            using(_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
                 NetworkTelemetry? networkTelemetry = null;
 
@@ -211,5 +213,10 @@ namespace Rollbar.NetCore.AspNet
                 }
             }
         }
+
+
+
+
+
     }
 }

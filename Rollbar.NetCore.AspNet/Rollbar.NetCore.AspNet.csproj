@@ -24,6 +24,21 @@
   </ItemGroup>
 
   <Choose>
+    <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
+      <PropertyGroup Label=".NetStandard 2.0 build">
+        <NetVariant>NET_STANDARD</NetVariant>
+        <DefineConstants>$(DefineConstants);NETSTANDARD_2_0</DefineConstants>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
+      <PropertyGroup Label=".NetCore 2.0 build">
+        <NetVariant>NET_CORE</NetVariant>
+        <DefineConstants>$(DefineConstants);NETCORE_2_0</DefineConstants>
+      </PropertyGroup>
+    </When>
+  </Choose>
+  
+  <Choose>
     <When Condition="$(TargetFramework.StartsWith('netcoreapp3.')) Or '$(TargetFramework)' == 'netstandard2.1'">
       <ItemGroup Label="Package References">
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />

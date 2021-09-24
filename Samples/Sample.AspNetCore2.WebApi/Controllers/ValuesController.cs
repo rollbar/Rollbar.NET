@@ -49,9 +49,10 @@
             //streamWriter.WriteLine($"{DateTime.Now} Adding response body");
             //streamWriter.Flush();
 
-            //await streamWriter.WriteLineAsync($"{DateTime.Now} Adding response body");
-            //await streamWriter.FlushAsync();
-            
+            StreamWriter streamWriter = new StreamWriter(this._httpContextAccessor.HttpContext.Response.Body);
+            streamWriter.WriteLineAsync($"{DateTime.Now} Adding response body");
+            streamWriter.FlushAsync();
+
             //await this._httpContextAccessor.HttpContext.Response.BodyWriter.WriteAsync(Encoding.UTF8.GetBytes("Adding response body"));
             //await this._httpContextAccessor.HttpContext.Response.BodyWriter.FlushAsync();
 
@@ -72,9 +73,30 @@
             }
 
             //// Let's simulate an unhandled exception:
-            throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Get()");
+            //throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Get()");
 
             return new string[] { "value1", "value2" };
+        }
+
+        public class Record
+        {
+            public int ID { get; set; }
+            public string Email { get; set; }
+            public DateTime Timestamp { get; set; }
+        }
+
+        // GET api/values/100
+        [HttpGet("{id}")]
+        public ActionResult<Record> GetByID(int id)
+        {
+            var record = new Record()
+            {
+                ID = id,
+                Email = "NNN@mi6.com",
+                Timestamp = DateTime.Now
+            };
+
+            return Ok(record);
         }
 
         private void FakeExceptionCallStack(ref int level)
@@ -91,18 +113,12 @@
         {
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         // POST api/values
         [HttpPost]
         public void Post([FromBody]string value)
         {
-            throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Post(...)");
+            this._logger.LogTrace(nameof(ValuesController) + $".Post(...) is called with bod.");
+            //throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Post(...)");
         }
 
         // PUT api/values/5

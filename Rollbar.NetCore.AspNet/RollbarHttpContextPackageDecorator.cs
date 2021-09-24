@@ -24,7 +24,10 @@
         /// </summary>
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="rollbarHttpContext">The rollbar HTTP context.</param>
-        public RollbarHttpContextPackageDecorator(IRollbarPackage packageToDecorate, RollbarHttpContext rollbarHttpContext) 
+        public RollbarHttpContextPackageDecorator(
+            IRollbarPackage packageToDecorate, 
+            RollbarHttpContext rollbarHttpContext
+            ) 
             : this(packageToDecorate, rollbarHttpContext, false)
         {
         }
@@ -35,7 +38,11 @@
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="rollbarHttpContext">The rollbar HTTP context.</param>
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
-        public RollbarHttpContextPackageDecorator(IRollbarPackage packageToDecorate, RollbarHttpContext rollbarHttpContext, bool mustApplySynchronously) 
+        public RollbarHttpContextPackageDecorator(
+            IRollbarPackage packageToDecorate, 
+            RollbarHttpContext rollbarHttpContext, 
+            bool mustApplySynchronously
+            ) 
             : base(packageToDecorate, mustApplySynchronously)
         {
             this._rollbarHttpContext = rollbarHttpContext;
@@ -107,6 +114,10 @@
 
                         rollbarData.Request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
                     }
+                }
+                if(!string.IsNullOrWhiteSpace(this._rollbarHttpContext.HttpAttributes.RequestBody))
+                {
+                    rollbarData.Request.PostBody = this._rollbarHttpContext.HttpAttributes.RequestBody;
                 }
 
                 if (rollbarData.Response == null)

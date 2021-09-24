@@ -33,6 +33,11 @@
         private const int defaultMaxItems = 10;
 
         /// <summary>
+        /// The default value to capture uncaught exceptions
+        /// </summary>
+        private const bool defaultCaptureUncaughtExceptions = true;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RollbarInfrastructureOptions"/> class.
         /// </summary>
         public RollbarInfrastructureOptions()
@@ -65,17 +70,20 @@
         /// <param name="payloadPostTimeout">The payload post timeout.</param>
         /// <param name="reportingQueueDepth">The reporting queue depth.</param>
         /// <param name="maxItems">The maximum items.</param>
+        /// <param name="captureUncaughtExceptions">if set to <c>true</c> to capture uncaught exceptions.</param>
         public RollbarInfrastructureOptions(
             int? maxReportsPerMinute,
             TimeSpan payloadPostTimeout,
             int reportingQueueDepth = RollbarInfrastructureOptions.defaultReportingQueueDepth,
-            int maxItems = RollbarInfrastructureOptions.defaultMaxItems
+            int maxItems = RollbarInfrastructureOptions.defaultMaxItems,
+            bool captureUncaughtExceptions = RollbarInfrastructureOptions.defaultCaptureUncaughtExceptions
             )
         {
-            MaxReportsPerMinute = maxReportsPerMinute;
-            ReportingQueueDepth = reportingQueueDepth;
-            PayloadPostTimeout = payloadPostTimeout;
-            MaxItems = maxItems;
+            this.MaxReportsPerMinute = maxReportsPerMinute;
+            this.ReportingQueueDepth = reportingQueueDepth;
+            this.PayloadPostTimeout = payloadPostTimeout;
+            this.MaxItems = maxItems;
+            this.CaptureUncaughtExceptions = captureUncaughtExceptions;
         }
 
         /// <summary>
@@ -117,9 +125,9 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether [capture uncaught exceptions].
+        /// Gets or sets a value indicating whether to capture uncaught exceptions.
         /// </summary>
-        /// <value><c>true</c> if [capture uncaught exceptions]; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> if to capture uncaught exceptions; otherwise, <c>false</c>.</value>
         public bool CaptureUncaughtExceptions
         {
             get; set;
