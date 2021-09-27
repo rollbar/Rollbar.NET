@@ -8,6 +8,8 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
 
+    using Rollbar.NetPlatformExtensions;
+
 #if(NETSTANDARD_2_0 || NETCORE_2_0)
     using Microsoft.AspNetCore.Http.Internal;
 #endif
@@ -17,6 +19,9 @@
     /// </summary>
     public class RollbarHttpAttributes
     {
+        //private readonly HttpResponse _httpResponse;
+        private readonly HttpContext? _httpContext;
+
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarHttpAttributes" /> class from being created.
         /// </summary>
@@ -37,6 +42,8 @@
                 return;
             }
 
+            this._httpContext = context;
+
             this.RequestID = context.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
@@ -49,7 +56,7 @@
                 this.RequestQuery = context.Request.QueryString;
                 this.RequestProtocol = context.Request.Protocol;
                 this.RequestScheme = context.Request.Scheme;
-                this.RequestBody = RollbarHttpAttributes.CaptureRequestBody(context.Request).Result;
+                this.RequestBody = RollbarHttpAttributes.CaptureRequestBody(context.Request);
             }
             if (context.Response != null)
             {
@@ -127,59 +134,49 @@
         public IHeaderDictionary? ResponseHeaders { get; }
 
         /// <summary>
+        /// Gets the response body.
+        /// </summary>
+        /// <value>The response body.</value>
+        public string? ResponseBody
+        {
+            get
+            {
+                return RollbarHttpAttributes.CaptureResponseBody(this._httpContext.Response);
+            }
+        }
+
+        /// <summary>
         /// Captures the request body.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.String.</returns>
-        public static async Task<string?> CaptureRequestBody(HttpRequest request)
+        public static string? CaptureRequestBody(HttpRequest request)
         {
-            var body = string.Empty;
             if(request.ContentLength == null
                 || !(request.ContentLength > 0)
                 || !request.Body.CanSeek
                 )
             {
-                return body;
+                return null;
             }
 
-            // Prepare to snal the request body:
-            //Stream bodyStream = request.Body; // cache body stream
-#if(NETSTANDARD_2_0 || NETCORE_2_0)
-            request.EnableRewind();     // so that we can rewind the body stream once we are done
-#else
-            request.EnableBuffering();  // so that we can rewind the body stream once we are done
-#endif
+            string? bodyContent = null;
 
-            ////Snap the body stream content:
-            //byte[] dataBuffer = new byte[Convert.ToInt32(request.ContentLength)];
-            //request.Body.Seek(0, SeekOrigin.Begin);
-            //await request.Body.ReadAsync(dataBuffer, 0, dataBuffer.Length);
-            //string bodyContent = Encoding.UTF8.GetString(dataBuffer);
-            //return bodyContent;
-
-            //string? bodyContent = null;
-            //using(StreamReader stream = new StreamReader(request.Body))
-            //{
-            //    bodyContent = stream.ReadToEnd();
-            //}
-
-            //// Rewind/restore the request body back:
-            //request.Body = bodyStream;
-
-            ////return bodyContent;
-            //return bodyContent;
-
-
-
-            request.Body.Position = 0;
+            // Snap the request body:
+//#if(NETSTANDARD_2_0 || NETCORE_2_0)
+//            request.EnableRewind();     // so that we can rewind the body stream once we are done
+//#else
+//            request.EnableBuffering();  // so that we can rewind the body stream once we are done
+//#endif
+//            request.Body.Position = 0;
             using(var ms = new MemoryStream())
             {
                 request.Body.CopyTo(ms);
                 var b = ms.ToArray();
-                body = Encoding.UTF8.GetString(b); //Assign body to bodyStr
+                bodyContent = Encoding.UTF8.GetString(b); //Assign body to bodyStr
             }
 
-            return body;
+            return bodyContent;
         }
 
         /// <summary>
@@ -187,21 +184,40 @@
         /// </summary>
         /// <param name="response">The response.</param>
         /// <returns>System.String.</returns>
-        public static async Task<string> CaptureResponseBody(HttpResponse response)
+        public static string? CaptureResponseBody(HttpResponse response)
         {
-            // Make sure we start at the beginning of the body stream:
-            response.Body.Seek(0, SeekOrigin.Begin);
 
-            // Snap the body stream content:
-            string bodyContent = await new StreamReader(response.Body).ReadToEndAsync();
+            if (response.ContentLength == null
+                || !(response.ContentLength > 0)
+                || !response.Body.CanSeek
+                )
+            {
+                return null;
+            }
 
-            // Reset back to the beginning of the body stream:
-            response.Body.Seek(0, SeekOrigin.Begin);
+            string? bodyContent = null;
+
+            //// Make sure we start at the beginning of the body stream:
+            //response.Body.Seek(0, SeekOrigin.Begin);
+
+            //// Snap the body stream content:
+            //bodyContent = new StreamReader(response.Body).ReadToEnd();
+
+            //// Reset back to the beginning of the body stream:
+            //response.Body.Seek(0, SeekOrigin.Begin);
+
+            response.Body.Position = 0;
+            using(var ms = new MemoryStream())
+            {
+                response.Body.CopyTo(ms);
+                var b = ms.ToArray();
+                bodyContent = Encoding.UTF8.GetString(b); //Assign body to bodyStr
+            }
+            response.Body.Position = 0;
+
 
             //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)
             return bodyContent;
         }
-
-
     }
 }

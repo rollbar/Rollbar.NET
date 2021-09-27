@@ -96,7 +96,10 @@
                 Timestamp = DateTime.Now
             };
 
-            return Ok(record);
+            var result = Ok(record);
+            this._logger.LogTrace(nameof(ValuesController) + $".GetByID(...) executed with result: {result}.");
+
+            return result;
         }
 
         private void FakeExceptionCallStack(ref int level)
@@ -117,7 +120,7 @@
         [HttpPost]
         public void Post([FromBody]string value)
         {
-            this._logger.LogTrace(nameof(ValuesController) + $".Post(...) is called with bod.");
+            this._logger.LogTrace(nameof(ValuesController) + $".Post(...) is called with body.");
             //throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Post(...)");
         }
 

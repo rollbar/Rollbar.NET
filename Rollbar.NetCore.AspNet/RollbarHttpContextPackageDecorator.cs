@@ -139,6 +139,10 @@
                         rollbarData.Response.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
                     }
                 }
+                if(!string.IsNullOrWhiteSpace(this._rollbarHttpContext.HttpAttributes.ResponseBody))
+                {
+                    rollbarData.Response.Body = this._rollbarHttpContext.HttpAttributes.ResponseBody;
+                }
             }
         }
 
