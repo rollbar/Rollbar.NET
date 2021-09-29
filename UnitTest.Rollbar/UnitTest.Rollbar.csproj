@@ -6,14 +6,14 @@
 
   <PropertyGroup>
     <!--TargetFramework>net48</TargetFramework-->
-    <TargetFrameworks>netcoreapp3.1;netcoreapp2.1;net48;net472;net462</TargetFrameworks>
+    <TargetFrameworks>net5.0;netcoreapp3.1;net48;net472;net462</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <Configurations>Debug;Release;Instrumented</Configurations>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
 
-  <!-- We only want to run performance evaluation unit tests under .NET Core -->
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp3.0|AnyCPU' Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp2.2|AnyCPU'">
+  <!-- We only want to run performance evaluation unit tests under these .NET variants -->
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|net5.0|AnyCPU' Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|netcoreapp3.1|AnyCPU' Or '$(Configuration)|$(TargetFramework)|$(Platform)'=='Instrumented|net48|AnyCPU'">
     <DefineConstants>INSTRUMENT</DefineConstants>
   </PropertyGroup>
   
@@ -23,7 +23,7 @@
     <DefineConstants>NETSTANDARD</DefineConstants>
   </PropertyGroup>
 
-  <PropertyGroup Condition="$(TargetFramework.StartsWith('netcoreapp'))">
+  <PropertyGroup Condition="$(TargetFramework.StartsWith('netcoreapp')) Or '$(TargetFramework)' == 'net5.0'">
     <NetVariant>NET_CORE</NetVariant>
     <DefineConstants>NETCOREAPP</DefineConstants>
   </PropertyGroup>
@@ -39,7 +39,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
-    <PackageReference Include="Moq" Version="4.13.1" />
+    <PackageReference Include="Moq" Version="4.16.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
   </ItemGroup>

@@ -92,11 +92,7 @@ namespace Rollbar.NetCore.AspNet
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
 
-#if(NETSTANDARD_2_0 || NETCORE_2_0)
-            context?.Request.EnableRewind();     // so that we can rewind the body stream once we are done
-#else
             context?.Request.EnableBuffering();  // so that we can rewind the body stream once we are done
-#endif
 
             using(_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {

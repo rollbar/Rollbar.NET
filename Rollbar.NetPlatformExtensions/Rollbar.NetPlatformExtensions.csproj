@@ -1,9 +1,11 @@
 ﻿<Project ToolsVersion="Current">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <!--TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks-->
     <AssemblyName>Rollbar.NetPlatformExtensions</AssemblyName>
     <RootNamespace>Rollbar.NetPlatformExtensions</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <Import Project="..\SdkCommon.csproj" />

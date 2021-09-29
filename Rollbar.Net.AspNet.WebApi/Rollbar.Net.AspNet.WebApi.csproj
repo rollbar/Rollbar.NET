@@ -1,9 +1,10 @@
 ﻿<Project ToolsVersion="Current">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net472;net471;net47;net462;net461;net46;net452;net451</TargetFrameworks>
+    <TargetFrameworks>net48;net472;net471;net47;net462;net461;net46;net452</TargetFrameworks>
     <AssemblyName>Rollbar.Net.AspNet.WebApi</AssemblyName>
     <RootNamespace>Rollbar.Net.AspNet.WebApi</RootNamespace>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
 
   <Import Project="..\SdkCommon.csproj" />

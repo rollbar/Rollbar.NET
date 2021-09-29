@@ -2,8 +2,10 @@
 {
     using BenchmarkDotNet.Configs;
     using BenchmarkDotNet.Environments;
-    using BenchmarkDotNet.Horology;
+    //using BenchmarkDotNet.Horology;
     using BenchmarkDotNet.Jobs;
+
+    using Perfolizer.Horology;
 
     public class BenchmarksConfig : ManualConfig
     {
