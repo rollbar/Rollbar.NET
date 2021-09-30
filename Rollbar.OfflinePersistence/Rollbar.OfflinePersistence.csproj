@@ -21,10 +21,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.19">
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.19"><!--IncludeAssets>runtime; build; native; contentFiles; analyzers; buildtransitive</IncludeAssets-->
-     
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.19" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.19">
+      <IncludeAssets>all</IncludeAssets>
+      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
