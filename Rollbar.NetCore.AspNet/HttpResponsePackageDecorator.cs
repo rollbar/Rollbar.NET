@@ -95,11 +95,11 @@
             }
             response.Body = jsonString;
 
-            object? responseBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
-            if (responseBodyObject != null)
-            {
-                response.Body = responseBodyObject;
-            }
+            //object? responseBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
+            //if (responseBodyObject != null)
+            //{
+            //    response.Body = responseBodyObject;
+            //}
         }
 
     }

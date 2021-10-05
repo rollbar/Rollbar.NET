@@ -4,6 +4,8 @@ namespace Rollbar.NetCore.AspNet
 {
     using System.Collections.Generic;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Http.Features;
+
     using Rollbar.Common;
     using Rollbar.DTOs;
     using Rollbar.Serialization.Json;
@@ -64,6 +66,15 @@ namespace Rollbar.NetCore.AspNet
                 rollbarData.Request = new Request();
             }
 
+
+            rollbarData.Request["httpRequestID"] = 
+                this._httpRequest.HttpContext
+                .Features?
+                .Get<IHttpRequestIdentifierFeature>()?
+                .TraceIdentifier;
+            rollbarData.Request["scheme"] = this._httpRequest.Scheme;
+            rollbarData.Request["protocol"] = this._httpRequest.Protocol;
+
             rollbarData.Request.Url = this._httpRequest.Host.Value + this._httpRequest.Path;
             rollbarData.Request.QueryString = this._httpRequest.QueryString.Value;
             if (!string.IsNullOrWhiteSpace(this._httpRequest.Path))
@@ -116,18 +127,19 @@ namespace Rollbar.NetCore.AspNet
                 return; // nothing to do...
             }
 
+            //string? jsonString = StreamUtil.ConvertToString(this._httpRequest.BodyReader.AsStream(true));
             string? jsonString = StreamUtil.ConvertToString(this._httpRequest.Body);
-            if (string.IsNullOrWhiteSpace(jsonString))
+            if(string.IsNullOrWhiteSpace(jsonString))
             {
                 return;
             }
             request.PostBody = jsonString;
 
-            object? requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
-            if (requesBodyObject != null)
-            {
-                request.PostBody = requesBodyObject;
-            }
+            //object? requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
+            //if (requesBodyObject != null)
+            //{
+            //    request.PostBody = requesBodyObject;
+            //}
         }
     }
 }

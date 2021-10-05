@@ -4,6 +4,7 @@
     using mslogging = Microsoft.Extensions.Logging;
     using Rollbar.Diagnostics;
     using Microsoft.AspNetCore.Http;
+    using Rollbar.NetPlatformExtensions;
 
     /// <summary>
     /// Implements RollbarLogger.
@@ -46,7 +47,7 @@
             Assumption.AssertTrue(!object.Equals(state, default(TState)), nameof(state));
 
             var scope = new RollbarScope(this.Name, state);
-            scope.HttpContext = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
+            //scope.HttpContext = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
             return RollbarScope.Push(scope);
         }
 
@@ -69,29 +70,43 @@
             IRollbarPackage? package =  base.ComposeRollbarPackage(eventId,state,exception,formatter);
             if(package != null)
             {
-                var currentContext = GetCurrentContext();
-                if(currentContext != null)
+                //var currentContext = GetCurrentContext();
+                //if(currentContext != null)
+                //{
+                //    package = new RollbarHttpContextPackageDecorator(package, currentContext, true);
+                //}
+
+                var httpContext = _httpContextAccessor?.HttpContext;
+                if(httpContext != null)
                 {
-                    package = new RollbarHttpContextPackageDecorator(package, currentContext, true);
+                    if(httpContext.Request != null)
+                    {
+                        package = new HttpRequestPackageDecorator(package, httpContext.Request, true);
+                    }
+                    if(httpContext.Response != null)
+                    {
+                        package = new HttpResponsePackageDecorator(package, httpContext.Response, true);
+                    }
                 }
+
             }
 
             return package;
         }
 
-        private RollbarHttpContext GetCurrentContext()
-        {
-            var context = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
+        //private RollbarHttpContext GetCurrentContext()
+        //{
+        //    var context = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
 
-            if (context.HttpAttributes == null 
-                && this._httpContextAccessor != null 
-                && this._httpContextAccessor.HttpContext != null
-                )
-            {
-                context.HttpAttributes = new RollbarHttpAttributes(this._httpContextAccessor.HttpContext);
-            }
+        //    if (context.HttpAttributes == null 
+        //        && this._httpContextAccessor != null 
+        //        && this._httpContextAccessor.HttpContext != null
+        //        )
+        //    {
+        //        context.HttpAttributes = new RollbarHttpAttributes(this._httpContextAccessor.HttpContext);
+        //    }
 
-            return context;
-        }
+        //    return context;
+        //}
     }
 }

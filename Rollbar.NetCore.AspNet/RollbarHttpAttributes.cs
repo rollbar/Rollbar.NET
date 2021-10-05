@@ -8,6 +8,7 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
 
+    using Rollbar.Common;
     using Rollbar.NetPlatformExtensions;
 
 #if(NETSTANDARD_2_0 || NETCORE_2_0)
@@ -160,22 +161,8 @@
                 return null;
             }
 
-            string? bodyContent = null;
-
-            // Snap the request body:
-//#if(NETSTANDARD_2_0 || NETCORE_2_0)
-//            request.EnableRewind();     // so that we can rewind the body stream once we are done
-//#else
-//            request.EnableBuffering();  // so that we can rewind the body stream once we are done
-//#endif
-//            request.Body.Position = 0;
-            using(var ms = new MemoryStream())
-            {
-                request.Body.CopyTo(ms);
-                var b = ms.ToArray();
-                bodyContent = Encoding.UTF8.GetString(b); //Assign body to bodyStr
-            }
-
+            string? bodyContent = StreamUtil.ConvertToString(request.BodyReader.AsStream(true));
+            
             return bodyContent;
         }
 
@@ -195,7 +182,7 @@
                 return null;
             }
 
-            string? bodyContent = null;
+            //string? bodyContent = null;
 
             //// Make sure we start at the beginning of the body stream:
             //response.Body.Seek(0, SeekOrigin.Begin);
@@ -206,14 +193,19 @@
             //// Reset back to the beginning of the body stream:
             //response.Body.Seek(0, SeekOrigin.Begin);
 
-            response.Body.Position = 0;
-            using(var ms = new MemoryStream())
-            {
-                response.Body.CopyTo(ms);
-                var b = ms.ToArray();
-                bodyContent = Encoding.UTF8.GetString(b); //Assign body to bodyStr
-            }
-            response.Body.Position = 0;
+
+
+            //response.Body.Position = 0;
+            //using(var ms = new MemoryStream())
+            //{
+            //    response.Body.CopyTo(ms);
+            //    var b = ms.ToArray();
+            //    bodyContent = Encoding.UTF8.GetString(b); //Assign body to bodyStr
+            //}
+            //response.Body.Position = 0;
+
+
+            string? bodyContent = StreamUtil.ConvertToString(response.BodyWriter.AsStream(true));
 
 
             //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)

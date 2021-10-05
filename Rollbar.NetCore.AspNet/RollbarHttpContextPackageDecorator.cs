@@ -25,9 +25,9 @@
         /// <param name="packageToDecorate">The package to decorate.</param>
         /// <param name="rollbarHttpContext">The rollbar HTTP context.</param>
         public RollbarHttpContextPackageDecorator(
-            IRollbarPackage packageToDecorate, 
+            IRollbarPackage packageToDecorate,
             RollbarHttpContext rollbarHttpContext
-            ) 
+            )
             : this(packageToDecorate, rollbarHttpContext, false)
         {
         }
@@ -39,10 +39,10 @@
         /// <param name="rollbarHttpContext">The rollbar HTTP context.</param>
         /// <param name="mustApplySynchronously">if set to <c>true</c> [must apply synchronously].</param>
         public RollbarHttpContextPackageDecorator(
-            IRollbarPackage packageToDecorate, 
-            RollbarHttpContext rollbarHttpContext, 
+            IRollbarPackage packageToDecorate,
+            RollbarHttpContext rollbarHttpContext,
             bool mustApplySynchronously
-            ) 
+            )
             : base(packageToDecorate, mustApplySynchronously)
         {
             this._rollbarHttpContext = rollbarHttpContext;

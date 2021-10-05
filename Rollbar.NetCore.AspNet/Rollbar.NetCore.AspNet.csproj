@@ -22,10 +22,18 @@
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 
-  <ItemGroup Label="Unconditional Package References">
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.*" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.*" />
-  </ItemGroup>
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net5.0'">
+      <ItemGroup Label="Unconditional Package References">
+        <PackageReference Include="Microsoft.AspNetCore.App" Version="5.0.*"/>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+      <ItemGroup Label="Unconditional Package References">
+        <PackageReference Include="Microsoft.AspNetCore.App" Version="3.1.*"/>
+      </ItemGroup>
+    </When>
+  </Choose>
 
   <!--Choose>
     <When Condition="'$(TargetFramework)' == 'netstandard2.0'">

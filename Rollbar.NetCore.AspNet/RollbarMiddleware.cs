@@ -2,7 +2,7 @@ namespace Rollbar.NetCore.AspNet
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
-    using Microsoft.AspNetCore.Http.Internal;
+    //using Microsoft.AspNetCore.Http.Internal;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -12,6 +12,8 @@ namespace Rollbar.NetCore.AspNet
     using System.Threading.Tasks;
     using System.Text;
     using System.IO;
+    using Rollbar.NetPlatformExtensions;
+    using System.Collections.Generic;
 
     /// <summary>
     /// Implements an Asp.Net Core middleware component
@@ -84,7 +86,7 @@ namespace Rollbar.NetCore.AspNet
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>A middleware invocation/execution task.</returns>
-        public async Task Invoke(HttpContext? context)
+        public async Task Invoke(HttpContext context)
         {
             // as we learned from a field issue, apparently a middleware can even be invoked without a valid HttpContext:
             string? requestId = null;
@@ -120,10 +122,10 @@ namespace Rollbar.NetCore.AspNet
                         RollbarInfrastructure.Instance.TelemetryCollector.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
                     }
 
-                    if (RollbarScope.Current != null && RollbarScope.Current.HttpContext != null)
-                    {
-                        RollbarScope.Current.HttpContext.HttpAttributes = new RollbarHttpAttributes(context);
-                    }
+                    //if (RollbarScope.Current != null && RollbarScope.Current.HttpContext != null)
+                    //{
+                    //    RollbarScope.Current.HttpContext.HttpAttributes = new RollbarHttpAttributes(context);
+                    //}
 
                     await this._nextRequestProcessor(context);
                 }
@@ -159,22 +161,51 @@ namespace Rollbar.NetCore.AspNet
                             // just rethrow since the Rollbar SDK already exceeded MaxItems limit:
                             throw;
                         }
-                    }
-                    else
-                    {
-                        IRollbarPackage rollbarPackage = new ExceptionPackage(ex, $"{nameof(RollbarMiddleware)} processed uncaught exception.");
-                        if (context != null)
+                        else
                         {
-                            if (context.Request != null)
+                            IRollbarPackage rollbarPackage = new ExceptionPackage(ex, $"{nameof(RollbarMiddleware)} processed uncaught exception.");
+                            if(context != null)
                             {
-                                rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
-                            }
-                            if (context.Response != null)
-                            {
-                                rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
-                            }
+                                if(context.Request != null)
+                                {
+                                    rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
+                                }
+
+                                //    if(context.Response != null)
+                                //    {
+                                //        rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
+                                //    }
+                             }
+
+
+
+                            var custom = new Dictionary<string, object?>(2);
+                            var stream = context.Request.Body;
+                            var reader = new StreamReader(stream);
+                            if(stream.CanSeek)
+                                stream.Seek(0, SeekOrigin.Begin);
+                            var requestBodyAsString = await reader.ReadToEndAsync();
+                            custom["HTTP.Request.Body"] = requestBodyAsString;
+                            if(stream.CanSeek)
+                                stream.Seek(0, SeekOrigin.Begin);
+
+                            //using(var reader = new StreamReader(stream))
+                            //{
+
+                            //    if(stream.CanSeek)
+                            //        stream.Seek(0, SeekOrigin.Begin);
+
+                            //    var anotherRequestBodyAsString = await reader.ReadToEndAsync();
+                            //    custom["another.HTTP.Request.Body"] = anotherRequestBodyAsString;
+
+                            //    if(stream.CanSeek)
+                            //        stream.Seek(0, SeekOrigin.Begin);
+
+                            //}
+
+                            //RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(rollbarPackage, custom);
+                            RollbarLocator.RollbarInstance.Critical(rollbarPackage, custom);
                         }
-                        RollbarLocator.RollbarInstance.Critical(rollbarPackage);
                     }
 
                     if(RollbarLocator.RollbarInstance.Config.RollbarDeveloperOptions.WrapReportedExceptionWithRollbarException)
@@ -188,15 +219,15 @@ namespace Rollbar.NetCore.AspNet
                 }
                 finally
                 {
-                    if (context != null 
-                        && context.Response != null 
-                        && RollbarScope.Current != null 
-                        && RollbarScope.Current.HttpContext != null 
-                        && RollbarScope.Current.HttpContext.HttpAttributes != null
-                        )
-                    {
-                        RollbarScope.Current.HttpContext.HttpAttributes.ResponseStatusCode = context.Response.StatusCode;
-                    }
+                    //if (context != null 
+                    //    && context.Response != null 
+                    //    && RollbarScope.Current != null 
+                    //    && RollbarScope.Current.HttpContext != null 
+                    //    && RollbarScope.Current.HttpContext.HttpAttributes != null
+                    //    )
+                    //{
+                    //    RollbarScope.Current.HttpContext.HttpAttributes.ResponseStatusCode = context.Response.StatusCode;
+                    //}
 
                     if (networkTelemetry != null )
                     {

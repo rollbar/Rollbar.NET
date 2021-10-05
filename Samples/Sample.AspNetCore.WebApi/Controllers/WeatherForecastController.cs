@@ -63,10 +63,10 @@
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] WeatherForecast weatherForecast)
         {
-            this._logger.LogInformation(nameof(WeatherForecastController) + $".Post(...) is called with body.");
-            //throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Post(...)");
+            this._logger.LogInformation(nameof(WeatherForecastController) + $".Post(...) is called with body: {weatherForecast}");
+            throw new Exception("AspNetCore2.WebApi sample: Unhandled exception within the ValueController.Post(...)");
         }
 
         // PUT api/values/5
