@@ -1,19 +1,9 @@
 ﻿namespace Rollbar.NetCore.AspNet
 {
-    using System;
-    using System.IO;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
 
     using Rollbar.Common;
-    using Rollbar.NetPlatformExtensions;
-
-#if(NETSTANDARD_2_0 || NETCORE_2_0)
-    using Microsoft.AspNetCore.Http.Internal;
-#endif
 
     /// <summary>
     /// Implements a capture bag of HTTP context attributes of interest.
@@ -48,6 +38,7 @@
             this.RequestID = context.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
+
             if (context.Request !=  null)
             {
                 this.RequestHost = context.Request.Host;
@@ -59,6 +50,7 @@
                 this.RequestScheme = context.Request.Scheme;
                 this.RequestBody = RollbarHttpAttributes.CaptureRequestBody(context.Request);
             }
+
             if (context.Response != null)
             {
                 this.ResponseStatusCode = context.Response.StatusCode;
@@ -142,7 +134,7 @@
         {
             get
             {
-                return RollbarHttpAttributes.CaptureResponseBody(this._httpContext.Response);
+                return RollbarHttpAttributes.CaptureResponseBody(this._httpContext?.Response);
             }
         }
 
@@ -151,9 +143,10 @@
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>System.String.</returns>
-        public static string? CaptureRequestBody(HttpRequest request)
+        public static string? CaptureRequestBody(HttpRequest? request)
         {
-            if(request.ContentLength == null
+            if(request == null
+                || request.ContentLength == null
                 || !(request.ContentLength > 0)
                 || !request.Body.CanSeek
                 )
@@ -161,7 +154,8 @@
                 return null;
             }
 
-            string? bodyContent = StreamUtil.ConvertToString(request.BodyReader.AsStream(true));
+            string? bodyContent = 
+                StreamUtil.CaptureAsStringAsync(request.BodyReader.AsStream(true)).Result;
             
             return bodyContent;
         }
@@ -171,10 +165,11 @@
         /// </summary>
         /// <param name="response">The response.</param>
         /// <returns>System.String.</returns>
-        public static string? CaptureResponseBody(HttpResponse response)
+        public static string? CaptureResponseBody(HttpResponse? response)
         {
 
-            if (response.ContentLength == null
+            if (response == null
+                || response.ContentLength == null
                 || !(response.ContentLength > 0)
                 || !response.Body.CanSeek
                 )
@@ -182,33 +177,9 @@
                 return null;
             }
 
-            //string? bodyContent = null;
+            string? bodyContent = 
+                StreamUtil.CaptureAsStringAsync(response.BodyWriter.AsStream(true)).Result;
 
-            //// Make sure we start at the beginning of the body stream:
-            //response.Body.Seek(0, SeekOrigin.Begin);
-
-            //// Snap the body stream content:
-            //bodyContent = new StreamReader(response.Body).ReadToEnd();
-
-            //// Reset back to the beginning of the body stream:
-            //response.Body.Seek(0, SeekOrigin.Begin);
-
-
-
-            //response.Body.Position = 0;
-            //using(var ms = new MemoryStream())
-            //{
-            //    response.Body.CopyTo(ms);
-            //    var b = ms.ToArray();
-            //    bodyContent = Encoding.UTF8.GetString(b); //Assign body to bodyStr
-            //}
-            //response.Body.Position = 0;
-
-
-            string? bodyContent = StreamUtil.ConvertToString(response.BodyWriter.AsStream(true));
-
-
-            //Return the string for the response, including the status code (e.g. 200, 404, 401, etc.)
             return bodyContent;
         }
     }

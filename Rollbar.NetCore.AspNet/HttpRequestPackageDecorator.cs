@@ -1,14 +1,12 @@
-﻿using System.Linq;
-
-namespace Rollbar.NetCore.AspNet
+﻿namespace Rollbar.NetCore.AspNet
 {
     using System.Collections.Generic;
+
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
 
     using Rollbar.Common;
     using Rollbar.DTOs;
-    using Rollbar.Serialization.Json;
 
     /// <summary>
     /// Class HttpRequestPackageDecorator.
@@ -127,19 +125,12 @@ namespace Rollbar.NetCore.AspNet
                 return; // nothing to do...
             }
 
-            //string? jsonString = StreamUtil.ConvertToString(this._httpRequest.BodyReader.AsStream(true));
-            string? jsonString = StreamUtil.ConvertToString(this._httpRequest.Body);
+            string? jsonString = StreamUtil.CaptureAsStringAsync(this._httpRequest.Body).Result;
             if(string.IsNullOrWhiteSpace(jsonString))
             {
                 return;
             }
             request.PostBody = jsonString;
-
-            //object? requesBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
-            //if (requesBodyObject != null)
-            //{
-            //    request.PostBody = requesBodyObject;
-            //}
         }
     }
 }

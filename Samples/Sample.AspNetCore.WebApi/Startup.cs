@@ -36,20 +36,11 @@ namespace Sample.AspNetCore.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.Configure<IISServerOptions>(options =>
-            {
-                options.AllowSynchronousIO = true;
-            });
-
-            ConfigureRollbarSingleton();
-
-            services.AddRollbarLogger(loggerOptions =>
-            {
-                loggerOptions.Filter = (loggerName, loglevel) => loglevel >= LogLevel.Information;
-            });
+            // Pre-configure Rollbar:
+            ConfigureRollbar(services);
 
             services.AddControllers();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sample.AspNetCore.WebApi", Version = "v1" });
@@ -66,6 +57,7 @@ namespace Sample.AspNetCore.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample.AspNetCore.WebApi v1"));
             }
 
+            // Add RollbarMiddleware:
             app.UseRollbarMiddleware();
 
             app.UseHttpsRedirection();
@@ -81,9 +73,9 @@ namespace Sample.AspNetCore.WebApi
         }
 
         /// <summary>
-        /// Configures the Rollbar singleton-like notifier.
+        /// Configures the Rollbar.
         /// </summary>
-        private void ConfigureRollbarSingleton()
+        private void ConfigureRollbar(IServiceCollection services)
         {
             RollbarInfrastructureConfig config = new RollbarInfrastructureConfig(
                 RollbarSamplesSettings.AccessToken,
@@ -99,8 +91,7 @@ namespace Sample.AspNetCore.WebApi
             //};
             //config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
 
-            RollbarInfrastructure.Instance.Init(config);
-            RollbarInfrastructure.Instance.QueueController.InternalEvent += OnRollbarInternalEvent;
+            RollbarMiddleware.ConfigureServices(services, LogLevel.Information, config, OnRollbarInternalEvent);
         }
 
         /// <summary>

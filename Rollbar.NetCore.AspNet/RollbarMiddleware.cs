@@ -2,7 +2,6 @@ namespace Rollbar.NetCore.AspNet
 {
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Http.Features;
-    //using Microsoft.AspNetCore.Http.Internal;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -10,10 +9,9 @@ namespace Rollbar.NetCore.AspNet
     using Rollbar.AppSettings.Json;
     using System;
     using System.Threading.Tasks;
-    using System.Text;
-    using System.IO;
     using Rollbar.NetPlatformExtensions;
-    using System.Collections.Generic;
+    using Microsoft.Extensions.DependencyInjection;
+    using System.Linq;
 
     /// <summary>
     /// Implements an Asp.Net Core middleware component
@@ -23,10 +21,77 @@ namespace Rollbar.NetCore.AspNet
     /// </summary>
     /// <example>
     /// Usage example:
+    /// To pre-configure Rollbar middleware, implement Startup.ConfigureServices(...) of your 
+    /// Asp.Net Core application as
+    /// 
+    /// <code>
+    /// 
+    /// // This method gets called by the runtime. Use this method to add services to the container.
+    /// public void ConfigureServices(IServiceCollection services)
+    /// {
+    ///   // Pre-configure Rollbar (preferably at the very top of this function implementation):
+    ///   ConfigureRollbar(services);
+    ///   
+    ///   // ....
+    /// }
+    /// 
+    /// private void ConfigureRollbar(IServiceCollection services)
+    /// {
+    ///   RollbarInfrastructureConfig config = new RollbarInfrastructureConfig(
+    ///     RollbarSamplesSettings.AccessToken,
+    ///     RollbarSamplesSettings.Environment
+    ///     );
+    ///   config.RollbarLoggerConfig.RollbarDeveloperOptions.LogLevel = ErrorLevel.Debug;
+    ///   config.RollbarInfrastructureOptions.MaxItems = 500;
+    ///   //RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
+    ///   //dataSecurityOptions.ScrubFields = new string[]
+    ///   //{
+    ///   //    "url",
+    ///   //    "method",
+    ///   //};
+    ///   //config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
+    ///   
+    ///   RollbarMiddleware.ConfigureServices(services, LogLevel.Information, config, OnRollbarInternalEvent);
+    /// }
+    /// 
+    /// private static void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
+    /// {
+    ///     Console.WriteLine(e.TraceAsString());
+    ///     
+    ///     RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
+    ///     if(apiErrorEvent != null)
+    ///     {
+    ///       //TODO: handle/report Rollbar API communication error event...
+    ///       return;
+    ///     }
+    ///     
+    ///     CommunicationEventArgs commEvent = e as CommunicationEventArgs;
+    ///     if(commEvent != null)
+    ///     {
+    ///         //TODO: handle/report Rollbar API communication event...
+    ///         return;
+    ///     }
+    ///     CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
+    ///     if(commErrorEvent != null)
+    ///     {
+    ///         //TODO: handle/report basic communication error while attempting to reach Rollbar API service... 
+    ///         return;
+    ///     }
+    ///     InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
+    ///     if(internalErrorEvent != null)
+    ///     {
+    ///         //TODO: handle/report basic internal error while using the Rollbar Notifier... 
+    ///         return;
+    ///     }
+    /// }
+    /// 
+    /// </code>
+    /// 
     /// To register this middleware component, implement Startup.Configure(...) of your 
     /// Asp.Net Core application as
     /// 
     /// <code>
+    ///
     /// // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     /// public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     /// {
@@ -122,11 +187,6 @@ namespace Rollbar.NetCore.AspNet
                         RollbarInfrastructure.Instance.TelemetryCollector.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
                     }
 
-                    //if (RollbarScope.Current != null && RollbarScope.Current.HttpContext != null)
-                    //{
-                    //    RollbarScope.Current.HttpContext.HttpAttributes = new RollbarHttpAttributes(context);
-                    //}
-
                     await this._nextRequestProcessor(context);
                 }
                 catch (System.Exception ex)
@@ -171,40 +231,13 @@ namespace Rollbar.NetCore.AspNet
                                     rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
                                 }
 
-                                //    if(context.Response != null)
-                                //    {
-                                //        rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
-                                //    }
-                             }
+                                if(context.Response != null)
+                                {
+                                    rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
+                                }
+                            }
 
-
-
-                            var custom = new Dictionary<string, object?>(2);
-                            var stream = context.Request.Body;
-                            var reader = new StreamReader(stream);
-                            if(stream.CanSeek)
-                                stream.Seek(0, SeekOrigin.Begin);
-                            var requestBodyAsString = await reader.ReadToEndAsync();
-                            custom["HTTP.Request.Body"] = requestBodyAsString;
-                            if(stream.CanSeek)
-                                stream.Seek(0, SeekOrigin.Begin);
-
-                            //using(var reader = new StreamReader(stream))
-                            //{
-
-                            //    if(stream.CanSeek)
-                            //        stream.Seek(0, SeekOrigin.Begin);
-
-                            //    var anotherRequestBodyAsString = await reader.ReadToEndAsync();
-                            //    custom["another.HTTP.Request.Body"] = anotherRequestBodyAsString;
-
-                            //    if(stream.CanSeek)
-                            //        stream.Seek(0, SeekOrigin.Begin);
-
-                            //}
-
-                            //RollbarLocator.RollbarInstance.AsBlockingLogger(TimeSpan.FromSeconds(3)).Critical(rollbarPackage, custom);
-                            RollbarLocator.RollbarInstance.Critical(rollbarPackage, custom);
+                            RollbarLocator.RollbarInstance.Critical(rollbarPackage);
                         }
                     }
 
@@ -219,16 +252,6 @@ namespace Rollbar.NetCore.AspNet
                 }
                 finally
                 {
-                    //if (context != null 
-                    //    && context.Response != null 
-                    //    && RollbarScope.Current != null 
-                    //    && RollbarScope.Current.HttpContext != null 
-                    //    && RollbarScope.Current.HttpContext.HttpAttributes != null
-                    //    )
-                    //{
-                    //    RollbarScope.Current.HttpContext.HttpAttributes.ResponseStatusCode = context.Response.StatusCode;
-                    //}
-
                     if (networkTelemetry != null )
                     {
                         if (string.IsNullOrWhiteSpace(networkTelemetry.StatusCode))
@@ -242,7 +265,43 @@ namespace Rollbar.NetCore.AspNet
         }
 
 
+        /// <summary>
+        /// Configures Rollbar-specific services.
+        /// </summary>
+        /// <param name="services">The service collection.</param>
+        /// <param name="rollbarLogLevel">The LogLevel starting from which to log with Rollbar.</param>
+        /// <param name="rollbarInfrastructureConfig">The valid Rollbar Infrastructure Configuration.</param>
+        /// <param name="rollbarInternalEventHandler">Optional Rollbar Internal Event Handler.</param>
+        /// <returns>N/A</returns>
+        public static void ConfigureServices(
+            IServiceCollection services,
+            LogLevel rollbarLogLevel,
+            RollbarInfrastructureConfig rollbarInfrastructureConfig,
+            EventHandler<RollbarEventArgs>? rollbarInternalEventHandler = null)
+        {
+            if(!services.Any(s => s.ServiceType == typeof(IHttpContextAccessor)))
+            {
+                services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            }
+            //services.Configure<IISServerOptions>(options =>
+            //{
+            //    options.AllowSynchronousIO = true;
+            //});
 
+            RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
+
+            if (rollbarInternalEventHandler != null 
+                && RollbarInfrastructure.Instance.QueueController != null
+                )
+            {
+                RollbarInfrastructure.Instance.QueueController.InternalEvent += rollbarInternalEventHandler;
+            }
+
+            services.AddRollbarLogger(loggerOptions =>
+            {
+                loggerOptions.Filter = (loggerName, logLevel) => logLevel >= rollbarLogLevel;
+            });
+        }
 
 
     }

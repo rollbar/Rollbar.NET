@@ -1,9 +1,7 @@
 ﻿namespace Rollbar.Common
 {
-    using System;
-    using System.Text;
     using System.IO;
-    using Rollbar.Serialization.Json;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Class StreamUtil.
@@ -11,12 +9,11 @@
     public static class StreamUtil
     {
         /// <summary>
-        /// Converts a stream to a string using specified encoding.
+        /// Captures a stream into a string.
         /// </summary>
         /// <param name="stream">The stream.</param>
-        /// <param name="encoding">The encoding.</param>
         /// <returns>System.String.</returns>
-        public static string? ConvertToString(Stream? stream, Encoding? encoding = null)
+        public static async Task<string?> CaptureAsStringAsync(Stream? stream)
         {
             if (stream == null || !stream.CanSeek || !stream.CanRead)
             {
@@ -25,46 +22,10 @@
 
             var reader = new StreamReader(stream);
             stream.Seek(0, SeekOrigin.Begin);
-            string content = reader.ReadToEnd();
+            string content = await reader.ReadToEndAsync();
             stream.Seek(0, SeekOrigin.Begin);
             
-            // stream.Seek(0, SeekOrigin.Begin);
-
-            //if (encoding == null)
-            //{
-            //    encoding = Encoding.UTF8;
-            //}
-
-            //using (StreamReader reader = new StreamReader(stream: stream,
-            //    encoding: encoding,
-            //    detectEncodingFromByteOrderMarks: true,
-            //    bufferSize: Convert.ToInt32(stream.Length),
-            //    leaveOpen: true)
-            //)
-            //{
-            //    return reader.ReadToEnd();
-            //}
-
-            //var streamReader = new StreamReader(stream);
-            //string content = streamReader.ReadToEnd();
-
-            //byte[] buffer = new byte[stream.Length];
-            //stream.Read(buffer, 0, buffer.Length);
-            //string content = Encoding.UTF8.GetString(buffer);
-
             return content;
-        }
-
-        /// <summary>
-        /// Interprets a stream as a JSON object (if any).
-        /// </summary>
-        /// <param name="stream">The stream.</param>
-        /// <returns>System.Object.</returns>
-        public static object? InterpretAsJsonObject(Stream? stream)
-        {
-            string? jsonString = StreamUtil.ConvertToString(stream);
-            object? jsonObject = JsonUtil.InterpretAsJsonObject(jsonString);
-            return jsonObject;
         }
     }
 }
