@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31702.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.AspNetCore.WebApi", "Sample.AspNetCore.WebApi\Sample.AspNetCore.WebApi.csproj", "{02BF092F-3E0C-4021-8252-C54EE0E0FD91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar", "..\Rollbar\Rollbar.csproj", "{BA457CE8-500C-43C3-BC29-C18E63F635B6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.NetPlatformExtensions", "..\Rollbar.NetPlatformExtensions\Rollbar.NetPlatformExtensions.csproj", "{9C97FB02-7689-488E-9DA1-DE55098DF64F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rollbar.NetCore.AspNet", "..\Rollbar.NetCore.AspNet\Rollbar.NetCore.AspNet.csproj", "{5775BFF8-8106-4FD8-A6B8-25605CDC1DF8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RollbarSDK", "RollbarSDK", "{E7749628-2B00-4E17-9EAD-0206ED797317}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Instrumented|Any CPU = Instrumented|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02BF092F-3E0C-4021-8252-C54EE0E0FD91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02BF092F-3E0C-4021-8252-C54EE0E0FD91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02BF092F-3E0C-4021-8252-C54EE0E0FD91}.Instrumented|Any CPU.ActiveCfg = Release|Any CPU
+		{02BF092F-3E0C-4021-8252-C54EE0E0FD91}.Instrumented|Any CPU.Build.0 = Release|Any CPU
+		{02BF092F-3E0C-4021-8252-C54EE0E0FD91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02BF092F-3E0C-4021-8252-C54EE0E0FD91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA457CE8-500C-43C3-BC29-C18E63F635B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA457CE8-500C-43C3-BC29-C18E63F635B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA457CE8-500C-43C3-BC29-C18E63F635B6}.Instrumented|Any CPU.ActiveCfg = Instrumented|Any CPU
+		{BA457CE8-500C-43C3-BC29-C18E63F635B6}.Instrumented|Any CPU.Build.0 = Instrumented|Any CPU
+		{BA457CE8-500C-43C3-BC29-C18E63F635B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA457CE8-500C-43C3-BC29-C18E63F635B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C97FB02-7689-488E-9DA1-DE55098DF64F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C97FB02-7689-488E-9DA1-DE55098DF64F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C97FB02-7689-488E-9DA1-DE55098DF64F}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C97FB02-7689-488E-9DA1-DE55098DF64F}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{9C97FB02-7689-488E-9DA1-DE55098DF64F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C97FB02-7689-488E-9DA1-DE55098DF64F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5775BFF8-8106-4FD8-A6B8-25605CDC1DF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5775BFF8-8106-4FD8-A6B8-25605CDC1DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5775BFF8-8106-4FD8-A6B8-25605CDC1DF8}.Instrumented|Any CPU.ActiveCfg = Debug|Any CPU
+		{5775BFF8-8106-4FD8-A6B8-25605CDC1DF8}.Instrumented|Any CPU.Build.0 = Debug|Any CPU
+		{5775BFF8-8106-4FD8-A6B8-25605CDC1DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5775BFF8-8106-4FD8-A6B8-25605CDC1DF8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BA457CE8-500C-43C3-BC29-C18E63F635B6} = {E7749628-2B00-4E17-9EAD-0206ED797317}
+		{9C97FB02-7689-488E-9DA1-DE55098DF64F} = {E7749628-2B00-4E17-9EAD-0206ED797317}
+		{5775BFF8-8106-4FD8-A6B8-25605CDC1DF8} = {E7749628-2B00-4E17-9EAD-0206ED797317}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19367D10-E231-4C01-A135-2693B615813A}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\RollbarSamplesSettings.cs" Link="RollbarSamplesSettings.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Rollbar.NetCore.AspNet\Rollbar.NetCore.AspNet.csproj" />
+    <ProjectReference Include="..\..\Rollbar.NetPlatformExtensions\Rollbar.NetPlatformExtensions.csproj" />
+    <ProjectReference Include="..\..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+</Project>

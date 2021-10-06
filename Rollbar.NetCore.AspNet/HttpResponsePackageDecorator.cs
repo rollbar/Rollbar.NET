@@ -1,10 +1,11 @@
 ﻿namespace Rollbar.NetCore.AspNet
 {
     using System.Collections.Generic;
+
     using Microsoft.AspNetCore.Http;
+
     using Rollbar.Common;
     using Rollbar.DTOs;
-    using Rollbar.Serialization.Json;
 
     /// <summary>
     /// Class HttpResponsePackageDecorator.
@@ -88,18 +89,12 @@
                 return; // nothing to do...
             }
 
-            string? jsonString = StreamUtil.ConvertToString(this._httpResponse.Body);
+            string? jsonString = StreamUtil.CaptureAsStringAsync(this._httpResponse.Body).Result;
             if (string.IsNullOrWhiteSpace(jsonString))
             {
                 return;
             }
             response.Body = jsonString;
-
-            object? responseBodyObject = JsonUtil.InterpretAsJsonObject(jsonString);
-            if (responseBodyObject != null)
-            {
-                response.Body = responseBodyObject;
-            }
         }
 
     }

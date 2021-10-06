@@ -51,7 +51,7 @@
         /// <summary>
         /// The current scope
         /// </summary>
-        private static AsyncLocal<RollbarScope?> currentScope =
+        private static readonly AsyncLocal<RollbarScope?> currentScope =
             new AsyncLocal<RollbarScope?>();
 
         /// <summary>

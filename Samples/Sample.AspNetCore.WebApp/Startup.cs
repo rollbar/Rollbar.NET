@@ -92,8 +92,8 @@ namespace Sample.AspNetCore.WebApp
             RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
             dataSecurityOptions.ScrubFields = new string[]
             {
-      "url",
-      "method",
+              "url",
+              "method",
             };
             config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
 

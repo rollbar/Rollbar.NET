@@ -11,6 +11,7 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   
   <ItemGroup>
@@ -23,14 +24,14 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>5.0.2</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>5.0.3</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix>beta</SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - feat: resolve #532 - Make RollbarMiddlewareException wrapper optional based on config settings
-      - feat: resolve #408 - Invalid configuration file prototype error
-      - refactor: resolve #587 - Update Rollbar.NET's dependency on Newtonsoft.Json package to current version 13.0
-      - docs: updated README.md
+      - feat: resolve #585 - Would like to have an ability to log HttpRequest Body via ILogger
+      - refactor: clean up the SDK explicit targets to only currently supported .NET versions
+      - fix: OfflinePersistence module's dependency on sqlite native bits
+
     </SdkReleaseNotes>                        
 
     <!--
