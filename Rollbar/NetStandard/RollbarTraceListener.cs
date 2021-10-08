@@ -160,7 +160,7 @@
         /// <param name="message">A message to write.</param>
         public override void WriteLine(string? message)
         {
-            if (this.Rollbar != null && !string.IsNullOrWhiteSpace(message))
+            if (this.Rollbar != null && message != null && !string.IsNullOrWhiteSpace(message))
             {
                 this.Rollbar.Info(message);
             }
@@ -176,7 +176,7 @@
         /// <param name="message">A message to write.</param>
         public override void TraceEvent(TraceEventCache? eventCache, string source, TraceEventType eventType, int id, string? message)
         {
-            if (this.Rollbar == null || string.IsNullOrWhiteSpace(message))
+            if (this.Rollbar == null || message == null || string.IsNullOrWhiteSpace(message))
             {
                 return;
             }

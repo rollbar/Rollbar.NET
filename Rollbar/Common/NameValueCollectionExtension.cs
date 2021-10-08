@@ -21,7 +21,7 @@
                 return new Dictionary<string, string?>(0);
             }
 
-            return nvc.AllKeys.Where(n => n != null).Cast<string>().ToDictionary(k => k, k => nvc[k]);
+            return nvc.AllKeys.Where(n => n != null).Cast<string>().ToDictionary(k => k, k => nvc[k] as string ?? null);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@
                 return new Dictionary<string, object?>(0);
             }
 
-            return nvc.AllKeys.Where(n => n != null).Cast<string>().ToDictionary(k => k, k => nvc[k] as object);
+            return nvc.AllKeys.Where(n => n != null).Cast<string>().ToDictionary(k => k, k => nvc[k] as object ?? null);
         }
     }
 }

@@ -83,7 +83,7 @@
         /// <returns>System.String.</returns>
         public string? Scrub(string? inputString)
         {
-            if (string.IsNullOrWhiteSpace(inputString)
+            if (inputString == null || string.IsNullOrWhiteSpace(inputString)
                 || ( 
                      (this._scrubFields == null || this._scrubFields.Length == 0 || this._scrubFields.All(i => string.IsNullOrWhiteSpace(i)))
                      && (this._scrubPaths == null || this._scrubPaths.Length == 0 || this._scrubPaths.All(i => string.IsNullOrWhiteSpace(i)))

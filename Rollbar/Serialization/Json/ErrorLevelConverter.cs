@@ -49,17 +49,22 @@
                 var msg = string.Format("Could not convert JsonReader value ({0}, type {1}) to an string", reader.Value, valueType);
                 throw new JsonSerializationException(msg);
             }
-
-            var chars = value.ToCharArray();
-            chars[0] = Char.ToUpper(chars[0]);
-            value = new string(chars);
-
-            if (Enum.TryParse(value, true, out ErrorLevel level))
+            else
             {
-                return level;
-            }
+                char[]? chars = value?.ToCharArray();
+                if (chars != null && chars.Length > 0)
+                {
+                    chars[0] = Char.ToUpper(chars[0]);
+                    value = new string(chars);
 
-            throw new JsonSerializationException(string.Format("Could not convert {0} to an ErrorLevel", value));
+                    if (Enum.TryParse(value, true, out ErrorLevel level))
+                    {
+                        return level;
+                    }
+                }
+
+                throw new JsonSerializationException(string.Format("Could not convert {0} to an ErrorLevel", value));
+            }
         }
     }
 }

@@ -576,9 +576,15 @@ namespace Rollbar
         /// <returns>RollbarResponse.</returns>
         private RollbarResponse? TryPosting(IPayloadRecord payloadRecord)
         {
-            //Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
-            //IRollbarConfig config = payload.Data.Notifier.Configuration;
-            IRollbarLoggerConfig config = JsonConvert.DeserializeObject<RollbarLoggerConfig>(payloadRecord.ConfigJson);
+            if (payloadRecord.ConfigJson == null)
+            {
+                return null;
+            }
+            IRollbarLoggerConfig? config = JsonConvert.DeserializeObject<RollbarLoggerConfig>(payloadRecord.ConfigJson);
+            if (config == null)
+            {
+                return null;
+            }
             RollbarClient rollbarClient = new RollbarClient(config);
 
             try
