@@ -258,10 +258,10 @@
                 {
                     // This case handles situations when the reconfiguration source object has read-only
                     // property but the destination object could have an equivalent read-write property:
-                    var destinationProperty
+                    PropertyInfo? destinationProperty
                         = ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType)
                             .SingleOrDefault(p => p.Name == property.Name);
-                    if (destinationProperty.CanWrite)
+                    if (destinationProperty != null && destinationProperty.CanWrite)
                     {
                         destinationProperty.SetValue(this, property.GetValue(likeMe));
                     }

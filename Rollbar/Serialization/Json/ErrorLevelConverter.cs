@@ -41,24 +41,18 @@
             JsonSerializer serializer
             )
         {
-            string value;
-            try
-            {
-                value = (string)reader.Value;
-            }
-            catch
+            string? value = reader.Value as string;
+
+            if (string.IsNullOrWhiteSpace(value))
             {
                 var valueType = reader.Value == null ? null : reader.Value.GetType();
                 var msg = string.Format("Could not convert JsonReader value ({0}, type {1}) to an string", reader.Value, valueType);
                 throw new JsonSerializationException(msg);
             }
 
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                var chars = value.ToCharArray();
-                chars[0] = Char.ToUpper(chars[0]);
-                value = new string(chars);
-            }
+            var chars = value.ToCharArray();
+            chars[0] = Char.ToUpper(chars[0]);
+            value = new string(chars);
 
             if (Enum.TryParse(value, true, out ErrorLevel level))
             {

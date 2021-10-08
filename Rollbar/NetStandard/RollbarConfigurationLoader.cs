@@ -18,7 +18,7 @@
         /// <summary>
         /// The trace source
         /// </summary>
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarConfigurationLoader).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarConfigurationLoader).FullName ?? "RollbarConfigurationLoader");
 
         /// <summary>
         /// The known assembly names

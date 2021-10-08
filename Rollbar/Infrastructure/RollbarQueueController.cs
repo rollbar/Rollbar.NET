@@ -88,7 +88,7 @@ namespace Rollbar
         /// <summary>
         /// The trace source
         /// </summary>
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName ?? "RollbarQueueController");
 
         /// <summary>
         /// Enum PayloadTraceSources
@@ -1341,7 +1341,9 @@ namespace Rollbar
 
                 if(!this._rollbarCommThread.Join(TimeSpan.FromSeconds(60)))
                 {
+#pragma warning disable SYSLIB0006 // Type or member is obsolete
                     this._rollbarCommThread.Abort();
+#pragma warning restore SYSLIB0006 // Type or member is obsolete
                 }
 
                 CompleteProcessing();
