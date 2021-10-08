@@ -22,53 +22,8 @@
     <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
   </ItemGroup>
 
-  <Choose>
-    <When Condition="'$(TargetFramework)' == 'net5.0'">
-      <ItemGroup Label="Unconditional Package References">
-        <PackageReference Include="Microsoft.AspNetCore.App" Version="5.0.*"/>
-      </ItemGroup>
-    </When>
-    <When Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-      <ItemGroup Label="Unconditional Package References">
-        <PackageReference Include="Microsoft.AspNetCore.App" Version="3.1.*"/>
-      </ItemGroup>
-    </When>
-  </Choose>
-
-  <!--Choose>
-    <When Condition="'$(TargetFramework)' == 'netstandard2.0'">
-      <PropertyGroup Label=".NetStandard 2.0 build">
-        <NetVariant>NET_STANDARD</NetVariant>
-        <DefineConstants>$(DefineConstants);NETSTANDARD_2_0</DefineConstants>
-      </PropertyGroup>
-    </When>
-    <When Condition="'$(TargetFramework)' == 'netcoreapp2.0'">
-      <PropertyGroup Label=".NetCore 2.0 build">
-        <NetVariant>NET_CORE</NetVariant>
-        <DefineConstants>$(DefineConstants);NETCORE_2_0</DefineConstants>
-      </PropertyGroup>
-    </When>
-  </Choose-->
-
-  <!--Choose>
-    <When Condition="'$(TargetFramework)' == 'net5.0' Or $(TargetFramework.StartsWith('netcoreapp3.')) Or '$(TargetFramework)' == 'netstandard2.1'">
-      <ItemGroup Label="Package References">
-        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-      </ItemGroup>
-    </When>
-    <When Condition="$(TargetFramework.StartsWith('netcoreapp2.')) And '$(TargetFramework)' != 'netcoreapp2.0'">
-      <ItemGroup Label="Package References">
-        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.0" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup Label="Package References">
-        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.0.0" />
-      </ItemGroup>
-    </Otherwise>
-  </Choose-->
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
   
 </Project>
