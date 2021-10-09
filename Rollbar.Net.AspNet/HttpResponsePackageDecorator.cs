@@ -88,7 +88,7 @@
             }
 
             rollbarData.Response.StatusCode = this._httpResponse.StatusCode;
-            rollbarData.Response.Headers = this._httpResponse.Headers?.ToStringDictionary();
+            rollbarData.Response.Headers = this._httpResponse.Headers?.ToCompactStringDictionary();
 
             // some custom fields goodies:
             rollbarData.Response.Add("sub_status_code", this._httpResponse.SubStatusCode);

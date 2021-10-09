@@ -10,7 +10,7 @@
     public static class NameValueCollectionExtension
     {
         /// <summary>
-        /// Converts to string dictionary (where keys are strings and values are strings).
+        /// Converts to a string dictionary (where keys are strings and values are strings).
         /// </summary>
         /// <param name="nvc">The NVC.</param>
         /// <returns>IDictionary&lt;System.String, System.String&gt;.</returns>
@@ -25,7 +25,28 @@
         }
 
         /// <summary>
-        /// Converts to object dictionary (where keys are strings and values are objects).
+        /// Converts to a compact (excluding null-values) string dictionary (where keys are strings and values are strings).
+        /// </summary>
+        /// <param name="nvc">The NVC.</param>
+        /// <returns>IDictionary&lt;System.String, System.String&gt;.</returns>
+        public static IDictionary<string, string> ToCompactStringDictionary(this NameValueCollection nvc)
+        {
+            var headers = NameValueCollectionExtension.ToStringDictionary(nvc);
+            
+            var compactedHeaders = new Dictionary<string, string>(headers.Count);
+            foreach (var kvp in headers)
+            {
+                if (kvp.Value != null)
+                {
+                    compactedHeaders[kvp.Key] = kvp.Value;
+                }
+            }
+
+            return compactedHeaders;
+        }
+
+        /// <summary>
+        /// Converts to an object dictionary (where keys are strings and values are objects).
         /// </summary>
         /// <param name="nvc">The NVC.</param>
         /// <returns>IDictionary&lt;System.String, System.Object&gt;.</returns>
@@ -37,6 +58,27 @@
             }
 
             return nvc.AllKeys.Where(n => n != null).Cast<string>().ToDictionary(k => k, k => nvc[k] as object ?? null);
+        }
+
+        /// <summary>
+        /// Converts to a compact (excluding null-values) object dictionary (where keys are strings and values are objects).
+        /// </summary>
+        /// <param name="nvc">The NVC.</param>
+        /// <returns>IDictionary&lt;System.String, System.Object&gt;.</returns>
+        public static IDictionary<string, object> ToCompactObjectDictionary(this NameValueCollection nvc)
+        {
+            var headers = NameValueCollectionExtension.ToObjectDictionary(nvc);
+
+            var compactedHeaders = new Dictionary<string, object>(headers.Count);
+            foreach (var kvp in headers)
+            {
+                if (kvp.Value != null)
+                {
+                    compactedHeaders[kvp.Key] = kvp.Value;
+                }
+            }
+
+            return compactedHeaders;
         }
     }
 }

@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Rollbar.Net.AspNet
+﻿namespace Rollbar.Net.AspNet
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Web;
     using System.Web.Hosting;
@@ -87,13 +86,14 @@ namespace Rollbar.Net.AspNet
             // try harvesting Request DTO info:
             ///////////////////////////////////
 
-            var request = new Request();
+            Request request = new();
             request.Url = this._httpRequest.Url?.ToString();
             request.Method = this._httpRequest.HttpMethod;
-            request.Headers = this._httpRequest.Headers?.ToStringDictionary();
+            request.Headers = this._httpRequest.Headers?.ToCompactStringDictionary();
+
             try
             {
-                request.GetParams = this._httpRequest.QueryString?.ToObjectDictionary();
+                request.GetParams = this._httpRequest.QueryString?.ToCompactObjectDictionary();
             }
             catch
             {
@@ -101,7 +101,7 @@ namespace Rollbar.Net.AspNet
             }
             try
             {
-                request.PostParams = this._httpRequest.Unvalidated?.Form?.ToObjectDictionary();
+                request.PostParams = this._httpRequest.Unvalidated?.Form?.ToCompactObjectDictionary();
             }
             catch
             {
