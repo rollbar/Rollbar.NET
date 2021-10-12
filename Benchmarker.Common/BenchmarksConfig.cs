@@ -21,8 +21,8 @@
 
             Job[] jobs = new Job[]
             {
-                Job.Default.With(ClrRuntime.Net48),
-                Job.Default.With(CoreRuntime.Core30),
+                Job.Default.WithRuntime(ClrRuntime.Net48),
+                Job.Default.WithRuntime(CoreRuntime.Core30),
                 //Job.CoreRT,
                 //Job.Mono,
             };
@@ -59,11 +59,11 @@
                     {
                         foreach(var job in jobs)
                         {
-                            Add(
+                            AddJob(
                                 job
-                                .With(platform)
-                                .With(jit)
-                                .With(runtime)
+                                .WithPlatform(platform)
+                                .WithJit(jit)
+                                .WithRuntime(runtime)
                                 .WithLaunchCount(1)
                                 .WithMinIterationCount(100)
                                 .WithIterationCount(100)
