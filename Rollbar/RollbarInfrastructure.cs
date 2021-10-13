@@ -23,7 +23,7 @@
         : IRollbarInfrastructure
         , IDisposable
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarInfrastructure).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarInfrastructure).FullName ?? "RollbarInfrastructure");
 
         internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(25);
 

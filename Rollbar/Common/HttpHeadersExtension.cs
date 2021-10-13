@@ -23,7 +23,7 @@
         /// <returns>IEnumerable&lt;System.String&gt;.</returns>
         public static IEnumerable<string> GetHeaderValuesSafely(this HttpHeaders httpHeaders, string headerName)
         {
-            IEnumerable<string> headerValues;
+            IEnumerable<string>? headerValues;
 
             if (httpHeaders.TryGetValues(headerName, out headerValues))
             {
@@ -42,9 +42,9 @@
         /// <param name="httpHeaders">The HTTP headers.</param>
         /// <param name="headerName">Name of the header.</param>
         /// <returns>System.String.</returns>
-        public static string GetLastHeaderValueSafely(this HttpHeaders httpHeaders, string headerName)
+        public static string? GetLastHeaderValueSafely(this HttpHeaders httpHeaders, string headerName)
         {
-            string headerValue = httpHeaders.GetHeaderValuesSafely(headerName).LastOrDefault();
+            string? headerValue = httpHeaders.GetHeaderValuesSafely(headerName).LastOrDefault();
             return headerValue;
         }
 
@@ -59,7 +59,7 @@
         public static T? ParseHeaderValueSafelyIfAny<T>(this HttpHeaders httpHeaders, string headerName, StringUtility.TryParseHandler<T> tryParseHandler) 
             where T : struct
         {
-            string stringValue = httpHeaders.GetLastHeaderValueSafely(headerName);
+            string? stringValue = httpHeaders.GetLastHeaderValueSafely(headerName);
             return StringUtility.Parse<T>(stringValue, tryParseHandler);
         }
 

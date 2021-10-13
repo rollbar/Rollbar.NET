@@ -11,7 +11,7 @@
     /// </summary>
     public static class FileUtility
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(FileUtility).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(FileUtility).FullName ?? "FileUtility");
 
         /// <summary>
         /// Verifies if the specified application file (a file that is part of an application) exists.

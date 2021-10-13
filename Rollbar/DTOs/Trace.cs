@@ -14,7 +14,7 @@
     public class Trace
         : DtoBase
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(Trace).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(Trace).FullName ?? "Trace");
 
         internal Trace(string callStack, string exceptionInfo)
         {

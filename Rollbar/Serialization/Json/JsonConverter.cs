@@ -21,13 +21,13 @@
         /// <exception cref="JsonSerializationException"></exception>
         public sealed override void WriteJson(
             JsonWriter writer, 
-            object value, 
+            object? value, 
             JsonSerializer serializer
             )
         {
             if (!(value is T))
             {
-                throw new JsonSerializationException(string.Format("This converter cannot convert {1} of type {0}", value, value.GetType()));
+                throw new JsonSerializationException(string.Format("This converter cannot convert {1} of type {0}", value, value?.GetType()));
             }
 
             WriteJson(writer, (T)value, serializer);
@@ -56,7 +56,7 @@
         public sealed override object? ReadJson(
             JsonReader reader, 
             Type objectType, 
-            object existingValue, 
+            object? existingValue, 
             JsonSerializer serializer
             )
         {
@@ -69,7 +69,7 @@
 
             if (!(existingValue is T))
             {
-                throw new JsonSerializationException(string.Format("This converter cannot convert {1} of type {0}", existingValue, existingValue.GetType()));
+                throw new JsonSerializationException(string.Format("This converter cannot convert {1} of type {0}", existingValue, existingValue?.GetType()));
             }
 
             return ReadJson(reader, (T) existingValue, serializer);

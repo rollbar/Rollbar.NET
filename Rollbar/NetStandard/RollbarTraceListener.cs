@@ -149,7 +149,7 @@
         /// </summary>
         /// <param name="message">A message to write.</param>
         /// <exception cref="NotImplementedException"></exception>
-        public override void Write(string message)
+        public override void Write(string? message)
         {
             this.WriteLine(message);
         }
@@ -158,9 +158,12 @@
         /// When overridden in a derived class, writes a message to the listener you create in the derived class, followed by a line terminator.
         /// </summary>
         /// <param name="message">A message to write.</param>
-        public override void WriteLine(string message)
+        public override void WriteLine(string? message)
         {
-            this.Rollbar?.Info(message);
+            if (this.Rollbar != null && message != null && !string.IsNullOrWhiteSpace(message))
+            {
+                this.Rollbar.Info(message);
+            }
         }
 
         /// <summary>
@@ -171,9 +174,9 @@
         /// <param name="eventType">One of the <see cref="T:System.Diagnostics.TraceEventType"></see> values specifying the type of event that has caused the trace.</param>
         /// <param name="id">A numeric identifier for the event.</param>
         /// <param name="message">A message to write.</param>
-        public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
+        public override void TraceEvent(TraceEventCache? eventCache, string source, TraceEventType eventType, int id, string? message)
         {
-            if(this.Rollbar == null)
+            if (this.Rollbar == null || message == null || string.IsNullOrWhiteSpace(message))
             {
                 return;
             }
@@ -182,27 +185,30 @@
             // in production code we can do better job mapping the available event data
             // into proper Rollbar data body:
             var custom = new Dictionary<string, object?>();
-            custom["callStack"] = eventCache.Callstack;
-            custom["logicalOperationStack"] = eventCache.LogicalOperationStack;
-            custom["processID"] = eventCache.ProcessId;
-            custom["threadID"] = eventCache.ThreadId;
-            custom["timestamp"] = eventCache.Timestamp;
-            custom["dateTime"] = eventCache.DateTime;
-            custom["eventType"] = eventType;
-            custom["eventMessage"] = message;
+            if (eventCache != null)
+            {
+                custom["callStack"] = eventCache.Callstack;
+                custom["logicalOperationStack"] = eventCache.LogicalOperationStack;
+                custom["processID"] = eventCache.ProcessId;
+                custom["threadID"] = eventCache.ThreadId;
+                custom["timestamp"] = eventCache.Timestamp;
+                custom["dateTime"] = eventCache.DateTime;
+                custom["eventType"] = eventType;
+                custom["eventMessage"] = message;
 
-            if (!string.IsNullOrWhiteSpace(eventCache.Callstack)
+                if (!string.IsNullOrWhiteSpace(eventCache.Callstack)
 #pragma warning disable CA1307 // Specify StringComparison for clarity
                 && (message.Contains("Exception: ") || (eventType == TraceEventType.Critical) || (eventType == TraceEventType.Error)))
 #pragma warning restore CA1307 // Specify StringComparison for clarity
-            {
-                DTOs.Body body = new DTOs.Body(new DTOs.Trace(eventCache.Callstack, message));
-                DTOs.Data data = new DTOs.Data(this.Rollbar.Config, body, custom);
-                data.Level = RollbarTraceListener.Translate(eventType);
-                this.Rollbar.Log(data);
-                return;
+                {
+                    DTOs.Body body = new DTOs.Body(new DTOs.Trace(eventCache.Callstack, message));
+                    DTOs.Data data = new DTOs.Data(this.Rollbar.Config, body, custom);
+                    data.Level = RollbarTraceListener.Translate(eventType);
+                    this.Rollbar.Log(data);
+                    return;
+                }
             }
-           
+
             switch (eventType)
             {
                 case TraceEventType.Critical:

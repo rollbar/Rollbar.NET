@@ -88,7 +88,7 @@ namespace Rollbar
         /// <summary>
         /// The trace source
         /// </summary>
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName ?? "RollbarQueueController");
 
         /// <summary>
         /// Enum PayloadTraceSources
@@ -576,9 +576,15 @@ namespace Rollbar
         /// <returns>RollbarResponse.</returns>
         private RollbarResponse? TryPosting(IPayloadRecord payloadRecord)
         {
-            //Payload payload = JsonConvert.DeserializeObject<Payload>(payloadRecord.PayloadJson);
-            //IRollbarConfig config = payload.Data.Notifier.Configuration;
-            IRollbarLoggerConfig config = JsonConvert.DeserializeObject<RollbarLoggerConfig>(payloadRecord.ConfigJson);
+            if (payloadRecord.ConfigJson == null)
+            {
+                return null;
+            }
+            IRollbarLoggerConfig? config = JsonConvert.DeserializeObject<RollbarLoggerConfig>(payloadRecord.ConfigJson);
+            if (config == null)
+            {
+                return null;
+            }
             RollbarClient rollbarClient = new RollbarClient(config);
 
             try
@@ -1341,7 +1347,9 @@ namespace Rollbar
 
                 if(!this._rollbarCommThread.Join(TimeSpan.FromSeconds(60)))
                 {
+#pragma warning disable SYSLIB0006 // Type or member is obsolete
                     this._rollbarCommThread.Abort();
+#pragma warning restore SYSLIB0006 // Type or member is obsolete
                 }
 
                 CompleteProcessing();

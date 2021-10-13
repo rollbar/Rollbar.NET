@@ -51,7 +51,7 @@
         /// </summary>
         /// <param name="rollbarAccessToken">The rollbar access token.</param>
         /// <param name="rollbarEnvironment">The rollbar environment.</param>
-        public RollbarInfrastructureConfig(string rollbarAccessToken, string? rollbarEnvironment = null)
+        public RollbarInfrastructureConfig(string? rollbarAccessToken, string? rollbarEnvironment = null)
         {
             this._rollbarLoggerConfig = new RollbarLoggerConfig(rollbarAccessToken, rollbarEnvironment);
         }

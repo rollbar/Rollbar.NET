@@ -14,7 +14,7 @@
         : EventArgs
         , ITraceable
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarEventArgs).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarEventArgs).FullName ?? "RollbarEventArgs");
 
         private readonly IRollbar? _logger;
 

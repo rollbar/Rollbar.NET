@@ -21,7 +21,7 @@
     public class HttpRequestMessagePackageDecorator
         : RollbarPackageDecoratorBase
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(HttpRequestMessagePackageDecorator).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(HttpRequestMessagePackageDecorator).FullName ?? "HttpRequestMessagePackageDecorator");
 
         /// <summary>
         /// The HTTP request message
@@ -149,9 +149,9 @@
             switch (rollbarData.Request.Method.ToUpperInvariant())
             {
                 case "POST":
-                    var task = this._httpRequestMessage.Content.ReadAsStringAsync();
-                    task.Wait();
-                    rollbarData.Request.PostBody = task.Result;
+                    var task = this._httpRequestMessage.Content?.ReadAsStringAsync();
+                    task?.Wait();
+                    rollbarData.Request.PostBody = task?.Result;
                     rollbarData.Request.PostParams = null;
                     break;
                 case "GET":

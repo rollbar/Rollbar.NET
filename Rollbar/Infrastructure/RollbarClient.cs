@@ -391,20 +391,22 @@
                         await postResponse.Content.ReadAsStringAsync();
                     response = 
                         JsonConvert.DeserializeObject<RollbarResponse>(reply);
-                    response.RollbarRateLimit = 
-                        new RollbarRateLimit(postResponse.Headers);
-                    response.HttpDetails =
-                        $"Response: {postResponse}"
-                        + Environment.NewLine
-                        + $"Request: {postResponse.RequestMessage}"
-                        + Environment.NewLine
-                        ;
+                    if (response != null)
+                    {
+                        response.RollbarRateLimit =
+                            new RollbarRateLimit(postResponse.Headers);
+                        response.HttpDetails =
+                            $"Response: {postResponse}"
+                            + Environment.NewLine
+                            + $"Request: {postResponse.RequestMessage}"
+                            + Environment.NewLine
+                            ;
+                    }
                 }
                 else
                 {
                     postResponse.EnsureSuccessStatusCode();
                 }
-
             }
             catch(System.Exception ex)
             {
@@ -413,7 +415,6 @@
             finally
             {
                 postResponse?.Dispose();
-
             }
 
             return response;
@@ -568,7 +569,7 @@
         /// <param name="scrubFields">The scrub fields.</param>
         /// <param name="scrubPaths">The scrub paths.</param>
         /// <returns>System.String.</returns>
-        private string ScrubHttpMessageBodyContentString(
+        private string? ScrubHttpMessageBodyContentString(
             string body, 
             string contentTypeHeaderValue, 
             string scrubMask, 

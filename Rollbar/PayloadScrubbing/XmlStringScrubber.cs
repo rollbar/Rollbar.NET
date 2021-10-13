@@ -60,16 +60,23 @@
         /// </summary>
         /// <param name="inputString">The input string.</param>
         /// <returns>System.String.</returns>
-        protected override string DoScrub(string inputString)
+        protected override string? DoScrub(string inputString)
         {
             XmlDocument doc = new XmlDocument();
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             doc.XmlResolver = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
             doc.LoadXml(inputString);
-            string json = JsonConvert.SerializeXmlNode(doc);
+            string? json = JsonConvert.SerializeXmlNode(doc);
             json = this._jsonStringScrubber.Scrub(json);
-            XNode xmlNode = JsonConvert.DeserializeXNode(json);
-            string xml = xmlNode.ToString();
-            return xml;
+            if (json != null)
+            {
+                XNode? xmlNode = JsonConvert.DeserializeXNode(json);
+                string? xml = xmlNode?.ToString();
+                return xml;
+            }
+
+            return null;
         }
     }
 }

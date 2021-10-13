@@ -10,7 +10,7 @@
     /// </summary>
     public static class StringUtility
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(StringUtility).FullName);
+        private static readonly TraceSource traceSource = new TraceSource(typeof(StringUtility).FullName ?? "StringUtility");
 
         /// <summary>
         /// Delegate TryParseHandler
@@ -19,7 +19,7 @@
         /// <param name="value">The value.</param>
         /// <param name="result">The result.</param>
         /// <returns><c>true</c> if value string is valid, <c>false</c> otherwise.</returns>
-        public delegate bool TryParseHandler<T>(string value, out T result);
+        public delegate bool TryParseHandler<T>(string? value, out T? result);
 
         /// <summary>
         /// Either successfully parses the provided string value or returns null.
@@ -28,7 +28,7 @@
         /// <param name="value">The string value to parse.</param>
         /// <param name="tryParseHandler">The try parse handler.</param>
         /// <returns>System.Nullable&lt;T&gt;.</returns>
-        public static T? Parse<T>(string value, TryParseHandler<T> tryParseHandler) where T : struct
+        public static T? Parse<T>(string? value, TryParseHandler<T> tryParseHandler) where T : struct
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -52,7 +52,7 @@
         /// <param name="tryParseHandler">The try parse handler.</param>
         /// <param name="defaultValue">The default value.</param>
         /// <returns>T.</returns>
-        public static T ParseOrDefault<T>(string value, TryParseHandler<T> tryParseHandler, T defaultValue) where T : struct
+        public static T ParseOrDefault<T>(string? value, TryParseHandler<T> tryParseHandler, T defaultValue) where T : struct
         {
             T? result = StringUtility.Parse<T>(value, tryParseHandler);
             if (result.HasValue)

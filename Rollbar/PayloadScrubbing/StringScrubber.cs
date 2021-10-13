@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
     using System.Diagnostics;
     using System.Linq;
 
@@ -82,15 +81,14 @@
         /// </summary>
         /// <param name="inputString">The input string.</param>
         /// <returns>System.String.</returns>
-        public string Scrub(string inputString)
+        public string? Scrub(string? inputString)
         {
-            if (((this._scrubFields == null || this._scrubFields.Length == 0)
-                 && (this._scrubPaths == null || this._scrubPaths.Length == 0)
+            if (inputString == null || string.IsNullOrWhiteSpace(inputString)
+                || ( 
+                     (this._scrubFields == null || this._scrubFields.Length == 0 || this._scrubFields.All(i => string.IsNullOrWhiteSpace(i)))
+                     && (this._scrubPaths == null || this._scrubPaths.Length == 0 || this._scrubPaths.All(i => string.IsNullOrWhiteSpace(i)))
+                   )
                 )
-                || (this._scrubFields.All(i => string.IsNullOrWhiteSpace(i))
-                    && this._scrubPaths.All(i => string.IsNullOrWhiteSpace(i))
-                )
-            )
             {
                 return inputString; //no data needs to be scrubbed...
             }
@@ -110,7 +108,7 @@
         /// </summary>
         /// <param name="inputString">The input string.</param>
         /// <returns>System.String.</returns>
-        protected virtual string DoScrub(string inputString)
+        protected virtual string? DoScrub(string inputString)
         {
             // assuming non-structured string here: 
             return this.GetType().Name + ": " + failedScrubbingMessage;

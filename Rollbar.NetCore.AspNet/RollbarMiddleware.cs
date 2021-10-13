@@ -153,13 +153,18 @@ namespace Rollbar.NetCore.AspNet
         /// <returns>A middleware invocation/execution task.</returns>
         public async Task Invoke(HttpContext context)
         {
+            if (context == null)
+            {
+                return;
+            }
+
             // as we learned from a field issue, apparently a middleware can even be invoked without a valid HttpContext:
             string? requestId = null;
-            requestId = context?.Features?
+            requestId = context.Features?
                 .Get<IHttpRequestIdentifierFeature>()?
                 .TraceIdentifier;
 
-            context?.Request.EnableBuffering();  // so that we can rewind the body stream once we are done
+            context.Request.EnableBuffering();  // so that we can rewind the body stream once we are done
 
             using(_logger.BeginScope($"Request: {requestId ?? string.Empty}"))
             {
@@ -168,14 +173,13 @@ namespace Rollbar.NetCore.AspNet
                 try
                 {
                     if (RollbarInfrastructure.Instance != null
-                        && RollbarInfrastructure.Instance.TelemetryCollector != null 
+                        && RollbarInfrastructure.Instance.TelemetryCollector != null
                         && RollbarInfrastructure.Instance.TelemetryCollector.IsAutocollecting
-                        && context != null 
                         && context.Request != null
                         )
                     {
                         int? telemetryStatusCode = null;
-                        telemetryStatusCode = context?.Response?.StatusCode;
+                        telemetryStatusCode = context.Response?.StatusCode;
 
                         networkTelemetry = new NetworkTelemetry(
                             method: context!.Request.Method,
@@ -185,9 +189,9 @@ namespace Rollbar.NetCore.AspNet
                             statusCode: telemetryStatusCode
                             );
                         RollbarInfrastructure.Instance.TelemetryCollector.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
-                    }
 
-                    await this._nextRequestProcessor(context);
+                        await this._nextRequestProcessor(context);
+                    }
                 }
                 catch (System.Exception ex)
                 {

@@ -15,7 +15,7 @@
         , IDisposable
     {
         private static readonly TraceSource traceSource = 
-            new TraceSource(typeof(RollbarTelemetryCollector).FullName);
+            new TraceSource(typeof(RollbarTelemetryCollector).FullName ?? "RollbarTelemetryCollector");
         
         #region singleton implementation
 

@@ -1,9 +1,7 @@
 ﻿namespace Rollbar.Serialization.Json
 {
-    using System;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
-    using Newtonsoft.Json.Serialization;
 
     /// <summary>
     /// Class JsonUtil.
@@ -17,7 +15,7 @@
         /// <returns>System.Object.</returns>
         public static object? InterpretAsJsonObject(string? jsonString)
         {
-            if (string.IsNullOrWhiteSpace(jsonString))
+            if (jsonString == null || string.IsNullOrWhiteSpace(jsonString))
             {
                 return null; //nothing to
             }

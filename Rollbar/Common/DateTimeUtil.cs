@@ -46,7 +46,7 @@
         /// <param name="inputString">The input string.</param>
         /// <param name="dateTimeOffset">The date time offset.</param>
         /// <returns><c>true</c> if was able to parse successfully, <c>false</c> otherwise.</returns>
-        public static bool TryParseFromUnixTimestampInSecondsString(string inputString, out DateTimeOffset dateTimeOffset)
+        public static bool TryParseFromUnixTimestampInSecondsString(string? inputString, out DateTimeOffset dateTimeOffset)
         {
             if (long.TryParse(inputString, out long unixTimestamp))
             {
