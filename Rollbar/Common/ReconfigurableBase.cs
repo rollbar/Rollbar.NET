@@ -5,7 +5,6 @@
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Text;
@@ -66,10 +65,10 @@
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public override int GetHashCode()
         {
-            T instance = (T) this;
-            return instance.GetHashCode();
+            return this.CalculateHashCode();
         }
     }
 
@@ -140,10 +139,13 @@
         /// <summary>
         /// Returns a hash code for this instance.
         /// </summary>
-        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        /// <exception cref="System.NotImplementedException"></exception>
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return this.CalculateHashCode();
         }
     }
 
@@ -160,8 +162,7 @@
         : ITraceable
         , IValidatable
     {
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType = 
-            new ConcurrentDictionary<Type, PropertyInfo[]>();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> publicPropertyInfosByType = new();
 
         /// <summary>
         /// The reconfigurable properties
@@ -238,11 +239,10 @@
             foreach (var property in properties)
             {
                 // Let's see first if the property value is a Reconfigurable object:
-                ReconfigurableBase? targetPropertyValue = property.GetValue(this) as ReconfigurableBase;
-                if(targetPropertyValue != null)
+                if (property.GetValue(this) is ReconfigurableBase targetPropertyValue)
                 {
                     object? sourcePropertyValue = property.GetValue(likeMe);
-                    if(sourcePropertyValue != null)
+                    if (sourcePropertyValue != null)
                     {
                         targetPropertyValue.Reconfigure(sourcePropertyValue, sourcePropertyValue.GetType());
                     }
@@ -430,7 +430,22 @@
             Reconfigured?.Invoke(this,e);
         }
 
-        #region ITraceable
+        /// <summary>
+        /// Calculates the hash code.
+        /// </summary>
+        /// <returns>
+        /// System.Int32.
+        /// </returns>
+        protected int CalculateHashCode()
+        {
+#if NET || NETCOREAPP3_1
+            return this.TraceAsString().GetHashCode(StringComparison.OrdinalIgnoreCase);
+#else
+            return this.TraceAsString().GetHashCode();
+#endif
+        }
+
+#region ITraceable
 
         /// <summary>
         /// Traces as string.
@@ -448,7 +463,7 @@
         /// <returns>String rendering of this instance.</returns>
         public virtual string TraceAsString(string indent)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             //string traceString = this.RenderAsString(indent);
             sb.AppendLine("{" + this.thisInstanceType.FullName + "}");
 
@@ -465,7 +480,7 @@
                     case null:
                         break;
                     case ICollection collection:
-                        StringBuilder collectionTrace = new StringBuilder();
+                        StringBuilder collectionTrace = new();
                         collectionTrace.AppendLine("[");
                         foreach(var item in collection)
                         {
@@ -500,9 +515,9 @@
             return sb.ToString();
         }
 
-        #endregion ITraceable
+#endregion ITraceable
 
-        #region IValidatable
+#region IValidatable
 
         /// <summary>
         /// Validates this instance.
@@ -520,7 +535,11 @@
             }
             else
             {
+#if NET452
                 return new ValidationResult[0];
+#else
+                return Array.Empty<ValidationResult>();
+#endif
             }
 
         }
@@ -531,6 +550,6 @@
         /// <returns>Validator.</returns>
         public abstract Validator? GetValidator();
 
-        #endregion IValidatable
+#endregion IValidatable
     }
 }
