@@ -8,14 +8,14 @@
     public enum InternalRollbarError
     {
         /// <summary>
-        /// The infrastructure error
-        /// </summary>
-        InfrastructureError,
-
-        /// <summary>
         /// The general error
         /// </summary>
         GeneralError,
+
+        /// <summary>
+        /// The infrastructure error
+        /// </summary>
+        InfrastructureError,
 
         /// <summary>
         /// The configuration error

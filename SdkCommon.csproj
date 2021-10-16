@@ -29,6 +29,7 @@
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
       - refactor: addressed SonarCloud detected reliability issues
+      - refactor: addressed SonarCloud detected security hotspots
     </SdkReleaseNotes>                        
 
     <!--
