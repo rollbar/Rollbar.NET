@@ -30,6 +30,7 @@
     <SdkReleaseNotes>                         <!-- Required -->
       - refactor: addressed SonarCloud detected reliability issues
       - refactor: addressed SonarCloud detected security hotspots
+      - refactor: addressed SonarCloud detected code smells
     </SdkReleaseNotes>                        
 
     <!--
