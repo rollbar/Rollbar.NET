@@ -72,11 +72,6 @@
         /// <param name="rollbarData">The rollbar data.</param>
         protected override void Decorate(Data? rollbarData)
         {
-            if(rollbarData == null)
-            {
-                return;
-            }
-
             if(this._httpResponse == null || rollbarData == null)
             {
                 return; //nothing to do...
