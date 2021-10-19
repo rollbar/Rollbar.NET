@@ -13,7 +13,7 @@
 
     internal class RollbarDeployClient
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarDeployClient).FullName);
+        private static readonly TraceSource traceSource = new(typeof(RollbarDeployClient).FullName);
 
         private readonly RollbarLoggerConfig _config;
         private readonly HttpClient? _httpClient;
@@ -32,13 +32,12 @@
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
             }
 #pragma warning disable CS0168 // Variable is declared but never used
-            catch (NotImplementedException ex)
+            catch (NotImplementedException _)
 #pragma warning restore CS0168 // Variable is declared but never used
             {
                 // just a crash prevention.
                 // this is a work around the unimplemented property within Mono runtime...
             }
-
         }
 
         public RollbarLoggerConfig Config { get { return this._config; } }
@@ -56,18 +55,16 @@
                 this._config.HttpProxyOptions.ProxyPassword);
         }
 
-        private bool Release(HttpClient httpClient)
+        private void Release(HttpClient httpClient)
         {
             Assumption.AssertNotNull(httpClient, nameof(httpClient));
 
-            if (httpClient == this._httpClient)
+            if (httpClient != this._httpClient)
             {
-                // client code controls life-time of the http client:
-                return false;
+                httpClient.Dispose();
             }
 
-            httpClient.Dispose();
-            return true;
+            // client code controls life-time of the http client:
         }
 
         #region deployment
@@ -151,10 +148,9 @@
             Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
             Assumption.AssertNotNullOrWhiteSpace(deploymentID, nameof(deploymentID));
 
+            const string pathDelimiter = @"/";
             var uri = new Uri(
-                this._config.RollbarDestinationOptions.EndPoint
-                + RollbarDeployClient.deployApiPath + deploymentID + @"/"
-                + $"?access_token={readAccessToken}"
+                $"{this._config.RollbarDestinationOptions.EndPoint}{RollbarDeployClient.deployApiPath}{deploymentID}{pathDelimiter}?access_token={readAccessToken}"
                 );
 
             var httpClient = ProvideHttpClient();
@@ -189,9 +185,7 @@
             Assumption.AssertNotNullOrWhiteSpace(readAccessToken, nameof(readAccessToken));
 
             var uri = new Uri(
-                this._config.RollbarDestinationOptions.EndPoint
-                + RollbarDeployClient.deploysQueryApiPath
-                + $"?access_token={readAccessToken}&page={pageNumber}"
+                $"{this._config.RollbarDestinationOptions.EndPoint}{RollbarDeployClient.deploysQueryApiPath}?access_token={readAccessToken}&page={pageNumber}"
                 );
 
             var httpClient = ProvideHttpClient();
