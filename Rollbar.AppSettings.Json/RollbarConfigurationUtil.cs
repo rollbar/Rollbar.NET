@@ -16,10 +16,8 @@
         /// <returns></returns>
         public static IRollbarInfrastructureConfig DeduceRollbarConfig(IConfiguration configuration)
         {
-            //if (RollbarLocator.RollbarInstance.Config.RollbarDestinationOptions.AccessToken != null)
             if (RollbarInfrastructure.Instance.Config?.RollbarLoggerConfig?.RollbarDestinationOptions?.AccessToken != null)
             {
-                //return RollbarLocator.RollbarInstance.Config;
                 return RollbarInfrastructure.Instance.Config;
             }
 
@@ -30,7 +28,7 @@
             Assumption.AssertNotNull(configuration, nameof(configuration));
 
             const string defaultAccessToken = "none";
-            RollbarInfrastructureConfig rollbarConfig = new RollbarInfrastructureConfig(defaultAccessToken);
+            RollbarInfrastructureConfig rollbarConfig = new(defaultAccessToken);
             AppSettingsUtility.LoadAppSettings(rollbarConfig, configuration);
 
             if (rollbarConfig.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken == defaultAccessToken)
@@ -61,7 +59,7 @@
         /// <returns></returns>
         public static IRollbarTelemetryOptions DeduceRollbarTelemetryConfig(IConfiguration configuration)
         {
-            RollbarTelemetryOptions config = new RollbarTelemetryOptions();
+            RollbarTelemetryOptions config = new();
             AppSettingsUtility.LoadAppSettings(config, configuration);
 
             RollbarTelemetryCollector.Instance?.Config?.Reconfigure(config);
