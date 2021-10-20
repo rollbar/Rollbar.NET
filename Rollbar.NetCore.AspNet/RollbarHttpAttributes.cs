@@ -10,7 +10,6 @@
     /// </summary>
     public class RollbarHttpAttributes
     {
-        //private readonly HttpResponse _httpResponse;
         private readonly HttpContext? _httpContext;
 
         /// <summary>

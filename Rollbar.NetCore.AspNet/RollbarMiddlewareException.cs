@@ -8,8 +8,10 @@
     /// Implements the <see cref="System.Exception" />
     /// </summary>
     /// <seealso cref="System.Exception" />
+    [Serializable]
     public class RollbarMiddlewareException
         : Exception
+        , ISerializable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarMiddlewareException"/> class.

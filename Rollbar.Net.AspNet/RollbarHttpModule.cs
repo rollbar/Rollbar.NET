@@ -64,10 +64,9 @@
 
         private void Context_Error(object sender, EventArgs e)
         {
-            HttpApplication? httpApplication = sender as HttpApplication;
-            if (httpApplication == null 
-                || httpApplication.Context == null 
-                || httpApplication.Context.AllErrors == null 
+            if (sender is not HttpApplication httpApplication
+                || httpApplication.Context == null
+                || httpApplication.Context.AllErrors == null
                 || httpApplication.Context.AllErrors.Length == 0
                 )
             {
@@ -75,7 +74,7 @@
             }
 
             AggregateException exception = 
-                new AggregateException("RollbarHttpModule's context error(s)", httpApplication.Context.AllErrors);
+                new("RollbarHttpModule's context error(s)", httpApplication.Context.AllErrors);
 
             IRollbarPackage package = 
                 new ExceptionPackage(exception, "HttpApplication.Context.AllErrors", true);

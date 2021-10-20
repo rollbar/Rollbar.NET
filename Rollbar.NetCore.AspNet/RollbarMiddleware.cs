@@ -61,26 +61,26 @@ namespace Rollbar.NetCore.AspNet
     ///     RollbarApiErrorEventArgs apiErrorEvent = e as RollbarApiErrorEventArgs;
     ///     if(apiErrorEvent != null)
     ///     {
-    ///       //TODO: handle/report Rollbar API communication error event...
+    ///       // handle/report Rollbar API communication error event...
     ///       return;
     ///     }
     ///     
     ///     CommunicationEventArgs commEvent = e as CommunicationEventArgs;
     ///     if(commEvent != null)
     ///     {
-    ///         //TODO: handle/report Rollbar API communication event...
+    ///         // handle/report Rollbar API communication event...
     ///         return;
     ///     }
     ///     CommunicationErrorEventArgs commErrorEvent = e as CommunicationErrorEventArgs;
     ///     if(commErrorEvent != null)
     ///     {
-    ///         //TODO: handle/report basic communication error while attempting to reach Rollbar API service... 
+    ///         // handle/report basic communication error while attempting to reach Rollbar API service... 
     ///         return;
     ///     }
     ///     InternalErrorEventArgs internalErrorEvent = e as InternalErrorEventArgs;
     ///     if(internalErrorEvent != null)
     ///     {
-    ///         //TODO: handle/report basic internal error while using the Rollbar Notifier... 
+    ///         // handle/report basic internal error while using the Rollbar Notifier... 
     ///         return;
     ///     }
     /// }
@@ -121,7 +121,7 @@ namespace Rollbar.NetCore.AspNet
 
         private readonly ILogger _logger;
 
-        private readonly NetPlatformExtensions.RollbarOptions _rollbarOptions;
+        private readonly RollbarOptions _rollbarOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarMiddleware" /> class.
@@ -134,7 +134,7 @@ namespace Rollbar.NetCore.AspNet
             RequestDelegate nextRequestProcessor
             , IConfiguration configuration
             , ILoggerFactory loggerFactory
-            , IOptions<NetPlatformExtensions.RollbarOptions> rollbarOptions
+            , IOptions<RollbarOptions> rollbarOptions
             )
         {
             this._nextRequestProcessor = nextRequestProcessor;
@@ -157,12 +157,8 @@ namespace Rollbar.NetCore.AspNet
             {
                 return;
             }
-
             // as we learned from a field issue, apparently a middleware can even be invoked without a valid HttpContext:
-            string? requestId = null;
-            requestId = context.Features?
-                .Get<IHttpRequestIdentifierFeature>()?
-                .TraceIdentifier;
+            string? requestId = context.Features?.Get<IHttpRequestIdentifierFeature>()?.TraceIdentifier;
 
             context.Request.EnableBuffering();  // so that we can rewind the body stream once we are done
 
@@ -172,35 +168,12 @@ namespace Rollbar.NetCore.AspNet
 
                 try
                 {
-                    if (RollbarInfrastructure.Instance != null
-                        && RollbarInfrastructure.Instance.TelemetryCollector != null
-                        && RollbarInfrastructure.Instance.TelemetryCollector.IsAutocollecting
-                        && context.Request != null
-                        )
-                    {
-                        int? telemetryStatusCode = null;
-                        telemetryStatusCode = context.Response?.StatusCode;
-
-                        networkTelemetry = new NetworkTelemetry(
-                            method: context!.Request.Method,
-                            url: context.Request.Host.Value + context.Request.Path,
-                            eventStart: DateTime.UtcNow,
-                            eventEnd: null,
-                            statusCode: telemetryStatusCode
-                            );
-                        RollbarInfrastructure.Instance.TelemetryCollector.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
-
-                        await this._nextRequestProcessor(context);
-                    }
+                    networkTelemetry = CreateTelemetryEvent(context);
+                    await this._nextRequestProcessor(context);
                 }
                 catch (System.Exception ex)
                 {
-                    if (networkTelemetry != null)
-                    {
-                        networkTelemetry.StatusCode = 
-                            context?.Response?.StatusCode.ToString();
-                        networkTelemetry.FinalizeEvent();
-                    }
+                    FinalizeTelemetryEvent(networkTelemetry, context);
 
                     if (!RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.CaptureUncaughtExceptions)
                     {
@@ -227,21 +200,7 @@ namespace Rollbar.NetCore.AspNet
                         }
                         else
                         {
-                            IRollbarPackage rollbarPackage = new ExceptionPackage(ex, $"{nameof(RollbarMiddleware)} processed uncaught exception.");
-                            if(context != null)
-                            {
-                                if(context.Request != null)
-                                {
-                                    rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
-                                }
-
-                                if(context.Response != null)
-                                {
-                                    rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
-                                }
-                            }
-
-                            RollbarLocator.RollbarInstance.Critical(rollbarPackage);
+                            CaptureWithRollbar(ex, context);
                         }
                     }
 
@@ -256,18 +215,93 @@ namespace Rollbar.NetCore.AspNet
                 }
                 finally
                 {
-                    if (networkTelemetry != null )
-                    {
-                        if (string.IsNullOrWhiteSpace(networkTelemetry.StatusCode))
-                        {
-                            networkTelemetry.StatusCode = context?.Response?.StatusCode.ToString();
-                        }
-                        networkTelemetry.FinalizeEvent();
-                    }
+                    FinalizeTelemetryEvent(networkTelemetry, context);
                 }
             }
         }
 
+        /// <summary>
+        /// Captures tha provided data with Rollbar.
+        /// </summary>
+        /// <param name="exception">
+        /// The ex.
+        /// </param>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        private static void CaptureWithRollbar(System.Exception exception, HttpContext context)
+        {
+            IRollbarPackage rollbarPackage = new ExceptionPackage(exception, $"{nameof(RollbarMiddleware)} processed uncaught exception.");
+            if (context != null)
+            {
+                if (context.Request != null)
+                {
+                    rollbarPackage = new HttpRequestPackageDecorator(rollbarPackage, context.Request, true);
+                }
+
+                if (context.Response != null)
+                {
+                    rollbarPackage = new HttpResponsePackageDecorator(rollbarPackage, context.Response, true);
+                }
+            }
+
+            RollbarLocator.RollbarInstance.Critical(rollbarPackage);
+        }
+
+        /// <summary>
+        /// Creates the telemetry event.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns>System.Nullable&lt;NetworkTelemetry&gt;.</returns>
+        private static NetworkTelemetry? CreateTelemetryEvent(HttpContext context)
+        {
+            if (RollbarInfrastructure.Instance != null
+                && RollbarInfrastructure.Instance.TelemetryCollector != null
+                && RollbarInfrastructure.Instance.TelemetryCollector.IsAutocollecting
+                && context.Request != null
+                )
+            {
+                int? telemetryStatusCode = context.Response?.StatusCode;
+
+                NetworkTelemetry networkTelemetry = new(
+                    method: context!.Request.Method,
+                    url: context.Request.Host.Value + context.Request.Path,
+                    eventStart: DateTime.UtcNow,
+                    eventEnd: null,
+                    statusCode: telemetryStatusCode
+                    );
+
+                RollbarInfrastructure
+                    .Instance
+                    .TelemetryCollector
+                    .Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, networkTelemetry));
+
+                return networkTelemetry;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finalizes the telemetry event.
+        /// </summary>
+        /// <param name="networkTelemetry">
+        /// The network telemetry.
+        /// </param>
+        /// <param name="context">
+        /// The context.
+        /// </param>
+        private static void FinalizeTelemetryEvent(NetworkTelemetry? networkTelemetry, HttpContext context)
+        {
+            if (networkTelemetry != null)
+            {
+                if (string.IsNullOrWhiteSpace(networkTelemetry.StatusCode))
+                {
+                    networkTelemetry.StatusCode = context?.Response?.StatusCode.ToString();
+                }
+                networkTelemetry.FinalizeEvent();
+            }
+        }
 
         /// <summary>
         /// Configures Rollbar-specific services.
@@ -281,16 +315,13 @@ namespace Rollbar.NetCore.AspNet
             IServiceCollection services,
             LogLevel rollbarLogLevel,
             RollbarInfrastructureConfig rollbarInfrastructureConfig,
-            EventHandler<RollbarEventArgs>? rollbarInternalEventHandler = null)
+            EventHandler<RollbarEventArgs>? rollbarInternalEventHandler = null
+            )
         {
             if(!services.Any(s => s.ServiceType == typeof(IHttpContextAccessor)))
             {
                 services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             }
-            //services.Configure<IISServerOptions>(options =>
-            //{
-            //    options.AllowSynchronousIO = true;
-            //});
 
             RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
 
@@ -306,7 +337,6 @@ namespace Rollbar.NetCore.AspNet
                 loggerOptions.Filter = (loggerName, logLevel) => logLevel >= rollbarLogLevel;
             });
         }
-
 
     }
 }
