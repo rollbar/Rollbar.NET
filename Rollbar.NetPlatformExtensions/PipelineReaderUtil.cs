@@ -21,7 +21,7 @@
         {
             var contentStrings = await PipelineReaderUtil.GetListOfStringsFromPipe(reader);
             
-            StringBuilder stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             foreach(var str in contentStrings)
             {
                 stringBuilder.AppendLine(str);
@@ -37,15 +37,14 @@
         /// <returns>List&lt;System.String&gt;.</returns>
         public static async Task<List<string>> GetListOfStringsFromPipe(PipeReader reader)
         {
-            List<string> results = new List<string>();
+            List<string> results = new();
 
             while(true)
             {
                 ReadResult readResult = await reader.ReadAsync();
                 var buffer = readResult.Buffer;
 
-                SequencePosition? position = null;
-
+                SequencePosition? position;
                 do
                 {
                     // Look for a EOL in the buffer
@@ -88,10 +87,6 @@
         /// <param name="readOnlySequence">The read only sequence.</param>
         private static void AddStringToList(List<string> results, in ReadOnlySequence<byte> readOnlySequence)
         {
-            // Separate method because Span/ReadOnlySpan cannot be used in async methods
-            //ReadOnlySpan<byte> span = readOnlySequence.IsSingleSegment ? readOnlySequence.First.Span : readOnlySequence.ToArray().AsSpan();
-            //results.Add(Encoding.UTF8.GetString(span));
-
             byte[] buffer = readOnlySequence.IsSingleSegment ? readOnlySequence.First.Span.ToArray() : readOnlySequence.ToArray();
             results.Add(Encoding.UTF8.GetString(buffer));
         }
