@@ -111,6 +111,10 @@
   </ItemGroup>
 
   <ItemGroup Label="Package References">
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.30.0.37606">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <!--ADD here-->
   </ItemGroup>
 
