@@ -31,9 +31,8 @@
 
             var rollbarEvent = new InternalErrorEventArgs(rollbarLogger, dataObject, rollbarException, rollbarException.Message);
 
-            RollbarLogger? specificRollbarLogger = rollbarLogger as RollbarLogger;
 
-            if (specificRollbarLogger != null)
+            if (rollbarLogger is RollbarLogger specificRollbarLogger)
             {
                 specificRollbarLogger.OnRollbarEvent(rollbarEvent);
             }

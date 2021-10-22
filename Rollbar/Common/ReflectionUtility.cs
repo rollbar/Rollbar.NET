@@ -22,10 +22,10 @@
         {
             if (type == null)
             {
-                return new FieldInfo[0];
+                return ArrayUtility.GetEmptyArray<FieldInfo>();
             }
 
-            List<Type> relevantTypes = new List<Type>();
+            List<Type> relevantTypes = new();
             Type? relevantType = type;
             while (relevantType != null)
             {
@@ -33,7 +33,7 @@
                 relevantType = relevantType.BaseType;
             }
 
-            List<FieldInfo> fieldInfos = new List<FieldInfo>();
+            List<FieldInfo> fieldInfos = new();
             relevantTypes.Reverse(); // eventually, we want following order: most base type's data fields first...
             foreach (var t in relevantTypes)
             {
@@ -112,7 +112,7 @@
                 return result;
             }
 
-            return default(TFieldDataType);
+            return default;
         }
 
         /// <summary>
@@ -130,7 +130,7 @@
             foreach (var memberInfo in memberInfos)
             {
                 object? valueObject = memberInfo.GetValue(null);
-                TField? value = valueObject != null ? (TField) valueObject : default(TField);
+                TField? value = valueObject != null ? (TField) valueObject : default;
                 values.Add(value);
             }
             return values.ToArray();
@@ -215,11 +215,11 @@
         {
             if(type == null)
             {
-                return new Type[0];
+                return ArrayUtility.GetEmptyArray<Type>();
             }
 
             var baseTypes = ReflectionUtility.GetBaseTypesHierarchy(type);
-            List<Type> types = new List<Type>(baseTypes.Length + 1);
+            List<Type> types = new(baseTypes.Length + 1);
             types.Add(type);
             types.AddRange(baseTypes);
             return types.ToArray();
@@ -235,10 +235,10 @@
             Type? baseType = type?.BaseType;
             if(type == null || baseType == null)
             {
-                return new Type[0];
+                return ArrayUtility.GetEmptyArray<Type>();
             }
 
-            List<Type> baseTypesList = new List<Type>();
+            List<Type> baseTypesList = new();
             baseTypesList.Add(baseType);
             baseTypesList.AddRange(ReflectionUtility.GetBaseTypesHierarchy(baseType));
             return baseTypesList.ToArray();
@@ -290,7 +290,7 @@
         {
             if (type == null)
             {
-                return new Type[0];
+                return ArrayUtility.GetEmptyArray<Type>();
             }
 
             return type.GetInterfaces();
@@ -316,10 +316,10 @@
         {
             if (types == null || types.Length == 0)
             {
-                return new Type[0];
+                return ArrayUtility.GetEmptyArray<Type>();
             }
 
-            switch(types.Length)
+            switch (types.Length)
             {
                 case 1:
                     return ReflectionUtility.GetImplementedInterfaceTypes(types.First());
@@ -327,7 +327,7 @@
                     Type[] commonInterfaceTypes = 
                         ReflectionUtility.GetImplementedInterfaceTypes(types.First());
                     int i = 0;
-                    while ((commonInterfaceTypes.Count() > 0) && (++i < types.Length))
+                    while ((commonInterfaceTypes.Length > 0) && (++i < types.Length))
                     {
                         commonInterfaceTypes = 
                             commonInterfaceTypes

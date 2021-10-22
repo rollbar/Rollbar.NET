@@ -18,7 +18,7 @@
         /// <summary>
         /// The store context (the payload persistence infrastructure)
         /// </summary>
-        private StoreContext _storeContext;
+        private readonly StoreContext _storeContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PayloadStoreRepository"/> class.
@@ -33,6 +33,7 @@
         public void Dispose()
         {
             _storeContext.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -128,7 +129,6 @@
                 destination.PayloadRecords.Add(p);
                 this._storeContext.PayloadRecords.Add(p);
             }
-            //this._storeContext.PayloadRecords.AddRange(destination.PayloadRecords);
 
             this._storeContext.SaveChanges();
         }

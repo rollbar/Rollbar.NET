@@ -154,7 +154,7 @@
             }
 
             string? bodyContent = 
-                StreamUtil.CaptureAsStringAsync(request.BodyReader.AsStream(true)).Result;
+                StreamUtility.CaptureAsStringAsync(request.BodyReader.AsStream(true)).Result;
             
             return bodyContent;
         }
@@ -177,7 +177,7 @@
             }
 
             string? bodyContent = 
-                StreamUtil.CaptureAsStringAsync(response.BodyWriter.AsStream(true)).Result;
+                StreamUtility.CaptureAsStringAsync(response.BodyWriter.AsStream(true)).Result;
 
             return bodyContent;
         }

@@ -8,12 +8,12 @@ namespace Rollbar.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-
+            //no-op
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-
+            //no-op
         }
     }
 }

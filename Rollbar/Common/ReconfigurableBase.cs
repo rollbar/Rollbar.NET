@@ -535,11 +535,7 @@
             }
             else
             {
-#if NET452
-                return new ValidationResult[0];
-#else
-                return Array.Empty<ValidationResult>();
-#endif
+                return ArrayUtility.GetEmptyArray<ValidationResult>();
             }
 
         }
