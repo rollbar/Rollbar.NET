@@ -92,7 +92,6 @@
         /// Gets the name of the local payload store full path.
         /// </summary>
         /// <returns>System.String.</returns>
-        //TODO: RollbarConfig - remove it!!!
         internal string? GetLocalPayloadStoreFullPathName()
         {
             string? dbLocation = string.IsNullOrWhiteSpace(this.LocalPayloadStoreLocationPath)

@@ -21,7 +21,16 @@
                 return new Dictionary<string, string?>(0);
             }
 
-            return nvc.AllKeys.Where(n => n != null).Cast<string>().ToDictionary(k => k, k => nvc[k] as string ?? null);
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+            string[] keys = nvc.AllKeys.Where(k => k != null).ToArray();
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
+            IDictionary<string, string?> result = new Dictionary<string, string?>(keys.Length);
+            foreach (string key in keys)
+            {
+                result[key] = nvc[key];
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -36,7 +45,7 @@
             var compactedHeaders = new Dictionary<string, string>(headers.Count);
             foreach (var kvp in headers)
             {
-                if (kvp.Value != null)
+                if (kvp.Key != null && kvp.Value != null)
                 {
                     compactedHeaders[kvp.Key] = kvp.Value;
                 }
@@ -57,7 +66,16 @@
                 return new Dictionary<string, object?>(0);
             }
 
-            return nvc.AllKeys.Where(n => n != null).Cast<string>().ToDictionary(k => k, k => nvc[k] as object ?? null);
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+            string[] keys = nvc.AllKeys.Where(k => k != null).ToArray();
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
+            IDictionary<string, object?> result = new Dictionary<string, object?>(keys.Length);
+            foreach (string key in keys)
+            {
+                result[key] = nvc[key];
+            }
+
+            return result;
         }
 
         /// <summary>

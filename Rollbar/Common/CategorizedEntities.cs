@@ -221,7 +221,7 @@
             {
                 count = _entitiesByCategory
                     .Values
-                    .Aggregate(count, (total, next) => total += next.Count)
+                    .Aggregate(count, func: (total, next) => total + next.Count)
                     ;
             }
 
@@ -242,7 +242,7 @@
                 count = _entitiesByCategory
                     .Where(kvp => categories.Contains(kvp.Key))
                     .Select(kvp => kvp.Value)
-                    .Aggregate(count, (total, next) => total += next.Count)
+                    .Aggregate(count, (total, next) => total + next.Count)
                     ;
             }
 

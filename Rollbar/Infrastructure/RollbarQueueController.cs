@@ -49,7 +49,7 @@ namespace Rollbar
         {
             get
             {
-                return NestedSingleInstance.Instance;
+                return NestedSingleInstance.TheInstance;
             }
         }
 
@@ -78,7 +78,7 @@ namespace Rollbar
             /// <summary>
             /// The instance
             /// </summary>
-            internal static readonly RollbarQueueController? Instance =
+            internal static readonly RollbarQueueController? TheInstance =
                 RollbarInfrastructure.Instance.IsInitialized ? new RollbarQueueController()
                 : null;
         }
@@ -369,7 +369,7 @@ namespace Rollbar
             int result = 0;
             foreach(var md in this._queuesByAccessToken.Values)
             {
-                foreach(var queue in md.PayloadQueues)
+                foreach(var queue in md.GetPayloadQueues())
                 {
                     if(!queue.IsReleased)
                     {
@@ -394,7 +394,7 @@ namespace Rollbar
             {
                 if(this._queuesByAccessToken.TryGetValue(accessToken!, out AccessTokenQueuesMetadata? metadata))
                 {
-                    return metadata.PayloadQueues;
+                    return metadata.GetPayloadQueues();
                 }
             }
             return new PayloadQueue[0];
@@ -630,7 +630,7 @@ namespace Rollbar
         private void ProcessQueues(AccessTokenQueuesMetadata tokenMetadata)
         {
             // let's see if we can unregister any recently released queues:
-            var releasedQueuesToRemove = tokenMetadata.PayloadQueues.Where(q => q.IsReleased && (q.GetPayloadCount() == 0)).ToArray();
+            var releasedQueuesToRemove = tokenMetadata.GetPayloadQueues().Where(q => q.IsReleased && (q.GetPayloadCount() == 0)).ToArray();
             if(releasedQueuesToRemove != null && releasedQueuesToRemove.LongLength > 0)
             {
                 foreach(var queue in releasedQueuesToRemove)
@@ -640,7 +640,7 @@ namespace Rollbar
             }
 
             // process the access token's queues:
-            foreach(var queue in tokenMetadata.PayloadQueues)
+            foreach(var queue in tokenMetadata.GetPayloadQueues())
             {
                 if(DateTimeOffset.Now < queue.NextDequeueTime)
                 {
@@ -654,7 +654,7 @@ namespace Rollbar
                     // the token is suspended and the next usage time is not reached,
                     // let's flush the token queues (we are not allowed to transmit anyway)
                     // and quit processing this token's queues this time (until next processing iteration):
-                    foreach(var tokenQueue in tokenMetadata.PayloadQueues)
+                    foreach(var tokenQueue in tokenMetadata.GetPayloadQueues())
                     {
                         foreach(var flushedBundle in tokenQueue.Flush())
                         {
@@ -1127,7 +1127,7 @@ namespace Rollbar
 
                 if(this._queuesByAccessToken.TryGetValue(accessToken!, out AccessTokenQueuesMetadata? tokenMetadata))
                 {
-                    foreach(var queue in tokenMetadata.PayloadQueues)
+                    foreach(var queue in tokenMetadata.GetPayloadQueues())
                     {
                         counter += queue.GetPayloadCount();
                     }
@@ -1168,7 +1168,7 @@ namespace Rollbar
 
                 if(this._queuesByAccessToken.TryGetValue(accessToken!, out AccessTokenQueuesMetadata? tokenMetadata))
                 {
-                    foreach(var queue in tokenMetadata.PayloadQueues)
+                    foreach(var queue in tokenMetadata.GetPayloadQueues())
                     {
                         totalPayloads += queue.GetPayloadCount();
                         TimeSpan queueTimeout =

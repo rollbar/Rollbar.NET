@@ -151,14 +151,11 @@
         /// Gets the payload queues.
         /// </summary>
         /// <value>The payload queues.</value>
-        public IReadOnlyCollection<PayloadQueue> PayloadQueues 
+        public IReadOnlyCollection<PayloadQueue> GetPayloadQueues()
         {
-            get
+            lock (this._queuesSyncLock)
             {
-                lock(this._queuesSyncLock)
-                {
-                    return this._queues.ToArray();
-                }
+                return this._queues.ToArray();
             }
         }
 

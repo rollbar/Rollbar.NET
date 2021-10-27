@@ -3,6 +3,21 @@
     using System.Collections;
     using System.Collections.Generic;
 
+    using Rollbar.Common;
+
+    /// <summary>
+    /// Class CollectorCollectionBase.
+    /// </summary>
+    public abstract class CollectorCollectionBase
+    {
+        /// <summary>
+        /// Gets or sets the default collection capacity.
+        /// </summary>
+        /// <value>The default collection capacity.</value>
+        public static int DefaultCollectionCapacity { get; set; } = 10;
+
+    }
+
     /// <summary>
     /// Class CollectorCollection.
     /// Implements the <see cref="Rollbar.Common.ICollector{T}" />
@@ -12,19 +27,14 @@
     /// <seealso cref="Rollbar.Common.ICollector{T}" />
     /// <seealso cref="System.Collections.Generic.IReadOnlyCollection{T}" />
     public class CollectorCollection<T>
-        : ICollector<T>
+        : CollectorCollectionBase
+        , ICollector<T>
         , IReadOnlyCollection<T>
     {
         /// <summary>
         /// The collection
         /// </summary>
         private readonly ICollection<T> _collection;
-
-        /// <summary>
-        /// Gets or sets the default collection capacity.
-        /// </summary>
-        /// <value>The default collection capacity.</value>
-        public static int DefaultCollectionCapacity { get; set; } = 10;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CollectorCollection{T}"/> class.
@@ -114,4 +124,6 @@
             return this.GetEnumerator();
         }
     }
+
+
 }

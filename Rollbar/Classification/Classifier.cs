@@ -97,7 +97,7 @@
         /// This method is called from the type constructor.
         /// Make sure you know what you are doing when overriding it.
         /// </remarks>
-        protected virtual string GenerateClassifierID(object classifierObject)
+        protected string GenerateClassifierID(object classifierObject)
         {
             return classifierObject.GetType().FullName + ": " + classifierObject;
         }

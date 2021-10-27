@@ -19,11 +19,9 @@ namespace Rollbar.Common
         /// <returns>System.String.</returns>
         public static string GetSdkRuntimeLocationPath()
         {
-            string? path = null;
 
 #if (!NETFX || NETFX_461nNewer)
-            path = AppContext.BaseDirectory;
-#endif
+            string? path = AppContext.BaseDirectory;
 
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -36,6 +34,7 @@ namespace Rollbar.Common
             {
                 return path;
             }
+#endif
 
             return string.Empty;
         }
@@ -47,11 +46,11 @@ namespace Rollbar.Common
         /// <returns>System.String.</returns>
         public static string GetTypeAssemblyProduct(Type theType)
         {
-            var product = theType.Assembly.GetCustomAttribute(typeof(AssemblyProductAttribute)) as AssemblyProductAttribute;
-            if (product != null)
+            if (theType.Assembly.GetCustomAttribute(typeof(AssemblyProductAttribute)) is AssemblyProductAttribute product)
             {
                 return product.Product;
             }
+
             return string.Empty;
         }
 
@@ -62,21 +61,12 @@ namespace Rollbar.Common
         /// <returns></returns>
         public static string GetTypeAssemblyVersion(Type theType)
         {
-            //StringBuilder result = new StringBuilder(theType.Assembly.GetName().Version.ToString(3));
-            //return result.ToString();
-
-            var infoVersion = 
-                theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) 
-                as AssemblyInformationalVersionAttribute;
-
-            return (infoVersion != null) 
-                ? infoVersion.InformationalVersion 
-                : string.Empty;
-
-            //if (infoVersion != null && infoVersion.InformationalVersion.StartsWith("LTS"))
-            //{
-            //    result.Append($" ({infoVersion.InformationalVersion.TrimEnd('-')})");
-            //}
+            if (theType.Assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) is AssemblyInformationalVersionAttribute infoVersion)
+            {
+                return infoVersion.InformationalVersion;
+            }
+                
+            return string.Empty;
         }
 
         /// <summary>

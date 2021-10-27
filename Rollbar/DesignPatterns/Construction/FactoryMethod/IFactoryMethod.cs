@@ -8,7 +8,7 @@
     /// Interface IFactoryMethod for creating products of certain type.
     /// </summary>
     /// <typeparam name="TProduct">The type of the product.</typeparam>
-    public interface IFactoryMethod<TProduct>
+    public interface IFactoryMethod<out TProduct>
     {
         /// <summary>
         /// Creates this instance.
@@ -22,7 +22,7 @@
     /// </summary>
     /// <typeparam name="TProduct">The type of the product.</typeparam>
     /// <typeparam name="THint">The type of the hint to be used to create the product.</typeparam>
-    public interface IFactoryMethod<TProduct, THint>
+    public interface IFactoryMethod<out TProduct, in THint>
     {
         /// <summary>
         /// Creates the specified hint.

@@ -25,7 +25,7 @@
         /// Gets the payload queues.
         /// </summary>
         /// <value>The payload queues.</value>
-        IReadOnlyCollection<PayloadQueue> PayloadQueues { get; }
+        IReadOnlyCollection<PayloadQueue> GetPayloadQueues();
 
         /// <summary>
         /// Gets the payload queues count.

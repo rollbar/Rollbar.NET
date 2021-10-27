@@ -37,7 +37,7 @@
             var metadata = new AccessTokenQueuesMetadata(RollbarUnitTestSettings.AccessToken);
 
             Assert.AreEqual(RollbarUnitTestSettings.AccessToken, metadata.AccessToken);
-            Assert.IsNotNull(metadata.PayloadQueues);
+            Assert.IsNotNull(metadata.GetPayloadQueues);
             Assert.IsTrue(metadata.NextTimeTokenUsage <= DateTimeOffset.Now);
         }
 

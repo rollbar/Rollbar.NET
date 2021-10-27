@@ -37,7 +37,9 @@
             relevantTypes.Reverse(); // eventually, we want following order: most base type's data fields first...
             foreach (var t in relevantTypes)
             {
+#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
                 fieldInfos.AddRange(t.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic));
+#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
             }
 
             return fieldInfos.ToArray();
@@ -51,7 +53,9 @@
         public static FieldInfo[] GetAllStaticDataFields(Type type)
         {
             var memberInfos =
+#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
                 type.GetFields(BindingFlags.Static | BindingFlags.NonPublic);
+#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
 
             return memberInfos;
         }
