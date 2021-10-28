@@ -39,60 +39,6 @@ namespace UnitTest.Rollbar.DTOs
         }
 
         [TestMethod]
-        public void TestStringPropertiesTruncation()
-        {
-
-            Payload[] testPayloads = new Payload[]
-            {
-                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config,
-                    new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
-                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
-                    ),
-                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config,
-                    new Body("A terrible crash!"),
-                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
-                    ),
-                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config,
-                    new Body(GetException()),
-                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
-                    ),
-                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config,
-                    new Body(GetAggregateException()),
-                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
-                    ),
-            };
-
-            string truncated = null;
-            foreach (var testPayload in testPayloads)
-            {
-                string original = JsonConvert.SerializeObject(testPayload);
-                System.Diagnostics.Trace.WriteLine($"Original payload ({original.Length}): " + original);
-                System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
-
-                testPayload.TruncateStrings(Encoding.UTF8, 10);
-                truncated = JsonConvert.SerializeObject(testPayload);
-                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
-
-                testPayload.TruncateStrings(Encoding.UTF8, 7);
-                truncated = JsonConvert.SerializeObject(testPayload);
-                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
-
-                testPayload.TruncateStrings(Encoding.UTF8, 0);
-                truncated = JsonConvert.SerializeObject(testPayload);
-                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
-
-                sw.Stop();
-                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedMilliseconds} [msec] or {sw.ElapsedTicks} [ticks].");
-
-                Assert.IsTrue(truncated.Length < original.Length);
-            }
-        }
-
-        [TestMethod]
         public void BasicExceptionCreatesValidRollbarObject()
         {
             var exceptionExample = new Payload(RollbarUnitTestSettings.AccessToken, new Data(this._config, new Body(GetException())));
@@ -471,6 +417,62 @@ namespace UnitTest.Rollbar.DTOs
                 var x = new Payload(RollbarUnitTestSettings.AccessToken, null);
             });
         }
+
+        [TestMethod]
+        public void TestStringPropertiesTruncation()
+        {
+
+            Payload[] testPayloads = new Payload[]
+            {
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
+                    this._config,
+                    new Body(new Message("A message I wish to send to the rollbar overlords", new Dictionary<string, object>() {{"longMessageString", "very-long-string-very-long-string-very-long-" }, {"theMessageNumber", 11 }, })),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
+                    this._config,
+                    new Body("A terrible crash!"),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
+                    this._config,
+                    new Body(GetException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+                new Payload(this._config.RollbarDestinationOptions.AccessToken, new Data(
+                    this._config,
+                    new Body(GetAggregateException()),
+                    new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
+                    ),
+            };
+
+            string truncated = null;
+            foreach (var testPayload in testPayloads)
+            {
+                string original = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Original payload ({original.Length}): " + original);
+                System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+                testPayload.TruncateStrings(Encoding.UTF8, 10);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                testPayload.TruncateStrings(Encoding.UTF8, 7);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                testPayload.TruncateStrings(Encoding.UTF8, 0);
+                truncated = JsonConvert.SerializeObject(testPayload);
+                System.Diagnostics.Trace.WriteLine($"Truncated payload ({truncated.Length}): " + truncated);
+
+                sw.Stop();
+                System.Diagnostics.Trace.WriteLine($"Truncation time: {sw.ElapsedMilliseconds} [msec] or {sw.ElapsedTicks} [ticks].");
+
+                Assert.IsTrue(truncated.Length < original.Length);
+            }
+        }
+
+
 
         private static void ThrowAnException()
         {

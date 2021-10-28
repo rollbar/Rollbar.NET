@@ -16,17 +16,17 @@
         /// <summary>
         /// The default language
         /// </summary>
-        public static string DefaultLanguage { get; set; } = "c#";
+        internal static string DefaultLanguage { get; set; } = "c#";
 
         /// <summary>
         /// The default platform
         /// </summary>
-        public static string DefaultPlatform { get; set; } = RuntimeEnvironmentUtility.GetOSDescription();
+        internal static string DefaultPlatform { get; set; } = RuntimeEnvironmentUtility.GetOSDescription();
 
         /// <summary>
         /// The default framework value
         /// </summary>
-        public static string DefaultFrameworkValue { get; set; } = Data.DetectTargetFrameworks();
+        internal static string DefaultFrameworkValue { get; set; } = Data.DetectTargetFrameworks();
 
         private static string DetectTargetFrameworks()
         {

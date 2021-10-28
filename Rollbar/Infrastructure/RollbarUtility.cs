@@ -28,12 +28,13 @@
             IDictionary<string, object?>? custom = null
             )
         {
-            //if (rollbarConfig.RollbarDeveloperOptions.LogLevel.HasValue && level < rollbarConfig.RollbarDeveloperOptions.LogLevel.Value)
-            //{
-            //    // nice shortcut:
-            //    return null;
-            //}
-            if(!rollbarConfig.RollbarDeveloperOptions.Enabled)
+            if (!rollbarConfig.RollbarDeveloperOptions.Enabled)
+            {
+                // nice shortcut:
+                return null;
+            }
+
+            if (level < rollbarConfig.RollbarDeveloperOptions.LogLevel)
             {
                 // nice shortcut:
                 return null;
