@@ -20,10 +20,10 @@
 
         #region strings truncation support
 
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> stringPropertiesByType;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dictionaryPropertiesByType;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dtoPropertiesByType;
-        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> enumerablePropertiesByType;
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> stringPropertiesByType = DtoBase.ReflectStringProperies();
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dictionaryPropertiesByType = DtoBase.ReflectDictionaryProperies();
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> dtoPropertiesByType = DtoBase.ReflectDtoProperies();
+        private static readonly IReadOnlyDictionary<Type, PropertyInfo[]> enumerablePropertiesByType = DtoBase.ReflectEnumerableProperies();
 
         internal PropertyInfo[] StringProperties
         {
@@ -45,6 +45,7 @@
             get { return DtoBase.enumerablePropertiesByType[this.GetType()]; }
         }
 
+
         /// <summary>
         /// Truncates the strings.
         /// </summary>
@@ -65,16 +66,14 @@
 
             foreach (var property in this.DictionaryProperties)
             {
-                var objectDictionary = property.GetValue(this) as IDictionary<string, object?>;
-                if (objectDictionary != null)
+                if (property.GetValue(this) is IDictionary<string, object?> objectDictionary)
                 {
                     TruncateStringValues(objectDictionary, encoding, stringBytesLimit);
                     property.SetValue(this, objectDictionary);
                     continue;
                 }
 
-                var stringDictionary = property.GetValue(this) as IDictionary<string, string?>;
-                if (stringDictionary != null)
+                if (property.GetValue(this) is IDictionary<string, string?> stringDictionary)
                 {
                     TruncateStringValues(stringDictionary, encoding, stringBytesLimit);
                     property.SetValue(this, stringDictionary);
@@ -84,8 +83,7 @@
 
             foreach (var property in this.DtoProperties)
             {
-                DtoBase? dto = property.GetValue(this) as DtoBase;
-                if (dto != null)
+                if (property.GetValue(this) is DtoBase dto)
                 {
                     dto.TruncateStrings(encoding, stringBytesLimit);
                 }
@@ -105,24 +103,22 @@
                 }
                 else if (DtoBase.dtoPropertiesByType.Keys.Contains(enumerableItemTypes[0]))
                 {
-                    var dtos = property.GetValue(this) as IEnumerable<DtoBase>;
-                    if (dtos == null)
+                    if (property.GetValue(this) is not IEnumerable<DtoBase> dtos)
                     {
                         continue;
                     }
-                    foreach(var dto in dtos)
+                    foreach (var dto in dtos)
                     {
                         dto.TruncateStrings(encoding, stringBytesLimit);
                     }
                 }
                 else if (enumerableItemTypes[0] == typeof(string))
                 {
-                    var stringArray = property.GetValue(this) as string[];
-                    if (stringArray == null)
+                    if (property.GetValue(this) is not string[] stringArray)
                     {
                         continue;
                     }
-                    List<string?> truncatedStrings = new List<string?>(); 
+                    List<string?> truncatedStrings = new(); 
                     foreach(var str in stringArray)
                     {
                         truncatedStrings.Add(StringUtility.Truncate(str, encoding, stringBytesLimit));
@@ -134,12 +130,14 @@
             return this;
         }
 
+
         /// <summary>
         /// Truncates the string values.
         /// </summary>
         /// <param name="dictionary">The dictionary.</param>
         /// <param name="encoding">The encoding.</param>
         /// <param name="stringBytesLimit">The string bytes limit.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S3626:Jump statements should not be redundant", Justification = "Better communicates intent of the code.")]
         protected void TruncateStringValues(IDictionary<string, object?> dictionary, Encoding encoding, int stringBytesLimit)
         {
             Assumption.AssertNotNull(dictionary, nameof(dictionary));
@@ -147,8 +145,7 @@
             var keys = dictionary.Keys.ToArray();
             foreach (var key in keys)
             {
-                string? originalString = dictionary[key] as string;
-                if (originalString != null)
+                if (dictionary[key] is string originalString)
                 {
                     string? truncatedString = StringUtility.Truncate(originalString, encoding, stringBytesLimit);
                     if (!object.ReferenceEquals(originalString, truncatedString))
@@ -158,20 +155,17 @@
                     continue;
                 }
 
-                var objectDictionary = dictionary[key] as IDictionary<string, object?>;
-                if (objectDictionary != null)
+                if (dictionary[key] is IDictionary<string, object?> objectDictionary)
                 {
                     TruncateStringValues(objectDictionary, encoding, stringBytesLimit);
                     continue;
                 }
 
-                var stringDictionary = dictionary[key] as IDictionary<string, string?>;
-                if (stringDictionary != null)
+                if (dictionary[key] is IDictionary<string, string?> stringDictionary)
                 {
                     TruncateStringValues(stringDictionary, encoding, stringBytesLimit);
                     continue;
                 }
-
             }
         }
 
@@ -198,17 +192,6 @@
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Initializes static members of the <see cref="DtoBase"/> class.
-        /// </summary>
-        static DtoBase()
-        {
-            DtoBase.stringPropertiesByType = DtoBase.ReflectStringProperies();
-            DtoBase.dictionaryPropertiesByType = DtoBase.ReflectDictionaryProperies();
-            DtoBase.dtoPropertiesByType = DtoBase.ReflectDtoProperies();
-            DtoBase.enumerablePropertiesByType = DtoBase.ReflectEnumerableProperies();
         }
 
         private static IReadOnlyDictionary<Type, PropertyInfo[]> ReflectStringProperies()
@@ -337,7 +320,7 @@
             if (failedValidations == null)
             {
                 // it is always better to return an empty collection instead of null:
-                failedValidations = new ValidationResult[0];
+                failedValidations = ArrayUtility.GetEmptyArray<ValidationResult>();
             }
 
             return failedValidations;

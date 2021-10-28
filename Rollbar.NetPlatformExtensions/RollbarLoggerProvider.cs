@@ -153,18 +153,12 @@
                     this._loggers.Clear();
                 }
 
-                // Free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // Set large fields to null.
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // set large fields to null.
 
                 disposedValue = true;
             }
         }
-
-        // Override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~RollbarLoggerProvider() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.

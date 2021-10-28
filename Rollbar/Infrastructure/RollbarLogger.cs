@@ -452,14 +452,12 @@
                         using var rollbar = RollbarFactory.CreateNew(config);
                         rollbar.AsBlockingLogger(TimeSpan.FromSeconds(1)).Log(level, dataObject, custom);
                     }
-#pragma warning disable CA1031 // Do not catch general exception types
                     catch
                     {
                         // In case there was a TimeoutException (or any un-expected exception),
                         // there is nothing we can do here.
                         // We tried our best...
                     }
-#pragma warning restore CA1031 // Do not catch general exception types
                     finally
                     {
                         if (exception is AggregateException aggregateException)
@@ -479,7 +477,6 @@
             {
                 payloadBundle = CreatePayloadBundle(dataObject, level, custom, timeout, signal);
             }
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (System.Exception exception)
             {
                 RollbarErrorUtility.Report(
@@ -492,13 +489,11 @@
                     );
                 return null;
             }
-#pragma warning restore CA1031 // Do not catch general exception types
 
             try
             {
                 this._payloadQueue.Enqueue(payloadBundle);
             }
-#pragma warning disable CA1031 // Do not catch general exception types
             catch (System.Exception exception)
             {
                 RollbarErrorUtility.Report(
@@ -510,7 +505,6 @@
                     payloadBundle
                     );
             }
-#pragma warning restore CA1031 // Do not catch general exception types
 
             return payloadBundle;
         }

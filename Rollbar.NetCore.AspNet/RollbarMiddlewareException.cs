@@ -11,7 +11,6 @@
     [Serializable]
     public class RollbarMiddlewareException
         : Exception
-        , ISerializable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RollbarMiddlewareException"/> class.

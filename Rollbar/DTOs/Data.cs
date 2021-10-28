@@ -13,38 +13,26 @@
     public class Data
         : DtoBase
     {
-        private static readonly string DefaultFrameworkValue;
+        /// <summary>
+        /// The default language
+        /// </summary>
+        public static string DefaultLanguage { get; set; } = "c#";
+
+        /// <summary>
+        /// The default platform
+        /// </summary>
+        public static string DefaultPlatform { get; set; } = RuntimeEnvironmentUtility.GetOSDescription();
+
+        /// <summary>
+        /// The default framework value
+        /// </summary>
+        public static string DefaultFrameworkValue { get; set; } = Data.DetectTargetFrameworks();
 
         private static string DetectTargetFrameworks()
         {
             var targetFrameworks = RuntimeEnvironmentUtility.GetAssemblyTargetFrameworks(typeof(Data));
             return StringUtility.Combine(targetFrameworks, "; ");
         }
-
-        /// <summary>
-        /// Initializes static members of the <see cref="Data"/> class.
-        /// </summary>
-        static Data()
-        {
-            Data.DefaultFrameworkValue = Data.DetectTargetFrameworks();
-            Data.DefaultPlatform = RuntimeEnvironmentUtility.GetOSDescription();
-        }
-
-        /// <summary>
-        /// Gets or sets the default platform.
-        /// </summary>
-        /// <value>
-        /// The default platform.
-        /// </value>
-        internal static string DefaultPlatform { get; set; } = "windows";
-
-        /// <summary>
-        /// Gets or sets the default language.
-        /// </summary>
-        /// <value>
-        /// The default language.
-        /// </value>
-        internal static string DefaultLanguage { get; set; } = "c#";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Data"/> class.
@@ -447,7 +435,7 @@
         public Guid? GuidUuid
         {
             get { return Uuid == null ? (Guid?)null : Guid.Parse(Uuid); }
-            private set { Uuid = value == null ? null : value.Value.ToString("N"); }
+            private set { Uuid = value?.ToString("N"); }
         }
 
         /// <summary>

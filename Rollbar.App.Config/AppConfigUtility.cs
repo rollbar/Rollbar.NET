@@ -18,6 +18,7 @@
         /// </summary>
         /// <param name="config">The configuration.</param>
         /// <returns>false when the configuration was not found, otherwise true.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S4136:Method overloads should be grouped together", Justification = "Intentionally split by settings kind.")]
         public static bool LoadAppSettings(RollbarInfrastructureConfig config)
         {
             return AppConfigUtility.LoadAppSettings(config, RollbarConfigSection.GetConfiguration());

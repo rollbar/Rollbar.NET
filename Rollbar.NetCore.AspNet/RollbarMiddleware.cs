@@ -120,7 +120,7 @@ namespace Rollbar.NetCore.AspNet
         private readonly RequestDelegate _nextRequestProcessor;
 
         private readonly ILogger _logger;
-
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S4487:Unread \"private\" fields should be removed", Justification = "Future reminder")]
         private readonly RollbarOptions _rollbarOptions;
 
         /// <summary>
@@ -248,11 +248,13 @@ namespace Rollbar.NetCore.AspNet
             RollbarLocator.RollbarInstance.Critical(rollbarPackage);
         }
 
+
         /// <summary>
         /// Creates the telemetry event.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns>System.Nullable&lt;NetworkTelemetry&gt;.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1168:Empty arrays and collections should be returned instead of null", Justification = "Not applicable here.")]
         private static NetworkTelemetry? CreateTelemetryEvent(HttpContext context)
         {
             if (RollbarInfrastructure.Instance != null
