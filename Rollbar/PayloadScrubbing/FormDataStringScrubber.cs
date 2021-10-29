@@ -59,11 +59,13 @@
             this._formDataBoundary = ExtractBaundaryValue(contentTypeHeaderValue);
         }
 
+
         /// <summary>
         /// Extracts the baundary value.
         /// </summary>
         /// <param name="contentTypeHeaderValue">The content type header value.</param>
         /// <returns>System.String.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3267:Loops should be simplified with \"LINQ\" expressions", Justification = "Loop works cleaner here.")]
         private string? ExtractBaundaryValue(string contentTypeHeaderValue)
         {
             // Value sample:
@@ -105,20 +107,22 @@
             }
 
             parts = parts.Where(p => p.Count > 0).ToList();
-            foreach (var p in parts)
+            foreach (var p in from p in parts
+                              where string.IsNullOrEmpty(p.Last())
+                              select p)
             {
-                if (string.IsNullOrEmpty(p.Last()))
-                {
-                    p.RemoveAt(p.Count - 1);
-                }
+                p.RemoveAt(p.Count - 1);
             }
+
             return parts;
         }
+
 
         /// <summary>
         /// Processes the specified part.
         /// </summary>
         /// <param name="part">The part.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3267:Loops should be simplified with \"LINQ\" expressions", Justification = "Loop works better here.")]
         private void Process(List<string> part)
         {
             bool scrubContent = false;

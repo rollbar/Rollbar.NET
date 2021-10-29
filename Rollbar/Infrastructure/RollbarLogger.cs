@@ -9,6 +9,7 @@
     using System.Linq;
     using System.Runtime.ExceptionServices;
     using Rollbar.PayloadStore;
+    using System.Diagnostics;
 
     /// <summary>
     /// Implements disposable implementation of IRollbar.
@@ -17,10 +18,8 @@
     /// the methods return.
     /// </summary>
     /// <seealso cref="Rollbar.IRollbar" />
-    /// <seealso cref="System.IDisposable" />
     internal class RollbarLogger
         : IRollbar
-        , IDisposable
     {
 
         /// <summary>
@@ -69,10 +68,6 @@
             {
                 this._config = new RollbarLoggerConfig(this);
             }
-
-            // let's figure out where to keep the local payloads store:
-            //TODO: RollbarConfig - use the infrastructure related payload store settings...
-            //PayloadStoreConstants.DefaultRollbarStoreDbFile = ((RollbarLoggerConfig)this._config).GetLocalPayloadStoreFullPathName();
 
             // let's init proper Rollbar client:
             var rollbarClient = new RollbarClient(this);
@@ -287,11 +282,11 @@
         /// <summary>
         /// Logs the specified rollbar data.
         /// </summary>
-        /// <param name="rollbarData">The rollbar data.</param>
+        /// <param name="data">The rollbar data.</param>
         /// <returns>ILogger.</returns>
-        ILogger ILogger.Log(Data rollbarData)
+        ILogger ILogger.Log(Data data)
         {
-            return this.Log(rollbarData);
+            return this.Log(data);
         }
 
         /// <summary>
@@ -364,18 +359,6 @@
 
         #endregion ILogger explicitly 
 
-        #region IDisposable explicitly
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        void IDisposable.Dispose()
-        {
-            this.Dispose();
-        }
-
-        #endregion IDisposable explicitly
-
         /// <summary>
         /// Enqueues the specified data object.
         /// </summary>
@@ -417,7 +400,7 @@
             // here is the last chance to decide if we need to actually send this payload
             // based on the current config settings and rate-limit conditions:
             if (string.IsNullOrWhiteSpace(this._config.RollbarDestinationOptions.AccessToken)
-                || this._config.RollbarDeveloperOptions.Enabled == false
+                || !this._config.RollbarDeveloperOptions.Enabled 
                 || (level < this._config.RollbarDeveloperOptions.LogLevel)
                 || ((this._payloadQueue.AccessTokenQueuesMetadata != null) && this._payloadQueue.AccessTokenQueuesMetadata.IsTransmissionSuspended)
                 )
@@ -429,12 +412,12 @@
             if (this._config.RollbarDeveloperOptions.RethrowExceptionsAfterReporting)
             {
                 System.Exception? exception = dataObject as System.Exception;
-                if (exception == null)
+                if (exception == null 
+                    && dataObject is Data data 
+                    && data.Body != null
+                    )
                 {
-                    if (dataObject is Data data && data.Body != null)
-                    {
-                        exception = data.Body.OriginalException;
-                    }
+                    exception = data.Body.OriginalException;
                 }
 
                 if (exception != null)
@@ -568,61 +551,52 @@
             }
         }
 
+
         #region IDisposable Support
 
-        /// <summary>
-        /// The disposed value
-        /// </summary>
-        private bool _disposedValue = false; // To detect redundant calls
+        private bool disposedValue;
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// <param name="disposing">
+        ///   <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.
+        /// </param>
         protected virtual void Dispose(bool disposing)
         {
-            if (!_disposedValue)
+            if (!disposedValue)
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    // RollbarLogger type supports both paradigms: singleton-like (via RollbarLocator) and
+                    // multiple disposable instances (via RollbarFactory).
+                    // Here we want to make sure that the singleton instance is never disposed:
+                    System.Diagnostics.Trace.Assert(
+                        this != RollbarLocator.RollbarInstance.Logger, 
+                        $"Do not attempt disposing the singleton {this.GetType().FullName}"
+                        );
+
+                    // dispose managed state (managed objects)
                     this._payloadQueue.Release();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
 
-                _disposedValue = true;
+                disposedValue = true;
             }
         }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~RollbarLogger() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        /// <remarks>This code added to correctly implement the disposable pattern.</remarks>
         public void Dispose()
         {
-            // RollbarLogger type supports both paradigms: singleton-like (via RollbarLocator) and
-            // multiple disposable instances (via RollbarFactory).
-            // Here we want to make sure that the singleton instance is never disposed:
-            if(this == RollbarLocator.RollbarInstance.Logger)
-            {
-                return;
-            }
-
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion IDisposable Support
-
     }
 }

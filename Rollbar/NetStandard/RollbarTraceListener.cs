@@ -265,6 +265,7 @@
 
             if(!RollbarInfrastructure.Instance.IsInitialized)
             {
+
 #if !NETFX_47nOlder
                 if(RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
                 {
@@ -274,17 +275,15 @@
                     // NO-OP...
                     return null;
                 }
-                else
 #endif
-                {
-                    // It is safe to assume we can use the infrastructure:
-                    RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig(
-                        this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()],
-                        this.Attributes[RollbarTraceListenerAttributes.rollbarEnvironment.ToString()]
-                        );
-                    RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
-                    return rollbarInfrastructureConfig.RollbarLoggerConfig;
-                }
+
+                // It is safe to assume we can use the infrastructure:
+                RollbarInfrastructureConfig rollbarInfrastructureConfig = new RollbarInfrastructureConfig(
+                    this.Attributes[RollbarTraceListenerAttributes.rollbarAccessToken.ToString()],
+                    this.Attributes[RollbarTraceListenerAttributes.rollbarEnvironment.ToString()]
+                    );
+                RollbarInfrastructure.Instance.Init(rollbarInfrastructureConfig);
+                return rollbarInfrastructureConfig.RollbarLoggerConfig;
             }
             else
             {

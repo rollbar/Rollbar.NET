@@ -22,7 +22,6 @@
         /// </summary>
         /// <returns>IDestination[].</returns>
         IDestination[] GetDestinations();
-        //IDestination GetOrCreateDestination(string endPoint, string accessToken);
 
         /// <summary>
         /// Gets the stale records.

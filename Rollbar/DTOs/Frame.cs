@@ -50,12 +50,11 @@
                 {
                     this.FileName = components[0];
                 }
-                if (components.Length > 1)
+                if (components.Length > 1 
+                    && int.TryParse(components[1], out int lineNumber)
+                    )
                 {
-                    if (int.TryParse(components[1], out int lineNumber))
-                    {
-                        this.LineNo = lineNumber;
-                    }
+                    this.LineNo = lineNumber;
                 }
             }
 

@@ -33,11 +33,11 @@
         /// <summary>
         /// The notifier name
         /// </summary>
-        private static readonly string notifierName = "Rollbar.NET";
+        private static readonly string notifierName = !string.IsNullOrWhiteSpace(Notifier.DetectNotifierProduct()) ? $"Rollbar.NET ({Notifier.DetectNotifierProduct()})" : "Rollbar.NET";
         /// <summary>
         /// The notifier assembly version
         /// </summary>
-        private static readonly string notifierAssemblyVersion;
+        private static readonly string notifierAssemblyVersion = Notifier.DetectNotifierAssemblyVersion();
 
         /// <summary>
         /// Detects the notifier assembly version.
@@ -84,19 +84,6 @@
         {
             get { return this[ReservedProperties.Configuration] as IRollbarLoggerConfig; }
             set { this[ReservedProperties.Configuration] = value; }
-        }
-
-        /// <summary>
-        /// Initializes static members of the <see cref="Notifier"/> class.
-        /// </summary>
-        static Notifier()
-        {
-            string product = Notifier.DetectNotifierProduct();
-            if (!string.IsNullOrWhiteSpace(product))
-            {
-                Notifier.notifierName = $"{Notifier.notifierName} ({product})";
-            }
-            Notifier.notifierAssemblyVersion = Notifier.DetectNotifierAssemblyVersion();
         }
 
         /// <summary>
