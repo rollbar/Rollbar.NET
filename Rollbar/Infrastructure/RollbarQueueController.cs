@@ -58,9 +58,6 @@ namespace Rollbar
         /// </summary>
         private RollbarQueueController()
         {
-            //this.ReevaluateUseOfLocalPayloadStore();
-
-            //this.Start();
         }
 
         /// <summary>
@@ -232,10 +229,7 @@ namespace Rollbar
                 this._storeRepository.SetRollbarStoreDbFullName(storePath!);
             }
 
-            //this._useLocalPayloadStore = true;
             this._storeRepository?.MakeSureDatabaseExistsAndReady();
-
-            //Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + ".");
         }
 
         internal string? GetLocalPayloadStoreFullPathName(IRollbarOfflineStoreOptions options)
@@ -269,16 +263,6 @@ namespace Rollbar
                 this._allQueues.Add(queue);
                 this.IndexByToken(queue);
 
-                //TODO: RollbarConfig - use only infrastructure related payload store settings
-                //this._useLocalPayloadStore |= queue.Logger.Config.EnableLocalPayloadStore;
-                //if (this._useLocalPayloadStore && this._storeRepository == null)
-                //{
-                //    Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.Register) + "...");
-                //    this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
-                //    this._storeRepository.MakeSureDatabaseExistsAndReady();
-                //    Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Register) + ".");
-                //}
-
                 ((RollbarLoggerConfig) queue.Logger.Config).Reconfigured += LoggerConfig_Reconfigured;
 
                 // The following debug line causes stack overflow when RollbarTraceListener is activated:                
@@ -304,33 +288,10 @@ namespace Rollbar
 
                 this.DropIndexByToken(queue);
                 this._allQueues.Remove(queue);
-                //this.ReevaluateUseOfLocalPayloadStore();
                 ((RollbarLoggerConfig) queue.Logger.Config).Reconfigured -= LoggerConfig_Reconfigured;
                 Debug.WriteLine(this.GetType().Name + ": Unregistered a queue. Total queues count: " + this._allQueues.Count + ".");
             }
         }
-
-        //private void ReevaluateUseOfLocalPayloadStore()
-        //{
-        //    foreach (var queue in _allQueues)
-        //    {
-        //        //TODO: RollbarConfig - use the infrastructure related payload store settings...
-        //        //if (queue.Logger.Config.EnableLocalPayloadStore)
-        //        {
-        //            this._useLocalPayloadStore = true;
-        //            if (this._storeRepository == null)
-        //            {
-        //                Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.ReevaluateUseOfLocalPayloadStore) + "...");
-        //                this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
-        //                this._storeRepository.MakeSureDatabaseExistsAndReady();
-        //                Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.ReevaluateUseOfLocalPayloadStore) + ".");
-        //            }
-        //            return;
-        //        }
-        //    }
-
-        //    this._useLocalPayloadStore = false;
-        //}
 
         /// <summary>
         /// Gets the queues count.
@@ -358,7 +319,6 @@ namespace Rollbar
             return result;
         }
 
-
         internal int GetUnReleasedQueuesCount()
         {
             int result = 0;
@@ -385,12 +345,11 @@ namespace Rollbar
         {
             Assumption.AssertNotNull(this._config, nameof(this._config));
 
-            if(!string.IsNullOrWhiteSpace(accessToken))
+            if (!string.IsNullOrWhiteSpace(accessToken) 
+                && this._queuesByAccessToken.TryGetValue(accessToken!, out AccessTokenQueuesMetadata? metadata)
+                )
             {
-                if(this._queuesByAccessToken.TryGetValue(accessToken!, out AccessTokenQueuesMetadata? metadata))
-                {
-                    return metadata.GetPayloadQueues();
-                }
+                return metadata.GetPayloadQueues();
             }
             return new PayloadQueue[0];
         }
@@ -416,8 +375,6 @@ namespace Rollbar
         /// </summary>
         private readonly Dictionary<string, AccessTokenQueuesMetadata> _queuesByAccessToken =
             new Dictionary<string, AccessTokenQueuesMetadata>();
-
-        //private bool _useLocalPayloadStore = false;
 
         /// <summary>
         /// Keeps the processing all queues.
@@ -467,7 +424,7 @@ namespace Rollbar
                         null
                     );
 
-                    //TODO: do we want to direct the exception 
+                    //NOTE: do we want to direct the exception 
                     //      to some kind of Rollbar notifier maintenance "access token"?
                 }
 #pragma warning restore CS0168 // Variable is declared but never used
@@ -482,6 +439,11 @@ namespace Rollbar
 
             CompleteProcessing();
         }
+
+        /// <summary>
+        /// The stale record age
+        /// </summary>
+        private static TimeSpan staleRecordAge = TimeSpan.FromDays(7);
 
         /// <summary>
         /// Processes the persistent store once.
@@ -499,11 +461,6 @@ namespace Rollbar
                 ProcessPersistentStoreOnce(destination);
             }
         }
-
-        /// <summary>
-        /// The stale record age
-        /// </summary>
-        private static TimeSpan staleRecordAge = TimeSpan.FromDays(7);
 
         /// <summary>
         /// Processes the persistent store once.
@@ -975,18 +932,8 @@ namespace Rollbar
             RollbarLogger? rollbarLogger = config?.Logger as RollbarLogger;
             _ = Assumption.AssertNotNull(rollbarLogger, nameof(rollbarLogger));
 
-            //string newStorePath = (config.RollbarOfflineStoreOptions as RollbarOfflineStoreOptions)?.GetLocalPayloadStoreFullPathName();
-            //if (this._useLocalPayloadStore && this._storeRepository != null && string.Compare(newStorePath, this._storeRepository.GetRollbarStoreDbFullName(), false) != 0)
-            //{
-            //    this.Stop(true);
-            //    this._storeRepository.SetRollbarStoreDbFullName(newStorePath);
-            //    this.Start();
-            //}
-
             lock(this._syncLock)
             {
-                //this.ReevaluateUseOfLocalPayloadStore();
-
                 PayloadQueue? queue = rollbarLogger?.Queue;
                 Assumption.AssertNotNull(queue, nameof(queue));
 
@@ -1019,10 +966,12 @@ namespace Rollbar
             tokenMetadata.Register(queue);
         }
 
+
         /// <summary>
         /// Drops the index by token.
         /// </summary>
         /// <param name="queue">The queue.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3267:Loops should be simplified with \"LINQ\" expressions", Justification = "More clear code intent.")]
         private void DropIndexByToken(PayloadQueue? queue)
         {
             if(queue == null)
@@ -1039,10 +988,12 @@ namespace Rollbar
             }
         }
 
+
         /// <summary>
         /// Handles the <see cref="E:RollbarEvent" /> event.
         /// </summary>
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S3458:Empty \"case\" clauses that fall through to the \"default\" should be omitted", Justification = "Prefer to listall cases explicitly.")]
         internal void OnRollbarEvent(RollbarEventArgs e)
         {
             Assumption.AssertNotNull(this._config, nameof(this._config));
@@ -1057,7 +1008,7 @@ namespace Rollbar
 
             (e.Logger as RollbarLogger)?.OnRollbarEvent(e);
 
-            const string category = nameof(this.OnRollbarEvent);// "OnRollbarEvent(...)";
+            const string category = nameof(this.OnRollbarEvent);
             const int id = 0;
             switch(e)
             {
@@ -1272,14 +1223,6 @@ namespace Rollbar
         /// </summary>
         public void Start()
         {
-            //if (this._useLocalPayloadStore && this._storeRepository == null)
-            //{
-            //    Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.Start) + "...");
-            //    this._storeRepository = PayloadStoreRepositoryHelper.CreatePayloadStoreRepository();
-            //    this._storeRepository.MakeSureDatabaseExistsAndReady();
-            //    Debug.WriteLine(this.GetType().Name + ": Initialized StoreContext from: " + nameof(this.Start) + ".");
-            //}
-
             Assumption.AssertNotNull(this._config, nameof(this._config));
 
             if(this._rollbarCommThread == null)
@@ -1291,7 +1234,6 @@ namespace Rollbar
                 {
                     IsBackground = true,
                     Name = "RollbarProcessor",
-                    //Priority = ThreadPriority.AboveNormal,
                 };
 
                 this._cancellationTokenSource = new CancellationTokenSource();
@@ -1317,7 +1259,6 @@ namespace Rollbar
 
             if(this._storeRepository != null)
             {
-                //this._storeRepository.SaveChanges(); // I did not see any change of the context that was not saved immediatly
                 this._storeRepository.Dispose();
                 this._storeRepository = null;
             }
@@ -1326,11 +1267,12 @@ namespace Rollbar
         /// <summary>
         /// Stops the queues processing.
         /// </summary>
-        public void Stop(bool immediate)
+        /// <param name="immediately"></param>
+        public void Stop(bool immediately)
         {
             Assumption.AssertNotNull(this._config, nameof(this._config));
 
-            if(!immediate && this._cancellationTokenSource != null)
+            if(!immediately && this._cancellationTokenSource != null)
             {
                 this._cancellationTokenSource.Cancel();
                 return;
@@ -1354,9 +1296,6 @@ namespace Rollbar
 
         #region IDisposable Support
 
-        /// <summary>
-        /// The disposed value
-        /// </summary>
         private bool disposedValue = false; // To detect redundant calls
 
         /// <summary>
@@ -1369,7 +1308,7 @@ namespace Rollbar
             {
                 if(disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    // dispose managed state (managed objects).
                     CompleteProcessing();
                     if(this._config != null)
                     {
@@ -1377,18 +1316,12 @@ namespace Rollbar
                     }
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // set large fields to null.
 
                 disposedValue = true;
             }
         }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~RollbarQueueController() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -1398,8 +1331,7 @@ namespace Rollbar
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
         #endregion IDisposable Support

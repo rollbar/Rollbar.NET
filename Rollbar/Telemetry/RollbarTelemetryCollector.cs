@@ -29,7 +29,7 @@
         {
             get
             {
-                return NestedSingleInstance.Instance;
+                return NestedSingleInstance.TheInstance;
             }
         }
 
@@ -49,7 +49,7 @@
             /// <summary>
             /// The singleton-like instance of the service.
             /// </summary>
-            internal static readonly RollbarTelemetryCollector? Instance =
+            internal static readonly RollbarTelemetryCollector? TheInstance =
                 RollbarInfrastructure.Instance.IsInitialized ? new RollbarTelemetryCollector()
                 : null;
         }
@@ -271,6 +271,7 @@
             //TBD...
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1172:Unused method parameters should be removed", Justification = "To be implemented...")]
         private void KeepCollectingTelemetry(object? data)
         {
             //for now, until AutoCollectTelemetry() is implemented:
@@ -323,22 +324,16 @@
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    // dispose managed state (managed objects).
                     CompleteProcessing();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // set large fields to null.
 
                 disposedValue = true;
             }
         }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~TelemetryCollector() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, 
@@ -351,8 +346,7 @@
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
