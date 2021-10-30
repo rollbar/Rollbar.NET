@@ -36,11 +36,6 @@
         private bool _isReleased;
 
         /// <summary>
-        /// The access token queues metadata
-        /// </summary>
-        private AccessTokenQueuesMetadata? _accessTokenQueuesMetadata;
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="PayloadQueue"/> class from being created.
         /// </summary>
         private PayloadQueue()
@@ -223,11 +218,7 @@
         /// Gets or sets the access token queues metadata.
         /// </summary>
         /// <value>The access token queues metadata.</value>
-        public AccessTokenQueuesMetadata? AccessTokenQueuesMetadata
-        {
-            get { return this._accessTokenQueuesMetadata; }
-            set { this._accessTokenQueuesMetadata = value; }
-        }
+        public AccessTokenQueuesMetadata? AccessTokenQueuesMetadata { get; set; }
 
         /// <summary>
         /// Gets the items to persist.

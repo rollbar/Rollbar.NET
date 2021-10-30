@@ -196,23 +196,18 @@ namespace Rollbar
 
             this._config = config;
             this._config.Reconfigured += _config_Reconfigured;
-            //TODO: implement...
             this.EvaluateUseOfLocalPayloadStoreOptions(this._config.RollbarOfflineStoreOptions);
 
-            //this.ReevaluateUseOfLocalPayloadStore();
             this.Start();
         }
 
         private void _config_Reconfigured(object? sender, EventArgs e)
         {
-            //TODO: RollbarConfig - implement
-            //throw new NotImplementedException();
+            //NOTE: RollbarConfig - implement
         }
 
         private void EvaluateUseOfLocalPayloadStoreOptions(IRollbarOfflineStoreOptions options)
         {
-            //Debug.WriteLine(this.GetType().Name + ": Initializing StoreContext from: " + nameof(this.EvaluateUseOfLocalPayloadStoreOptions) + "...");
-
             if(!options.EnableLocalPayloadStore)
             {
                 if(this._storeRepository != null)

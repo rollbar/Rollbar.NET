@@ -66,11 +66,6 @@
         /// </summary>
         private Payload? _payload;
 
-        /// <summary>
-        /// As HTTP content to send
-        /// </summary>
-        private StringContent? _asHttpContentToSend;
-
         #endregion one-time calculated caches
 
         /// <summary>
@@ -95,17 +90,7 @@
         /// Gets or sets as HTTP content to send.
         /// </summary>
         /// <value>As HTTP content to send.</value>
-        internal StringContent? AsHttpContentToSend
-        {
-            get
-            {
-                return this._asHttpContentToSend;
-            }
-            set
-            {
-                this._asHttpContentToSend = value;
-            }
-        }
+        internal StringContent? AsHttpContentToSend { get; set; }
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PayloadBundle"/> class from being created.

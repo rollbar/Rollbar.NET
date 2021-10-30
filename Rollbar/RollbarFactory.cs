@@ -31,11 +31,13 @@
             }
         }
 
+
         /// <summary>
         /// Creates the new instance of IRollbar.
         /// </summary>
         /// <param name="config">The rollbar configuration.</param>
         /// <returns>IRollbar.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Critical Code Smell", "S3973:A conditionally executed single line should be denoted by indentation", Justification = "We have conditional compilation here. Keeps better code structure.")]
         public static IRollbar CreateNew(
             IRollbarLoggerConfig? config = null
             )

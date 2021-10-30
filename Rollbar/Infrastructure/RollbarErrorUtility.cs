@@ -38,7 +38,7 @@
             }
             else
             {
-                //RollbarQueueController.Instance.OnRollbarEvent(rollbarEvent);
+                RollbarQueueController.Instance?.OnRollbarEvent(rollbarEvent);
             }
 
         }

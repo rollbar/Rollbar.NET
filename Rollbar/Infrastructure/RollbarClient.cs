@@ -470,8 +470,8 @@
             if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
             {
                 var exception = new ArgumentOutOfRangeException(
-                    paramName: nameof(payload),
-                    message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
+                    paramName: nameof(payloadBundle),
+                    message: $"Bundle's payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
                 );
 
                 RollbarErrorUtility.Report(
@@ -524,37 +524,33 @@
             Payload? payload = payloadBundle.GetPayload();
 
             DTOs.Request? request = payload?.Data.Request;
-            if (request?.PostBody is string requestBody)
+            if (request?.PostBody is string requestBody 
+                && request.Headers != null
+                && request.Headers.TryGetValue("Content-Type", out string? requestContentTypeHeader)
+                )
             {
-                if (request.Headers != null 
-                    && request.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
-                    )
-                {
-                    request.PostBody = 
-                        this.ScrubHttpMessageBodyContentString(
-                            requestBody, 
-                            contentTypeHeader,
-                            this._payloadScrubber.ScrubMask, 
-                            this._payloadScrubber.PayloadFieldNames,
-                            this._payloadScrubber.HttpRequestBodyPaths);
-                }
+                request.PostBody =
+                    this.ScrubHttpMessageBodyContentString(
+                        requestBody,
+                        requestContentTypeHeader,
+                        this._payloadScrubber.ScrubMask,
+                        this._payloadScrubber.PayloadFieldNames,
+                        this._payloadScrubber.HttpRequestBodyPaths);
             }
 
             DTOs.Response? response = payload?.Data.Response;
-            if (response?.Body is string responseBody)
+            if (response?.Body is string responseBody 
+                && response.Headers != null
+                && response.Headers.TryGetValue("Content-Type", out string? responseContentTypeHeader)
+                )
             {
-                if (response.Headers != null 
-                    && response.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
-                    )
-                {
-                    response.Body =
-                        this.ScrubHttpMessageBodyContentString(
-                            responseBody,
-                            contentTypeHeader,
-                            this._payloadScrubber.ScrubMask,
-                            this._payloadScrubber.PayloadFieldNames,
-                            this._payloadScrubber.HttpResponseBodyPaths);
-                }
+                response.Body =
+                    this.ScrubHttpMessageBodyContentString(
+                        responseBody,
+                        responseContentTypeHeader,
+                        this._payloadScrubber.ScrubMask,
+                        this._payloadScrubber.PayloadFieldNames,
+                        this._payloadScrubber.HttpResponseBodyPaths);
             }
 
             return true;

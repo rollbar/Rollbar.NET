@@ -43,9 +43,11 @@
         /// </summary>
         private readonly IRollbarConfigurationLoader? _loader = null;
 
+
         /// <summary>
         /// Initializes static members of the <see cref="RollbarConfigurationLoader" /> class.
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S3963:\"static\" fields should be initialized inline", Justification = "Keeps code more maintainable.")]
         static RollbarConfigurationLoader()
         {
             string sdkAssembliesPath = RuntimeEnvironmentUtility.GetSdkRuntimeLocationPath();

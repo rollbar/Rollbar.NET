@@ -14,9 +14,9 @@
             return classification;
         }
 
-        public static PerformanceTimer GetPerformanceTimer(ClassificationDeclaration classificationDeclaration)
+        public static PerformanceTimerAttribute GetPerformanceTimer(ClassificationDeclaration classificationDeclaration)
         {
-            PerformanceTimer timer = PerformanceTimer.StartNew(
+            var timer = PerformanceTimerAttribute.StartNew(
                 RollbarPerformanceMonitor.Instance,
                 PerformanceUtil.GetClassification(classificationDeclaration)
                 );

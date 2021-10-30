@@ -13,23 +13,14 @@
         /// <value>The default rollbar store database file.</value>
         public static string DefaultRollbarStoreDbFile { get; set; } = "RollbarPayloadsStore.db";
 
+
         /// <summary>
         /// The default rollbar store database file location
         /// </summary>
-        public static readonly string? DefaultRollbarStoreDbFileLocation = null;
-
-        /// <summary>
-        /// Initializes static members of the <see cref="PayloadStoreConstants"/> class.
-        /// </summary>
-        static PayloadStoreConstants()
-        {
-#pragma warning disable CA1307 // Specify StringComparison for clarity
-            if (!Environment.OSVersion.VersionString.Contains("Windows"))
-#pragma warning restore CA1307 // Specify StringComparison for clarity
-            {
-                DefaultRollbarStoreDbFileLocation =
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            }
-        }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1307:Specify StringComparison for clarity", Justification = "Not applicable to all targeted .NET versions.")]
+        public static readonly string? DefaultRollbarStoreDbFileLocation = 
+            !Environment.OSVersion.VersionString.Contains("Windows") 
+            ? Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) 
+            : null;
     }
 }

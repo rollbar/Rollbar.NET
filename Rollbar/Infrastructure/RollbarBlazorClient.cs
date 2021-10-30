@@ -33,8 +33,6 @@
         /// </summary>
         private readonly HttpClient _httpClient;
 
-        //private readonly TimeSpan _expectedPostToApiTimeout;
-
         /// <summary>
         /// The payload post URI
         /// </summary>
@@ -54,8 +52,15 @@
 
         #region constructors
 
-
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:Rollbar.RollbarBlazorClient" /> class.
+        /// </summary>
+        /// <param name="logger">
+        /// The logger.
+        /// </param>
+        /// <param name="httpClient">
+        /// The HTTP client.
+        /// </param>
         public RollbarBlazorClient(IRollbar logger, HttpClient httpClient)
         {
             Assumption.AssertNotNull(logger, nameof(logger));
@@ -70,13 +75,6 @@
                 new Uri($"{logger.Config.RollbarDestinationOptions.EndPoint}item/");
 
             this._httpClient = httpClient;
-                //RollbarQueueController.Instance.ProvideHttpClient(
-                //    rollbarConfig.HttpProxyOptions.ProxyAddress,
-                //    rollbarConfig.HttpProxyOptions.ProxyUsername,
-                //    rollbarConfig.HttpProxyOptions.ProxyPassword
-                //);
-
-            //this._expectedPostToApiTimeout = logger.Config.RollbarInfrastructureOptions.PayloadPostTimeout;
 
             var header = new MediaTypeWithQualityHeaderValue("application/json");
             if(!this._httpClient.DefaultRequestHeaders.Accept.Contains(header))
@@ -172,84 +170,6 @@
 
             return true;
         }
-
-        //public RollbarResponse PostAsJson(PayloadBundle payloadBundle)
-        //{
-        //    Assumption.AssertNotNull(payloadBundle, nameof(payloadBundle));
-
-        //    // first, let's run quick Internet availability check
-        //    // to minimize potential timeout of the following JSON POST call: 
-        //    //if (!ConnectivityMonitor.Instance.IsConnectivityOn)
-        //    //{
-        //    //    throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
-        //    //}
-
-        //    using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
-        //    {
-        //        var task = this.PostAsJsonAsync(payloadBundle, cancellationTokenSource.Token);
-
-        //        try
-        //        {
-        //            if(!task.Wait(this._expectedPostToApiTimeout))
-        //            {
-        //                cancellationTokenSource.Cancel(true);
-        //            }
-        //            return task.Result;
-        //        }
-        //        catch(System.Exception ex)
-        //        {
-        //            RollbarErrorUtility.Report(
-        //                null, 
-        //                payloadBundle.AsHttpContentToSend, 
-        //                InternalRollbarError.PayloadPostError, 
-        //                "While PostAsJson(PayloadBundle payloadBundle)...", 
-        //                ex,
-        //                payloadBundle
-        //            );
-        //            return null;
-        //        }
-        //    }
-        //}
-
-        //public RollbarResponse PostAsJson(string accessToken, string jsonContent) 
-        //{
-        //    Assumption.AssertNotNullOrWhiteSpace(accessToken, nameof(accessToken));
-        //    Assumption.AssertNotNullOrWhiteSpace(jsonContent, nameof(jsonContent));
-
-        //    // first, let's run quick Internet availability check
-        //    // to minimize potential timeout of the following JSON POST call: 
-        //    if (!ConnectivityMonitor.Instance.IsConnectivityOn)
-        //    {
-        //        throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
-        //    }
-
-        //    using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
-        //    {
-        //        var task = this.PostAsJsonAsync(accessToken, jsonContent, cancellationTokenSource.Token);
-
-        //        try
-        //        {
-        //            if (!task.Wait(this._expectedPostToApiTimeout))
-        //            {
-        //                cancellationTokenSource.Cancel(true);
-        //            }
-        //            return task.Result;
-        //        }
-        //        catch(System.Exception ex)
-        //        {
-        //            RollbarErrorUtility.Report(
-        //                null, 
-        //                jsonContent, 
-        //                InternalRollbarError.PayloadPostError, 
-        //                "While PostAsJson((string destinationUri, string accessToken, string jsonContent)...", 
-        //                ex,
-        //                null
-        //            );
-        //            return null;
-        //        }
-        //    }
-
-        //}
 
         /// <summary>
         /// post as json as an asynchronous operation.
@@ -408,8 +328,8 @@
             if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
             {
                 var exception = new ArgumentOutOfRangeException(
-                    paramName: nameof(payload),
-                    message: $"Payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
+                    paramName: nameof(payloadBundle),
+                    message: $"Bundle's payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
                 );
 
                 RollbarErrorUtility.Report(
@@ -461,37 +381,33 @@
             }
 
             DTOs.Request? request = payload.Data.Request;
-            if (request?.PostBody is string requestBody)
+            if (request?.PostBody is string requestBody 
+                && request.Headers != null
+                && request.Headers.TryGetValue("Content-Type", out string? requestContentTypeHeader)
+                )
             {
-                if (request.Headers != null 
-                    && request.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
-                    )
-                {
-                    request.PostBody = 
-                        this.ScrubHttpMessageBodyContentString(
-                            requestBody, 
-                            contentTypeHeader,
-                            this._payloadScrubber.ScrubMask, 
-                            this._payloadScrubber.PayloadFieldNames,
-                            this._payloadScrubber.HttpRequestBodyPaths);
-                }
+                request.PostBody =
+                    this.ScrubHttpMessageBodyContentString(
+                        requestBody,
+                        requestContentTypeHeader,
+                        this._payloadScrubber.ScrubMask,
+                        this._payloadScrubber.PayloadFieldNames,
+                        this._payloadScrubber.HttpRequestBodyPaths);
             }
 
             DTOs.Response? response = payload.Data.Response;
-            if (response?.Body is string responseBody)
+            if (response?.Body is string responseBody 
+                && response.Headers != null
+                && response.Headers.TryGetValue("Content-Type", out string? responseContentTypeHeader)
+                )
             {
-                if (response.Headers != null 
-                    && response.Headers.TryGetValue("Content-Type", out string? contentTypeHeader)
-                    )
-                {
-                    response.Body =
-                        this.ScrubHttpMessageBodyContentString(
-                            responseBody,
-                            contentTypeHeader,
-                            this._payloadScrubber.ScrubMask,
-                            this._payloadScrubber.PayloadFieldNames,
-                            this._payloadScrubber.HttpResponseBodyPaths);
-                }
+                response.Body =
+                    this.ScrubHttpMessageBodyContentString(
+                        responseBody,
+                        responseContentTypeHeader,
+                        this._payloadScrubber.ScrubMask,
+                        this._payloadScrubber.PayloadFieldNames,
+                        this._payloadScrubber.HttpResponseBodyPaths);
             }
 
             return true;
