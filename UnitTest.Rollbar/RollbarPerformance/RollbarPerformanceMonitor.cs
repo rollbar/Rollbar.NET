@@ -104,7 +104,7 @@
         /// </summary>
         /// <param name="measuredTime">The measured time.</param>
         /// <param name="measurementClassification">The measurement classification.</param>
-        private void PerformCapture(TimeSpan measuredTime, IClassification measurementClassification = null)
+        private static void PerformCapture(TimeSpan measuredTime, IClassification measurementClassification = null)
         {
             StringBuilder sb = new StringBuilder(measuredTime.TotalMilliseconds.ToString());// + " [msec],");
             foreach (var classifier in measurementClassification.Classifiers)

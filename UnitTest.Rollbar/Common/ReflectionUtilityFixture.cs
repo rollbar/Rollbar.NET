@@ -291,7 +291,7 @@
             Two,
         }
 
-        public static int StaticDataField = 321;
+        public const int StaticDataField = 321;
         public static int StaticProp {get;set;} = 123;
         public int IntProp {get;set;}
         public string StringProp {get;set;} = "String Property Value";

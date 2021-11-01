@@ -3,6 +3,7 @@
 namespace UnitTest.Rollbar.DTOs
 {
     using global::Rollbar;
+    using global::Rollbar.Common;
     using global::Rollbar.DTOs;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
@@ -38,7 +39,7 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                var rb = new Body(new System.Exception[0]);
+                var rb = new Body(ArrayUtility.GetEmptyArray<System.Exception>());
             });
         }
 

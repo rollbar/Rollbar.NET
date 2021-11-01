@@ -59,10 +59,10 @@ namespace UnitTest.Rollbar.PayloadScrubbing
 
             var result = RollbarPayloadScrubber.FilterOutCriticalFields(scrubFields, criticalDataFields);
 
-            Assert.AreEqual(expectedFields.Count(), result.Count());
+            Assert.AreEqual(expectedFields.Length, result.Count());
 
             int i = 0;
-            while (i < expectedFields.Count())
+            while (i < expectedFields.Length)
             {
                 Assert.AreEqual(expectedFields[i], result.ElementAt(i));
                 i++;

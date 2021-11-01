@@ -3,6 +3,7 @@
 namespace UnitTest.Rollbar.DTOs
 {
     using global::Rollbar;
+    using global::Rollbar.Common;
     using global::Rollbar.DTOs;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Newtonsoft.Json;
@@ -120,7 +121,7 @@ namespace UnitTest.Rollbar.DTOs
                 {
                     { "One", 1 },
                     { "String", "Hi There" },
-                    { "Arr", new object[0] },
+                    { "Arr", ArrayUtility.GetEmptyArray<object>() },
                 },
             };
             var json = JsonConvert.SerializeObject(frame);

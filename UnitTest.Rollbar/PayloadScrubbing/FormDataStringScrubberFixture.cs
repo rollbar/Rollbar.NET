@@ -35,7 +35,7 @@ namespace UnitTest.Rollbar.PayloadScrubbing
         private const string partBoundary = "---------------------------8721656041911415653955004498";
         private const string scrubMask = "***";
 
-        private TestCase<string, string> BuildTestCase()
+        private static TestCase<string, string> BuildTestCase()
         {
 
             StringBuilder input = new StringBuilder();

@@ -29,7 +29,7 @@ namespace UnitTest.Rollbar.PayloadStore
         {
         }
 
-        private void ResetStoreData()
+        private static void ResetStoreData()
         {
             using (StoreContext storeContext = new StoreContext())
             {
@@ -132,7 +132,7 @@ namespace UnitTest.Rollbar.PayloadStore
                         .Include(d => d.PayloadRecords)
                         .First()
                         .PayloadRecords
-                        .Count()
+                        .Count
                     );
                 Assert.AreEqual(3, 
                     storeContext.Destinations
@@ -140,7 +140,7 @@ namespace UnitTest.Rollbar.PayloadStore
                         .Include(d => d.PayloadRecords)
                         .First()
                         .PayloadRecords
-                        .Count()
+                        .Count
                     );
             }
         }

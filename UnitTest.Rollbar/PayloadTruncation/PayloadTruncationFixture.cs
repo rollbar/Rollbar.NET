@@ -178,7 +178,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
             AssertPayloadSizeReduction(expectReduction, new Payload[] { testPayload }, trancationStrategy);
         }
 
-        private void AssertPayloadSizeReduction(bool expectReduction, Payload[] testPayloads, IterativeTruncationStrategy trancationStrategy)
+        private static void AssertPayloadSizeReduction(bool expectReduction, Payload[] testPayloads, IterativeTruncationStrategy trancationStrategy)
         {
             foreach (var testPayload in testPayloads)
             {
