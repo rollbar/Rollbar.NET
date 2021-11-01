@@ -66,7 +66,8 @@
         /// <param name="contentTypeHeaderValue">The content type header value.</param>
         /// <returns>System.String.</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S3267:Loops should be simplified with \"LINQ\" expressions", Justification = "Loop works cleaner here.")]
-        private string? ExtractBaundaryValue(string contentTypeHeaderValue)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1307:Specify StringComparison for clarity", Justification = "Not available in all .NET framework targets.")]
+        private static string? ExtractBaundaryValue(string contentTypeHeaderValue)
         {
             // Value sample:
             // multipart/form-data; boundary=---------------------------974767299852498929531610575
@@ -74,9 +75,7 @@
             var components = contentTypeHeaderValue.Split(';');
             foreach (var component in components)
             {
-#pragma warning disable CA1307 // Specify StringComparison for clarity
                 if (component.Contains("boundary="))
-#pragma warning restore CA1307 // Specify StringComparison for clarity
                 {
                     return component.Split('=').Last();
                 }
@@ -92,7 +91,7 @@
         /// <returns>List&lt;List&lt;System.String&gt;&gt;.</returns>
         private List<List<string>> SplitIntoParts(string inputString)
         {
-            List<List<string>> parts = new List<List<string>>();
+            List<List<string>> parts = new();
 
             List<string> part = new List<string>();
             parts.Add(part);

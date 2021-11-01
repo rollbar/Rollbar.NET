@@ -74,6 +74,7 @@
         }
     }
 
+
     /// <summary>
     /// An abstract base for implementing IReconfigurable (based on a base type) types.
     /// Implements the <see cref="Rollbar.Common.ReconfigurableBase" />
@@ -123,7 +124,7 @@
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-        public bool Equals(TBase? other)
+        public virtual bool Equals(TBase? other)
         {
             return base.Equals(other, this._baseInstanceType);
         }
@@ -188,8 +189,7 @@
             List<object?> propertyValues = 
                 thisInstanceProperyInfos
                 .Select(i => i.GetValue(this))
-                .Cast<object?>()
-                .ToList();
+                .ToList<object?>();
             this.reconfigurableProperties = 
                 propertyValues
                 .Where(i => i is ReconfigurableBase)

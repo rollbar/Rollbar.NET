@@ -63,7 +63,7 @@
                 }
 
                 traceSource.TraceInformation($"Located optional Rollbar SDK assembly: {dllFullPath}");
-                assembly = Assembly.LoadFrom(dllFullPath);
+                assembly = ReflectionUtility.LoadSdkModuleAssembly(dllFullPath);
                 if (assembly != null)
                 {
                     traceSource.TraceInformation($"Loaded optional Rollbar SDK assembly: {dllFullPath}");

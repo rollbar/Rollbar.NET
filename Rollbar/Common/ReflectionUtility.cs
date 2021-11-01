@@ -1,10 +1,12 @@
 ﻿namespace Rollbar.Common
 {
-    using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
+
+    using Rollbar.Diagnostics;
 
     /// <summary>
     /// A utility class aiding with .NET Reflection.
@@ -18,6 +20,7 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>FieldInfo[].</returns>
+        [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "By design.")]
         public static FieldInfo[] GetAllDataFields(Type type)
         {
             if (type == null)
@@ -37,9 +40,7 @@
             relevantTypes.Reverse(); // eventually, we want following order: most base type's data fields first...
             foreach (var t in relevantTypes)
             {
-#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
                 fieldInfos.AddRange(t.GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic));
-#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
             }
 
             return fieldInfos.ToArray();
@@ -50,12 +51,11 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>All discovered FieldInfos.</returns>
+        [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "By design.")]
         public static FieldInfo[] GetAllStaticDataFields(Type type)
         {
             var memberInfos =
-#pragma warning disable S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
                 type.GetFields(BindingFlags.Static | BindingFlags.NonPublic);
-#pragma warning restore S3011 // Reflection should not be used to increase accessibility of classes, methods, or fields
 
             return memberInfos;
         }
@@ -339,6 +339,40 @@
                             .ToArray();
                     }
                     return commonInterfaceTypes.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Loads the SDK module assembly.
+        /// </summary>
+        /// <param name="assemblyName">Name of the assembly.</param>
+        /// <returns>System.Nullable&lt;Assembly&gt;.</returns>
+        [SuppressMessage("Major Code Smell", "S3885:\"Assembly.Load\" should be used", Justification = "Good for now for what we need. NOTE: we may want to reconsider it in the future.")]
+        public static Assembly? LoadSdkModuleAssembly(string? assemblyName)
+        {
+            if (string.IsNullOrWhiteSpace(assemblyName))
+            {
+                return null;
+            }
+
+            try
+            {
+                var assembly = Assembly.LoadFrom(assemblyName);
+
+                return assembly;
+            }
+            catch (Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    rollbarLogger: null, 
+                    dataObject: null, 
+                    rollbarError: InternalRollbarError.SdkModuleLoaderError, 
+                    message: $"Couldn't load `{assemblyName}` assembly module!", 
+                    exception: ex, 
+                    errorCollector: null
+                    );
+
+                return null;
             }
         }
     }
