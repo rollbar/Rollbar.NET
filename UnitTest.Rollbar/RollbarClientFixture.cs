@@ -26,7 +26,7 @@ namespace UnitTest.Rollbar
         {
         }
 
-        private MessagePackage CrateTestPackage()
+        private static MessagePackage CrateTestPackage()
         {
             MessagePackage package = 
                 new MessagePackage($"{nameof(RollbarClientFixture)}.BasicTest");
@@ -44,7 +44,7 @@ namespace UnitTest.Rollbar
                 RollbarUnitTestEnvironmentUtil.TraceCurrentRollbarInfrastructureConfig();
                 RollbarUnitTestEnvironmentUtil.Trace(logger.Config, "Logger_Config");
                 var client = new RollbarClient(logger);
-                var bundle = new PayloadBundle(logger, this.CrateTestPackage(), ErrorLevel.Info);
+                var bundle = new PayloadBundle(logger, RollbarClientFixture.CrateTestPackage(), ErrorLevel.Info);
                 client.EnsureHttpContentToSend(bundle);
                 var response = client.PostAsJson(bundle);
                 RollbarUnitTestEnvironmentUtil.Trace(response, "Rollbar API HTTP response");
@@ -71,7 +71,7 @@ namespace UnitTest.Rollbar
                 RollbarUnitTestEnvironmentUtil.TraceCurrentRollbarInfrastructureConfig();
                 RollbarUnitTestEnvironmentUtil.Trace(logger.Config, "Logger_Config");
                 var client = new RollbarClient(logger);
-                var bundle = new PayloadBundle(logger, this.CrateTestPackage(), ErrorLevel.Info);
+                var bundle = new PayloadBundle(logger, RollbarClientFixture.CrateTestPackage(), ErrorLevel.Info);
                 client.EnsureHttpContentToSend(bundle);
                 var response = client.PostAsJson(bundle);
                 RollbarUnitTestEnvironmentUtil.Trace(response, "Rollbar API HTTP response");
@@ -100,7 +100,7 @@ namespace UnitTest.Rollbar
                 RollbarUnitTestEnvironmentUtil.TraceCurrentRollbarInfrastructureConfig();
                 RollbarUnitTestEnvironmentUtil.Trace(logger.Config, "Logger_Config");
                 var client = new RollbarClient(logger);
-                var bundle = new PayloadBundle(logger, this.CrateTestPackage(), ErrorLevel.Info);
+                var bundle = new PayloadBundle(logger, RollbarClientFixture.CrateTestPackage(), ErrorLevel.Info);
                 client.EnsureHttpContentToSend(bundle);
                 var response = client.PostAsJson(bundle);
                 RollbarUnitTestEnvironmentUtil.Trace(response, "Rollbar API HTTP response");

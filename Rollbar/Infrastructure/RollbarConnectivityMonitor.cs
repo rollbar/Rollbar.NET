@@ -17,7 +17,6 @@
         private readonly object _connectivityStatusSyncLock = new object();
         private TimeSpan _currentMonitoringInterval;
         private Timer? _monitoringTimer;
-        private readonly TimeSpan _initialDelay;
         private readonly TimeSpan _minMonitoringInterval;
         private readonly TimeSpan _maxMonitoringInterval;
 
@@ -31,7 +30,7 @@
         {
             get
             {
-                return NestedSingleInstance.Instance;
+                return NestedSingleInstance.TheInstance;
             }
         }
 
@@ -40,7 +39,7 @@
         /// </summary>
         private RollbarConnectivityMonitor()
         {
-            this._initialDelay = TimeSpan.Zero;
+            TimeSpan initialDelay = TimeSpan.Zero;
             this._minMonitoringInterval = TimeSpan.FromSeconds(10);
             this._maxMonitoringInterval = TimeSpan.FromMinutes(5);
 
@@ -50,7 +49,7 @@
             this._monitoringTimer = new Timer(
                 CheckConnectivityStatus,
                 null,
-                this._initialDelay,
+                initialDelay,
                 this._currentMonitoringInterval
             );
 
@@ -72,7 +71,7 @@
             /// <summary>
             /// The instance
             /// </summary>
-            internal static readonly RollbarConnectivityMonitor? Instance =
+            internal static readonly RollbarConnectivityMonitor? TheInstance =
                 RollbarInfrastructure.Instance.IsInitialized ? new RollbarConnectivityMonitor()
                 : null;
         }
@@ -85,12 +84,8 @@
         /// <value><c>true</c> if this instance is connectivity on; otherwise, <c>false</c>.</value>
         public bool IsConnectivityOn
         {
-            get;
+            get; // NOTE: Simplest way to fake no-connectivity is to always return false from the getter
             private set;
-
-            // Simple way to fake no-connectivity:
-            //get { return false; }
-            //private set { }
         }
 
         /// <summary>
@@ -258,22 +253,21 @@
 
         #region IDisposable Support
 
-        /// <summary>
-        /// The disposed value
-        /// </summary>
         private bool _disposedValue = false; // To detect redundant calls
+
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1066:Collapsible \"if\" statements should be merged", Justification = "Promotes better code structure.")]
         protected virtual void Dispose(bool disposing)
         {
             if(!_disposedValue)
             {
                 if(disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    // dispose managed state (managed objects).
                     if(this._monitoringTimer != null)
                     {
                         this._monitoringTimer.Dispose();
@@ -281,18 +275,12 @@
                     }
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // set large fields to null.
 
                 _disposedValue = true;
             }
         }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~ConnectivityMonitor() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -302,8 +290,7 @@
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
         #endregion IDisposable Support

@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Rollbar.DTOs;
+    using System.Text;
 
     /// <summary>
     /// Class HttpActionContextPackageDecorator.
@@ -69,12 +70,8 @@
             }
             rollbarData.Request.Params["controller"] =
                 this._httpActionContext.ControllerContext?.ControllerDescriptor?.ControllerName ?? string.Empty;
-            //rollbarData.Request.Params["controller_properties"] =
-            //    this._httpActionContext.ControllerContext?.ControllerDescriptor?.Properties;
             rollbarData.Request.Params["action"] = 
                 this._httpActionContext.ActionDescriptor?.ActionName ?? string.Empty;
-            //rollbarData.Request["action_properties"] = 
-            //    this._httpActionContext.ActionDescriptor?.Properties;
 
             if (this._httpActionContext.Request != null)
             {
@@ -129,17 +126,22 @@
         /// </summary>
         /// <param name="httpHeaders">The HTTP headers.</param>
         /// <returns>IDictionary&lt;System.String, System.String&gt;.</returns>
-        private IDictionary<string, string>? Convert(HttpHeaders httpHeaders)
+        private static IDictionary<string, string> Convert(HttpHeaders httpHeaders)
         {
             if (httpHeaders == null)
             {
-                return null;
+                return new Dictionary<string, string>(0);
             }
 
-            Dictionary<string, string> headers = new Dictionary<string, string>(httpHeaders.Count());
+            Dictionary<string, string> headers = new(httpHeaders.Count());
             foreach (var httpHeader in httpHeaders)
             {
-                headers[httpHeader.Key] = httpHeader.Value.Aggregate(string.Empty, (combined, next) => combined += (next + ", "));
+                StringBuilder valueBuilder = new();
+                foreach (var item in httpHeader.Value)
+                {
+                    valueBuilder.Append(item + ", ");
+                }
+                headers[httpHeader.Key] = valueBuilder.ToString().TrimEnd(' ').TrimEnd(',');
             }
 
             return headers;

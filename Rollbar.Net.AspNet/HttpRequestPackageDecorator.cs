@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Linq;
     using System.Web;
     using System.Web.Hosting;
@@ -87,13 +88,22 @@
             ///////////////////////////////////
 
             Request request = new();
-            request.Url = this._httpRequest.Url?.ToString();
-            request.Method = this._httpRequest.HttpMethod;
-            request.Headers = this._httpRequest.Headers?.ToCompactStringDictionary();
+            CollectRequestParams(request, this._httpRequest);
+            CollectUserIP(request, this._httpRequest);
+            rollbarData.Request = request;
+
+            CollectServerVariables(rollbarData, this._httpRequest?.ServerVariables);
+        }
+
+        private static void CollectRequestParams(Request request, HttpRequestBase httpRequest)
+        {
+            request.Url = httpRequest.Url?.ToString();
+            request.Method = httpRequest.HttpMethod;
+            request.Headers = httpRequest.Headers?.ToCompactStringDictionary();
 
             try
             {
-                request.GetParams = this._httpRequest.QueryString?.ToCompactObjectDictionary();
+                request.GetParams = httpRequest.QueryString?.ToCompactObjectDictionary();
             }
             catch
             {
@@ -101,7 +111,7 @@
             }
             try
             {
-                request.PostParams = this._httpRequest.Unvalidated?.Form?.ToCompactObjectDictionary();
+                request.PostParams = httpRequest.Unvalidated?.Form?.ToCompactObjectDictionary();
             }
             catch
             {
@@ -111,10 +121,10 @@
             // add posted files to the post collection
             try
             {
-                if (this._httpRequest.Files?.Count > 0)
+                if (httpRequest.Files?.Count > 0)
                 {
-                    var files = 
-                        this._httpRequest.Files.AllKeys.ToDictionary(k => k, k => this._httpRequest.Files[k].RenderAsString());
+                    var files =
+                        httpRequest.Files.AllKeys.ToDictionary(k => k, k => httpRequest.Files[k].RenderAsString());
                     if (request.PostParams == null)
                     {
                         request.PostParams = new Dictionary<string, object>(files.Count);
@@ -130,10 +140,13 @@
                 // Files from request could not be read here because they are streamed
                 // and have been read earlier by e.g. WCF Rest Service or Open RIA Services
             }
+        }
 
+        private static void CollectUserIP(Request request, HttpRequestBase httpRequest)
+        {
             // if the X-Forwarded-For header exists, use that as the user's IP.
             // that will be the true remote IP of a user behind a proxy server or load balancer
-            var forwardedFor = this._httpRequest.Headers?["X-Forwarded-For"];
+            var forwardedFor = httpRequest.Headers?["X-Forwarded-For"];
             if (!string.IsNullOrEmpty(forwardedFor) && forwardedFor!.Contains(","))
             {
                 forwardedFor = forwardedFor.Split(',').Last().Trim();
@@ -141,8 +154,8 @@
 
             try
             {
-                request.UserIp = 
-                    forwardedFor ?? this._httpRequest.UserHostAddress;
+                request.UserIp =
+                    forwardedFor ?? httpRequest.UserHostAddress;
             }
             catch
             {
@@ -151,8 +164,8 @@
 
             try
             {
-                request.Params = 
-                    this._httpRequest.RequestContext.RouteData.Values
+                request.Params =
+                    httpRequest.RequestContext.RouteData.Values
                     .ToDictionary(v => v.Key, v => v.Value.ToString()).ToObjectDictionary();
             }
             catch
@@ -163,7 +176,7 @@
             // try harvesting custom HTTP session info:
             try
             {
-                var httpSession = this._httpRequest.RequestContext?.HttpContext?.Session;
+                var httpSession = httpRequest.RequestContext?.HttpContext?.Session;
                 if (httpSession != null)
                 {
                     request["session"] = httpSession.Keys
@@ -176,15 +189,12 @@
             {
                 // Session state may not be configured.
             }
+        }
 
-            rollbarData.Request = request;
-
-            // let's try to get any useful data from the HTTP request's server variables:
-            /////////////////////////////////////////////////////////////////////////////
-
+        private static void CollectServerVariables(Data rollbarData, NameValueCollection? serverVariables)
+        {
             try
             {
-                var serverVariables = this._httpRequest?.ServerVariables;
                 if (serverVariables != null)
                 {
                     // try harvesting Person DTO info:

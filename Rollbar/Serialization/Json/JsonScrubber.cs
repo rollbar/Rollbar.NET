@@ -25,12 +25,14 @@
             return json;
         }
 
+
         /// <summary>
         /// Gets the child Json property by name.
         /// </summary>
         /// <param name="root">The root.</param>
         /// <param name="childPropertyName">Name of the child property.</param>
         /// <returns>JProperty.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1168:Empty arrays and collections should be returned instead of null", Justification = "Not applicable here.")]
         public static JProperty? GetChildPropertyByName(JContainer root, string childPropertyName)
         {
             foreach(var child in root.Children())
@@ -251,7 +253,7 @@
             {
                 string dottedFieldPath = scrubPath.Substring(0, dotIndex);
                 string dottedFieldName = scrubPath.Substring(dotIndex + 1);
-                jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, dottedFieldPath);//jsonData.SelectToken(dottedFieldPath);
+                jToken = JsonScrubber.FindJsonTokenSafelyUsingPath(jsonData, dottedFieldPath);
                 jToken = jToken?[dottedFieldName];
                 if (jToken != null)
                 {

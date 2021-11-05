@@ -38,7 +38,7 @@
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <param name="dataObject">The data object.</param>
-        internal RollbarEventArgs(
+        protected RollbarEventArgs(
             IRollbar? logger, 
             object? dataObject
             )

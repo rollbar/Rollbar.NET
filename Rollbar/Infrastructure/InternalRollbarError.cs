@@ -13,6 +13,11 @@
         GeneralError,
 
         /// <summary>
+        /// The SDK module loader error
+        /// </summary>
+        SdkModuleLoaderError,
+
+        /// <summary>
         /// The infrastructure error
         /// </summary>
         InfrastructureError,

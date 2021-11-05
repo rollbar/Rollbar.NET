@@ -1,8 +1,12 @@
 ﻿namespace Rollbar.PayloadStore
 {
-    using Microsoft.EntityFrameworkCore;
+    using System;
 
-    //using Rollbar.Common;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
+    using Rollbar;
+    using Rollbar.Common;
 
     /// <summary>
     /// Class StoreContext.
@@ -14,14 +18,6 @@
     {
         static StoreContext()
         {
-            //string dotNetRuntime = RuntimeEnvironmentUtility.GetDotNetRuntimeDescription();
-            //if(!(dotNetRuntime.Contains("Framework") && (dotNetRuntime.Contains("4.5") || dotNetRuntime.Contains("4.6.0"))))
-            //            {
-            //#if(!NETFX || NETFX_461nNewer)
-            //                SQLitePCL.Batteries_V2.Init();
-            //#endif
-            //            }
-
             SQLitePCL.Batteries_V2.Init();
         }
 
@@ -41,7 +37,9 @@
         /// <summary>
         /// The sqlite connection string
         /// </summary>
-        private static string sqliteConnectionString { get; set; } = 
+#pragma warning disable IDE1006 // Naming Styles
+        private static string sqliteConnectionString { get; set; } =
+#pragma warning restore IDE1006 // Naming Styles
             $"Filename={StoreContext.RollbarStoreDbFullName};";
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -65,19 +63,88 @@
         /// </summary>
         public void MakeSureDatabaseExistsAndReady()
         {
-            //Type[] migrations =
-            //    ReflectionUtility.GetSubClassesOf(typeof(Migration), this.GetType().Assembly);
+            // In this implementation we are trying to be as robust as possible.
+            bool success;
 
-            //if (migrations != null && migrations.LongLength > 0)
-            //{
-            //    // when using migrations:
-            //    this.Database.Migrate(); // if needed creates db and runs migrations
-            //}
-            //else
+            // 1. Try to migrate-create gracefully (this is the best case scenario):
+            try
             {
-                // when not using migrations:
-                this.Database.EnsureCreated(); // if needed creates db (but doesn't run migrations)
+                this.Database.Migrate(); // if needed creates db and runs migrations
+                success = true;
             }
+            catch (Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    null,
+                    null,
+                    InternalRollbarError.PersistentStoreContextError,
+                    "Filed initial database migration-creation call!",
+                    ex,
+                    null);
+                success = false;
+            }
+
+            if (success)
+            {
+                return;
+            }
+
+            // 2. Try to migrate-create gracefully after deleting the existing database
+            //    (yes, we may lose some of the data but we may have a chance to become operational again):
+            this.Database.EnsureDeleted();
+            try
+            {
+                this.Database.Migrate(); // if needed creates db and runs migrations
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    null,
+                    null,
+                    InternalRollbarError.PersistentStoreContextError,
+                    "Filed database secondary migration-creation call!",
+                    ex,
+                    null);
+                success = false;
+            }
+
+            if (success)
+            {
+                return;
+            }
+
+            // 3. Try to create a new database (without migrations support):
+            try
+            {
+                this.Database.EnsureCreated(); // if needed creates db (but doesn't run migrations)
+                success = true;
+            }
+            catch (Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    null,
+                    null,
+                    InternalRollbarError.PersistentStoreContextError,
+                    "Filed database creation (without migrations support)!",
+                    ex,
+                    null);
+                success = false;
+            }
+
+            if (success)
+            {
+                return;
+            }
+
+            // 4. Now, giving up:
+            RollbarErrorUtility.Report(
+                null,
+                null,
+                InternalRollbarError.PersistentStoreContextError,
+                "Filed all attempts to create the database!",
+                null,
+                null);
         }
 
         #region Overrides of DbContext

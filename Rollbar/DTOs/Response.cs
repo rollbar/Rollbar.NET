@@ -55,12 +55,11 @@
         {
             get
             {
-                if (this.TryGetValue(ReservedProperties.StatusCode, out object? statusCode))
+                if (this.TryGetValue(ReservedProperties.StatusCode, out object? statusCode) 
+                    && statusCode != null
+                    )
                 {
-                    if (statusCode != null)
-                    {
-                        return (int) statusCode;
-                    }
+                    return (int) statusCode;
                 }
 
                 return null;

@@ -25,12 +25,11 @@
         {
             IEnumerable<string>? headerValues;
 
-            if (httpHeaders.TryGetValues(headerName, out headerValues))
+            if (httpHeaders.TryGetValues(headerName, out headerValues) 
+                && headerValues != null
+                )
             {
-                if (headerValues != null)
-                {
-                    return headerValues;
-                }
+                return headerValues;
             }
 
             return emptyResult;

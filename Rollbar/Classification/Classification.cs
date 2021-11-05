@@ -132,7 +132,7 @@
         /// This method is called from the type constructor.
         /// Make sure you know what you are doing when overriding it.
         /// </remarks>
-        protected virtual string GenerateID(IEnumerable<Classifier> classifiers)
+        protected string GenerateID(IEnumerable<Classifier> classifiers)
         {
             StringBuilder sb = new StringBuilder();
             foreach(var classifier in classifiers)

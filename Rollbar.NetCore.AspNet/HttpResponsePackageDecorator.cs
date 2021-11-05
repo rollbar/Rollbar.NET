@@ -89,7 +89,7 @@
                 return; // nothing to do...
             }
 
-            string? jsonString = StreamUtil.CaptureAsStringAsync(this._httpResponse.Body).Result;
+            string? jsonString = StreamUtility.CaptureAsStringAsync(this._httpResponse.Body).Result;
             if (string.IsNullOrWhiteSpace(jsonString))
             {
                 return;

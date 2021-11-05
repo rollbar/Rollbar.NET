@@ -32,7 +32,7 @@ namespace UnitTest.Rollbar.Telemetry
             RollbarTelemetryCollector.Instance.FlushQueue();
         }
 
-        public IReadOnlyCollection<dto.Telemetry> GenerateTelemetryItems()
+        public static IReadOnlyCollection<dto.Telemetry> GenerateTelemetryItems()
         {
             List<dto.Telemetry> result = new List<dto.Telemetry>();
 

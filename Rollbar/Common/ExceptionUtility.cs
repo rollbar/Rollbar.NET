@@ -34,7 +34,7 @@
                 return string.Empty;
             }
 
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (StackFrame? frame in stackFrames)
             {
                 if(frame == null)
@@ -51,7 +51,7 @@
                     ParameterInfo[] pis = method.GetParameters();
                     foreach(ParameterInfo pi in pis)
                     {
-                        sb.AppendLine($" Name:{pi.Name} Type:{pi.ParameterType.ToString()}");
+                        sb.AppendLine($" Name:{pi.Name} Type:{pi.ParameterType}");
                     }
                     sb.AppendLine(" Local Variables:");
 
@@ -60,7 +60,7 @@
                     {
                         foreach(LocalVariableInfo lvi in method_body.LocalVariables)
                         {
-                            sb.AppendLine($" Index:{lvi.LocalIndex} Type:{lvi.LocalType.ToString()}");
+                            sb.AppendLine($" Index:{lvi.LocalIndex} Type:{lvi.LocalType}");
                         }
                     }
                 }

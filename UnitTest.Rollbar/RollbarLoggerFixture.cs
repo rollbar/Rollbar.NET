@@ -53,6 +53,7 @@ namespace UnitTest.Rollbar
         /// - TBD...
         /// </summary>
 
+        [TestMethod]
         public void InvalidPayloadDataTest()
         {
             //TODO:
@@ -516,7 +517,7 @@ namespace UnitTest.Rollbar
             RollbarQueueController.Instance.Start();
             var accessTokenQueues = 
                 RollbarQueueController.Instance.GetQueues(RollbarUnitTestSettings.AccessToken);
-            while (accessTokenQueues.Count() > 0)
+            while (accessTokenQueues.Any())
             {
                 string msg = "Initial queues count: " + accessTokenQueues.Count();
                 System.Diagnostics.Trace.WriteLine(msg);
@@ -911,7 +912,7 @@ namespace UnitTest.Rollbar
         /// Performs the multithreaded stress test.
         /// </summary>
         /// <param name="loggers">The loggers.</param>
-        private void PerformTheMultithreadedStressTest(ILogger[] loggers)
+        private static void PerformTheMultithreadedStressTest(ILogger[] loggers)
         {
             //first let's make sure the controller queues are not populated by previous tests:
             RollbarQueueController.Instance.FlushQueues();

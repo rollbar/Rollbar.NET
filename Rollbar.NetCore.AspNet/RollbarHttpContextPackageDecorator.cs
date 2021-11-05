@@ -54,27 +54,13 @@
         /// <param name="rollbarData">The rollbar data.</param>
         protected override void Decorate(Data? rollbarData)
         {
-            if(rollbarData == null)
-            {
-                return;
-            }
-
-            if(this._rollbarHttpContext == null)
+            if(this._rollbarHttpContext == null || rollbarData == null)
             {
                 return; //nothing to decorate with...
             }
 
-            Dictionary<string, object?>? customRequestFields = new Dictionary<string, object?>();
-            customRequestFields.Add("httpRequestTimestamp", this._rollbarHttpContext.Timestamp);
-            if(this._rollbarHttpContext.HttpAttributes != null)
-            {
-                customRequestFields.Add("httpRequestID", this._rollbarHttpContext.HttpAttributes.RequestID);
-                customRequestFields.Add("scheme", this._rollbarHttpContext.HttpAttributes.RequestScheme);
-                customRequestFields.Add("protocol", this._rollbarHttpContext.HttpAttributes.RequestProtocol);
-                customRequestFields.Add("statusCode", this._rollbarHttpContext.HttpAttributes.ResponseStatusCode);
-            }
-
-            if(customRequestFields != null && customRequestFields.Count > 0)
+            Dictionary<string, object?> customRequestFields = ExtractCustomRequestFields(this._rollbarHttpContext);
+            if (customRequestFields.Count > 0)
             {
                 if (rollbarData.Request == null)
                 {
@@ -82,7 +68,7 @@
                 }
                 else
                 {
-                    foreach(var item in customRequestFields)
+                    foreach (var item in customRequestFields)
                     {
                         rollbarData.Request.Add(item);
                     }
@@ -95,56 +81,109 @@
                 {
                     rollbarData.Request = new Request();
                 }
-                rollbarData.Request.Url = 
-                    this._rollbarHttpContext.HttpAttributes.RequestHost.Value + this._rollbarHttpContext.HttpAttributes.RequestPath;
-                rollbarData.Request.QueryString = 
-                    this._rollbarHttpContext.HttpAttributes.RequestQuery.Value;
-                rollbarData.Request.Params = null;
-                rollbarData.Request.Method = this._rollbarHttpContext.HttpAttributes.RequestMethod;
-                if (this._rollbarHttpContext.HttpAttributes.RequestHeaders?.Count > 0)
-                {
-                    rollbarData.Request.Headers =
-                        new Dictionary<string, string>(this._rollbarHttpContext.HttpAttributes.RequestHeaders.Count);
-                    foreach (var header in this._rollbarHttpContext.HttpAttributes.RequestHeaders)
-                    {
-                        if (header.Value.Count == 0)
-                        {
-                            continue;
-                        }
-
-                        rollbarData.Request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
-                    }
-                }
-                if(!string.IsNullOrWhiteSpace(this._rollbarHttpContext.HttpAttributes.RequestBody))
-                {
-                    rollbarData.Request.PostBody = this._rollbarHttpContext.HttpAttributes.RequestBody;
-                }
+                Collect(rollbarData.Request, this._rollbarHttpContext.HttpAttributes);
 
                 if (rollbarData.Response == null)
                 {
                     rollbarData.Response = new Response();
                 }
-                rollbarData.Response.StatusCode = this._rollbarHttpContext.HttpAttributes.ResponseStatusCode;
-                if (this._rollbarHttpContext.HttpAttributes.ResponseHeaders?.Count > 0)
-                {
-                    rollbarData.Response.Headers =
-                        new Dictionary<string, string>(this._rollbarHttpContext.HttpAttributes.ResponseHeaders.Count);
-                    foreach (var header in this._rollbarHttpContext.HttpAttributes.ResponseHeaders)
-                    {
-                        if (header.Value.Count == 0)
-                        {
-                            continue;
-                        }
-
-                        rollbarData.Response.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
-                    }
-                }
-                if(!string.IsNullOrWhiteSpace(this._rollbarHttpContext.HttpAttributes.ResponseBody))
-                {
-                    rollbarData.Response.Body = this._rollbarHttpContext.HttpAttributes.ResponseBody;
-                }
+                Collect(rollbarData.Response, this._rollbarHttpContext.HttpAttributes);
             }
         }
 
+        /// <summary>
+        /// Collects the response specific attributes.
+        /// </summary>
+        /// <param name="response">
+        /// The response.
+        /// </param>
+        /// <param name="rollbarHttpAttributes">
+        /// The rollbar HTTP attributes.
+        /// </param>
+        private static void Collect(Response response, RollbarHttpAttributes rollbarHttpAttributes)
+        {
+            response.StatusCode = rollbarHttpAttributes.ResponseStatusCode;
+            if (rollbarHttpAttributes.ResponseHeaders?.Count > 0)
+            {
+                response.Headers =
+                    new Dictionary<string, string>(rollbarHttpAttributes.ResponseHeaders.Count);
+                foreach (var header in rollbarHttpAttributes.ResponseHeaders)
+                {
+                    if (header.Value.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    response.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(rollbarHttpAttributes.ResponseBody))
+            {
+                response.Body = rollbarHttpAttributes.ResponseBody;
+            }
+        }
+
+        /// <summary>
+        /// Collects the request specific attributes.
+        /// </summary>
+        /// <param name="request">
+        /// The request.
+        /// </param>
+        /// <param name="rollbarHttpAttributes">
+        /// The rollbar HTTP attributes.
+        /// </param>
+        private static void Collect(Request request, RollbarHttpAttributes rollbarHttpAttributes)
+        {
+            request.Url =
+                rollbarHttpAttributes.RequestHost.Value + rollbarHttpAttributes.RequestPath;
+            request.QueryString =
+                rollbarHttpAttributes.RequestQuery.Value;
+            request.Params = null;
+            request.Method = rollbarHttpAttributes.RequestMethod;
+            if (rollbarHttpAttributes.RequestHeaders?.Count > 0)
+            {
+                request.Headers =
+                    new Dictionary<string, string>(rollbarHttpAttributes.RequestHeaders.Count);
+                foreach (var header in rollbarHttpAttributes.RequestHeaders)
+                {
+                    if (header.Value.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    request.Headers.Add(header.Key, StringUtility.Combine(header.Value, ", "));
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(rollbarHttpAttributes.RequestBody))
+            {
+                request.PostBody = rollbarHttpAttributes.RequestBody;
+            }
+        }
+
+        /// <summary>
+        /// Extracts the custom request fields.
+        /// </summary>
+        /// <param name="rollbarHttpContext">
+        /// The rollbar HTTP context.
+        /// </param>
+        /// <returns>
+        /// Dictionary&lt;System.String, System.Nullable&lt;System.Object&gt;&gt;.
+        /// </returns>
+        private static Dictionary<string, object?> ExtractCustomRequestFields(RollbarHttpContext rollbarHttpContext)
+        {
+            Dictionary<string, object?> customRequestFields = new();
+            
+            customRequestFields.Add("httpRequestTimestamp", rollbarHttpContext.Timestamp);
+            
+            if (rollbarHttpContext.HttpAttributes != null)
+            {
+                customRequestFields.Add("httpRequestID", rollbarHttpContext.HttpAttributes.RequestID);
+                customRequestFields.Add("scheme", rollbarHttpContext.HttpAttributes.RequestScheme);
+                customRequestFields.Add("protocol", rollbarHttpContext.HttpAttributes.RequestProtocol);
+                customRequestFields.Add("statusCode", rollbarHttpContext.HttpAttributes.ResponseStatusCode);
+            }
+
+            return customRequestFields;
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace UnitTest.Rollbar.Deploys
 
             task.Wait(TimeSpan.FromSeconds(3));
             Assert.IsNotNull(task.Result);
-            Assert.AreEqual(task.Result.ErrorCode,0);
+            Assert.AreEqual(0, task.Result.ErrorCode);
             Assert.IsNotNull(task.Result.DeploysPage);
             Assert.IsTrue(task.Result.DeploysPage.PageNumber > 0);
 
@@ -61,7 +61,7 @@ namespace UnitTest.Rollbar.Deploys
 
             task.Wait(TimeSpan.FromSeconds(3));
             Assert.IsNotNull(task.Result);
-            Assert.AreEqual(task.Result.ErrorCode,0);
+            Assert.AreEqual(0, task.Result.ErrorCode);
             Assert.IsNotNull(task.Result.Deploy);
             Assert.IsTrue(!string.IsNullOrWhiteSpace(task.Result.Deploy.DeployID));
 

@@ -60,10 +60,10 @@ namespace UnitTest.Rollbar.Instrumentation
 
         public static class InstrumentationHelper
         {
-            public static PerformanceTimer TimeIt(Operation operation, PayloadSize payloadSize)
+            public static PerformanceTimerAttribute TimeIt(Operation operation, PayloadSize payloadSize)
             {
                 IClassification classification = Classification.MatchClassification(operation, payloadSize);
-                return PerformanceTimer.StartNew(PerformanceMonitor.Instance, classification);
+                return PerformanceTimerAttribute.StartNew(PerformanceMonitor.Instance, classification);
             }
         }
 

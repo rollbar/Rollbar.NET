@@ -6,14 +6,11 @@
 
     /// <summary>
     /// Class RollbarAppender.
-    /// Implements the <see cref="log4net.Appender.IAppender" />
     /// Implements the <see cref="log4net.Appender.AppenderSkeleton" />
     /// </summary>
     /// <seealso cref="log4net.Appender.AppenderSkeleton" />
-    /// <seealso cref="log4net.Appender.IAppender" />
     public class RollbarAppender
         : AppenderSkeleton
-        , IAppender
     {
         private readonly RollbarPlugInCore _rollbarPlugIn;
 

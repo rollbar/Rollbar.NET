@@ -7,11 +7,11 @@
       <FileName>Instrumentation\InstrumentationCondition.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.Instrumentation.PerformanceTimer">
+  <Class Name="Rollbar.Instrumentation.PerformanceTimerAttribute">
     <Position X="0.5" Y="3.5" Width="8.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAgAAAAAAAAACAAAAAAAAAAAQAAAAEAAAA=</HashCode>
-      <FileName>Instrumentation\PerformanceTimer.cs</FileName>
+      <HashCode>AAAAAAAAACAgAAAAAAAAACAAAAAAAAAAAQAAAgEAAAA=</HashCode>
+      <FileName>Instrumentation\PerformanceTimerAttribute.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

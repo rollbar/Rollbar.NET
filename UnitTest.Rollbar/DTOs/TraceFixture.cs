@@ -9,6 +9,7 @@ namespace UnitTest.Rollbar.DTOs
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using global::Rollbar.Common;
 
     [TestClass]
     [TestCategory(nameof(TraceFixture))]
@@ -67,7 +68,7 @@ namespace UnitTest.Rollbar.DTOs
         [TestMethod]
         public void TraceBuiltManuallyWorksCorrectly()
         {
-            var trace = new dto.Trace(new dto.Frame[0], new dto.Exception("BadClass"));
+            var trace = new dto.Trace(ArrayUtility.GetEmptyArray<dto.Frame>(), new dto.Exception("BadClass"));
             Assert.AreEqual("BadClass", trace.Exception.Class);
             Assert.IsTrue(trace.Frames.Length == 0);
         }
@@ -86,7 +87,7 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                new dto.Trace(new dto.Frame[0], null);
+                new dto.Trace(ArrayUtility.GetEmptyArray<dto.Frame>(), null);
             });
         }
 

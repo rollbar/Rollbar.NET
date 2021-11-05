@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections;
-    using System.Diagnostics;
     using System.Globalization;
 
     /// <summary>
@@ -18,7 +17,6 @@
         /// <param name="argumentName">Name of the argument.</param>
         public static void FailValidation(string msg, string argumentName)
         {
-            //Debug.Assert(false, msg);
             throw new ArgumentException(msg, argumentName);
         }
 
@@ -111,6 +109,34 @@
         }
 
         /// <summary>
+        /// Asserts the equal.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <param name="expectedValue">The expected value.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
+        /// <param name="parameterName">Name of the parameter.</param>
+        /// <returns></returns>
+        public static string? AssertEqual(string? value, string? expectedValue, bool ignoreCase, string parameterName)
+        {
+            if (value == null && expectedValue == null)
+            {
+                return null;
+            }
+
+            if (value == null || expectedValue == null)
+            {
+                string msg = $"Argument is expected to be equal to {expectedValue}, while it is actually: {value}.";
+                FailValidation(msg, parameterName);
+            }
+            if (string.Compare(value, expectedValue, ignoreCase, CultureInfo.InvariantCulture) != 0)
+            {
+                string msg = $"Argument is expected to be equal to {expectedValue}, while it is actually: {value}.";
+                FailValidation(msg, parameterName);
+            }
+            return value;
+        }
+
+        /// <summary>
         /// Utility class for validating method parameters.
         /// </summary>
         /// 		/// <summary>
@@ -178,7 +204,7 @@
             {
                 string msg = "Argument should not be NULL.";
                 FailValidation(msg, parameterName);
-                return null;
+                return value;
             }
 
             bool any = false;
@@ -199,33 +225,6 @@
             return value;
         }
 
-        /// <summary>
-        /// Asserts the equal.
-        /// </summary>
-        /// <param name="value">The value.</param>
-        /// <param name="expectedValue">The expected value.</param>
-        /// <param name="ignoreCase">if set to <c>true</c> [ignore case].</param>
-        /// <param name="parameterName">Name of the parameter.</param>
-        /// <returns></returns>
-        public static string? AssertEqual(string? value, string? expectedValue, bool ignoreCase, string parameterName)
-        {
-            if (value == null && expectedValue == null)
-            {
-                return null;
-            }
-
-            if (value == null || expectedValue == null)
-            {
-                string msg = $"Argument is expected to be equal to {expectedValue}, while it is actually: {value}.";
-                FailValidation(msg, parameterName);
-            }
-            if (string.Compare(value, expectedValue, ignoreCase, CultureInfo.InvariantCulture) != 0)
-            {
-                string msg = $"Argument is expected to be equal to {expectedValue}, while it is actually: {value}.";
-                FailValidation(msg, parameterName);
-            }
-            return value;
-        }
         /// <summary>
         /// Ensures the specified value is not <code>null</code> 
         /// or white space.

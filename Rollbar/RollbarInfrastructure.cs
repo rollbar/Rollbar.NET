@@ -29,15 +29,9 @@
 
         private readonly object _syncLock = new object();
 
-        //private Thread? _infrastructureThread;
-
-        //private CancellationTokenSource? _cancellationTokenSource;
-
         private bool _isInitialized = false;
 
         private IRollbarInfrastructureConfig? _config;
-
-        //private IPayloadStoreRepository _storeRepository;
 
         #region singleton implementation
 
@@ -49,7 +43,7 @@
         {
             get
             {
-                return NestedSingleInstance.Instance;
+                return NestedSingleInstance.TheInstance;
             }
         }
 
@@ -76,7 +70,7 @@
             /// <summary>
             /// The instance
             /// </summary>
-            internal static readonly RollbarInfrastructure Instance =
+            internal static readonly RollbarInfrastructure TheInstance =
                 new RollbarInfrastructure();
         }
 
@@ -180,7 +174,7 @@
                 {
                     RollbarQueueController.Instance!.Init(config);
                     RollbarTelemetryCollector.Instance!.Init(config.RollbarTelemetryOptions);
-                    //TODO: RollbarConfig
+                    // NOTE: RollbarConfig
                     // - init ConnectivityMonitor service as needed
                     //   NOTE: It should be sufficient to make ConnectivityMonitor as internal class
                     //         It is only used by RollbarClient and RollbarQueueController that are 
@@ -217,6 +211,8 @@
             Validator.Validate(validatable, InternalRollbarError.ConfigurationError, "Failed to configure using invalid configuration prototype!");
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S125:Sections of code should not be commented out", Justification = "Will be implemented later...")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Info Code Smell", "S1135:Track uses of \"TODO\" tags", Justification = "Will be implemented later...")]
         private void _config_Reconfigured(object? sender, EventArgs e)
         {
             //TODO: RollbarConfig - implement
@@ -238,24 +234,6 @@
         public void Stop(bool immediately)
         {
             traceSource.TraceInformation($"Stopping the {typeof(RollbarInfrastructure).Name}...");
-
-            //if(!immediately && this._cancellationTokenSource != null)
-            //{
-            //    this._cancellationTokenSource.Cancel();
-            //    return;
-            //}
-
-            //this._cancellationTokenSource?.Cancel();
-            //if(this._infrastructureThread != null)
-            //{
-
-            //    if(!this._infrastructureThread.Join(TimeSpan.FromSeconds(60)))
-            //    {
-            //        this._infrastructureThread.Abort();
-            //    }
-
-            //    CompleteProcessing();
-            //}
         }
         private void CompleteProcessing()
         {
@@ -263,25 +241,21 @@
             traceSource.TraceInformation($"{typeof(RollbarInfrastructure).Name} is completing processing...");
         }
 
-
         #region IDisposable Support
 
-        /// <summary>
-        /// The disposed value
-        /// </summary>
         private bool disposedValue = false; // To detect redundant calls
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if(!disposedValue)
             {
                 if(disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    // dispose managed state (managed objects).
                     CompleteProcessing();
                     if(this._config != null)
                     {
@@ -289,18 +263,12 @@
                     }
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // set large fields to null.
 
                 disposedValue = true;
             }
         }
-
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~RollbarQueueController() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -310,8 +278,7 @@
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
         #endregion IDisposable Support

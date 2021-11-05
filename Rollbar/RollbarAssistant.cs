@@ -70,6 +70,7 @@
             return CaptureState(instance, instanceName, null);
         }
 
+
         /// <summary>
         /// Captures the state (all the data fields' values of the provided instance).
         /// 
@@ -84,6 +85,7 @@
         /// the captured state of the supplied instance object or null whenever the state capture is not applicable 
         /// (for example, when instance argument happened to be uninitialized)
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1168:Empty arrays and collections should be returned instead of null", Justification = "In support of Nothing-at-All paradigm.")]
         public static IDictionary<string, object?>? CaptureState(
             object instance, 
             string? instanceName, 
@@ -155,6 +157,7 @@
         /// the captured state of the supplied static type or null whenever the state capture is not applicable 
         /// (for example, when static type argument happened to represent an Enum or an interface).
         /// </returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1168:Empty arrays and collections should be returned instead of null", Justification = "In support of Nothing-at-All paradigm.")]
         public static IDictionary<string, object?>? CaptureState(
             Type staticType, 
             IDictionary<string, object?>? stateCapture

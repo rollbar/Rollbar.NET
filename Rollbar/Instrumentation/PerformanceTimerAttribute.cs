@@ -14,7 +14,7 @@
     [Conditional(InstrumentationCondition.Instrument)]
     [AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Method | AttributeTargets.Delegate, AllowMultiple = false, Inherited = false)]
     [CLSCompliant(false)]
-    public class PerformanceTimer
+    public class PerformanceTimerAttribute
         : Attribute
         , IDisposable
     {
@@ -32,18 +32,18 @@
         private readonly IClassification? _measurementClassification;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="PerformanceTimer"/> class from being created.
+        /// Prevents a default instance of the <see cref="PerformanceTimerAttribute"/> class from being created.
         /// </summary>
-        private PerformanceTimer()
+        private PerformanceTimerAttribute()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PerformanceTimer"/> class.
+        /// Initializes a new instance of the <see cref="PerformanceTimerAttribute"/> class.
         /// </summary>
         /// <param name="performanceMonitor">The performance monitor.</param>
         /// <param name="measurementClassification">The measurement classification.</param>
-        private PerformanceTimer(IPerformanceMonitor performanceMonitor, IClassification? measurementClassification = null)
+        private PerformanceTimerAttribute(IPerformanceMonitor performanceMonitor, IClassification? measurementClassification = null)
         {
             this._performanceMonitor = performanceMonitor;
             this._measurementClassification = measurementClassification;
@@ -54,8 +54,8 @@
         /// Creates new .
         /// </summary>
         /// <param name="performanceMonitor">The performance monitor.</param>
-        /// <returns>PerformanceTimer.</returns>
-        public static PerformanceTimer StartNew(
+        /// <returns>PerformanceTimerAttribute.</returns>
+        public static PerformanceTimerAttribute StartNew(
             IPerformanceMonitor performanceMonitor
             )
         {
@@ -67,35 +67,59 @@
         /// </summary>
         /// <param name="performanceMonitor">The performance monitor.</param>
         /// <param name="measurementClassification">The measurement classification.</param>
-        /// <returns>PerformanceTimer.</returns>
-        public static PerformanceTimer StartNew(
+        /// <returns>PerformanceTimerAttribute.</returns>
+        public static PerformanceTimerAttribute StartNew(
             IPerformanceMonitor performanceMonitor, 
             IClassification? measurementClassification
             )
         {
-            var timer = new PerformanceTimer(performanceMonitor, measurementClassification);
+            var timer = new PerformanceTimerAttribute(performanceMonitor, measurementClassification);
             timer._timer?.Start();
             return timer;
         }
 
         #region IDisposable Support
 
-        // For the sake of performance and simplicity we are not implementing 
-        // the IDisposable the canonical way:
+        private bool disposedValue;
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing">
+        ///   <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.
+        /// </param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1066:Collapsible \"if\" statements should be merged", Justification = "Cleaner alternative.")]
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // dispose managed state (managed objects)
+                    if (this._timer != null)
+                    {
+                        this._timer.Stop();
+
+                        this._performanceMonitor?.Capture(this._timer.Elapsed, this._measurementClassification);
+                    }
+                }
+
+                // free unmanaged resources (unmanaged objects) and override finalizer
+                // set large fields to null
+                disposedValue = true;
+            }
+        }
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
-            if(this._timer != null)
-            {
-                this._timer.Stop();
-
-                this._performanceMonitor?.Capture(this._timer.Elapsed, this._measurementClassification);
-            }
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
-        #endregion
+        #endregion IDisposable Support
     }
 }

@@ -13,6 +13,12 @@
     public abstract class Validator
     {
         /// <summary>
+        /// Gets or sets the default validation rules capacity.
+        /// </summary>
+        /// <value>The default validation rules capacity.</value>
+        protected static int DefaultValidationRulesCapacity { get; set; } = 10;
+
+        /// <summary>
         /// Validates the specified validation subject.
         /// </summary>
         /// <param name="validationSubject">The validation subject.</param>
@@ -55,7 +61,7 @@
                         errorMessage = $"{errorTag}.";
                     }
                     errorMessage = $"{errorMessage}. See Data property of this exception for validation details.";
-                    RollbarException exception = new RollbarException(errorTag, errorMessage);
+                    RollbarException exception = new(errorTag, errorMessage);
                     exception.Data[errorTag] = result;
                     throw exception;
                 }
@@ -125,7 +131,7 @@
         /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
         public override IReadOnlyCollection<ValidationResult> Validate(object? validationSubject)
         {
-            List<ValidationResult> results = new List<ValidationResult>();
+            List<ValidationResult> results = new();
 
             if(validationSubject != null)
             {
@@ -155,6 +161,16 @@
     public abstract class Validator<TValidationSubject>
         : Validator
     {
+        /// <summary>
+        /// Validates the specified validation subject.
+        /// </summary>
+        /// <param name="validationSubject">
+        /// The validation subject.
+        /// </param>
+        /// <returns>
+        /// IReadOnlyCollection&lt;ValidationResult&gt;.
+        /// </returns>
+        public abstract IReadOnlyCollection<ValidationResult> Validate(TValidationSubject? validationSubject);
     }
 
     /// <summary>
@@ -172,19 +188,13 @@
         /// The validations
         /// </summary>
         private readonly IDictionary<TValidationRule, Func<TValidationSubject, bool>> _validationFunctionsByRule = 
-            new Dictionary<TValidationRule, Func<TValidationSubject, bool>>(Validator<TValidationSubject, TValidationRule>.DefaultValidationRulesCapacity);
+            new Dictionary<TValidationRule, Func<TValidationSubject, bool>>(Validator.DefaultValidationRulesCapacity);
 
         /// <summary>
         /// The validators by rule
         /// </summary>
         private readonly IDictionary<TValidationRule, Tuple<Validator, LambdaExpression>> _validatorsByRule =
             new Dictionary<TValidationRule, Tuple<Validator, LambdaExpression>>();
-
-        /// <summary>
-        /// Gets or sets the default validation rules capacity.
-        /// </summary>
-        /// <value>The default validation rules capacity.</value>
-        public static int DefaultValidationRulesCapacity { get; set; } = 10;
 
         /// <summary>
         /// Adds the validation.
@@ -230,10 +240,10 @@
         /// </summary>
         /// <param name="validationSubject">The validation subject.</param>
         /// <returns>IReadOnlyDictionary&lt;TValidationRule, ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
-        public IReadOnlyCollection<ValidationResult> Validate(TValidationSubject? validationSubject)
+        public override IReadOnlyCollection<ValidationResult> Validate(TValidationSubject? validationSubject)
         {
             CollectorCollection<ValidationResult> failedValidationResults = 
-                new CollectorCollection<ValidationResult>(this._validationFunctionsByRule.Count);
+                new(this._validationFunctionsByRule.Count);
 
             if (validationSubject == null)
             {
@@ -277,7 +287,7 @@
         /// <returns>IReadOnlyCollection&lt;ValidationResult&gt; containing failed validation rules with optional details as values.</returns>
         public override IReadOnlyCollection<ValidationResult> Validate(object? validationSubject)
         {
-            TValidationSubject? typeSafeValidationSubject = default(TValidationSubject);
+            TValidationSubject? typeSafeValidationSubject;
             try
             {
                 typeSafeValidationSubject = (TValidationSubject?) validationSubject;
@@ -285,7 +295,7 @@
             catch
             {
                 CollectorCollection<ValidationResult> failedValidationResults =
-                    new CollectorCollection<ValidationResult>(new ValidationResult[] { new ValidationResult(Validator.ValidationRule.MatchValidationSubjectType), });
+                    new(new ValidationResult[] { new ValidationResult(Validator.ValidationRule.MatchValidationSubjectType), });
                 return failedValidationResults;
             }
 

@@ -6,7 +6,7 @@
     /// <summary>
     /// Class StreamUtil.
     /// </summary>
-    public static class StreamUtil
+    public static class StreamUtility
     {
         /// <summary>
         /// Captures a stream into a string.

@@ -40,7 +40,7 @@ namespace UnitTest.Rollbar.Common
             CategorizedEntities<Enum, string> categorizedEntities = new CategorizedEntities<Enum, string>();
 
             // test combined catedories:
-            var testData = this.BuildTestData();
+            var testData = CategorizedEntitiesFixture.BuildTestData();
             int maxExpectedCategories = 0;
             int maxExpectedEntries = 0;
             foreach (var key in testData.Keys)
@@ -82,7 +82,7 @@ namespace UnitTest.Rollbar.Common
         /// Builds the test data.
         /// </summary>
         /// <returns>Dictionary&lt;Enum, System.String[]&gt;.</returns>
-        private Dictionary<Enum, string[]> BuildTestData()
+        private static Dictionary<Enum, string[]> BuildTestData()
         {
             return new Dictionary<Enum, string[]>
             {

@@ -28,7 +28,7 @@ namespace UnitTest.Rollbar
 
         }
 
-        public void ProducesValidInstance()
+        public static void ProducesValidInstance()
         {
             var rollbarLogger = RollbarLocator.RollbarInstance as RollbarLogger;
             Assert.IsNotNull(rollbarLogger);

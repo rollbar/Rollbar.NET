@@ -2,7 +2,8 @@
 {
     using System;
     using System.IO;
-    using System.Reflection;
+
+    using Rollbar.Common;
 
     /// <summary>
     /// Class PayloadStoreRepositoryHelper.
@@ -23,8 +24,7 @@
             if (!File.Exists(ASSEMBLY))
                 return RaiseTypeLoadException();
 
-
-            var assembly = Assembly.LoadFrom(ASSEMBLY);
+            var assembly = ReflectionUtility.LoadSdkModuleAssembly(ASSEMBLY);
             if (assembly == null)
                 return RaiseTypeLoadException();
 
@@ -32,11 +32,11 @@
             if (type == null)
                 return RaiseTypeLoadException();
 
-            var ctor = type.GetConstructor(new Type[0]);
+            var ctor = type.GetConstructor(ArrayUtility.GetEmptyArray<Type>());
             if (ctor == null)
                 return RaiseTypeLoadException();
 
-            return (IPayloadStoreRepository)ctor.Invoke(new object[0]);
+            return (IPayloadStoreRepository)ctor.Invoke(ArrayUtility.GetEmptyArray<object>());
         }
 
         /// <summary>

@@ -1,6 +1,4 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
-namespace UnitTest.Rollbar.DTOs
+﻿namespace UnitTest.Rollbar.DTOs
 {
     using global::Rollbar;
     using global::Rollbar.Common;
@@ -19,14 +17,14 @@ namespace UnitTest.Rollbar.DTOs
     [TestCategory(nameof(DataFixture))]
     public class DataFixture
     {
-        private static readonly Regex WhiteSpace = new Regex(@"\s");
+        private static readonly Regex WhiteSpace = new(@"\s");
         private readonly RollbarLoggerConfig _config;
         private readonly Data _basicData;  
 
         public DataFixture()
         {
             RollbarDestinationOptions destinationOptions = 
-                new RollbarDestinationOptions(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
+                new(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment);
 
             this._config = new RollbarLoggerConfig();
             this._config.RollbarDestinationOptions.Reconfigure(destinationOptions);
@@ -96,7 +94,7 @@ namespace UnitTest.Rollbar.DTOs
         {
             Assert.ThrowsException<ArgumentException>(() =>
             {
-                new Data(this._config, null);
+                _ = new Data(this._config, null);
             });
         }
 

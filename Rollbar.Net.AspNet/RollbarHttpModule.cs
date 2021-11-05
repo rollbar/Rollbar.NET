@@ -60,66 +60,21 @@
         public void Init(HttpApplication context)
         {
             context.Error += Context_Error;
-
-            // TODO: implement as needed:
-
-            //context.BeginRequest += Context_BeginRequest;
-            //context.EndRequest += Context_EndRequest;
-
-            //context.AcquireRequestState += Context_AcquireRequestState;
-            //context.AuthenticateRequest += Context_AuthenticateRequest;
-            //context.AuthorizeRequest += Context_AuthorizeRequest;
-            //context.Disposed += Context_Disposed;
-            //context.LogRequest += Context_LogRequest;
-            //context.MapRequestHandler += Context_MapRequestHandler;
-            //context.ReleaseRequestState += Context_ReleaseRequestState;
-            //context.RequestCompleted += Context_RequestCompleted;
-            //context.ResolveRequestCache += Context_ResolveRequestCache;
-            //context.UpdateRequestCache += Context_UpdateRequestCache;
-
-            //context.PostAcquireRequestState += Context_PostAcquireRequestState;
-            //context.PostAuthenticateRequest += Context_PostAuthenticateRequest;
-            //context.PostAuthorizeRequest += Context_PostAuthorizeRequest;
-            //context.PostLogRequest += Context_PostLogRequest;
-            //context.PostMapRequestHandler += Context_PostMapRequestHandler;
-            //context.PostReleaseRequestState += Context_PostReleaseRequestState;
-            //context.PostRequestHandlerExecute += Context_PostRequestHandlerExecute;
-            //context.PostResolveRequestCache += Context_PostResolveRequestCache;
-            //context.PostUpdateRequestCache += Context_PostUpdateRequestCache;
-
-            //context.PreRequestHandlerExecute += Context_PreRequestHandlerExecute;
-            //context.PreSendRequestContent += Context_PreSendRequestContent;
-            //context.PreSendRequestHeaders += Context_PreSendRequestHeaders;
-
         }
 
         private void Context_Error(object sender, EventArgs e)
         {
-            HttpApplication? httpApplication = sender as HttpApplication;
-            if (httpApplication == null 
-                || httpApplication.Context == null 
-                || httpApplication.Context.AllErrors == null 
+            if (sender is not HttpApplication httpApplication
+                || httpApplication.Context == null
+                || httpApplication.Context.AllErrors == null
                 || httpApplication.Context.AllErrors.Length == 0
                 )
             {
                 return;
             }
 
-            // potential objects to snap as a Rollbar payload:
-            //************************************************
-
-            //httpApplication.Context.AllErrors;
-            //httpApplication.Context;
-            //httpApplication.Request;
-            //httpApplication.Response;
-            //httpApplication.Session;
-            //httpApplication.User;
-            //httpApplication.Server;
-            //httpApplication.Application;
-            //httpApplication.Modules;
-
             AggregateException exception = 
-                new AggregateException("RollbarHttpModule's context error(s)", httpApplication.Context.AllErrors);
+                new("RollbarHttpModule's context error(s)", httpApplication.Context.AllErrors);
 
             IRollbarPackage package = 
                 new ExceptionPackage(exception, "HttpApplication.Context.AllErrors", true);
@@ -134,102 +89,6 @@
             }
 
             this._rollbar.Error(package);
-        }
-
-        private void Context_BeginRequest(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_EndRequest(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_UpdateRequestCache(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_ResolveRequestCache(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_RequestCompleted(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_ReleaseRequestState(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PreSendRequestHeaders(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PreSendRequestContent(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PreRequestHandlerExecute(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostUpdateRequestCache(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostResolveRequestCache(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostRequestHandlerExecute(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostReleaseRequestState(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostMapRequestHandler(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostLogRequest(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostAuthorizeRequest(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostAuthenticateRequest(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_PostAcquireRequestState(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_MapRequestHandler(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_LogRequest(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_Disposed(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_AuthorizeRequest(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_AuthenticateRequest(object sender, EventArgs e)
-        {
-        }
-
-        private void Context_AcquireRequestState(object sender, EventArgs e)
-        {
         }
     }
 }

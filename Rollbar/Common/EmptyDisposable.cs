@@ -28,7 +28,7 @@
         {
             get
             {
-                return NestedSingleInstance.Instance;
+                return NestedSingleInstance.TheInstance;
             }
         }
 
@@ -50,7 +50,7 @@
             {
             }
 
-            internal static readonly EmptyDisposable Instance = new EmptyDisposable();
+            internal static readonly EmptyDisposable TheInstance = new EmptyDisposable();
         }
     }
 }

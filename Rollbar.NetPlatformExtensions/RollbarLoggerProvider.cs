@@ -16,8 +16,7 @@
     public class RollbarLoggerProvider
             : ILoggerProvider
     {
-        private readonly ConcurrentDictionary<string, ILogger> _loggers =
-            new ConcurrentDictionary<string, ILogger>();
+        private readonly ConcurrentDictionary<string, ILogger> _loggers = new();
 
         /// <summary>
         /// The rollbar options
@@ -146,7 +145,7 @@
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects).
+                    // Dispose managed state (managed objects).
                     foreach(var item in this._loggers.Values)
                     {
                         (item as IDisposable)?.Dispose();
@@ -154,30 +153,21 @@
                     this._loggers.Clear();
                 }
 
-                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
-                // TODO: set large fields to null.
+                // free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // set large fields to null.
 
                 disposedValue = true;
             }
         }
 
-        // TODO: override a finalizer only if Dispose(bool disposing) above has code to free unmanaged resources.
-        // ~RollbarLoggerProvider() {
-        //   // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-        //   Dispose(false);
-        // }
-
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-#pragma warning disable CA1063 // Implement IDisposable Correctly
         public void Dispose()
-#pragma warning restore CA1063 // Implement IDisposable Correctly
         {
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
-            // TODO: uncomment the following line if the finalizer is overridden above.
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
 
         #endregion

@@ -1,15 +1,17 @@
 ﻿namespace Rollbar.Common
 {
-    using Rollbar.Diagnostics;
     using System;
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
     using System.Text;
 
     using Xamarin.iOS.Foundation;
+
+    using Rollbar.Diagnostics;
 
     /// <summary>
     /// An abstract base for implementing IReconfigurable types.
@@ -46,7 +48,7 @@
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-        public bool Equals(T? other)
+        public virtual bool Equals(T? other)
         {
             return base.Equals(other, this.thisInstanceType);
         }
@@ -71,6 +73,7 @@
             return this.CalculateHashCode();
         }
     }
+
 
     /// <summary>
     /// An abstract base for implementing IReconfigurable (based on a base type) types.
@@ -121,7 +124,7 @@
         /// </summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
-        public bool Equals(TBase? other)
+        public virtual bool Equals(TBase? other)
         {
             return base.Equals(other, this._baseInstanceType);
         }
@@ -186,8 +189,7 @@
             List<object?> propertyValues = 
                 thisInstanceProperyInfos
                 .Select(i => i.GetValue(this))
-                .Cast<object?>()
-                .ToList();
+                .ToList<object?>();
             this.reconfigurableProperties = 
                 propertyValues
                 .Where(i => i is ReconfigurableBase)
@@ -445,7 +447,7 @@
 #endif
         }
 
-#region ITraceable
+        #region ITraceable
 
         /// <summary>
         /// Traces as string.
@@ -464,10 +466,8 @@
         public virtual string TraceAsString(string indent)
         {
             StringBuilder sb = new();
-            //string traceString = this.RenderAsString(indent);
             sb.AppendLine("{" + this.thisInstanceType.FullName + "}");
 
-            //indent += "  ";
             PropertyInfo[] properties
                 = ReconfigurableBase.ListInstancePublicProperties(this.thisInstanceType);
 
@@ -515,9 +515,9 @@
             return sb.ToString();
         }
 
-#endregion ITraceable
+        #endregion ITraceable
 
-#region IValidatable
+        #region IValidatable
 
         /// <summary>
         /// Validates this instance.
@@ -535,11 +535,7 @@
             }
             else
             {
-#if NET452
-                return new ValidationResult[0];
-#else
-                return Array.Empty<ValidationResult>();
-#endif
+                return ArrayUtility.GetEmptyArray<ValidationResult>();
             }
 
         }
@@ -550,6 +546,6 @@
         /// <returns>Validator.</returns>
         public abstract Validator? GetValidator();
 
-#endregion IValidatable
+        #endregion IValidatable
     }
 }

@@ -21,12 +21,7 @@
             public static readonly string Cpu = "cpu";
         }
 
-        static HostBase()
-        {
-            HostBase.DetectedCpu = RuntimeEnvironmentUtility.GetCpuArchitecture();
-        }
-
-        private static readonly string? DetectedCpu;
+        private static readonly string? DetectedCpu = RuntimeEnvironmentUtility.GetCpuArchitecture();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="HostBase"/> class from being created.

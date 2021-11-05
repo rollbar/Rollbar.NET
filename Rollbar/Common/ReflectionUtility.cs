@@ -1,10 +1,12 @@
 ﻿namespace Rollbar.Common
 {
-    using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Reflection;
+
+    using Rollbar.Diagnostics;
 
     /// <summary>
     /// A utility class aiding with .NET Reflection.
@@ -18,14 +20,15 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>FieldInfo[].</returns>
+        [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "By design.")]
         public static FieldInfo[] GetAllDataFields(Type type)
         {
             if (type == null)
             {
-                return new FieldInfo[0];
+                return ArrayUtility.GetEmptyArray<FieldInfo>();
             }
 
-            List<Type> relevantTypes = new List<Type>();
+            List<Type> relevantTypes = new();
             Type? relevantType = type;
             while (relevantType != null)
             {
@@ -33,7 +36,7 @@
                 relevantType = relevantType.BaseType;
             }
 
-            List<FieldInfo> fieldInfos = new List<FieldInfo>();
+            List<FieldInfo> fieldInfos = new();
             relevantTypes.Reverse(); // eventually, we want following order: most base type's data fields first...
             foreach (var t in relevantTypes)
             {
@@ -48,6 +51,7 @@
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>All discovered FieldInfos.</returns>
+        [SuppressMessage("Major Code Smell", "S3011:Reflection should not be used to increase accessibility of classes, methods, or fields", Justification = "By design.")]
         public static FieldInfo[] GetAllStaticDataFields(Type type)
         {
             var memberInfos =
@@ -112,7 +116,7 @@
                 return result;
             }
 
-            return default(TFieldDataType);
+            return default;
         }
 
         /// <summary>
@@ -130,7 +134,7 @@
             foreach (var memberInfo in memberInfos)
             {
                 object? valueObject = memberInfo.GetValue(null);
-                TField? value = valueObject != null ? (TField) valueObject : default(TField);
+                TField? value = valueObject != null ? (TField) valueObject : default;
                 values.Add(value);
             }
             return values.ToArray();
@@ -215,11 +219,11 @@
         {
             if(type == null)
             {
-                return new Type[0];
+                return ArrayUtility.GetEmptyArray<Type>();
             }
 
             var baseTypes = ReflectionUtility.GetBaseTypesHierarchy(type);
-            List<Type> types = new List<Type>(baseTypes.Length + 1);
+            List<Type> types = new(baseTypes.Length + 1);
             types.Add(type);
             types.AddRange(baseTypes);
             return types.ToArray();
@@ -235,10 +239,10 @@
             Type? baseType = type?.BaseType;
             if(type == null || baseType == null)
             {
-                return new Type[0];
+                return ArrayUtility.GetEmptyArray<Type>();
             }
 
-            List<Type> baseTypesList = new List<Type>();
+            List<Type> baseTypesList = new();
             baseTypesList.Add(baseType);
             baseTypesList.AddRange(ReflectionUtility.GetBaseTypesHierarchy(baseType));
             return baseTypesList.ToArray();
@@ -290,7 +294,7 @@
         {
             if (type == null)
             {
-                return new Type[0];
+                return ArrayUtility.GetEmptyArray<Type>();
             }
 
             return type.GetInterfaces();
@@ -316,10 +320,10 @@
         {
             if (types == null || types.Length == 0)
             {
-                return new Type[0];
+                return ArrayUtility.GetEmptyArray<Type>();
             }
 
-            switch(types.Length)
+            switch (types.Length)
             {
                 case 1:
                     return ReflectionUtility.GetImplementedInterfaceTypes(types.First());
@@ -327,7 +331,7 @@
                     Type[] commonInterfaceTypes = 
                         ReflectionUtility.GetImplementedInterfaceTypes(types.First());
                     int i = 0;
-                    while ((commonInterfaceTypes.Count() > 0) && (++i < types.Length))
+                    while ((commonInterfaceTypes.Length > 0) && (++i < types.Length))
                     {
                         commonInterfaceTypes = 
                             commonInterfaceTypes
@@ -335,6 +339,40 @@
                             .ToArray();
                     }
                     return commonInterfaceTypes.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Loads the SDK module assembly.
+        /// </summary>
+        /// <param name="assemblyName">Name of the assembly.</param>
+        /// <returns>System.Nullable&lt;Assembly&gt;.</returns>
+        [SuppressMessage("Major Code Smell", "S3885:\"Assembly.Load\" should be used", Justification = "Good for now for what we need. NOTE: we may want to reconsider it in the future.")]
+        public static Assembly? LoadSdkModuleAssembly(string? assemblyName)
+        {
+            if (string.IsNullOrWhiteSpace(assemblyName))
+            {
+                return null;
+            }
+
+            try
+            {
+                var assembly = Assembly.LoadFrom(assemblyName);
+
+                return assembly;
+            }
+            catch (Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    rollbarLogger: null, 
+                    dataObject: null, 
+                    rollbarError: InternalRollbarError.SdkModuleLoaderError, 
+                    message: $"Couldn't load `{assemblyName}` assembly module!", 
+                    exception: ex, 
+                    errorCollector: null
+                    );
+
+                return null;
             }
         }
     }

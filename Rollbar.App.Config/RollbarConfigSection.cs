@@ -16,7 +16,7 @@
     public class RollbarConfigSection
             : ConfigurationSection
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarConfigSection).FullName);
+        private static readonly TraceSource traceSource = new(typeof(RollbarConfigSection).FullName);
 
         /// <summary>
         /// Gets the configuration.

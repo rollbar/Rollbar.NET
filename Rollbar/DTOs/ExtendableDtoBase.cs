@@ -15,16 +15,14 @@
     /// key-value pairs as needed.
     /// </summary>
     /// <seealso cref="Rollbar.DTOs.DtoBase" />
-    /// <seealso cref="System.Collections.Generic.IEnumerable{T}" />
     /// <seealso cref="System.Collections.Generic.IDictionary{TKey,TValue}" />
     public abstract class ExtendableDtoBase
         : DtoBase,
-        IEnumerable<KeyValuePair<string, object?>>,
         IDictionary<string, object?>
     {
         internal const string reservedPropertiesNestedTypeName = "ReservedProperties";
 
-        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType;
+        private static readonly IReadOnlyDictionary<Type, ExtendableDtoMetadata> metadataByDerivedType = ExtendableDtoMetadata.BuildAll();
 
         private readonly ExtendableDtoMetadata? _metadata;
 
@@ -34,14 +32,8 @@
         private readonly IDictionary<string, object?> _keyedValues = 
             new Dictionary<string, object?>();
 
-        static ExtendableDtoBase()
-        {
-            metadataByDerivedType = ExtendableDtoMetadata.BuildAll();
-        }
-
         private ExtendableDtoBase()
         {
-
         }
 
         /// <summary>
@@ -62,6 +54,7 @@
             }
         }
 
+
         /// <summary>
         /// Gets or sets the <see cref="System.Object"/> with the specified key.
         /// </summary>
@@ -70,6 +63,7 @@
         /// </value>
         /// <param name="key">The key.</param>
         /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S2589:Boolean expressions should not be gratuitous", Justification = "It is better to explicitly list all the relevant assumptions.")]
         public object? this[string key]
         {
             get
@@ -86,13 +80,11 @@
                 }
                 if (concreteDtoMetadata
                     .ReservedPropertyInfoByReservedKey
-                    .TryGetValue(key, out var reservedPropertyInfo))
+                    .TryGetValue(key, out var reservedPropertyInfo) 
+                    && reservedPropertyInfo.PropertyType.IsValueType
+                    )
                 {
-                    //if we have matching reserved property of value type - return default for it:   
-                    if(reservedPropertyInfo.PropertyType.IsValueType)
-                    {
-                        return Activator.CreateInstance(reservedPropertyInfo.PropertyType);
-                    }
+                    return Activator.CreateInstance(reservedPropertyInfo.PropertyType);
                 }
 
                 return null;

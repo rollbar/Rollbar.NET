@@ -85,6 +85,7 @@
 
         private static readonly Dictionary<int, RollbarErrorDetails> errorDetailsByCode;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Minor Code Smell", "S3963:\"static\" fields should be initialized inline", Justification = "Keeps code more maintainable.")]
         static RollbarApiErrorEventArgs()
         {
             RollbarErrorDetails[] errorDetails = new []

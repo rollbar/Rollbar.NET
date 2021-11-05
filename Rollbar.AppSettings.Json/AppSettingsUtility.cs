@@ -208,8 +208,8 @@
             string fileFullName = Path.Combine(folderPath, appSettingsFileName);
             if (!File.Exists(fileFullName))
             {
-                //NOTE: the following line causes the RollbarTraceListener into infinite creation loop and subsequent stck overflow:
-                //Debug.WriteLine($"File: {fileFullName} does not exist...");
+                //NOTE: Do not Trace/Debug anything here,
+                //      sinse it would cause the RollbarTraceListener into infinite creation loop and subsequent stack overflow!
 
                 return null;
             }
@@ -220,18 +220,6 @@
                 .Build();
 
             return appConfiguration;
-        }
-
-        /// <summary>
-        /// Loads the application settings.
-        /// </summary>
-        /// <typeparam name="TSection">The type of the t section.</typeparam>
-        /// <param name="sectionName">Name of the section.</param>
-        /// <param name="appSettings">The application settings.</param>
-        /// <returns>TSection.</returns>
-        private static TSection LoadAppSettings<TSection>(string sectionName, IConfiguration appSettings)
-        {
-            return appSettings.GetSection(sectionName).Get<TSection>();
         }
 
         /// <summary>

@@ -5,12 +5,8 @@
     /// <summary>
     /// Models data used for registering a deployment instance.
     /// </summary>
-    /// [TODO] Eventually, make this class internal AND remove all the [Obsolete] attributes ...
-    [Obsolete("This type is obsolete. Instead, use Rollbar.Deploys.IDeployment.", false)]
- #pragma warning disable CA1724 // The type name conflicts with the namespace
-   public class Deployment 
+   internal class Deployment 
         : IDeployment
-#pragma warning restore CA1724 // The type name conflicts with the namespace
     { 
         /// <summary>
         /// Prevents a default instance of the <see cref="Deployment"/> class from being created.
@@ -25,7 +21,6 @@
         /// </summary>
         /// <param name="environment">The environment.</param>
         /// <param name="revision">The revision.</param>
-        [Obsolete("This constructor is obsolete. Instead, use Rollbar.Deploys.DeploymentFactory.CreateDeployment(...)", false)]
         public Deployment(string environment, string revision)
             : this(null, environment, revision)
         {
@@ -38,7 +33,6 @@
         /// <param name="writeAccessToken">The write access token.</param>
         /// <param name="environment">The environment.</param>
         /// <param name="revision">The revision.</param>
-        [Obsolete("This constructor is obsolete. Instead, use Rollbar.Deploys.DeploymentFactory.CreateDeployment(...)", false)]
         public Deployment(string? writeAccessToken, string? environment, string? revision)
         {
             this.WriteAccessToken = writeAccessToken;

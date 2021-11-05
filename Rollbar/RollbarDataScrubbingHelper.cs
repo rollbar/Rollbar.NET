@@ -25,7 +25,7 @@
         {
             get
             {
-                return NestedSingleInstance.Instance;
+                return NestedSingleInstance.TheInstance;
             }
         }
 
@@ -51,7 +51,7 @@
             /// <summary>
             /// The instance
             /// </summary>
-            internal static readonly RollbarDataScrubbingHelper Instance =
+            internal static readonly RollbarDataScrubbingHelper TheInstance =
                 new RollbarDataScrubbingHelper();
         }
 
@@ -64,8 +64,6 @@
         /// <returns>ISet&lt;System.String&gt;.</returns>
         public static ISet<string> Combine(IEnumerable<ISet<string>> dataFieldSets)
         {
-            //int capacity = dataFieldSets.Aggregate(0, (total, next) => total += next.Count);
-            //HashSet<string> resultingSet = new HashSet<string>(capacity);
             HashSet<string> resultingSet = new HashSet<string>();
 
             foreach (var dataFieldSet in dataFieldSets)

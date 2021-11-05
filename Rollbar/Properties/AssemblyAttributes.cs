@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Rollbar.AppSettings.Json")]
 [assembly: InternalsVisibleTo("Rollbar.App.Config")]
+[assembly: InternalsVisibleTo("Rollbar.OfflinePersistence")]
 [assembly: InternalsVisibleTo("Rollbar.NetPlatformExtensions")]
 [assembly: InternalsVisibleTo("Rollbar.NetCore.AspNet")]
 

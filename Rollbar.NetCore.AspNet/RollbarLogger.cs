@@ -26,7 +26,7 @@
         /// <param name="httpContextAccessor">The HTTP context accessor.</param>
         public RollbarLogger(string name
             , IRollbarLoggerConfig rollbarConfig
-            , NetPlatformExtensions.RollbarOptions? rollbarOptions
+            , RollbarOptions? rollbarOptions
             , IHttpContextAccessor? httpContextAccessor
             )
             : base(name, rollbarConfig, rollbarOptions)
@@ -47,7 +47,6 @@
             Assumption.AssertTrue(!object.Equals(state, default(TState)), nameof(state));
 
             var scope = new RollbarScope(this.Name, state);
-            //scope.HttpContext = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
             return RollbarScope.Push(scope);
         }
 
@@ -70,12 +69,6 @@
             IRollbarPackage? package =  base.ComposeRollbarPackage(eventId,state,exception,formatter);
             if(package != null)
             {
-                //var currentContext = GetCurrentContext();
-                //if(currentContext != null)
-                //{
-                //    package = new RollbarHttpContextPackageDecorator(package, currentContext, true);
-                //}
-
                 var httpContext = _httpContextAccessor?.HttpContext;
                 if(httpContext != null)
                 {
@@ -93,20 +86,5 @@
 
             return package;
         }
-
-        //private RollbarHttpContext GetCurrentContext()
-        //{
-        //    var context = RollbarScope.Current?.HttpContext ?? new RollbarHttpContext();
-
-        //    if (context.HttpAttributes == null 
-        //        && this._httpContextAccessor != null 
-        //        && this._httpContextAccessor.HttpContext != null
-        //        )
-        //    {
-        //        context.HttpAttributes = new RollbarHttpAttributes(this._httpContextAccessor.HttpContext);
-        //    }
-
-        //    return context;
-        //}
     }
 }

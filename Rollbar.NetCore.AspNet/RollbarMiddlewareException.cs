@@ -8,6 +8,7 @@
     /// Implements the <see cref="System.Exception" />
     /// </summary>
     /// <seealso cref="System.Exception" />
+    [Serializable]
     public class RollbarMiddlewareException
         : Exception
     {

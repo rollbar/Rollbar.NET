@@ -17,7 +17,7 @@
     public class RollbarTelemetryConfigSection
             : ConfigurationSection
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarTelemetryConfigSection).FullName);
+        private static readonly TraceSource traceSource = new(typeof(RollbarTelemetryConfigSection).FullName);
 
         /// <summary>
         /// Gets the configuration.
@@ -34,11 +34,10 @@
             }
             catch (System.Exception ex)
             {
+                string msg = $"Error while attempting to get RollbarTelemetryConfigSection:{Environment.NewLine}{ex}";
                 //let's just trace it for now:
-                System.Diagnostics.Trace.TraceError(
-                    "Error while attempting to get RollbarTelemetryConfigSection:" + System.Environment.NewLine + ex
-                    );
-                traceSource.TraceEvent(TraceEventType.Warning, 0, $"Error while attempting to get RollbarTelemetryConfigSection:{Environment.NewLine}{ex}");
+                System.Diagnostics.Trace.TraceError(msg);
+                traceSource.TraceEvent(TraceEventType.Warning, 0, msg);
                 return null;
             }
         }
