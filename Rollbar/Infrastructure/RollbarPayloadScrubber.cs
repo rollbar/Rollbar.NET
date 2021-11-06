@@ -1,19 +1,21 @@
-﻿namespace Rollbar.PayloadScrubbing
+﻿namespace Rollbar.Infrastructure
 {
     using System;
     using System.Diagnostics;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System.Linq;
     using System.Collections.Generic;
-    using System.Text;
+
     using Rollbar.Serialization.Json;
+    using Rollbar.PayloadScrubbing;
+    using Rollbar.DTOs;
 
     /// <summary>
     /// Class RollbarPayloadScrubber.
     /// </summary>
     internal class RollbarPayloadScrubber
     {
+        #region constants
+
         /// <summary>
         /// The scrub mask
         /// </summary>
@@ -31,6 +33,10 @@
         /// </summary>
         private const string httpResponseBodyPath = "data.body.response.body.";
 
+        #endregion constants
+
+        #region fields
+
         /// <summary>
         /// The payload field names
         /// </summary>
@@ -47,6 +53,10 @@
         /// The HTTP response body paths
         /// </summary>
         private readonly string[] _httpResponseBodyPaths;
+
+        #endregion fields
+
+        #region constructors
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarPayloadScrubber"/> class from being created.
@@ -85,6 +95,74 @@
                 this._httpResponseBodyPaths.Length
                 );
         }
+
+        #endregion constructors
+
+        #region properties
+
+        /// <summary>
+        /// Gets the scrub mask.
+        /// </summary>
+        /// <value>The scrub mask.</value>
+        public string ScrubMask
+        {
+            get
+            {
+                return scrubMask;
+            }
+        }
+
+        /// <summary>
+        /// Gets the payload field names.
+        /// </summary>
+        /// <value>The payload field names.</value>
+        public string[] PayloadFieldNames
+        {
+            get
+            {
+                return this._payloadFieldNames;
+            }
+        }
+
+        /// <summary>
+        /// Gets the payload field paths.
+        /// </summary>
+        /// <value>The payload field paths.</value>
+        public string[] PayloadFieldPaths
+        {
+            get
+            {
+                return this._payloadFieldPaths;
+            }
+        }
+
+        /// <summary>
+        /// Gets the HTTP request body paths.
+        /// </summary>
+        /// <value>The HTTP request body paths.</value>
+        public string[] HttpRequestBodyPaths
+        {
+            get
+            {
+                return this._httpRequestBodyPaths;
+            }
+        }
+
+        /// <summary>
+        /// Gets the HTTP response body paths.
+        /// </summary>
+        /// <value>The HTTP response body paths.</value>
+        public string[] HttpResponseBodyPaths
+        {
+            get
+            {
+                return this._httpResponseBodyPaths;
+            }
+        }
+
+        #endregion properties
+
+        #region methods
 
         /// <summary>
         /// Filters out the critical fields (using case sensitive string comparing).
@@ -141,49 +219,92 @@
         }
 
         /// <summary>
-        /// Gets the scrub mask.
+        /// Scrubs the HTTP messages.
         /// </summary>
-        /// <value>The scrub mask.</value>
-        public string ScrubMask
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns><c>true</c> if scrubbed successfully, <c>false</c> otherwise.</returns>
+        public bool ScrubHttpMessages(PayloadBundle payloadBundle)
         {
-            get { return scrubMask; }
+            Payload? payload = payloadBundle.GetPayload();
+            if (payload == null)
+            {
+                return true;
+            }
+
+            DTOs.Request? request = payload.Data.Request;
+            if (request?.PostBody is string requestBody
+                && request.Headers != null
+                && request.Headers.TryGetValue("Content-Type", out string? requestContentTypeHeader)
+                )
+            {
+                request.PostBody =
+                    this.ScrubHttpMessageBodyContentString(
+                        requestBody,
+                        requestContentTypeHeader,
+                        this.ScrubMask,
+                        this.PayloadFieldNames,
+                        this.HttpRequestBodyPaths);
+            }
+
+            DTOs.Response? response = payload.Data.Response;
+            if (response?.Body is string responseBody
+                && response.Headers != null
+                && response.Headers.TryGetValue("Content-Type", out string? responseContentTypeHeader)
+                )
+            {
+                response.Body =
+                    this.ScrubHttpMessageBodyContentString(
+                        responseBody,
+                        responseContentTypeHeader,
+                        this.ScrubMask,
+                        this.PayloadFieldNames,
+                        this.HttpResponseBodyPaths);
+            }
+
+            return true;
         }
 
         /// <summary>
-        /// Gets the payload field names.
+        /// Scrubs the HTTP message body content string.
         /// </summary>
-        /// <value>The payload field names.</value>
-        public string[] PayloadFieldNames
+        /// <param name="body">The body.</param>
+        /// <param name="contentTypeHeaderValue">The content type header value.</param>
+        /// <param name="scrubMask">The scrub mask.</param>
+        /// <param name="scrubFields">The scrub fields.</param>
+        /// <param name="scrubPaths">The scrub paths.</param>
+        /// <returns>System.String.</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Globalization",
+            "CA1307:Specify StringComparison for clarity",
+            Justification = "Mentioned API isn't available in all targeted frameworks."
+            )]
+        private string? ScrubHttpMessageBodyContentString(
+            string body,
+            string contentTypeHeaderValue,
+            string scrubMask,
+            string[] scrubFields,
+            string[] scrubPaths
+            )
         {
-            get { return this._payloadFieldNames; }
+            string contentType = contentTypeHeaderValue.ToLower();
+            if (contentType.Contains("json"))
+            {
+                return new JsonStringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
+            }
+            else if (contentType.Contains("xml"))
+            {
+                return new XmlStringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
+            }
+            else if (contentType.Contains("form-data"))
+            {
+                return new FormDataStringScrubber(contentTypeHeaderValue, scrubMask, scrubFields, scrubPaths).Scrub(body);
+            }
+            else
+            {
+                return new StringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
+            }
         }
 
-        /// <summary>
-        /// Gets the payload field paths.
-        /// </summary>
-        /// <value>The payload field paths.</value>
-        public string[] PayloadFieldPaths
-        {
-            get { return this._payloadFieldPaths; }
-        }
-
-        /// <summary>
-        /// Gets the HTTP request body paths.
-        /// </summary>
-        /// <value>The HTTP request body paths.</value>
-        public string[] HttpRequestBodyPaths
-        {
-            get { return this._httpRequestBodyPaths; }
-        }
-
-        /// <summary>
-        /// Gets the HTTP response body paths.
-        /// </summary>
-        /// <value>The HTTP response body paths.</value>
-        public string[] HttpResponseBodyPaths
-        {
-            get { return this._httpResponseBodyPaths; }
-        }
-
+        #endregion methods
     }
 }
