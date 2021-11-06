@@ -24,13 +24,11 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>5.0.5</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>5.0.6</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix>beta</SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
-      - refactor: addressed SonarCloud detected reliability issues
-      - refactor: addressed SonarCloud detected security hotspots
-      - refactor: addressed SonarCloud detected code smells
+      - refactor: reduce code duplication between RollbarClient and RollbarBlazorClient implementations.
     </SdkReleaseNotes>                        
 
     <!--
