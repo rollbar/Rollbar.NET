@@ -10,6 +10,7 @@ namespace UnitTest.Rollbar
     using global::Rollbar.DTOs;
     using Exception = System.Exception;
     using UnitTest.RollbarTestCommon;
+    using global::Rollbar.Infrastructure;
 
     [TestClass]
     [TestCategory(nameof(RollbarLoggerBlockingWrapperFixture))]

@@ -1,4 +1,4 @@
-﻿namespace Rollbar
+﻿namespace Rollbar.Infrastructure
 {
     using System;
     using System.Diagnostics;

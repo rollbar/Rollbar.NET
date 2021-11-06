@@ -1,9 +1,8 @@
 ﻿namespace Rollbar
 {
     using System;
-    using System.Collections.Generic;
-    using System.Text;
     using Rollbar.DTOs;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Class TransmissionOmittedEventArgs.

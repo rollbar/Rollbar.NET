@@ -3,6 +3,8 @@
     using Newtonsoft.Json;
     using Rollbar.Common;
     using Rollbar.Diagnostics;
+    using Rollbar.Infrastructure;
+
     using System;
 
     /// <summary>

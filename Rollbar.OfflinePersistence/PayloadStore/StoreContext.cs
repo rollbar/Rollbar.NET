@@ -7,6 +7,7 @@
 
     using Rollbar;
     using Rollbar.Common;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Class StoreContext.

@@ -11,6 +11,7 @@ namespace UnitTest.Rollbar
     using Exception = System.Exception;
     using System.Diagnostics;
     using UnitTest.Rollbar.Mocks;
+    using global::Rollbar.Infrastructure;
 
     /// <summary>
     /// Defines test class RollbarLoggerFixture.

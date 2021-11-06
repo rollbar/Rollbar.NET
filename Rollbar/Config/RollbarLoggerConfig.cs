@@ -8,6 +8,7 @@
     using Newtonsoft.Json;
 
     using Rollbar.Common;
+    using Rollbar.Infrastructure;
     using Rollbar.NetStandard;
 
     /// <summary>

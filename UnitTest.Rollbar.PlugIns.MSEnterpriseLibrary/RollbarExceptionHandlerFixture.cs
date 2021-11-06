@@ -2,6 +2,7 @@ namespace UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary
 {
     using Benchmarker.Common;
     using global::Rollbar;
+    using global::Rollbar.Infrastructure;
     using global::Rollbar.PlugIns.MSEnterpriseLibrary;
     using Microsoft.Practices.EnterpriseLibrary.ExceptionHandling;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

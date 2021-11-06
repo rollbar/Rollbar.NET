@@ -4,6 +4,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar.AppSettings.Json;
+    using Rollbar.Infrastructure;
 
     using System;
     using System.Collections.Concurrent;

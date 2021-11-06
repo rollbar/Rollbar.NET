@@ -7,6 +7,8 @@
     using System.Linq.Expressions;
     using System.Reflection;
 
+    using Rollbar.Infrastructure;
+
     /// <summary>
     /// Class Validator.
     /// </summary>

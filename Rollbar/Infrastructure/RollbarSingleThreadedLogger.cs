@@ -10,6 +10,7 @@
     using System.Runtime.ExceptionServices;
     using Rollbar.PayloadStore;
     using System.Net.Http;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Implements disposable implementation of IRollbar.

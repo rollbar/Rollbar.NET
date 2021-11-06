@@ -4,6 +4,8 @@ namespace UnitTest.Rollbar
 {
     using global::Rollbar;
     using global::Rollbar.DTOs;
+    using global::Rollbar.Infrastructure;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;

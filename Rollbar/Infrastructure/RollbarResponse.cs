@@ -1,4 +1,4 @@
-﻿namespace Rollbar
+﻿namespace Rollbar.Infrastructure
 {
     using Newtonsoft.Json;
     using System.Text;

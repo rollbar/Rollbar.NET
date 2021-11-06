@@ -9,6 +9,7 @@
     using System.Net.Http.Headers;
     using Moq;
     using System.Linq;
+    using global::Rollbar.Infrastructure;
 
     /// <summary>
     /// Defines test class RollbarRateLimitFixture.

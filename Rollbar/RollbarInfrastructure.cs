@@ -9,6 +9,7 @@
 
     using Rollbar.Common;
     using Rollbar.Diagnostics;
+    using Rollbar.Infrastructure;
     using Rollbar.PayloadStore;
 
     /// <summary>

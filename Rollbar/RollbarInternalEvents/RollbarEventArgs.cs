@@ -1,9 +1,10 @@
 ﻿namespace Rollbar
 {
-    using Newtonsoft.Json;
     using System;
     using System.Diagnostics;
     using System.Text;
+
+    using Newtonsoft.Json;
 
     /// <summary>
     /// An abstract base for implementing concrete Rollbar EventArgs.

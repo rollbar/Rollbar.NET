@@ -11,6 +11,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
     using System.Threading;
     using log4net;
     using log4net.Config;
+    using global::Rollbar.Infrastructure;
 
     /// <summary>
     /// Defines test class RollbarAppenderFixture.

@@ -4,6 +4,7 @@ namespace UnitTest.Rollbar.PayloadScrubbing
 {
     using global::Rollbar;
     using global::Rollbar.DTOs;
+    using global::Rollbar.Infrastructure;
     using global::Rollbar.PayloadScrubbing;
     using global::Rollbar.Serialization.Json;
     using Microsoft.VisualStudio.TestTools.UnitTesting;

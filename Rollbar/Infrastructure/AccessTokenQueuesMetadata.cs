@@ -1,4 +1,4 @@
-﻿namespace Rollbar
+﻿namespace Rollbar.Infrastructure
 {
     using Rollbar.Diagnostics;
     using System;
@@ -7,9 +7,10 @@
 
     /// <summary>
     /// Class AccessTokenQueuesMetadata.
-    /// Implements the <see cref="Rollbar.IPayloadQueuesRegistry" /> with thread-safety.
+    /// Implements the <see cref="Rollbar.Infrastructure.IPayloadQueuesRegistry" /> with thread-safety.
     /// </summary>
-    /// <seealso cref="Rollbar.IPayloadQueuesRegistry" />
+    /// Implements the <see cref="Rollbar.Infrastructure.IPayloadQueuesRegistry" /> with thread-safety.
+    /// <seealso cref="Rollbar.Infrastructure.IPayloadQueuesRegistry" />
     internal class AccessTokenQueuesMetadata
         : IPayloadQueuesRegistry
     {

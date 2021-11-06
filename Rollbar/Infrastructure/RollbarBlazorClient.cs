@@ -1,8 +1,7 @@
-﻿namespace Rollbar
+﻿namespace Rollbar.Infrastructure
 {
     using System;
     using System.Text;
-    using System.Threading;
     using System.Threading.Tasks;
     using System.Net;
     using System.Net.Http;
@@ -12,8 +11,6 @@
 
     using Rollbar.DTOs;
     using Rollbar.Diagnostics;
-    using Rollbar.PayloadTruncation;
-    using Rollbar.PayloadScrubbing;
     using System.Runtime.ExceptionServices;
 
     /// <summary>
@@ -24,28 +21,22 @@
         #region fields
 
         /// <summary>
-        /// The rollbar logger
-        /// </summary>
-        private readonly IRollbar _rollbarLogger;
-
-        /// <summary>
         /// The HTTP client
         /// </summary>
         private readonly HttpClient _httpClient;
+
+        /// <summary>
+        /// The rollbar logger
+        /// </summary>
+        private readonly IRollbar _rollbarLogger;
 
         /// <summary>
         /// The payload post URI
         /// </summary>
         private readonly Uri _payloadPostUri;
 
-        /// <summary>
-        /// The payload truncation strategy
-        /// </summary>
-        private readonly IterativeTruncationStrategy _payloadTruncationStrategy;
+        private readonly RollbarPayloadTruncator _payloadTruncator;
 
-        /// <summary>
-        /// The payload scrubber
-        /// </summary>
         private readonly RollbarPayloadScrubber _payloadScrubber;
 
         #endregion fields
@@ -68,7 +59,7 @@
 
             this._rollbarLogger = logger;
 
-            this._payloadTruncationStrategy = new IterativeTruncationStrategy();
+            this._payloadTruncator = new(logger);
             this._payloadScrubber = new RollbarPayloadScrubber(logger.Config.RollbarDataSecurityOptions.GetFieldsToScrub());
 
             this._payloadPostUri =
@@ -85,15 +76,12 @@
             var sp = ServicePointManager.FindServicePoint(
                 new Uri(logger.Config.RollbarDestinationOptions.EndPoint!)
                 );
+
             try
             {
                 sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
             }
-#pragma warning disable CS0168 // Variable is declared but never used
-#pragma warning disable IDE0059 // Variable is declared but never used
-            catch(NotImplementedException ex)
-#pragma warning restore CS0168 // Variable is declared but never used
-#pragma warning restore IDE0059 // Variable is declared but never used
+            catch (NotImplementedException)
             {
                 // just a crash prevention.
                 // this is a work around the unimplemented property within Mono runtime...
@@ -122,12 +110,12 @@
             Payload? payload = payloadBundle.GetPayload();
             Assumption.AssertNotNull(payload, nameof(payload));
 
-            if (!TruncatePayload(payloadBundle))
+            if (!this._payloadTruncator.TruncatePayload(payloadBundle))
             {
                 return false;
             }
 
-            if (!ScrubHttpMessages(payloadBundle))
+            if (!this._payloadScrubber.ScrubHttpMessages(payloadBundle))
             {
                 return false;
             }
@@ -140,7 +128,7 @@
 
             try
             {
-                jsonData = ScrubPayload(jsonData!);
+                jsonData = this._payloadScrubber.ScrubPayload(jsonData!);
             }
             catch (System.Exception exception)
             {
@@ -309,146 +297,5 @@
             return jsonData;
         }
 
-        #region payload truncation
-
-        /// <summary>
-        /// Truncates the payload.
-        /// </summary>
-        /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if successfully truncated, <c>false</c> otherwise.</returns>
-        private bool TruncatePayload(PayloadBundle payloadBundle)
-        {
-            if (this._payloadTruncationStrategy == null)
-            {
-                return true; // as far as truncation is concerned - everything is good...
-            }
-
-            Payload? payload = payloadBundle.GetPayload();
-
-            if (this._payloadTruncationStrategy.Truncate(payload) > this._payloadTruncationStrategy.MaxPayloadSizeInBytes)
-            {
-                var exception = new ArgumentOutOfRangeException(
-                    paramName: nameof(payloadBundle),
-                    message: $"Bundle's payload size exceeds {this._payloadTruncationStrategy.MaxPayloadSizeInBytes} bytes limit!"
-                );
-
-                RollbarErrorUtility.Report(
-                    this._rollbarLogger,
-                    payload,
-                    InternalRollbarError.PayloadTruncationError,
-                    "While truncating a payload...",
-                    exception,
-                    payloadBundle
-                );
-
-                return false;
-            }
-
-            return true;
-        }
-
-        #endregion payload truncation
-
-        #region payload scrubbing
-
-        /// <summary>
-        /// Scrubs the payload.
-        /// </summary>
-        /// <param name="payload">The payload.</param>
-        /// <returns>System.String.</returns>
-        internal string ScrubPayload(string payload)
-        {
-            if (this._payloadScrubber == null)
-            {
-                return payload; // as far as scrubbing is concerned - everything is good...
-            }
-
-            var scrubbedPayload = this._payloadScrubber.ScrubPayload(payload);
-            return scrubbedPayload;
-        }
-
-        /// <summary>
-        /// Scrubs the HTTP messages.
-        /// </summary>
-        /// <param name="payloadBundle">The payload bundle.</param>
-        /// <returns><c>true</c> if scrubbed successfully, <c>false</c> otherwise.</returns>
-        private bool ScrubHttpMessages(PayloadBundle payloadBundle)
-        {
-            Payload? payload = payloadBundle.GetPayload();
-            if(payload == null)
-            {
-                return true;
-            }
-
-            DTOs.Request? request = payload.Data.Request;
-            if (request?.PostBody is string requestBody 
-                && request.Headers != null
-                && request.Headers.TryGetValue("Content-Type", out string? requestContentTypeHeader)
-                )
-            {
-                request.PostBody =
-                    this.ScrubHttpMessageBodyContentString(
-                        requestBody,
-                        requestContentTypeHeader,
-                        this._payloadScrubber.ScrubMask,
-                        this._payloadScrubber.PayloadFieldNames,
-                        this._payloadScrubber.HttpRequestBodyPaths);
-            }
-
-            DTOs.Response? response = payload.Data.Response;
-            if (response?.Body is string responseBody 
-                && response.Headers != null
-                && response.Headers.TryGetValue("Content-Type", out string? responseContentTypeHeader)
-                )
-            {
-                response.Body =
-                    this.ScrubHttpMessageBodyContentString(
-                        responseBody,
-                        responseContentTypeHeader,
-                        this._payloadScrubber.ScrubMask,
-                        this._payloadScrubber.PayloadFieldNames,
-                        this._payloadScrubber.HttpResponseBodyPaths);
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Scrubs the HTTP message body content string.
-        /// </summary>
-        /// <param name="body">The body.</param>
-        /// <param name="contentTypeHeaderValue">The content type header value.</param>
-        /// <param name="scrubMask">The scrub mask.</param>
-        /// <param name="scrubFields">The scrub fields.</param>
-        /// <param name="scrubPaths">The scrub paths.</param>
-        /// <returns>System.String.</returns>
-        private string? ScrubHttpMessageBodyContentString(
-            string body, 
-            string contentTypeHeaderValue, 
-            string scrubMask, 
-            string[] scrubFields, 
-            string[] scrubPaths
-            )
-        {
-            string contentType = contentTypeHeaderValue.ToLower();
-            if (contentType.Contains("json"))
-            {
-                return new JsonStringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
-            }
-            else if (contentType.Contains("xml"))
-            {
-                return new XmlStringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
-            }
-            else if (contentType.Contains("form-data"))
-            {
-                return new FormDataStringScrubber(contentTypeHeaderValue, scrubMask, scrubFields, scrubPaths).Scrub(body);
-            }
-            else
-            {
-                return new StringScrubber(scrubMask, scrubFields, scrubPaths).Scrub(body);
-            }
-        }
-
-        #endregion payload scrubbing
     }
 }

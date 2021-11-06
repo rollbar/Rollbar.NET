@@ -7,6 +7,7 @@
     using System.Reflection;
 
     using Rollbar.Diagnostics;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// A utility class aiding with .NET Reflection.

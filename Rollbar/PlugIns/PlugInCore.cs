@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
 
+    using Rollbar.Infrastructure;
     using Rollbar.NetStandard;
 
     /// <summary>

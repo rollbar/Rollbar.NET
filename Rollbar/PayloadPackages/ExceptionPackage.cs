@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Class ExceptionPackage.
