@@ -13,7 +13,7 @@
         /// <summary>
         /// The rollbar
         /// </summary>
-        private readonly IRollbar _rollbar;
+        private readonly IRollbar? _rollbar;
 
         /// <summary>
         /// The truncation strategy
@@ -31,7 +31,7 @@
         /// Initializes a new instance of the <see cref="RollbarPayloadTruncator"/> class.
         /// </summary>
         /// <param name="rollbar">The rollbar.</param>
-        public RollbarPayloadTruncator(IRollbar rollbar)
+        public RollbarPayloadTruncator(IRollbar? rollbar)
         {
             this._rollbar = rollbar;
         }
