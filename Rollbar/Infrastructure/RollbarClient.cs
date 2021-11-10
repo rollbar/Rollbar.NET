@@ -1,27 +1,24 @@
 ﻿namespace Rollbar.Infrastructure
 {
     using System;
-    using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
-    using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
 
-    using Newtonsoft.Json;
-
-    using Rollbar.DTOs;
     using Rollbar.Diagnostics;
-    using System.Runtime.ExceptionServices;
 
     /// <summary>
-    /// Client for accessing the Rollbar API
+    /// Class RollbarClient for accessing the Rollbar API server.
+    /// Implements the <see cref="Rollbar.Infrastructure.RollbarClientBase" />
     /// </summary>
+    /// <seealso cref="Rollbar.Infrastructure.RollbarClientBase" />
     internal class RollbarClient
         : RollbarClientBase
     {
         #region fields
 
+        /// <summary>
+        /// The expected post to API timeout
+        /// </summary>
         private readonly TimeSpan _expectedPostToApiTimeout;
 
         #endregion fields
@@ -29,7 +26,7 @@
         #region constructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RollbarClient" /> class.
+        /// Initializes a new instance of the <see cref="RollbarClient"/> class.
         /// </summary>
         /// <param name="rollbarLogger">The rollbar logger.</param>
         public RollbarClient(IRollbar rollbarLogger)
@@ -42,6 +39,10 @@
             this._payloadTruncator = new(rollbarLogger);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarClient"/> class.
+        /// </summary>
+        /// <param name="rollbarLoggerConfig">The rollbar logger configuration.</param>
         public RollbarClient(IRollbarLoggerConfig rollbarLoggerConfig)
             : base(rollbarLoggerConfig)
         {
@@ -59,6 +60,12 @@
 
         #endregion constructors
 
+        /// <summary>
+        /// Posts as json.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns>System.Nullable&lt;RollbarResponse&gt;.</returns>
+        /// <exception cref="System.Net.Http.HttpRequestException">Preliminary ConnectivityMonitor detected offline status!</exception>
         public RollbarResponse? PostAsJson(
             PayloadBundle payloadBundle
             )
@@ -74,33 +81,39 @@
                 throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
 
-            using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+            using CancellationTokenSource cancellationTokenSource = new();
+            var task = this.PostAsJsonAsync(payloadBundle, cancellationTokenSource.Token);
+            try
             {
-                var task = this.PostAsJsonAsync(payloadBundle, cancellationTokenSource.Token);
-
-                try
+                if (!task.Wait(this._expectedPostToApiTimeout))
                 {
-                    if(!task.Wait(this._expectedPostToApiTimeout))
-                    {
-                        cancellationTokenSource.Cancel(true);
-                    }
-                    return task.Result;
+                    cancellationTokenSource.Cancel(true);
                 }
-                catch(System.Exception ex)
-                {
-                    RollbarErrorUtility.Report(
-                        null, 
-                        payloadBundle.AsHttpContentToSend, 
-                        InternalRollbarError.PayloadPostError, 
-                        "While PostAsJson(PayloadBundle payloadBundle)...", 
-                        ex,
-                        payloadBundle
-                    );
-                    return null;
-                }
+                return task.Result;
+            }
+            catch (System.Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    null,
+                    payloadBundle.AsHttpContentToSend,
+                    InternalRollbarError.PayloadPostError,
+                    "While PostAsJson(PayloadBundle payloadBundle)...",
+                    ex,
+                    payloadBundle
+                );
+                return null;
             }
         }
 
+        /// <summary>
+        /// Posts as json.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <returns>System.Nullable&lt;RollbarResponse&gt;.</returns>
+        /// <exception cref="System.Net.Http.HttpRequestException">
+        /// Preliminary ConnectivityMonitor detected offline status!
+        /// </exception>
         public RollbarResponse? PostAsJson(
             string? accessToken, 
             string? jsonContent
@@ -123,30 +136,27 @@
                 throw new HttpRequestException("Preliminary ConnectivityMonitor detected offline status!");
             }
 
-            using(CancellationTokenSource cancellationTokenSource = new CancellationTokenSource())
+            using CancellationTokenSource cancellationTokenSource = new();
+            var task = this.PostAsJsonAsync(accessToken!, jsonContent!, cancellationTokenSource.Token);
+            try
             {
-                var task = this.PostAsJsonAsync(accessToken!, jsonContent!, cancellationTokenSource.Token);
-
-                try
+                if (!task.Wait(this._expectedPostToApiTimeout))
                 {
-                    if (!task.Wait(this._expectedPostToApiTimeout))
-                    {
-                        cancellationTokenSource.Cancel(true);
-                    }
-                    return task.Result;
+                    cancellationTokenSource.Cancel(true);
                 }
-                catch(System.Exception ex)
-                {
-                    RollbarErrorUtility.Report(
-                        null, 
-                        jsonContent, 
-                        InternalRollbarError.PayloadPostError, 
-                        "While PostAsJson((string destinationUri, string accessToken, string jsonContent)...", 
-                        ex,
-                        null
-                    );
-                    return null;
-                }
+                return task.Result;
+            }
+            catch (System.Exception ex)
+            {
+                RollbarErrorUtility.Report(
+                    null,
+                    jsonContent,
+                    InternalRollbarError.PayloadPostError,
+                    "While PostAsJson((string destinationUri, string accessToken, string jsonContent)...",
+                    ex,
+                    null
+                );
+                return null;
             }
 
         }

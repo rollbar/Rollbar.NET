@@ -1,8 +1,6 @@
 ﻿namespace Rollbar.Infrastructure
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -16,31 +14,63 @@
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
 
+    /// <summary>
+    /// Class RollbarClientBase for accessing the Rollbar API server.
+    /// 
+    /// The base for building differnt flavors of Rollbar clients.
+    /// </summary>
     internal abstract class RollbarClientBase
     {
         #region fields
 
+        /// <summary>
+        /// The payload truncator
+        /// </summary>
         protected RollbarPayloadTruncator? _payloadTruncator;
 
+        /// <summary>
+        /// The payload scrubber
+        /// </summary>
         protected readonly RollbarPayloadScrubber? _payloadScrubber;
 
 
+        /// <summary>
+        /// The rollbar logger
+        /// </summary>
         protected IRollbar? _rollbarLogger;
 
+        /// <summary>
+        /// The rollbar logger configuration
+        /// </summary>
         protected readonly IRollbarLoggerConfig _rollbarLoggerConfig;
 
+        /// <summary>
+        /// The payload post URI
+        /// </summary>
         protected readonly Uri _payloadPostUri;
 
+        /// <summary>
+        /// The HTTP client
+        /// </summary>
         private HttpClient? _httpClient;
 
         #endregion fields
 
         #region constructors
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="RollbarClientBase"/> class from being created.
+        /// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         private RollbarClientBase()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarClientBase"/> class.
+        /// </summary>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
         protected RollbarClientBase(IRollbar rollbarLogger)
             : this(rollbarLogger.Config)
         {
@@ -51,30 +81,46 @@
             this._payloadTruncator = new(rollbarLogger);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarClientBase"/> class.
+        /// </summary>
+        /// <param name="rollbarLoggerConfig">The rollbar logger configuration.</param>
+        /// <exception cref="Rollbar.RollbarException">
+        /// Undefined destination end-point!
+        /// </exception>
         protected RollbarClientBase(IRollbarLoggerConfig rollbarLoggerConfig)
         {
-            Assumption.AssertNotNull(rollbarLoggerConfig, nameof(rollbarLoggerConfig));
+            Assumption.AssertNotNull(
+                rollbarLoggerConfig, 
+                nameof(rollbarLoggerConfig)
+                );
+            Assumption.AssertNotNullOrEmpty(
+                rollbarLoggerConfig.RollbarDestinationOptions.EndPoint, 
+                nameof(rollbarLoggerConfig.RollbarDestinationOptions.EndPoint)
+                );
+
+            if (string.IsNullOrWhiteSpace(rollbarLoggerConfig.RollbarDestinationOptions.EndPoint))
+            {
+                throw new RollbarException(InternalRollbarError.InfrastructureError, "Undefined destination end-point!");
+            }
 
             this._rollbarLoggerConfig = rollbarLoggerConfig;
 
-            if (!string.IsNullOrWhiteSpace(rollbarLoggerConfig.RollbarDestinationOptions.EndPoint))
-            {
-                this._payloadPostUri =
-                    new Uri($"{rollbarLoggerConfig.RollbarDestinationOptions.EndPoint}item/");
+            this._payloadPostUri =
+                new Uri($"{rollbarLoggerConfig.RollbarDestinationOptions.EndPoint}item/");
 
-                var sp =
-                    ServicePointManager.FindServicePoint(
-                        new Uri(rollbarLoggerConfig.RollbarDestinationOptions.EndPoint)
-                        );
-                try
-                {
-                    sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
-                }
-                catch (NotImplementedException)
-                {
-                    // just a crash prevention.
-                    // this is a work around the unimplemented property within Mono runtime...
-                }
+            var sp =
+                ServicePointManager.FindServicePoint(
+                    new Uri(rollbarLoggerConfig.RollbarDestinationOptions.EndPoint)
+                    );
+            try
+            {
+                sp.ConnectionLeaseTimeout = 60 * 1000; // 1 minute
+            }
+            catch (NotImplementedException)
+            {
+                // just a crash prevention.
+                // this is a work around the unimplemented property within Mono runtime...
             }
 
             this._payloadScrubber = new(rollbarLoggerConfig.RollbarDataSecurityOptions.GetFieldsToScrub());
@@ -86,6 +132,10 @@
 
         #region properties
 
+        /// <summary>
+        /// Gets the configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
         public IRollbarLoggerConfig Config
         {
             get
@@ -93,7 +143,11 @@
                 return this._rollbarLoggerConfig;
             }
         }
-        
+
+        /// <summary>
+        /// Gets the HTTP client.
+        /// </summary>
+        /// <value>The HTTP client.</value>
         protected HttpClient? HttpClient
         {
             get
@@ -102,25 +156,14 @@
             }
         }
 
-        //protected RollbarPayloadTruncator? Truncator
-        //{
-        //    get
-        //    {
-        //        return this._payloadTruncator;
-        //    }
-        //}
-
-        //protected RollbarPayloadScrubber? Scrubber 
-        //{
-        //    get 
-        //    {
-        //        return this._payloadScrubber;} 
-        //}
-
         #endregion properties
 
         #region static methods
 
+        /// <summary>
+        /// Customizes the specified HTTP client.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client.</param>
         protected static void Customize(HttpClient? httpClient)
         {
             if (httpClient == null)
@@ -137,6 +180,11 @@
 
         #region methods
 
+        /// <summary>
+        /// Ensures the HTTP content to send.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         public bool EnsureHttpContentToSend(PayloadBundle payloadBundle)
         {
             if (payloadBundle.AsHttpContentToSend != null)
@@ -147,12 +195,16 @@
             Payload? payload = payloadBundle.GetPayload();
             Assumption.AssertNotNull(payload, nameof(payload));
 
-            if (!this._payloadTruncator.TruncatePayload(payloadBundle))
+            if (this._payloadTruncator == null 
+                || !this._payloadTruncator.TruncatePayload(payloadBundle)
+                )
             {
                 return false;
             }
 
-            if (!this._payloadScrubber.ScrubHttpMessages(payloadBundle))
+            if (this._payloadScrubber == null 
+                || !this._payloadScrubber.ScrubHttpMessages(payloadBundle)
+                )
             {
                 return false;
             }
@@ -198,6 +250,14 @@
             return true;
         }
 
+        /// <summary>
+        /// Post as json as an asynchronous operation.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <param name="cancellationToken">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>A Task&lt;RollbarResponse&gt; representing the asynchronous operation.</returns>
         public async Task<RollbarResponse?> PostAsJsonAsync(
             PayloadBundle payloadBundle,
             CancellationToken? cancellationToken = null
@@ -220,6 +280,15 @@
                 );
         }
 
+        /// <summary>
+        /// Post as json as an asynchronous operation.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <param name="cancellationToken">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>A Task&lt;RollbarResponse&gt; representing the asynchronous operation.</returns>
         public async Task<RollbarResponse?> PostAsJsonAsync(
             string accessToken,
             string jsonContent,
@@ -236,12 +305,25 @@
                 );
         }
 
+        /// <summary>
+        /// Sets the specified HTTP client.
+        /// </summary>
+        /// <param name="httpClient">The HTTP client.</param>
         protected void Set(HttpClient? httpClient)
         {
             Customize(httpClient);
             this._httpClient = httpClient;
         }
 
+        /// <summary>
+        /// Post as json as an asynchronous operation.
+        /// </summary>
+        /// <param name="accessToken">The access token.</param>
+        /// <param name="jsonContent">Content of the json.</param>
+        /// <param name="cancellationToken">
+        /// The cancellation token that can be used by other objects or threads to receive notice of cancellation.
+        /// </param>
+        /// <returns>A Task&lt;RollbarResponse&gt; representing the asynchronous operation.</returns>
         private async Task<RollbarResponse?> PostAsJsonAsync(
             string accessToken,
             StringContent jsonContent,
@@ -257,7 +339,7 @@
             }
 
             // build an HTTP request:
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, this._payloadPostUri);
+            HttpRequestMessage request = new(HttpMethod.Post, this._payloadPostUri);
             const string accessTokenHeader = "X-Rollbar-Access-Token";
             request.Headers.Add(accessTokenHeader, accessToken);
             request.Content = jsonContent;
@@ -311,6 +393,11 @@
             return response;
         }
 
+        /// <summary>
+        /// Serializes the payload as json string.
+        /// </summary>
+        /// <param name="payloadBundle">The payload bundle.</param>
+        /// <returns>System.Nullable&lt;System.String&gt;.</returns>
         private string? SerializePayloadAsJsonString(PayloadBundle payloadBundle)
         {
             Payload? payload = payloadBundle.GetPayload();

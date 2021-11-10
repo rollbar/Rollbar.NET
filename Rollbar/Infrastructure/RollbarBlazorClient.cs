@@ -1,21 +1,14 @@
 ﻿namespace Rollbar.Infrastructure
 {
-    using System;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Net;
     using System.Net.Http;
-    using System.Net.Http.Headers;
 
-    using Newtonsoft.Json;
-
-    using Rollbar.DTOs;
     using Rollbar.Diagnostics;
-    using System.Runtime.ExceptionServices;
 
     /// <summary>
-    /// Client for accessing the Rollbar API
+    /// Class RollbarBlazorClient for accessing the Rollbar API server from Blazor-client/WASM specifically.
+    /// Implements the <see cref="Rollbar.Infrastructure.RollbarClientBase" />
     /// </summary>
+    /// <seealso cref="Rollbar.Infrastructure.RollbarClientBase" />
     internal class RollbarBlazorClient
         : RollbarClientBase
     {
@@ -25,6 +18,11 @@
 
         #region constructors
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RollbarBlazorClient"/> class.
+        /// </summary>
+        /// <param name="rollbarLogger">The rollbar logger.</param>
+        /// <param name="httpClient">The HTTP client.</param>
         public RollbarBlazorClient(IRollbar rollbarLogger, HttpClient httpClient)
             : base(rollbarLogger)
         {
@@ -34,6 +32,5 @@
         }
 
         #endregion constructors
-
     }
 }

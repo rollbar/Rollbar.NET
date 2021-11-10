@@ -18,7 +18,7 @@
         /// <summary>
         /// The truncation strategy
         /// </summary>
-        private readonly IterativeTruncationStrategy _truncationStrategy = new IterativeTruncationStrategy();
+        private readonly IterativeTruncationStrategy _truncationStrategy = new();
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarPayloadTruncator"/> class from being created.
