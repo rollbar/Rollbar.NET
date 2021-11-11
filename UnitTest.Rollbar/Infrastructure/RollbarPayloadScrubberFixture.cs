@@ -1,25 +1,14 @@
-﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
-namespace UnitTest.Rollbar.PayloadScrubbing
+﻿namespace UnitTest.Rollbar.Infrastructure
 {
-    using global::Rollbar;
-    using global::Rollbar.DTOs;
-    using global::Rollbar.Infrastructure;
-    using global::Rollbar.PayloadScrubbing;
-    using global::Rollbar.Serialization.Json;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading;
-    using System.Threading.Tasks;
 
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+    using global::Rollbar.Infrastructure;
 
-    [TestClass]
+    [TestClass()]
     [TestCategory(nameof(RollbarPayloadScrubberFixture))]
     public class RollbarPayloadScrubberFixture
     {
@@ -31,6 +20,50 @@ namespace UnitTest.Rollbar.PayloadScrubbing
         [TestCleanup]
         public void TearDownFixture()
         {
+        }
+
+        [TestMethod()]
+        public void FilterOutCriticalFieldsTest()
+        {
+            var inputFileds = new string[]
+            {
+                "noncritical1",
+                "critical1",
+                "noncritical2",
+                "critical2",
+                "noncritical3",
+            };
+
+            var criticalFields = new string[]
+            {
+                "critical1",
+                "critical2",
+            };
+
+            var result = RollbarPayloadScrubber.FilterOutCriticalFields(null, null);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+
+            result = RollbarPayloadScrubber.FilterOutCriticalFields(null, Array.Empty<string>());
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+
+            result = RollbarPayloadScrubber.FilterOutCriticalFields(Array.Empty<string>(), null);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+
+            result = RollbarPayloadScrubber.FilterOutCriticalFields(Array.Empty<string>(), Array.Empty<string>());
+            Assert.IsNotNull(result);
+            Assert.AreEqual(0, result.Count());
+
+            result = RollbarPayloadScrubber.FilterOutCriticalFields(inputFileds, null);
+            Assert.AreEqual(inputFileds.Length, result.Count());
+
+            result = RollbarPayloadScrubber.FilterOutCriticalFields(inputFileds, Array.Empty<string>());
+            Assert.AreEqual(inputFileds.Length, result.Count());
+
+            result = RollbarPayloadScrubber.FilterOutCriticalFields(inputFileds, criticalFields);
+            Assert.AreEqual(inputFileds.Length - criticalFields.Length, result.Count());
         }
 
         [TestMethod]
@@ -116,6 +149,5 @@ namespace UnitTest.Rollbar.PayloadScrubbing
             scrubbedPayload = scrubber.ScrubPayload(scrubbedPayload);
             Assert.AreEqual(scrubbedPayload, scrubbedPayload_byPath);
         }
-
     }
 }
