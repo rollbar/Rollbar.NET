@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Rollbar.Diagnostics;
     using Rollbar.DTOs;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Class ObjectPackage.

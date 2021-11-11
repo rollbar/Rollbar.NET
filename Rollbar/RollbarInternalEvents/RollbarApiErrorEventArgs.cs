@@ -1,8 +1,10 @@
 ﻿namespace Rollbar
 {
     using System.Collections.Generic;
+
     using Rollbar.DTOs;
     using Rollbar.Diagnostics;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Models a Rollbar API error event.

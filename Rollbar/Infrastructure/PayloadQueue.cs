@@ -1,8 +1,9 @@
-﻿namespace Rollbar
+﻿namespace Rollbar.Infrastructure
 {
-    using Rollbar.Diagnostics;
     using System;
     using System.Collections.Generic;
+
+    using Rollbar.Diagnostics;
 
     /// <summary>
     /// Class PayloadQueue.

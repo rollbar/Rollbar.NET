@@ -3,6 +3,8 @@
     using System;
     using System.Runtime.InteropServices;
 
+    using Rollbar.Infrastructure;
+
     /// <summary>
     /// RollbarFactory utility class.
     /// </summary>

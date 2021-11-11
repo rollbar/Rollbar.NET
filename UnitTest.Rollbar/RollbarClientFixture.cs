@@ -9,6 +9,7 @@ namespace UnitTest.Rollbar
     using System.Threading;
     using System.Linq;
     using UnitTest.RollbarTestCommon;
+    using global::Rollbar.Infrastructure;
 
     [TestClass]
     [TestCategory(nameof(RollbarClientFixture))]

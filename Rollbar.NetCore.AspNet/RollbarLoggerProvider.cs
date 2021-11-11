@@ -5,6 +5,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Rollbar.Diagnostics;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Implements Rollbar version of Microsoft.Extensions.Logging.ILoggerProvider.

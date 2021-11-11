@@ -2,6 +2,7 @@
 {
     using System.Text;
     using Rollbar.DTOs;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Models a communication event.

@@ -2,6 +2,8 @@ namespace UnitTest.Rollbar.PlugIns.Serilog
 {
     using Benchmarker.Common;
     using global::Rollbar;
+    using global::Rollbar.Infrastructure;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
 

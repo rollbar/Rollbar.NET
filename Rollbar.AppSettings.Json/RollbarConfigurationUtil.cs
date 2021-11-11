@@ -1,8 +1,11 @@
 ﻿namespace Rollbar.AppSettings.Json
 {
     using System;
+
     using Microsoft.Extensions.Configuration;
+
     using Rollbar.Diagnostics;
+    using Rollbar.Infrastructure;
 
     /// <summary>
     /// Utility type aiding in Rollbar configuration options/alternatives.

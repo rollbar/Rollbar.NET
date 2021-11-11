@@ -2,15 +2,19 @@
 
 namespace UnitTest.Rollbar
 {
-    using global::Rollbar;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     using System;
     using System.Linq;
     using System.Collections.Generic;
     using System.Collections.Concurrent;
     using System.Diagnostics;
     using System.Threading;
+
     using UnitTest.RollbarTestCommon;
+
+    using global::Rollbar;
+    using global::Rollbar.Infrastructure;
 
     /// <summary>
     /// Defines test class RollbarLiveFixtureBase.

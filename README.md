@@ -2,8 +2,8 @@
 
 # Rollbar.NET Notifier SDK
 
-A .NET Rollbar Client/Notifier that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, .NET Full Framework 4.5+, Mono, Xamarin, and, in general, any implementation of the .NET Standard 2.0+.
-It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the [Rollbar API](https://www.rollbar.com) for remote monitoring and analysis of the hosting application's behavior.'
+A .NET Rollbar Client/Notifier SDK that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, .NET Full Framework 4.5+, Mono, Xamarin, and, in general, any implementation of the .NET Standard 2.0+.
+It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the [Rollbar API](https://www.rollbar.com) for remote monitoring and analysis of the hosting application's behavior and health.
 
 It also includes a collection of adapters and helpers for many .NET application frameworks as well as a collection of Rollbar.NET plug-ins into most popular .NET logging and exception handling libraries/frameworks, like:
 *   Serilog
@@ -19,7 +19,7 @@ These plug-ins simplify integration of the Rollbar.NET Notifier into codebases t
 
 A new major release v5 of the SDK is available. It is marked as BETA for now. 
 It did pass our internal testing and we a looking for independent volunteers to try it out and give us a feedback. 
-The primary new feature of this release is support of Blazor Client/Webassembly/WASM.
+The primary new feature of this release is the support of Blazor Client/Webassembly/WASM.
 
 For detailed instructions see our [v5 specific documentation](https://docs.rollbar.com/docs/net-v5).
 

@@ -3,6 +3,8 @@
     using System;
     using System.Runtime.Serialization;
 
+    using Rollbar.Infrastructure;
+
     /// <summary>
     /// Class RollbarException.
     /// Implements the <see cref="System.Exception" />
