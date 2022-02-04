@@ -57,7 +57,7 @@ namespace UnitTest.Rollbar.Deploys
             using var httpClient = new HttpClient();
             RollbarDeployClient rollbarClient = new RollbarDeployClient(this._loggerConfig,httpClient);
 
-            var task = rollbarClient.GetDeploymentAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken,"8387647");
+            var task = rollbarClient.GetDeploymentAsync(RollbarUnitTestSettings.DeploymentsReadAccessToken, "23838256");
 
             task.Wait(TimeSpan.FromSeconds(3));
             Assert.IsNotNull(task.Result);
@@ -79,7 +79,7 @@ namespace UnitTest.Rollbar.Deploys
                 comment: "Some new unit test deployment",
                 localUserName: "UnitTestRunner",
                 rollbarUserName: "rollbar",
-                writeAccessToken: this._loggerConfig.RollbarDestinationOptions.AccessToken
+                writeAccessToken: RollbarUnitTestSettings.DeploymentsWriteAccessToken
                 );
             var task = rollbarClient.PostAsync(deployment);
 
