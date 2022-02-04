@@ -4,9 +4,10 @@ namespace Samples
 {
     public static class RollbarSamplesSettings
     {
-        public const string AccessToken = "17965fa5041749b6bf7095a190001ded";
-        public const string Environment = "RollbarNetSamples";
+        public const string AccessToken = "efdc4b85d66045f293a7f9e99c732f61";
+        public const string Environment = "Rollbar.Net-Samples";
 
-        public const string DeploymentsReadAccessToken = "8c2982e875544037b51870d558f51ed3";
+        public const string DeploymentsWriteAccessToken = "efdc4b85d66045f293a7f9e99c732f61";
+        public const string DeploymentsReadAccessToken = "595cbf76b05b45f2b3ef661a2e0078d4";
     }
 }
