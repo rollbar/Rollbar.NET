@@ -4,9 +4,10 @@ namespace UnitTest.Rollbar
 {
     public static class RollbarUnitTestSettings
     {
-        public const string AccessToken = "17965fa5041749b6bf7095a190001ded";
-        public const string Environment = "_Rollbar-unit-tests";
+        public const string AccessToken = "efdc4b85d66045f293a7f9e99c732f61";
+        public const string Environment = "Rollbar.Net-UnitTests";
 
-        public const string DeploymentsReadAccessToken = "8c2982e875544037b51870d558f51ed3";
+        public const string DeploymentsWriteAccessToken = "efdc4b85d66045f293a7f9e99c732f61";
+        public const string DeploymentsReadAccessToken = "595cbf76b05b45f2b3ef661a2e0078d4";
     }
 }
