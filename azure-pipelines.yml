@@ -62,7 +62,7 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: 'Installing NuGet...'
   inputs:
-    versionSpec: '5.x' 
+    versionSpec: '6.x' 
     checkLatest: true
     #checkLatest: true # Optional
 

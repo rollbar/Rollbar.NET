@@ -65,11 +65,15 @@ jobs:
 
     steps:
     
-      # Get the codebase
       - name: Checkout the SDK's codebase
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.x'
 
       - name: .NET Core Version
         run: dotnet --version
