@@ -28,7 +28,7 @@ steps:
 - task: DotNetCoreInstaller@0
   inputs:
     packageType: 'sdk' # 'sdk' or 'runtime'
-    version: '6.x' # replace this value with the version that you need for your project
+    version: '6.0.101' # replace this value with the version that you need for your project
 # - task: DotNetCoreInstaller@0
 #   inputs:
 #     packageType: 'runtime' # 'sdk' or 'runtime'
