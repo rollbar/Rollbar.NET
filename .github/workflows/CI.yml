@@ -71,6 +71,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      #- name: Setup MSBuild Path
+      #  uses: warrenbuckley/Setup-MSBuild@v1 
+
+      #- name: Setup VSTest Path
+      #  uses: darenm/Setup-VSTest@v1
+         
+      #- name: Setup NuGet
+      #  uses: NuGet/setup-nuget@v1.0.2
+     
+      #- name: Restore NuGet Packages
+      #  run: nuget restore $env:Solution_Name
+ 
+      #- name: Build the SDK
+      #  run: msbuild $env:Solution_Name /p:Configuration=${{ matrix.configuration }} 
+
+
+
+
+
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
@@ -109,7 +128,7 @@ jobs:
         run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }} --no-restore   
 
       - name: Unit-test the SDK build
-        run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --blame --verbosity normal --collect "Code Coverage" 
+        run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --blame --verbosity diag --collect "Code Coverage" 
 
       # - run:
       #    mkdir -p ${{ github.workspace }}/artifacts
