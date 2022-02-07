@@ -15,10 +15,9 @@ It also includes a collection of adapters and helpers for many .NET application 
 
 These plug-ins simplify integration of the Rollbar.NET Notifier into codebases that are already using any of these libraries/frameworks using the libraries' native extensions mechanisms.
 
-## NEW MAJOR RELEASE (v5-BETA) ANNOUNCEMENT
+## NEW MAJOR RELEASE (v5) ANNOUNCEMENT
 
-A new major release v5 of the SDK is available. It is marked as BETA for now. 
-It did pass our internal testing and we a looking for independent volunteers to try it out and give us a feedback. 
+A new major release v5 of the SDK is available.
 The primary new feature of this release is the support of Blazor Client/Webassembly/WASM.
 
 For detailed instructions see our [v5 specific documentation](https://docs.rollbar.com/docs/net-v5).

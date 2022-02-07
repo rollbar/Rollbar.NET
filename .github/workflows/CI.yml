@@ -54,8 +54,9 @@ jobs:
       matrix:
         configuration: [Release] # [Debug, Release]
 
-    runs-on: windows-latest  # For a list of available runner types, refer to 
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: windows-latest #windows-latest  
+    # For a list of available runner types, refer to 
+    # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     env:
       Solution_Name: Rollbar.sln                         # Replace with your solution name, i.e. MyWpfApp.sln.
@@ -65,11 +66,15 @@ jobs:
 
     steps:
     
-      # Get the codebase
       - name: Checkout the SDK's codebase
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.x'
 
       - name: .NET Core Version
         run: dotnet --version
@@ -79,6 +84,26 @@ jobs:
 
       - name: Restore the SDK's Nuget packages
         run: dotnet restore $env:Solution_Name
+        
+        
+      #- name: .NET version sweeper
+        # You may pin to the exact commit or the version.
+        # uses: dotnet/versionsweeper@bb17f163824795f0eef6dbe812bb00df92b9eb6d
+        #uses: dotnet/versionsweeper@v1.6
+        #with:
+          # The owner of the repo. Assign from github.repository_owner. Example, "dotnet".
+          #owner: 
+          # The repository name. Example, "samples".
+          #name: 
+          # The branch name. Assign from github.ref. Example, "main".
+          #branch: master
+          # The root directory
+          #dir: # optional, default is /github/workspace
+          # The search pattern, defaults to "*.csproj;*.fsproj;*.vbproj;*.xproj;project.json". Valid delimiters for lists, ',',';', or '|'. Example, "*.csproj,*.fsproj".
+          #pattern: # optional, default is *.csproj;*.fsproj;*.vbproj;*.xproj;project.json
+          # Whether or not to report projects that are not using the new SDK-style project format.
+          ##sdkCompliance: # optional, default is false
+        
 
       - name: Build the SDK
         run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }} --no-restore   
@@ -86,7 +111,7 @@ jobs:
       - name: Unit-test the SDK build
         run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --blame --verbosity normal --collect "Code Coverage" 
 
-      #- run: |	
+      # - run:
       #    mkdir -p ${{ github.workspace }}/artifacts
       #    echo hello > ${{ github.workspace }}/artifacts/world.txt
 
@@ -114,3 +139,45 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
+#- name: .NET SonarScanner Github Actions wrapper
+#  # You may pin to the exact commit or the version.
+#  # uses: dodopizza/dotnet-sonarscanner@842f8330436bbc4a4bc5d49cf280508dfd1b910f
+#  uses: dodopizza/dotnet-sonarscanner@v4.0
+#  with:
+#    # Command to invoke build
+#    buildCommand: 
+#    # Command to invoke tests
+#    testCommand: # optional
+#    # Specifies the key of the analyzed project in SonarQube
+#    projectKey: 
+#    # Specifies the name of the analyzed project in SonarQube
+#    projectName: 
+#    # The server URL
+#    sonarHostname: # optional, default is https://sonarcloud.io
+#    # Organisation
+#    sonarOrganisation: 
+#    # Arguments to append to the begin command
+#    beginArguments: # optional
+#    # Arguments to append to the end command
+#    endArguments: # optional
+
+
+#- name: .NET Library Build and Release
+#  # You may pin to the exact commit or the version.
+#  # uses: ricado-group/dotnet-library-build-release-action@b3246af7ac43c6311eebce46f3515daa7dfbd076
+#  uses: ricado-group/dotnet-library-build-release-action@v1
+#  with:
+#    # The Project Name (e.g. RICADO.Logging)
+#    project-name: 
+#    # The URL of the Private NuGet Repository (e.g. https://nuget.pkg.github.com/myname/index.json)
+#    private-nuget-url: 
+#    # The Token used for Authentication with the Private NuGet Repository
+#    private-nuget-token: 
+#    # The URL of the Public NuGet Repository (e.g. https://api.nuget.org/v3/index.json)
+#    public-nuget-url: # optional, default is https://api.nuget.org/v3/index.json
+#    # The Token used for Authentication with the Public NuGet Repository
+#    public-nuget-token: # optional
+#    # Whether the Library should be Published to the Public NuGet Repository
+#    publish-public: # optional, default is false

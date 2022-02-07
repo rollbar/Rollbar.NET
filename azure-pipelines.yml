@@ -25,6 +25,10 @@ steps:
 # .NET Core SDK Installer
 # Acquires a specific version of the .NET Core SDK from the Internet or the local cache and adds it to the PATH. 
 # Use this task to change the version of .NET Core used in subsequent tasks.
+- task: DotNetCoreInstaller@0
+  inputs:
+    packageType: 'sdk' # 'sdk' or 'runtime'
+    version: '6.0.101' # replace this value with the version that you need for your project
 # - task: DotNetCoreInstaller@0
 #   inputs:
 #     packageType: 'runtime' # 'sdk' or 'runtime'
@@ -62,7 +66,7 @@ steps:
 - task: NuGetToolInstaller@1
   displayName: 'Installing NuGet...'
   inputs:
-    versionSpec: '5.x' 
+    versionSpec: '6.x' 
     checkLatest: true
     #checkLatest: true # Optional
 
