@@ -101,8 +101,8 @@ jobs:
       #- name: Setup MSBuild Path
       #  uses: warrenbuckley/Setup-MSBuild@v1 
 
-      #- name: Setup VSTest Path
-      #  uses: darenm/Setup-VSTest@v1
+      - name: Setup VSTest Path
+        uses: darenm/Setup-VSTest@v1
 
       - name: Restore the SDK's Nuget packages
         run: dotnet restore $env:Solution_Name
