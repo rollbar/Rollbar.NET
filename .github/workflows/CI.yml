@@ -87,7 +87,9 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '6.x'
+          dotnet-version: |
+            6.x
+            5.x
 
       - name: .NET Core Version
         run: dotnet --version
@@ -128,7 +130,7 @@ jobs:
         run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }} --no-restore   
 
       - name: Unit-test the SDK build
-        run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --blame --verbosity normal --collect "Code Coverage" 
+        run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --no-build --blame --verbosity normal --collect "Code Coverage" 
 
       # - run:
       #    mkdir -p ${{ github.workspace }}/artifacts
