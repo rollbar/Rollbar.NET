@@ -95,8 +95,8 @@ jobs:
       - name: .NET Core Info
         run: dotnet --info
 
-      - name: Setup MSBuild Path
-        uses: warrenbuckley/Setup-MSBuild@v1 
+      #- name: Setup MSBuild Path
+      #  uses: warrenbuckley/Setup-MSBuild@v1 
 
       - name: Setup VSTest Path
         uses: darenm/Setup-VSTest@v1
