@@ -128,7 +128,7 @@ jobs:
         run: dotnet build $env:Solution_Name --configuration ${{ matrix.configuration }} --no-restore   
 
       - name: Unit-test the SDK build
-        run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --blame --verbosity detailed --collect "Code Coverage" 
+        run: dotnet test $env:Solution_Name --configuration ${{ matrix.configuration }} --blame --verbosity normal --collect "Code Coverage" 
 
       # - run:
       #    mkdir -p ${{ github.workspace }}/artifacts
