@@ -90,6 +90,7 @@ jobs:
           dotnet-version: |
             6.x
             5.x
+            3.1.x
 
       - name: .NET Core Version
         run: dotnet --version
