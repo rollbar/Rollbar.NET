@@ -21,5 +21,16 @@
         {
             get;
         }
+
+        /// <summary>
+        /// Disables this instance.
+        /// </summary>
+        /// <remarks>
+        /// Any concrete Connectivity Monitor implementation may not be 100% accurate for all the possible 
+        /// network environments. So, you may have to disable it in case it does not properly detect 
+        /// specific network conditions. If disabled it will be assumed to always have its 
+        /// IsConnectivityOn property returning true. 
+        /// </remarks>
+        void Disable();
     }
 }
