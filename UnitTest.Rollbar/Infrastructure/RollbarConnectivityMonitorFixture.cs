@@ -1,18 +1,15 @@
 ﻿#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace UnitTest.Rollbar {
-    using System;
-    using System.Diagnostics;
-    using System.Threading;
 
-    using global::Rollbar;
+    using global::Rollbar.Infrastructure;
 
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
     [TestClass]
-    [TestCategory(nameof(ConnectivityMonitorFixture))]
-    public class ConnectivityMonitorFixture
+    [TestCategory(nameof(RollbarConnectivityMonitorFixture))]
+    public class RollbarConnectivityMonitorFixture
     {
         [TestInitialize]
         public void SetupFixture()
@@ -23,6 +20,14 @@ namespace UnitTest.Rollbar {
         public void TearDownFixture()
         {
         }
+
+        [TestMethod]
+        public void TestApiServerTest()
+        {
+            bool isConnected = RollbarConnectivityMonitor.TestApiServer();
+            Assert.IsTrue(isConnected, "Access to api.rollbar.com:443");
+        }
+
 
         //[TestMethod]
         //public void ManualTest() {

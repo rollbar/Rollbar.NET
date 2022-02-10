@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="FullSignature">
-  <Class Name="Rollbar.RollbarQueueController">
+  <Class Name="Rollbar.Infrastructure.RollbarQueueController">
     <Position X="0.5" Y="8" Width="4" />
     <Compartments>
       <Compartment Name="Internal" Collapsed="true" />
@@ -8,14 +8,14 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Class Name="Rollbar.RollbarQueueController.NestedSingleInstance" Collapsed="true">
+      <Class Name="Rollbar.Infrastructure.RollbarQueueController.NestedSingleInstance" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>RollbarQueueController.cs</NewMemberFileName>
+          <NewMemberFileName>Infrastructure\RollbarQueueController.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
-      <Enum Name="Rollbar.RollbarQueueController.PayloadTraceSources">
+      <Enum Name="Rollbar.Infrastructure.RollbarQueueController.PayloadTraceSources">
         <TypeIdentifier>
-          <NewMemberFileName>RollbarQueueController.cs</NewMemberFileName>
+          <NewMemberFileName>Infrastructure\RollbarQueueController.cs</NewMemberFileName>
         </TypeIdentifier>
       </Enum>
     </NestedTypes>
@@ -32,10 +32,6 @@
     </Compartments>
     <NestedTypes>
       <Class Name="Rollbar.RollbarInfrastructure.NestedSingleInstance" Collapsed="true">
-        <Compartments>
-          <Compartment Name="Internal" Collapsed="true" />
-          <Compartment Name="Private" Collapsed="true" />
-        </Compartments>
         <TypeIdentifier>
           <NewMemberFileName>RollbarInfrastructure.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -57,10 +53,6 @@
     </Compartments>
     <NestedTypes>
       <Class Name="Rollbar.RollbarTelemetryCollector.NestedSingleInstance" Collapsed="true">
-        <Compartments>
-          <Compartment Name="Internal" Collapsed="true" />
-          <Compartment Name="Private" Collapsed="true" />
-        </Compartments>
         <TypeIdentifier>
           <NewMemberFileName>Telemetry\RollbarTelemetryCollector.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -73,11 +65,12 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Rollbar.RollbarException">
-    <Position X="15.75" Y="6.25" Width="6.25" />
+    <Position X="14" Y="0.75" Width="6.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAACAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAEAAAAAAAAACAAAAA=</HashCode>
       <FileName>RollbarException.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Interface Name="Rollbar.ITraceable">
     <Position X="0.5" Y="0.5" Width="2.75" />
@@ -101,7 +94,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarInfrastructureOptions">
-    <Position X="5" Y="2.25" Width="3" />
+    <Position X="5" Y="2.25" Width="4" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAAAAAAAEAAAAABAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>IRollbarInfrastructureOptions.cs</FileName>
@@ -121,10 +114,10 @@
       <FileName>ErrorLevel.cs</FileName>
     </TypeIdentifier>
   </Enum>
-  <Enum Name="Rollbar.InternalRollbarError">
-    <Position X="15.75" Y="9.75" Width="3" />
+  <Enum Name="Rollbar.Infrastructure.InternalRollbarError">
+    <Position X="14" Y="4.75" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAAQAAUAgAAAAAAgAAFCAEAIAAACAAYCAAAAIAAAwEA=</HashCode>
+      <HashCode>AAAQAAUAgAAAEAAgAAFCAEAIAAACAAYCAAAAIAAAwEA=</HashCode>
       <FileName>Infrastructure\InternalRollbarError.cs</FileName>
     </TypeIdentifier>
   </Enum>

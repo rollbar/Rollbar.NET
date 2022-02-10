@@ -24,28 +24,12 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>5.1.0</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>5.1.1</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
 
-      Since v4:
-
-      - feat: optioanl RollbarInfrastructure concept
-      - feat: optional explicit RollbarInfrastructure initialization
-      - feat: structured Rollbar configuration
-      - feat: Blazor browser-side support
-      - feat: resolve #532 - Make RollbarMiddlewareException wrapper optional based on config settings
-      - feat: resolve #585 - Would like to have an ability to log HttpRequest Body via ILogger
-      - fix: OfflinePersistence module's dependency on SQLite native bits
-      - refactor: Simplified and upgraded Rollbar.OfflinePersistence dependencies and project settings
-      - refactor: resolve #587 - Update Rollbar.NET's dependency on Newtonsoft.Json package to current version 13.0
-      - refactor: clean up the SDK explicit targets to only currently supported .NET versions
-      - refactor: clear all the VS build warnings and Intelli-sense messages
-      - refactor: addressed SonarCloud detected reliability issues
-      - refactor: addressed SonarCloud detected security hotspots
-      - refactor: addressed SonarCloud detected code smells
-      - chore: remove unused files from the repo root
+      - fix: resolve GH #615 - ConnectivityMonitor tests wrong thing
 
     </SdkReleaseNotes>                        
 

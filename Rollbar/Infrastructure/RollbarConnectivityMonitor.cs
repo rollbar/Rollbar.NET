@@ -14,11 +14,11 @@
         : IRollbarConnectivityMonitor
         , IDisposable
     {
-        private readonly object _connectivityStatusSyncLock = new object();
-        private TimeSpan _currentMonitoringInterval;
-        private Timer? _monitoringTimer;
+        private readonly object _connectivityStatusSyncLock = new();
         private readonly TimeSpan _minMonitoringInterval;
         private readonly TimeSpan _maxMonitoringInterval;
+        private TimeSpan _currentMonitoringInterval;
+        private Timer? _monitoringTimer;
 
         #region singleton implementation
 
@@ -84,7 +84,7 @@
         /// <value><c>true</c> if this instance is connectivity on; otherwise, <c>false</c>.</value>
         public bool IsConnectivityOn
         {
-            get; // NOTE: Simplest way to fake no-connectivity is to always return false from the getter
+            get; // NOTE: Simplest way to fake no-connectivity is to always return false from this getter
             private set;
         }
 
@@ -110,6 +110,10 @@
         /// <summary>
         /// Disables this instance.
         /// </summary>
+        /// <remarks>Any concrete Connectivity Monitor implementation may not be 100% accurate for all the possible
+        /// network environments. So, you may have to disable it in case it does not properly detect
+        /// specific network conditions. If disabled it will be assumed to always have its
+        /// IsConnectivityOn property returning true.</remarks>
         public void Disable()
         {
             lock(this._connectivityStatusSyncLock)
@@ -234,7 +238,7 @@
             TcpClient? client = null;
             try
             {
-                client = new TcpClient("www.rollbar.com", 80);
+                client = new TcpClient(@"api.rollbar.com", 443);
                 result = true;
             }
             catch(SocketException ex)
@@ -254,7 +258,6 @@
         #region IDisposable Support
 
         private bool _disposedValue = false; // To detect redundant calls
-
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
