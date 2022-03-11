@@ -16,20 +16,29 @@
     {
         private static readonly TraceSource traceSource = 
             new TraceSource(typeof(RollbarTelemetryCollector).FullName ?? "RollbarTelemetryCollector");
-        
+
         #region singleton implementation
+
+        private static readonly Lazy<RollbarTelemetryCollector> lazy =
+            new Lazy<RollbarTelemetryCollector>(() => new RollbarTelemetryCollector());
 
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>
-        /// The instance.
-        /// </value>
+        /// <value>The instance.</value>
         public static RollbarTelemetryCollector? Instance
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                //return NestedSingleInstance.TheInstance;
+
+                //if (_singleton == null)
+                //{
+                //    _singleton = new RollbarQueueController();
+                //}
+                //return _singleton;
+
+                return RollbarInfrastructure.Instance.IsInitialized ? lazy.Value : null;
             }
         }
 

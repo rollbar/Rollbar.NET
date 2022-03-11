@@ -41,6 +41,11 @@ namespace Rollbar.Infrastructure
     {
         #region singleton implementation
 
+        //private static RollbarQueueController _singleton;
+
+        private static readonly Lazy<RollbarQueueController> lazy =
+            new Lazy<RollbarQueueController>(() => new RollbarQueueController());
+
         /// <summary>
         /// Gets the instance.
         /// </summary>
@@ -49,7 +54,15 @@ namespace Rollbar.Infrastructure
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                //return NestedSingleInstance.TheInstance;
+
+                //if (_singleton == null)
+                //{
+                //    _singleton = new RollbarQueueController();
+                //}
+                //return _singleton;
+
+                return RollbarInfrastructure.Instance.IsInitialized ? lazy.Value : null;
             }
         }
 
@@ -85,7 +98,8 @@ namespace Rollbar.Infrastructure
         /// <summary>
         /// The trace source
         /// </summary>
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName ?? "RollbarQueueController");
+        private static readonly TraceSource traceSource = 
+            new TraceSource(typeof(RollbarQueueController).FullName ?? "RollbarQueueController");
 
         /// <summary>
         /// Enum PayloadTraceSources

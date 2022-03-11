@@ -24,17 +24,24 @@
         : IRollbarInfrastructure
         , IDisposable
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarInfrastructure).FullName ?? "RollbarInfrastructure");
+        private static readonly TraceSource traceSource = 
+            new TraceSource(typeof(RollbarInfrastructure).FullName ?? "RollbarInfrastructure");
 
-        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(25);
+        internal readonly TimeSpan _sleepInterval = 
+            TimeSpan.FromMilliseconds(25);
 
         private readonly object _syncLock = new object();
 
-        private bool _isInitialized = false;
+        private bool _initializedOnce = false;
 
         private IRollbarInfrastructureConfig? _config;
 
         #region singleton implementation
+
+        //private static RollbarInfrastructure _singleton; 
+
+        private static readonly Lazy<RollbarInfrastructure> lazy =
+            new Lazy<RollbarInfrastructure>(() => new RollbarInfrastructure());
 
         /// <summary>
         /// Gets the instance.
@@ -44,7 +51,15 @@
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                //return NestedSingleInstance.TheInstance;
+
+                //if (_singleton == null)
+                //{
+                //    _singleton = new RollbarQueueController();
+                //}
+                //return _singleton;
+
+                return lazy.Value;
             }
         }
 
@@ -85,7 +100,7 @@
         {
             get
             {
-                return this._isInitialized;
+                return this._initializedOnce;
             }
         }
 
@@ -153,7 +168,7 @@
 
             lock(this._syncLock)
             {
-                if(this._isInitialized)
+                if(this._initializedOnce)
                 {
                     string msg = $"{typeof(RollbarInfrastructure).Name} can not be initialized more than once!";
                     traceSource.TraceInformation(msg);
@@ -163,16 +178,15 @@
                         );
                 }
 
-                this._config = config;
-                this.ValidateConfiguration();
-                this._config.Reconfigured += _config_Reconfigured;
-
-                this._isInitialized = true;
-
                 // now, since the basic infrastructure seems to be good and initialized,
                 // let's initialize all the dependent services of the infrastructure:
                 try
                 {
+                    this._config = config;
+                    this.ValidateConfiguration();
+                    this._config.Reconfigured += _config_Reconfigured;
+                    this._initializedOnce = true;
+
                     RollbarQueueController.Instance!.Init(config);
                     RollbarTelemetryCollector.Instance!.Init(config.RollbarTelemetryOptions);
                     // NOTE: RollbarConfig
@@ -183,7 +197,7 @@
                 }
                 catch(Exception ex)
                 {
-                    this._isInitialized = false;
+                    this._initializedOnce = false;
 
                     throw new RollbarException(
                         InternalRollbarError.InfrastructureError,
@@ -197,7 +211,7 @@
 
         private void ValidateConfiguration()
         {
-            if(this._isInitialized)
+            if(this._initializedOnce)
             {
                 return;
             }
