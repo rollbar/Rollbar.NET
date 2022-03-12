@@ -19,18 +19,6 @@
 
         #region singleton implementation
 
-        private static readonly Lazy<RollbarTelemetryCollector> lazySingleton =
-            new Lazy<RollbarTelemetryCollector>(() => new RollbarTelemetryCollector());
-
-        //private static bool allowSingleton = false;
-        //internal static void AllowSingleton()
-        //{
-        //    allowSingleton = true;
-        //}
-
-        //private static readonly object classLock = new object();
-        //private static volatile RollbarTelemetryCollector? singleton;
-
         /// <summary>
         /// Gets the instance.
         /// </summary>
@@ -39,33 +27,14 @@
         {
             get
             {
-                if (!RollbarInfrastructure.Instance.IsInitialized)
-                {
-                    return null;
-                }
-
-                //if (singleton == null)
-                //{
-                //    lock (classLock)
-                //    {
-                //        if (singleton == null)
-                //        {
-                //            singleton = new RollbarTelemetryCollector();
-                //        }
-                //    }
-                //}
-                //return singleton;
-
-                //return allowSingleton ? lazySingleton.Value : null;
-
-                return lazySingleton.Value;
+                return RollbarInfrastructure.Instance.TelemetryCollector as RollbarTelemetryCollector;
             }
         }
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarTelemetryCollector"/> class from being created.
         /// </summary>
-        private RollbarTelemetryCollector()
+        internal RollbarTelemetryCollector()
         {
             traceSource.TraceInformation($"Creating the {typeof(RollbarTelemetryCollector).Name}...");
         }

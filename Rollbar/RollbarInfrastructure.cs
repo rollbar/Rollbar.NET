@@ -32,17 +32,24 @@
 
         private readonly object _syncLock = new object();
 
-        private bool _initializedOnce = false;
+        //private bool _initializedOnce = false;
 
         private IRollbarInfrastructureConfig? _config;
+
+        private readonly Lazy<RollbarQueueController> _lazyQueueController =
+            new Lazy<RollbarQueueController>(() => new RollbarQueueController());
+
+        private readonly Lazy<RollbarTelemetryCollector> _lazyTelemetryCollector =
+            new Lazy<RollbarTelemetryCollector>(() => new RollbarTelemetryCollector());
+        
+        private readonly Lazy<RollbarConnectivityMonitor> _lazyConnectivityMonitor =
+            new Lazy<RollbarConnectivityMonitor>(() => new RollbarConnectivityMonitor());
+
 
         #region singleton implementation
 
         private static readonly Lazy<RollbarInfrastructure> lazySingleton =
             new Lazy<RollbarInfrastructure>(() => new RollbarInfrastructure());
-
-        //private static readonly object classLock = new object();
-        //private static volatile RollbarInfrastructure? singleton;
 
         /// <summary>
         /// Gets the instance.
@@ -52,18 +59,6 @@
         {
             get
             {
-                //if (singleton == null)
-                //{
-                //    lock (classLock)
-                //    {
-                //        if (singleton == null)
-                //        {
-                //            singleton = new RollbarInfrastructure();
-                //        }
-                //    }
-                //}
-                //return singleton;
-
                 return lazySingleton.Value;
             }
         }
@@ -86,7 +81,9 @@
         {
             get
             {
-                return this._initializedOnce;
+                return (this._lazyQueueController.IsValueCreated 
+                    && this._lazyTelemetryCollector.IsValueCreated
+                    && this._lazyConnectivityMonitor.IsValueCreated);
             }
         }
 
@@ -98,7 +95,12 @@
         {
             get
             {
-                return RollbarQueueController.Instance;
+                if (!this._lazyQueueController.IsValueCreated)
+                {
+                    return null;
+                }
+
+                return this._lazyQueueController.Value;
             }
         }
 
@@ -110,7 +112,12 @@
         {
             get
             {
-                return RollbarTelemetryCollector.Instance;
+                if (!this._lazyTelemetryCollector.IsValueCreated)
+                {
+                    return null;
+                }
+
+                return this._lazyTelemetryCollector.Value;
             }
         }
 
@@ -122,7 +129,12 @@
         {
             get
             {
-                return RollbarConnectivityMonitor.Instance;
+                if (!this._lazyConnectivityMonitor.IsValueCreated)
+                {
+                    return null;
+                }
+
+                return _lazyConnectivityMonitor.Value;
             }
         }
 
@@ -154,10 +166,9 @@
             Assumption.AssertNotNull(RollbarInfrastructure.Instance, nameof(RollbarInfrastructure.Instance));
             Assumption.AssertFalse(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
 
-
             lock(this._syncLock)
             {
-                if(this._initializedOnce)
+                if(this.IsInitialized)
                 {
                     string msg = $"{typeof(RollbarInfrastructure).Name} can not be initialized more than once!";
                     traceSource.TraceInformation(msg);
@@ -174,20 +185,14 @@
                     this._config = config;
                     this.ValidateConfiguration();
                     this._config.Reconfigured += _config_Reconfigured;
-                    this._initializedOnce = true;
-                    Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
-
-                    RollbarQueueController.Instance?.Init(config);
-                    RollbarTelemetryCollector.Instance?.Init(config.RollbarTelemetryOptions);
-                    // NOTE: RollbarConfig
-                    // - init ConnectivityMonitor service as needed
-                    //   NOTE: It should be sufficient to make ConnectivityMonitor as internal class
-                    //         It is only used by RollbarClient and RollbarQueueController that are 
-                    //         already properly deactivated in single-threaded environments.
+                    this._lazyQueueController.Value.Init(config);
+                    this._lazyTelemetryCollector.Value.Init(config.RollbarTelemetryOptions);
+                    _ = this._lazyConnectivityMonitor.Value;
+                    //Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
                 }
                 catch(Exception ex)
                 {
-                    this._initializedOnce = false;
+                    //this._initializedOnce = false;
 
                     throw new RollbarException(
                         InternalRollbarError.InfrastructureError,
@@ -201,8 +206,9 @@
 
         private void ValidateConfiguration()
         {
-            if(this._initializedOnce)
+            if(this.IsInitialized)
             {
+                // nice short-cut:
                 return;
             }
 

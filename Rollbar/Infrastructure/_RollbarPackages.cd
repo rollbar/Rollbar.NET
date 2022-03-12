@@ -3,7 +3,7 @@
   <Class Name="Rollbar.RollbarPackageBase">
     <Position X="6.5" Y="1.5" Width="4" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAgAAAAAAgAAAEAAAACBAIAAAAAAQAAQAAA=</HashCode>
+      <HashCode>AAAABAAAAAgAAAAgAgAAAAAAAACBAIAAAAAAQAAQAAA=</HashCode>
       <FileName>Infrastructure\RollbarPackageBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />

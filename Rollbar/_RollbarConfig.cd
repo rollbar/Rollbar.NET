@@ -24,7 +24,7 @@
   <Interface Name="Rollbar.IRollbarDeveloperOptions">
     <Position X="0.5" Y="10.25" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAIIAAAEBAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAIIAAAEBAQAAAA=</HashCode>
       <FileName>IRollbarDeveloperOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>

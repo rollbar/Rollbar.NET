@@ -1,6 +1,7 @@
 ﻿namespace Rollbar
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using System.Collections.Generic;
 
@@ -14,8 +15,13 @@
     /// </remarks>
     public class RollbarDataScrubbingHelper
     {
+        private static readonly TraceSource traceSource =
+    new TraceSource(typeof(RollbarDataScrubbingHelper).FullName ?? "RollbarDataScrubbingHelper");
 
         #region singleton implementation
+
+        private static readonly Lazy<RollbarDataScrubbingHelper> lazySingleton =
+            new Lazy<RollbarDataScrubbingHelper>(() => new RollbarDataScrubbingHelper());
 
         /// <summary>
         /// Gets the instance.
@@ -25,34 +31,16 @@
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                return lazySingleton.Value;
             }
         }
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="RollbarDataScrubbingHelper" /> class from being created.
+        /// Prevents a default instance of the <see cref="EmptyDisposable" /> class from being created.
         /// </summary>
         private RollbarDataScrubbingHelper()
         {
-        }
-
-        /// <summary>
-        /// Class NestedSingleInstance. This class cannot be inherited.
-        /// </summary>
-        private sealed class NestedSingleInstance
-        {
-            /// <summary>
-            /// Prevents a default instance of the <see cref="NestedSingleInstance" /> class from being created.
-            /// </summary>
-            private NestedSingleInstance()
-            {
-            }
-
-            /// <summary>
-            /// The instance
-            /// </summary>
-            internal static readonly RollbarDataScrubbingHelper TheInstance =
-                new RollbarDataScrubbingHelper();
+            traceSource.TraceInformation($"Creating the {typeof(RollbarDataScrubbingHelper).Name}...");
         }
 
         #endregion singleton implementation

@@ -5,15 +5,8 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Class Name="Rollbar.RollbarLocator.NestedSingleInstance" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>RollbarLocator.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAQAAAAAAgABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>RollbarLocator.cs</FileName>
     </TypeIdentifier>
   </Class>

@@ -41,20 +41,6 @@ namespace Rollbar.Infrastructure
     {
         #region singleton implementation
 
-        private static readonly Lazy<RollbarQueueController> lazySingleton =
-            new Lazy<RollbarQueueController>(() => new RollbarQueueController());
-
-        //private static bool allowSingleton = false;
-        //internal static void AllowSingleton()
-        //{
-        //    allowSingleton = true;
-        //}
-
-        //private static readonly object classLock = new object();
-        //private static volatile RollbarQueueController? singleton;
-
-
-
         /// <summary>
         /// Gets the instance.
         /// </summary>
@@ -63,33 +49,14 @@ namespace Rollbar.Infrastructure
         {
             get
             {
-                if (!RollbarInfrastructure.Instance.IsInitialized)
-                {
-                    return null;
-                }
-
-                //if (singleton == null)
-                //{
-                //    lock (classLock)
-                //    {
-                //        if (singleton == null)
-                //        {
-                //            singleton = new RollbarQueueController();
-                //        }
-                //    }
-                //}
-                //return singleton;
-
-                //return allowSingleton ? lazySingleton.Value : null;
-
-                return lazySingleton.Value;
+                return RollbarInfrastructure.Instance.QueueController as RollbarQueueController;
             }
         }
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarQueueController" /> class from being created.
         /// </summary>
-        private RollbarQueueController()
+        internal RollbarQueueController()
         {
             traceSource.TraceInformation($"Creating the {typeof(RollbarQueueController).Name}...");
         }

@@ -10,7 +10,7 @@
     /// Implements the <see cref="System.IDisposable" />
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    internal class RollbarConnectivityMonitor
+    internal sealed class RollbarConnectivityMonitor
         : IRollbarConnectivityMonitor
         , IDisposable
     {
@@ -30,14 +30,14 @@
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                return RollbarInfrastructure.Instance.ConnectivityMonitor as RollbarConnectivityMonitor;
             }
         }
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarConnectivityMonitor"/> class from being created.
         /// </summary>
-        private RollbarConnectivityMonitor()
+        internal RollbarConnectivityMonitor()
         {
             TimeSpan initialDelay = TimeSpan.Zero;
             this._minMonitoringInterval = TimeSpan.FromSeconds(10);
@@ -54,26 +54,6 @@
             );
 
             this.CheckConnectivityStatus(null);
-        }
-
-        /// <summary>
-        /// Class NestedSingleInstance. This class cannot be inherited.
-        /// </summary>
-        private sealed class NestedSingleInstance
-        {
-            /// <summary>
-            /// Prevents a default instance of the <see cref="NestedSingleInstance" /> class from being created.
-            /// </summary>
-            private NestedSingleInstance()
-            {
-            }
-
-            /// <summary>
-            /// The instance
-            /// </summary>
-            internal static readonly RollbarConnectivityMonitor? TheInstance =
-                RollbarInfrastructure.Instance.IsInitialized ? new RollbarConnectivityMonitor()
-                : null;
         }
 
         #endregion singleton implementation
@@ -264,7 +244,7 @@
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Major Code Smell", "S1066:Collapsible \"if\" statements should be merged", Justification = "Promotes better code structure.")]
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if(!_disposedValue)
             {

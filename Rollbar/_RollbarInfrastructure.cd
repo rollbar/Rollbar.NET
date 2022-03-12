@@ -8,11 +8,6 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Class Name="Rollbar.Infrastructure.RollbarQueueController.NestedSingleInstance" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Infrastructure\RollbarQueueController.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
       <Enum Name="Rollbar.Infrastructure.RollbarQueueController.PayloadTraceSources">
         <TypeIdentifier>
           <NewMemberFileName>Infrastructure\RollbarQueueController.cs</NewMemberFileName>
@@ -30,15 +25,8 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Class Name="Rollbar.RollbarInfrastructure.NestedSingleInstance" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>RollbarInfrastructure.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAIAAAQAiAgAAEhAAAAAAAAAIAAgAIAYAICBggAAAA=</HashCode>
+      <HashCode>AAAIAAAAAiAgAgEhAAAAAAAAIIABgAIAYAICBggAAAA=</HashCode>
       <FileName>RollbarInfrastructure.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -51,13 +39,6 @@
       <Compartment Name="Private" Collapsed="true" />
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Class Name="Rollbar.RollbarTelemetryCollector.NestedSingleInstance" Collapsed="true">
-        <TypeIdentifier>
-          <NewMemberFileName>Telemetry\RollbarTelemetryCollector.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
       <HashCode>AAAIAIAAEiAgAgABAAAAUACAAAAIgAIASBBSAiIAABA=</HashCode>
       <FileName>Telemetry\RollbarTelemetryCollector.cs</FileName>
