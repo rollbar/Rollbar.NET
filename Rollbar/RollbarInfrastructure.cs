@@ -20,7 +20,7 @@
     /// 
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    public class RollbarInfrastructure
+    public sealed class RollbarInfrastructure
         : IRollbarInfrastructure
         , IDisposable
     {
@@ -38,10 +38,11 @@
 
         #region singleton implementation
 
-        //private static RollbarInfrastructure _singleton; 
-
-        private static readonly Lazy<RollbarInfrastructure> lazy =
+        private static readonly Lazy<RollbarInfrastructure> lazySingleton =
             new Lazy<RollbarInfrastructure>(() => new RollbarInfrastructure());
+
+        //private static readonly object classLock = new object();
+        //private static volatile RollbarInfrastructure? singleton;
 
         /// <summary>
         /// Gets the instance.
@@ -51,15 +52,19 @@
         {
             get
             {
-                //return NestedSingleInstance.TheInstance;
-
-                //if (_singleton == null)
+                //if (singleton == null)
                 //{
-                //    _singleton = new RollbarQueueController();
+                //    lock (classLock)
+                //    {
+                //        if (singleton == null)
+                //        {
+                //            singleton = new RollbarInfrastructure();
+                //        }
+                //    }
                 //}
-                //return _singleton;
+                //return singleton;
 
-                return lazy.Value;
+                return lazySingleton.Value;
             }
         }
 
@@ -69,25 +74,6 @@
         private RollbarInfrastructure()
         {
             traceSource.TraceInformation($"Creating the {typeof(RollbarInfrastructure).Name}...");
-        }
-
-        /// <summary>
-        /// Class NestedSingleInstance. This class cannot be inherited.
-        /// </summary>
-        private sealed class NestedSingleInstance
-        {
-            /// <summary>
-            /// Prevents a default instance of the <see cref="NestedSingleInstance"/> class from being created.
-            /// </summary>
-            private NestedSingleInstance()
-            {
-            }
-
-            /// <summary>
-            /// The instance
-            /// </summary>
-            internal static readonly RollbarInfrastructure TheInstance =
-                new RollbarInfrastructure();
         }
 
         #endregion singleton implementation
@@ -165,6 +151,9 @@
         public void Init(IRollbarInfrastructureConfig config)
         {
             Assumption.AssertNotNull(config, nameof(config));
+            Assumption.AssertNotNull(RollbarInfrastructure.Instance, nameof(RollbarInfrastructure.Instance));
+            Assumption.AssertFalse(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
+
 
             lock(this._syncLock)
             {
@@ -186,9 +175,10 @@
                     this.ValidateConfiguration();
                     this._config.Reconfigured += _config_Reconfigured;
                     this._initializedOnce = true;
+                    Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
 
-                    RollbarQueueController.Instance!.Init(config);
-                    RollbarTelemetryCollector.Instance!.Init(config.RollbarTelemetryOptions);
+                    RollbarQueueController.Instance?.Init(config);
+                    RollbarTelemetryCollector.Instance?.Init(config.RollbarTelemetryOptions);
                     // NOTE: RollbarConfig
                     // - init ConnectivityMonitor service as needed
                     //   NOTE: It should be sufficient to make ConnectivityMonitor as internal class
@@ -264,7 +254,7 @@
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if(!disposedValue)
             {

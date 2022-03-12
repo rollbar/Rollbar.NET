@@ -41,10 +41,19 @@ namespace Rollbar.Infrastructure
     {
         #region singleton implementation
 
-        //private static RollbarQueueController _singleton;
-
-        private static readonly Lazy<RollbarQueueController> lazy =
+        private static readonly Lazy<RollbarQueueController> lazySingleton =
             new Lazy<RollbarQueueController>(() => new RollbarQueueController());
+
+        //private static bool allowSingleton = false;
+        //internal static void AllowSingleton()
+        //{
+        //    allowSingleton = true;
+        //}
+
+        //private static readonly object classLock = new object();
+        //private static volatile RollbarQueueController? singleton;
+
+
 
         /// <summary>
         /// Gets the instance.
@@ -54,15 +63,26 @@ namespace Rollbar.Infrastructure
         {
             get
             {
-                //return NestedSingleInstance.TheInstance;
+                if (!RollbarInfrastructure.Instance.IsInitialized)
+                {
+                    return null;
+                }
 
-                //if (_singleton == null)
+                //if (singleton == null)
                 //{
-                //    _singleton = new RollbarQueueController();
+                //    lock (classLock)
+                //    {
+                //        if (singleton == null)
+                //        {
+                //            singleton = new RollbarQueueController();
+                //        }
+                //    }
                 //}
-                //return _singleton;
+                //return singleton;
 
-                return RollbarInfrastructure.Instance.IsInitialized ? lazy.Value : null;
+                //return allowSingleton ? lazySingleton.Value : null;
+
+                return lazySingleton.Value;
             }
         }
 
@@ -71,26 +91,7 @@ namespace Rollbar.Infrastructure
         /// </summary>
         private RollbarQueueController()
         {
-        }
-
-        /// <summary>
-        /// Class NestedSingleInstance. This class cannot be inherited.
-        /// </summary>
-        private sealed class NestedSingleInstance
-        {
-            /// <summary>
-            /// Prevents a default instance of the <see cref="NestedSingleInstance"/> class from being created.
-            /// </summary>
-            private NestedSingleInstance()
-            {
-            }
-
-            /// <summary>
-            /// The instance
-            /// </summary>
-            internal static readonly RollbarQueueController? TheInstance =
-                RollbarInfrastructure.Instance.IsInitialized ? new RollbarQueueController()
-                : null;
+            traceSource.TraceInformation($"Creating the {typeof(RollbarQueueController).Name}...");
         }
 
         #endregion singleton implementation

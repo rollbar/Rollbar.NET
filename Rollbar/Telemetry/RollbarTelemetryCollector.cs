@@ -10,7 +10,7 @@
     /// <summary>
     /// Implements Rollbar telemetry collector service.
     /// </summary>
-    internal class RollbarTelemetryCollector
+    internal sealed class RollbarTelemetryCollector
         : IRollbarTelemetryCollector
         , IDisposable
     {
@@ -19,8 +19,17 @@
 
         #region singleton implementation
 
-        private static readonly Lazy<RollbarTelemetryCollector> lazy =
+        private static readonly Lazy<RollbarTelemetryCollector> lazySingleton =
             new Lazy<RollbarTelemetryCollector>(() => new RollbarTelemetryCollector());
+
+        //private static bool allowSingleton = false;
+        //internal static void AllowSingleton()
+        //{
+        //    allowSingleton = true;
+        //}
+
+        //private static readonly object classLock = new object();
+        //private static volatile RollbarTelemetryCollector? singleton;
 
         /// <summary>
         /// Gets the instance.
@@ -30,15 +39,26 @@
         {
             get
             {
-                //return NestedSingleInstance.TheInstance;
+                if (!RollbarInfrastructure.Instance.IsInitialized)
+                {
+                    return null;
+                }
 
-                //if (_singleton == null)
+                //if (singleton == null)
                 //{
-                //    _singleton = new RollbarQueueController();
+                //    lock (classLock)
+                //    {
+                //        if (singleton == null)
+                //        {
+                //            singleton = new RollbarTelemetryCollector();
+                //        }
+                //    }
                 //}
-                //return _singleton;
+                //return singleton;
 
-                return RollbarInfrastructure.Instance.IsInitialized ? lazy.Value : null;
+                //return allowSingleton ? lazySingleton.Value : null;
+
+                return lazySingleton.Value;
             }
         }
 
@@ -47,20 +67,7 @@
         /// </summary>
         private RollbarTelemetryCollector()
         {
-        }
-
-        private sealed class NestedSingleInstance
-        {
-            private NestedSingleInstance()
-            {
-            }
-
-            /// <summary>
-            /// The singleton-like instance of the service.
-            /// </summary>
-            internal static readonly RollbarTelemetryCollector? TheInstance =
-                RollbarInfrastructure.Instance.IsInitialized ? new RollbarTelemetryCollector()
-                : null;
+            traceSource.TraceInformation($"Creating the {typeof(RollbarTelemetryCollector).Name}...");
         }
 
         #endregion singleton implementation
@@ -327,7 +334,7 @@
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
