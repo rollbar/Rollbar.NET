@@ -32,8 +32,6 @@
 
         private readonly object _syncLock = new object();
 
-        //private bool _initializedOnce = false;
-
         private IRollbarInfrastructureConfig? _config;
 
         private readonly Lazy<RollbarQueueController> _lazyQueueController =
@@ -192,8 +190,6 @@
                 }
                 catch(Exception ex)
                 {
-                    //this._initializedOnce = false;
-
                     throw new RollbarException(
                         InternalRollbarError.InfrastructureError,
                         "Exception while initializing the internal services!",
