@@ -10,48 +10,33 @@
     /// <summary>
     /// Implements Rollbar telemetry collector service.
     /// </summary>
-    internal class RollbarTelemetryCollector
+    internal sealed class RollbarTelemetryCollector
         : IRollbarTelemetryCollector
         , IDisposable
     {
         private static readonly TraceSource traceSource = 
             new TraceSource(typeof(RollbarTelemetryCollector).FullName ?? "RollbarTelemetryCollector");
-        
+
         #region singleton implementation
 
         /// <summary>
         /// Gets the instance.
         /// </summary>
-        /// <value>
-        /// The instance.
-        /// </value>
+        /// <value>The instance.</value>
         public static RollbarTelemetryCollector? Instance
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                return RollbarInfrastructure.Instance.TelemetryCollector as RollbarTelemetryCollector;
             }
         }
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarTelemetryCollector"/> class from being created.
         /// </summary>
-        private RollbarTelemetryCollector()
+        internal RollbarTelemetryCollector()
         {
-        }
-
-        private sealed class NestedSingleInstance
-        {
-            private NestedSingleInstance()
-            {
-            }
-
-            /// <summary>
-            /// The singleton-like instance of the service.
-            /// </summary>
-            internal static readonly RollbarTelemetryCollector? TheInstance =
-                RollbarInfrastructure.Instance.IsInitialized ? new RollbarTelemetryCollector()
-                : null;
+            traceSource.TraceInformation($"Creating the {typeof(RollbarTelemetryCollector).Name}...");
         }
 
         #endregion singleton implementation
@@ -318,7 +303,7 @@
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!disposedValue)
             {

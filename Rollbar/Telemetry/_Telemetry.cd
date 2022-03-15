@@ -1,68 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
-  <Class Name="Rollbar.Telemetry.TelemetryCollector">
-    <Position X="0.5" Y="4" Width="5.5" />
-    <Compartments>
-      <Compartment Name="Nested Types" Collapsed="false" />
-    </Compartments>
-    <NestedTypes>
-      <Class Name="Rollbar.Telemetry.TelemetryCollector.NestedSingleInstance">
-        <TypeIdentifier>
-          <NewMemberFileName>Telemetry\TelemetryCollector.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AAAIAYAAEiAgAgABAAAAUACAAAAIgAIASBBQAiIAAAA=</HashCode>
-      <FileName>Telemetry\TelemetryCollector.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Rollbar.Telemetry.TelemetryConfig">
-    <Position X="6.25" Y="4" Width="9.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAABAAAAACAAACAAAAAAAQAAACABAAAAA=</HashCode>
-      <FileName>Telemetry\TelemetryConfig.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Rollbar.Telemetry.TelemetryQueue">
-    <Position X="6.25" Y="7.5" Width="3" />
+  <Class Name="Rollbar.TelemetryQueue">
+    <Position X="0.5" Y="0.5" Width="3" />
     <TypeIdentifier>
       <HashCode>AABAAAAAAAAkAgAAEAAAEAAAAAAABAAAAAIAAAAIAAA=</HashCode>
       <FileName>Telemetry\TelemetryQueue.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Rollbar.Telemetry.TelemetryUtility">
-    <Position X="3.25" Y="13.5" Width="2.5" />
+  <Class Name="Rollbar.TelemetryUtility">
+    <Position X="0.5" Y="4.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
       <FileName>Telemetry\TelemetryUtility.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="Rollbar.Telemetry.ITelemetryCollector">
-    <Position X="0.5" Y="0.5" Width="3.75" />
+  <Class Name="Rollbar.RollbarTelemetryCollector">
+    <Position X="4" Y="3.25" Width="5.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAEgAgAgAAAAAAUAAAAAAAAAAAABBQAAAAAAA=</HashCode>
-      <FileName>Telemetry\ITelemetryCollector.cs</FileName>
+      <HashCode>AAAIAIAAEiAgAgABAAAAUACAAAAIgAIASBBSAiIAABA=</HashCode>
+      <FileName>Telemetry\RollbarTelemetryCollector.cs</FileName>
     </TypeIdentifier>
-  </Interface>
-  <Interface Name="Rollbar.Telemetry.ITelemetryConfig">
-    <Position X="6.25" Y="0.5" Width="4" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAAAAACAAAAAAAAAAAAAAACABAAAAA=</HashCode>
-      <FileName>Telemetry\ITelemetryConfig.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Enum Name="Rollbar.Telemetry.TelemetryAutoCollectionSettings">
-    <Position X="0.5" Y="13.5" Width="2.25" />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Enum Name="Rollbar.TelemetryAutoCollectionSettings">
+    <Position X="5.5" Y="0.5" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAAAAABAAAAAAgAAAAAAAAAgAAAAAEAAAA=</HashCode>
       <FileName>Telemetry\TelemetryAutoCollectionSettings.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Rollbar.DTOs.TelemetryType">
-    <Position X="11.5" Y="0.5" Width="1.5" />
+    <Position X="3.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAQAAAAAAAAAACAgAAAAAAAAAAAUAQAA=</HashCode>
       <FileName>DTOs\TelemetryType.cs</FileName>

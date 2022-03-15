@@ -24,14 +24,14 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>5.1.1</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>5.1.2</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
 
-      - fix: resolve GH #615 - ConnectivityMonitor tests wrong thing
+		fix: resolve #623 - NullReference exception while initializing RollbarInfrastructure
 
-    </SdkReleaseNotes>                        
+	</SdkReleaseNotes>                        
 
     <!--
     Release Notes Tagging Conventions:

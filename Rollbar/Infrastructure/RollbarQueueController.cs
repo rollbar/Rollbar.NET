@@ -49,35 +49,16 @@ namespace Rollbar.Infrastructure
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                return RollbarInfrastructure.Instance.QueueController as RollbarQueueController;
             }
         }
 
         /// <summary>
         /// Prevents a default instance of the <see cref="RollbarQueueController" /> class from being created.
         /// </summary>
-        private RollbarQueueController()
+        internal RollbarQueueController()
         {
-        }
-
-        /// <summary>
-        /// Class NestedSingleInstance. This class cannot be inherited.
-        /// </summary>
-        private sealed class NestedSingleInstance
-        {
-            /// <summary>
-            /// Prevents a default instance of the <see cref="NestedSingleInstance"/> class from being created.
-            /// </summary>
-            private NestedSingleInstance()
-            {
-            }
-
-            /// <summary>
-            /// The instance
-            /// </summary>
-            internal static readonly RollbarQueueController? TheInstance =
-                RollbarInfrastructure.Instance.IsInitialized ? new RollbarQueueController()
-                : null;
+            traceSource.TraceInformation($"Creating the {typeof(RollbarQueueController).Name}...");
         }
 
         #endregion singleton implementation
@@ -85,7 +66,8 @@ namespace Rollbar.Infrastructure
         /// <summary>
         /// The trace source
         /// </summary>
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarQueueController).FullName ?? "RollbarQueueController");
+        private static readonly TraceSource traceSource = 
+            new TraceSource(typeof(RollbarQueueController).FullName ?? "RollbarQueueController");
 
         /// <summary>
         /// Enum PayloadTraceSources

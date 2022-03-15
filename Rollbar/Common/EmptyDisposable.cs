@@ -1,6 +1,7 @@
 ﻿namespace Rollbar.Common
 {
     using System;
+    using System.Diagnostics;
     using System.Collections.Generic;
     using System.Text;
 
@@ -11,26 +12,36 @@
     public sealed class EmptyDisposable
         : IDisposable
     {
-        /// <summary>
-        /// Prevents a default instance of the <see cref="EmptyDisposable"/> class from being created.
-        /// </summary>
-        private EmptyDisposable()
-        {
-        }
+        private static readonly TraceSource traceSource =
+            new TraceSource(typeof(EmptyDisposable).FullName ?? "EmptyDisposable");
+
+        #region singleton implementation
+
+        private static readonly Lazy<EmptyDisposable> lazySingleton =
+            new Lazy<EmptyDisposable>(() => new EmptyDisposable());
 
         /// <summary>
-        /// Gets the singleton-like IRollbar instance.
+        /// Gets the instance.
         /// </summary>
-        /// <value>
-        /// The single shared IRollbar instance.
-        /// </value>
+        /// <value>The instance.</value>
         public static EmptyDisposable Instance
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                return lazySingleton.Value;
             }
         }
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="EmptyDisposable" /> class from being created.
+        /// </summary>
+        private EmptyDisposable()
+        {
+            traceSource.TraceInformation($"Creating the {typeof(EmptyDisposable).Name}...");
+        }
+
+        #endregion singleton implementation
+
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -38,19 +49,6 @@
         public void Dispose()
         {
             // no-op...
-        }
-
-        private sealed class NestedSingleInstance
-        {
-            static NestedSingleInstance()
-            {
-            }
-
-            private NestedSingleInstance()
-            {
-            }
-
-            internal static readonly EmptyDisposable TheInstance = new EmptyDisposable();
         }
     }
 }

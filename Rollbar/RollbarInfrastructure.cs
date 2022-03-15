@@ -20,21 +20,34 @@
     /// 
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    public class RollbarInfrastructure
+    public sealed class RollbarInfrastructure
         : IRollbarInfrastructure
         , IDisposable
     {
-        private static readonly TraceSource traceSource = new TraceSource(typeof(RollbarInfrastructure).FullName ?? "RollbarInfrastructure");
+        private static readonly TraceSource traceSource = 
+            new TraceSource(typeof(RollbarInfrastructure).FullName ?? "RollbarInfrastructure");
 
-        internal readonly TimeSpan _sleepInterval = TimeSpan.FromMilliseconds(25);
+        internal readonly TimeSpan _sleepInterval = 
+            TimeSpan.FromMilliseconds(25);
 
         private readonly object _syncLock = new object();
 
-        private bool _isInitialized = false;
-
         private IRollbarInfrastructureConfig? _config;
 
+        private readonly Lazy<RollbarQueueController> _lazyQueueController =
+            new Lazy<RollbarQueueController>(() => new RollbarQueueController());
+
+        private readonly Lazy<RollbarTelemetryCollector> _lazyTelemetryCollector =
+            new Lazy<RollbarTelemetryCollector>(() => new RollbarTelemetryCollector());
+        
+        private readonly Lazy<RollbarConnectivityMonitor> _lazyConnectivityMonitor =
+            new Lazy<RollbarConnectivityMonitor>(() => new RollbarConnectivityMonitor());
+
+
         #region singleton implementation
+
+        private static readonly Lazy<RollbarInfrastructure> lazySingleton =
+            new Lazy<RollbarInfrastructure>(() => new RollbarInfrastructure());
 
         /// <summary>
         /// Gets the instance.
@@ -44,7 +57,7 @@
         {
             get
             {
-                return NestedSingleInstance.TheInstance;
+                return lazySingleton.Value;
             }
         }
 
@@ -54,25 +67,6 @@
         private RollbarInfrastructure()
         {
             traceSource.TraceInformation($"Creating the {typeof(RollbarInfrastructure).Name}...");
-        }
-
-        /// <summary>
-        /// Class NestedSingleInstance. This class cannot be inherited.
-        /// </summary>
-        private sealed class NestedSingleInstance
-        {
-            /// <summary>
-            /// Prevents a default instance of the <see cref="NestedSingleInstance"/> class from being created.
-            /// </summary>
-            private NestedSingleInstance()
-            {
-            }
-
-            /// <summary>
-            /// The instance
-            /// </summary>
-            internal static readonly RollbarInfrastructure TheInstance =
-                new RollbarInfrastructure();
         }
 
         #endregion singleton implementation
@@ -85,7 +79,9 @@
         {
             get
             {
-                return this._isInitialized;
+                return (this._lazyQueueController.IsValueCreated 
+                    && this._lazyTelemetryCollector.IsValueCreated
+                    && this._lazyConnectivityMonitor.IsValueCreated);
             }
         }
 
@@ -97,7 +93,12 @@
         {
             get
             {
-                return RollbarQueueController.Instance;
+                if (!this._lazyQueueController.IsValueCreated)
+                {
+                    return null;
+                }
+
+                return this._lazyQueueController.Value;
             }
         }
 
@@ -109,7 +110,12 @@
         {
             get
             {
-                return RollbarTelemetryCollector.Instance;
+                if (!this._lazyTelemetryCollector.IsValueCreated)
+                {
+                    return null;
+                }
+
+                return this._lazyTelemetryCollector.Value;
             }
         }
 
@@ -121,7 +127,12 @@
         {
             get
             {
-                return RollbarConnectivityMonitor.Instance;
+                if (!this._lazyConnectivityMonitor.IsValueCreated)
+                {
+                    return null;
+                }
+
+                return _lazyConnectivityMonitor.Value;
             }
         }
 
@@ -150,10 +161,12 @@
         public void Init(IRollbarInfrastructureConfig config)
         {
             Assumption.AssertNotNull(config, nameof(config));
+            Assumption.AssertNotNull(RollbarInfrastructure.Instance, nameof(RollbarInfrastructure.Instance));
+            Assumption.AssertFalse(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
 
             lock(this._syncLock)
             {
-                if(this._isInitialized)
+                if(this.IsInitialized)
                 {
                     string msg = $"{typeof(RollbarInfrastructure).Name} can not be initialized more than once!";
                     traceSource.TraceInformation(msg);
@@ -163,28 +176,20 @@
                         );
                 }
 
-                this._config = config;
-                this.ValidateConfiguration();
-                this._config.Reconfigured += _config_Reconfigured;
-
-                this._isInitialized = true;
-
                 // now, since the basic infrastructure seems to be good and initialized,
                 // let's initialize all the dependent services of the infrastructure:
                 try
                 {
-                    RollbarQueueController.Instance!.Init(config);
-                    RollbarTelemetryCollector.Instance!.Init(config.RollbarTelemetryOptions);
-                    // NOTE: RollbarConfig
-                    // - init ConnectivityMonitor service as needed
-                    //   NOTE: It should be sufficient to make ConnectivityMonitor as internal class
-                    //         It is only used by RollbarClient and RollbarQueueController that are 
-                    //         already properly deactivated in single-threaded environments.
+                    this._config = config;
+                    this.ValidateConfiguration();
+                    this._config.Reconfigured += _config_Reconfigured;
+                    this._lazyQueueController.Value.Init(config);
+                    this._lazyTelemetryCollector.Value.Init(config.RollbarTelemetryOptions);
+                    _ = this._lazyConnectivityMonitor.Value;
+                    //Assumption.AssertTrue(RollbarInfrastructure.Instance.IsInitialized, nameof(RollbarInfrastructure.Instance.IsInitialized));
                 }
                 catch(Exception ex)
                 {
-                    this._isInitialized = false;
-
                     throw new RollbarException(
                         InternalRollbarError.InfrastructureError,
                         "Exception while initializing the internal services!",
@@ -197,8 +202,9 @@
 
         private void ValidateConfiguration()
         {
-            if(this._isInitialized)
+            if(this.IsInitialized)
             {
+                // nice short-cut:
                 return;
             }
 
@@ -250,7 +256,7 @@
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
         /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if(!disposedValue)
             {
