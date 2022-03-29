@@ -1,35 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Interface Name="Rollbar.IHttpProxyOptions">
-    <Position X="0.75" Y="8.25" Width="2.75" />
+    <Position X="0.5" Y="12.5" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAIAAAACAAAAAAAAAAA=</HashCode>
       <FileName>IHttpProxyOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarDataSecurityOptions">
-    <Position X="0.5" Y="12.5" Width="4.5" />
+    <Position X="0.5" Y="16.5" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AAAAAABACAAAAQAAAAAAAAAAAgAAAAAAIAAAAAAAAAA=</HashCode>
       <FileName>IRollbarDataSecurityOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarDestinationOptions">
-    <Position X="0.75" Y="6.5" Width="2.5" />
+    <Position X="0.75" Y="6" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAACAAAAQAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IRollbarDestinationOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarDeveloperOptions">
-    <Position X="0.5" Y="10.25" Width="3.5" />
+    <Position X="0.5" Y="10" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAIIAAAEBAQAAAA=</HashCode>
       <FileName>IRollbarDeveloperOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarInfrastructureOptions">
-    <Position X="6.25" Y="8" Width="2.75" />
+    <Position X="6.5" Y="7.75" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAACAAAAAAAAAAAAAAAEAAAAABAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>IRollbarInfrastructureOptions.cs</FileName>
@@ -43,14 +43,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarPayloadAdditionOptions">
-    <Position X="4.5" Y="10.25" Width="2.5" />
+    <Position X="0.5" Y="14.5" Width="5" />
     <TypeIdentifier>
       <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
       <FileName>IRollbarPayloadAdditionOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarPayloadManipulationOptions">
-    <Position X="5.25" Y="12.5" Width="3.25" />
+    <Position X="0.5" Y="8" Width="5.25" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IRollbarPayloadManipulationOptions.cs</FileName>
@@ -64,14 +64,14 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarInfrastructureConfig">
-    <Position X="6" Y="3.25" Width="4.5" />
+    <Position X="6.5" Y="3.25" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABAAABAAAAAAAAAAgAAAAAAAIAAAAAAAAAAA=</HashCode>
       <FileName>IRollbarInfrastructureConfig.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Rollbar.IRollbarOfflineStoreOptions">
-    <Position X="6.25" Y="6" Width="3.75" />
+    <Position X="6.5" Y="5.75" Width="5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAICAAAAAAAAAAAAAAAAAAAAAAACAAAA=</HashCode>
       <FileName>IRollbarOfflineStoreOptions.cs</FileName>
@@ -89,6 +89,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Common\IReconfigurable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Rollbar.IRollbarTelemetryOptions">
+    <Position X="6.5" Y="10.25" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAACAAAAAAAAAAAAAAACABAAAAA=</HashCode>
+      <FileName>IRollbarTelemetryOptions.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="Rollbar.ErrorLevel">

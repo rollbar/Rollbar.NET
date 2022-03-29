@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Rollbar.HttpProxyOptions">
+    <Position X="24.25" Y="11.75" Width="7.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAgAACAAIAAAACAAAAEAAAAAA=</HashCode>
+      <FileName>Config\HttpProxyOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarDataSecurityOptions">
+    <Position X="15.25" Y="12.5" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAACBACAIAAQAAAAAAgAAAAgAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Config\RollbarDataSecurityOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarDestinationOptions">
+    <Position X="21" Y="0.5" Width="10.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Rollbar.RollbarDestinationOptions.RollbarDestinationOptionsValidationRule">
+        <TypeIdentifier>
+          <NewMemberFileName>Config\RollbarDestinationOptions.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAACACAAAASAAAAAAAgAAAEAAgAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Config\RollbarDestinationOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarDeveloperOptions">
+    <Position X="21" Y="6.5" Width="10.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACgAIAAAAICABAAAwAAEAAAAAAIIBAAEBAQAAAA=</HashCode>
+      <FileName>Config\RollbarDeveloperOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarInfrastructureConfig">
+    <Position X="0.5" Y="0.5" Width="9.5" />
+    <NestedTypes>
+      <Enum Name="Rollbar.RollbarInfrastructureConfig.RollbarInfrastructureConfigValidationRule" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Config\RollbarInfrastructureConfig.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEAAASAABAAABAAAEgAAgAAiAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Config\RollbarInfrastructureConfig.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarInfrastructureOptions">
+    <Position X="1" Y="16" Width="20.25" />
+    <TypeIdentifier>
+      <HashCode>AAgACCAAACAAAAAAAABA2AAAAABAAAAIAAAAAAAAAAQ=</HashCode>
+      <FileName>Config\RollbarInfrastructureOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarLoggerConfig">
+    <Position X="12.75" Y="0.5" Width="8" />
+    <NestedTypes>
+      <Enum Name="Rollbar.RollbarLoggerConfig.RollbarLoggerConfigValidationRule" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Config\RollbarLoggerConfig.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CAAAAWgQQAIBAQAACAwAwAAAIAAAAAAgDAAgAAAIABg=</HashCode>
+      <FileName>Config\RollbarLoggerConfig.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarOfflineStoreOptions">
+    <Position X="11.25" Y="8.25" Width="9.5" />
+    <TypeIdentifier>
+      <HashCode>ABACACAAAAAAAICAAAAAgAAAAAAAAAAQAACAAACAEAA=</HashCode>
+      <FileName>Config\RollbarOfflineStoreOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarPayloadAdditionOptions">
+    <Position X="0.5" Y="5.25" Width="10.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Rollbar.RollbarPayloadAdditionOptions.RollbarPayloadAdditionOptionsValidationRule">
+        <TypeIdentifier>
+          <NewMemberFileName>Config\RollbarPayloadAdditionOptions.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AIAACDAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAgAEAAA=</HashCode>
+      <FileName>Config\RollbarPayloadAdditionOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarPayloadManipulationOptions">
+    <Position X="0.5" Y="12.75" Width="11.5" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAAAAAAAAAAAAAgAUCAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Config\RollbarPayloadManipulationOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Rollbar.RollbarTelemetryOptions">
+    <Position X="22.75" Y="15" Width="8" />
+    <TypeIdentifier>
+      <HashCode>AAAIACAAAAAAAFAAAAAigAAAAAAAAAAAAAACABAAAAI=</HashCode>
+      <FileName>Config\RollbarTelemetryOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
