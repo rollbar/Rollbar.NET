@@ -84,14 +84,17 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             var left = exceptionExample.Data.Notifier.ToArray();
-            var right = data["notifier"].ToObject<Dictionary<string, string>>();
+            var right = data["notifier"].ToObject<Dictionary<string, object>>();
 
             Assert.AreEqual(left.Length, right.Count);
             int i = 0;
             while (i < right.Count)
             {
                 Assert.IsTrue(right.ContainsKey(left[i].Key));
-                Assert.AreEqual(right[left[i].Key], left[i].Value);
+                if (left[i].Value is String)
+                {
+                    Assert.AreEqual(right[left[i].Key], left[i].Value);
+                }
                 i++;
             }
 
@@ -164,14 +167,17 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             var left = messageException.Data.Notifier.ToArray();
-            var right = data["notifier"].ToObject<Dictionary<string, string>>();
+            var right = data["notifier"].ToObject<Dictionary<string, object>>();
 
             Assert.AreEqual(left.Length, right.Count);
             int i = 0;
             while (i < right.Count)
             {
                 Assert.IsTrue(right.ContainsKey(left[i].Key));
-                Assert.AreEqual(right[left[i].Key], left[i].Value);
+                if (left[i].Value is String)
+                {
+                    Assert.AreEqual(right[left[i].Key], left[i].Value);
+                }
                 i++;
             }
 
@@ -274,14 +280,17 @@ namespace UnitTest.Rollbar.DTOs
 
             //Assert.AreEqual(_exceptionExample.Data.Notifier.ToArray(), data["notifier"].ToObject<Dictionary<string, string>>());
             var left = aggregateExample.Data.Notifier.ToArray();
-            var right = data["notifier"].ToObject<Dictionary<string, string>>();
+            var right = data["notifier"].ToObject<Dictionary<string, object>>();
 
             Assert.AreEqual(left.Length, right.Count);
             int i = 0;
             while (i < right.Count)
             {
                 Assert.IsTrue(right.ContainsKey(left[i].Key));
-                Assert.AreEqual(right[left[i].Key], left[i].Value);
+                if (left[i].Value is String)
+                {
+                    Assert.AreEqual(right[left[i].Key], left[i].Value);
+                }
                 i++;
             }
 
@@ -354,14 +363,17 @@ namespace UnitTest.Rollbar.DTOs
             Assert.AreEqual("c#", data["language"].Value<string>());
 
             var left = crashException.Data.Notifier.ToArray();
-            var right = data["notifier"].ToObject<Dictionary<string, string>>();
+            var right = data["notifier"].ToObject<Dictionary<string, object>>();
 
             Assert.AreEqual(left.Length, right.Count);
             int i = 0;
             while (i < right.Count)
             {
                 Assert.IsTrue(right.ContainsKey(left[i].Key));
-                Assert.AreEqual(right[left[i].Key], left[i].Value);
+                if (left[i].Value is String)
+                {
+                    Assert.AreEqual(right[left[i].Key], left[i].Value);
+                }
                 i++;
             }
 

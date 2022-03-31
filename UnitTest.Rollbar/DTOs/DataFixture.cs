@@ -57,7 +57,7 @@
             var version = typeof(Data).Assembly.GetName().Version.ToString(3);
             string[] expected = string.Format("{{`name`:`Rollbar.NET`,`version`:`{0}`}}", version).TrimEnd('}').TrimEnd('`').Split(',');
             string[] actual = WhiteSpace.Replace(JsonConvert.SerializeObject(_basicData.Notifier), "").Replace('"', '`').Split(',');
-            Assert.AreEqual(2, actual.Length);
+            Assert.IsTrue(actual.Length >= 2);
             Assert.IsTrue(actual[0].StartsWith(expected[0].TrimEnd('`'))); // for name:
             Assert.IsTrue(actual[1].StartsWith(expected[1])); // for version:
         }

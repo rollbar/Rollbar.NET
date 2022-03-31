@@ -28,6 +28,10 @@
             /// The configuration
             /// </summary>
             public static readonly string Configuration = "configured_options";
+            /// <summary>
+            /// The Rollbar Infrastructure configuration
+            /// </summary>
+            public static readonly string InfrastructureConfiguration = "infrastructure_options";
         }
 
         /// <summary>
@@ -85,6 +89,21 @@
             get { return this[ReservedProperties.Configuration] as IRollbarLoggerConfig; }
             set { this[ReservedProperties.Configuration] = value; }
         }
+        /// <summary>
+        /// Gets or sets the Rollbar Infrastructure configuration.
+        /// </summary>
+        /// <value>The configuration.</value>
+        public IRollbarInfrastructureConfig? InfrastructureConfiguration
+        {
+            get
+            {
+                return this[ReservedProperties.InfrastructureConfiguration] as IRollbarInfrastructureConfig;
+            }
+            private set
+            {
+                this[ReservedProperties.InfrastructureConfiguration] = value;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Notifier"/> class.
@@ -103,6 +122,11 @@
         {
             this.Name = Notifier.notifierName;
             this.Version = Notifier.notifierAssemblyVersion;
+
+            if (RollbarInfrastructure.Instance.IsInitialized)
+            {
+                this.InfrastructureConfiguration = RollbarInfrastructure.Instance.Config;
+            }
         }
     }
 }
