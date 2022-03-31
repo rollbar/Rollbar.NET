@@ -24,12 +24,13 @@
   </ItemGroup>
   
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>5.1.2</SdkVersion>           <!-- Required: major.minor.patch -->
+    <SdkVersion>5.1.3</SdkVersion>           <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
 
-		fix: resolve #623 - NullReference exception while initializing RollbarInfrastructure
+		fix:  resolve #626 - Telemetry in DotNet Core 3.1 is not initialized
+		feat: resolve #627 - Capture RollbarInfrastructureConfig with each payload
 
 	</SdkReleaseNotes>                        
 
