@@ -141,9 +141,12 @@ namespace Rollbar.NetCore.AspNet
             this._logger = loggerFactory.CreateLogger<RollbarMiddleware>();
             this._rollbarOptions = rollbarOptions.Value;
 
-            RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-            RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
-            RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
+            if (!RollbarInfrastructure.Instance.IsInitialized)
+            {
+                RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
+                RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
+                RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
+            }
         }
 
         /// <summary>

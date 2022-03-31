@@ -12,6 +12,7 @@
     using Microsoft.OpenApi.Models;
 
     using Rollbar;
+    using Rollbar.DTOs;
     using Rollbar.NetCore.AspNet;
 
     using Samples;
@@ -40,7 +41,7 @@
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            ConfigureRollbarSingleton();
+            ConfigureRollbarInfrastructure();
 
             services.AddRollbarLogger(loggerOptions =>
             {
@@ -85,13 +86,14 @@
         /// <summary>
         /// Configures the Rollbar singleton-like notifier.
         /// </summary>
-        private void ConfigureRollbarSingleton()
+        private void ConfigureRollbarInfrastructure()
         {
             RollbarInfrastructureConfig config = new RollbarInfrastructureConfig(
                 RollbarSamplesSettings.AccessToken,
                 RollbarSamplesSettings.Environment
                 );
             config.RollbarLoggerConfig.RollbarDeveloperOptions.LogLevel = ErrorLevel.Debug;
+
             //RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
             //dataSecurityOptions.ScrubFields = new string[]
             //{
@@ -100,8 +102,19 @@
             //};
             //config.RollbarLoggerConfig.RollbarDataSecurityOptions.Reconfigure(dataSecurityOptions);
 
+            var telemetryOptions = new RollbarTelemetryOptions(true, 20)
+            {
+                TelemetryAutoCollectionTypes = TelemetryType.Log | TelemetryType.Error | TelemetryType.Network
+            };
+            config.RollbarTelemetryOptions.Reconfigure(telemetryOptions);
+
             RollbarInfrastructure.Instance.Init(config);
             RollbarInfrastructure.Instance.QueueController.InternalEvent += OnRollbarInternalEvent;
+
+            var telemetryBody = new LogTelemetry("Rollbar infrastructure initialized!");
+            RollbarInfrastructure.Instance.TelemetryCollector.Capture(new Telemetry(TelemetrySource.Server, TelemetryLevel.Info, telemetryBody));
+
+            RollbarLocator.RollbarInstance.Info("Rollbar is ready to roll!");
         }
 
         /// <summary>

@@ -4,7 +4,6 @@
     using System.Diagnostics;
     using System.Threading;
 
-    using Rollbar;
     using Rollbar.DTOs;
 
     /// <summary>
@@ -37,6 +36,8 @@
         internal RollbarTelemetryCollector()
         {
             traceSource.TraceInformation($"Creating the {typeof(RollbarTelemetryCollector).Name}...");
+
+            this._telemetryQueue.QueueDepth = 0; // since we do not have valid telemetry config assigned yet...
         }
 
         #endregion singleton implementation
@@ -51,11 +52,18 @@
             }
 
             this._config = options;
-            
-            if(this._config != null)
+
+            if (this._config != null)
             {
+                // let's resync with relevant config settings: 
+                this._telemetryQueue.QueueDepth = this._config.TelemetryQueueDepth;
+
                 this._config.Reconfigured += _config_Reconfigured;
                 this.StartAutocollection();
+            }
+            else
+            {
+                this._telemetryQueue.QueueDepth = 0;
             }
         }
 
@@ -141,9 +149,6 @@
             {
                 return this; // this, essentially, means the auto-collection is off...
             }
-
-            // let's resync with relevant config settings: 
-            this._telemetryQueue.QueueDepth = this.Config.TelemetryQueueDepth;
 
             lock (_syncRoot)
             {

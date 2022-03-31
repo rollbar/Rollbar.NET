@@ -69,17 +69,12 @@
         {
             if(configuration != null)
             {
-                this._rollbarInfrastructureConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
-                if(RollbarInfrastructure.Instance.IsInitialized)
+                if (!RollbarInfrastructure.Instance.IsInitialized)
                 {
-                    RollbarInfrastructure.Instance.Config.Reconfigure(this._rollbarInfrastructureConfig);
-                }
-                else
-                {
+                    this._rollbarInfrastructureConfig = RollbarConfigurationUtil.DeduceRollbarConfig(configuration);
                     RollbarInfrastructure.Instance.Init(this._rollbarInfrastructureConfig);
                 }
-                RollbarConfigurationUtil.DeduceRollbarTelemetryConfig(configuration);
-                _ = Rollbar.RollbarInfrastructure.Instance?.TelemetryCollector?.StartAutocollection();
+                this._rollbarInfrastructureConfig = RollbarInfrastructure.Instance.Config;
             }
 
             if(options != null)
