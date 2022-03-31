@@ -53,8 +53,6 @@
 
             this._config = options;
 
-
-
             if (this._config != null)
             {
                 // let's resync with relevant config settings: 
