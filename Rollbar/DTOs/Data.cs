@@ -129,6 +129,7 @@
                 this.Level = config.RollbarDeveloperOptions.LogLevel;
                 this.Person = config.RollbarPayloadAdditionOptions.Person;
                 this.Server = config.RollbarPayloadAdditionOptions.Server;
+                this.CodeVersion = config.RollbarPayloadAdditionOptions.CodeVersion;
             }
 
             // set explicit values:

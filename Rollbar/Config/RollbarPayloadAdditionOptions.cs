@@ -51,6 +51,18 @@
         }
 
         /// <summary>
+        /// Gets or sets the code version.
+        /// </summary>
+        /// <value>
+        /// The code version.
+        /// </value>
+        public string? CodeVersion
+        {
+            get; 
+            set;
+        }
+
+        /// <summary>
         /// Reconfigures this object similar to the specified one.
         /// </summary>
         /// <param name="likeMe">The pre-configured instance to be cloned in terms of its configuration/settings.</param>

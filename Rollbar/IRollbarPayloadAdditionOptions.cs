@@ -34,5 +34,17 @@
             get; 
             set;
         }
+
+        /// <summary>
+        /// Gets or sets the code version.
+        /// </summary>
+        /// <value>
+        /// The code version.
+        /// </value>
+        public string? CodeVersion
+        {
+            get;
+            set;
+        }
     }
 }
