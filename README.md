@@ -1,6 +1,23 @@
-![Rollbar Logo](https://github.com/rollbar/rollbar.net/blob/master/rollbar-logo.png)
+<p align="center">
+  <img alt="rollbar-logo" src="https://user-images.githubusercontent.com/3300063/207964480-54eda665-d6fe-4527-ba51-b0ab3f41f10b.png" />
+</p>
 
-# Rollbar.NET Notifier SDK
+<h1 align="center">Rollbar .NET SDK</h1>
+
+<p align="center">
+  <strong>Proactively discover, predict, and resolve errors in real-time with <a href="https://rollbar.com">Rollbar’s</a> error monitoring platform. <a href="https://rollbar.com/signup/">Start tracking errors today</a>!</strong>
+</p>
+
+---
+
+## Key benefits of using Rollbar .NET are:
+- **Integrations:** Rollbar .NET has integration for <a href="https://docs.rollbar.com/docs/v5-integrating-with-aspnet-core-2-and-newer">ASP.NET</a>, <a href="https://docs.rollbar.com/docs/integrating-with-blazor-server-application">Blazor</a>, <a href="https://docs.rollbar.com/docs/v5-integrating-with-xamarin">Xamarin forms</a> and more!
+- **Telemetry:** The telemetry timeline provides a list of “breadcrumbs” events that can help developers understand and fix problems faster. <a href="https://docs.rollbar.com/docs/telemetry-1">Learn more about telemetry</a>.
+- **Automatic error grouping:** Rollbar aggregates Occurrences caused by the same error into Items that represent application issues. <a href="https://docs.rollbar.com/docs/grouping-occurrences">Learn more about reducing log noise</a>.
+- **Advanced search:** Filter items by many different properties. <a href="https://docs.rollbar.com/docs/search-items">Learn more about search</a>.
+- **Customizable notifications:** Rollbar supports several messaging and incident management tools where your team can get notified about errors and important events by real-time alerts. <a href="https://docs.rollbar.com/docs/notifications">Learn more about Rollbar notifications</a>.
+
+
 
 A .NET Rollbar Client/Notifier SDK that can be used in any application built on the following .NET versions: .NET Core 2.0+, .NET Standard 2.0+, .NET Full Framework 4.5+, Mono, Xamarin, and, in general, any implementation of the .NET Standard 2.0+.
 It simplifies building data payloads based on exception data, tracing data, informational messages and telemetry data and sends the payloads to the [Rollbar API](https://www.rollbar.com) for remote monitoring and analysis of the hosting application's behavior and health.
@@ -11,7 +28,7 @@ It also includes a collection of adapters and helpers for many .NET application 
 *   NLog
 *   Microsoft Enterprise Library's Exception Handling block
 *   etc.
-*   as well as RollbarTraceListener and ASP.NET Core Rollbar middleware. 
+*   as well as RollbarTraceListener and ASP.NET Core Rollbar middleware.
 
 These plug-ins simplify integration of the Rollbar.NET Notifier into codebases that are already using any of these libraries/frameworks using the libraries' native extensions mechanisms.
 
@@ -36,37 +53,37 @@ For detailed instructions see our [v5 specific documentation](https://docs.rollb
 
 ## Available as NuGet packages
 - `Rollbar (the core)....................`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.svg)](http://www.nuget.org/packages/Rollbar/)
 - `Rollbar.Deploys.......................`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar.Deploys/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.svg)](http://www.nuget.org/packages/Rollbar.Deploys/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Deploys.svg)](http://www.nuget.org/packages/Rollbar.Deploys/)
 - `Rollbar.NetPlatformExtensions.........`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetPlatformExtensions.svg)](http://www.nuget.org/packages/Rollbar.NetPlatformExtensions/)
 - `Rollbar.NetCore.AspNet................`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.NetCore.AspNet.svg)](http://www.nuget.org/packages/Rollbar.NetCore.AspNet/)
 - `Rollbar.Net.AspNet....................`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet/)
 - `Rollbar.Net.AspNet.Mvc................`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.Mvc/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.Mvc/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.Mvc.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.Mvc/)
 - `Rollbar.Net.AspNet.WebApi.............`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.WebApi/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.WebApi/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.Net.AspNet.WebApi.svg)](http://www.nuget.org/packages/Rollbar.Net.AspNet.WebApi/)
 - `Rollbar.PlugIns.Log4net...............`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Log4net/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Log4net/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.Log4net.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Log4net/)
 - `Rollbar.PlugIns.MSEnterpriseLibrary...`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.MSEnterpriseLibrary/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.MSEnterpriseLibrary/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.MSEnterpriseLibrary.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.MSEnterpriseLibrary/)
 - `Rollbar.PlugIns.NLog..................`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.NLog/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.NLog/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.NLog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.NLog/)
 - `Rollbar.PlugIns.Serilog...............`
-[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.Serilog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Serilog/) 
+[![NuGet version](http://img.shields.io/nuget/v/Rollbar.PlugIns.Serilog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Serilog/)
 [![Nuget downloads](http://img.shields.io/nuget/dt/Rollbar.PlugIns.Serilog.svg)](http://www.nuget.org/packages/Rollbar.PlugIns.Serilog/)
 
 ## Install
@@ -81,19 +98,19 @@ Install-Package Rollbar
 
 The SDK is designed to have as little impact on the hosting system or application as possible. It takes an async "fire and forget" approach to logging. Normally, you want to use fully asynchronous logging, since it has virtually no instrumentational overhead on your application execution performance at runtime (especially when running on a multi-core/multi-processor system).
 
-In v1.x.x versions of the SDK, the asynchronous logging calls were still performing some of their data processing functions (like packaging the data objects to log into a proper Rollbar Payload DTO instance) on the calling thread before asynchronously placing the payloads into a transmission queue. Hence, the duration of the logging method calls was proportional to the size and complexity of the data object to package and log.  
+In v1.x.x versions of the SDK, the asynchronous logging calls were still performing some of their data processing functions (like packaging the data objects to log into a proper Rollbar Payload DTO instance) on the calling thread before asynchronously placing the payloads into a transmission queue. Hence, the duration of the logging method calls was proportional to the size and complexity of the data object to package and log.
 
 In v2.x.x versions of the SDK, we moved the packaging of the data-to-log one level deeper and now it is handled in a context of a worker thread that is responsible for packaging of a proper payload DTO and queuing it for transmission to the Rollbar API Server.
 As the result, the logging method calls are extremely quick now (under 20 microseconds) regardless of complexity and size of the data-to-log. All the methods now return a `Task` instance (instead of an `ILogger` instance as in v1.x.x) that could be either ignored in true "fire-and-forget" logging scenarios or could be waited (or awaited) to complete packaging and queuing of the payloads in some scenarios.
 
-While it was a nice flexible and easy to use solution from API point of view, the tasks did not perform well (as we learned it the hard way) under EXTREMELY high AND sustained rate of load. 
+While it was a nice flexible and easy to use solution from API point of view, the tasks did not perform well (as we learned it the hard way) under EXTREMELY high AND sustained rate of load.
 So, in v3.x.x, we went away from the Tasks and removed `IAsynLogger` all together. We are now back to having only `ILogger` and we have a substitute for the eliminated Tasks in the form of `IRollbarPackage`.
 Think of the `IRollbarPackage` as a basis for implementing arbitrary data packaging strategies with explicit flag (named as `MustApplySynchronously`) that signifies need to apply the packaging (steps 1 and 2)
 on the calling thread before returning from a logging method. We also provide with abstract base classes like `RollbarPackageBase` and `RollbarPackageDecoratorBase` for implementing custom packaging strategies and their decorators.
-We used these abstraction to implement our own collection of packagers and their decorators. All of them are available to the SDK users as well. 
-In addition to helping us in getting away from the Tasks usage, these new abstractions allow for very flexible and powerful ways to bundle a lot specific types of data into a single payload as needed 
-while encapsulating and reusing the packaging rules of any custom type.  
-In v3.x.x, you can either throw into a logging method a data object to log (exactly the way it was in v2) or you can wrap in an `ObjectPackage` while setting the `MustApplySynchronously` flag if you want the logger to behave 
+We used these abstraction to implement our own collection of packagers and their decorators. All of them are available to the SDK users as well.
+In addition to helping us in getting away from the Tasks usage, these new abstractions allow for very flexible and powerful ways to bundle a lot specific types of data into a single payload as needed
+while encapsulating and reusing the packaging rules of any custom type.
+In v3.x.x, you can either throw into a logging method a data object to log (exactly the way it was in v2) or you can wrap in an `ObjectPackage` while setting the `MustApplySynchronously` flag if you want the logger to behave
 the way IAsyncLogger used to when you had to block-wait on its Task to complete.
 
 However, in some specific situations (such as while logging right before exiting an application), you may want to use a logger fully synchronously so that the application does not quit before the logging completes (including subsequent delivery of the corresponding payload to the Rollbar API).
@@ -136,7 +153,7 @@ In case of a timeout, all the blocking log methods throw `System.TimeoutExceptio
 The only area of the SDK APIs that changed between v3 and v4 is the one related to the file-based configuration of Rollbar infrastructure.
 
 All the public types related to configuring the SDK based on either app.config or web.config files were moved to their own dedicated module/package `Rollbar.App.Config`. The types namespace changed from `Rollbar.NetFramework` to `Rollbar.App.Config`.
- 
+
 All the public types related to configuring the SDK based on appsettings.json file were moved to their own dedicated module/package `Rollbar.AppSettings.Json`. The types namespace changed from `Rollbar.NetCore` to `Rollbar.AppSettings.Json`.
 
 Both new modules are optional alternatives. When either is needed, just reference a corresponding module/package from the application already hosting the Rollbar core module. Assuming you are already using the application config file in your application for other reasons than just configuring Rollbar, all the dependencies needed for accessing the file should be already established by your application codebase.
@@ -144,7 +161,7 @@ Both new modules are optional alternatives. When either is needed, just referenc
 ## Upgrading to v3.x.x from v2.x.x versions
 
 Some Rollbar functionality and API types related to specific more narrow .NET sub-technology
-were moved into separate dedicated modules. For example, Rollbar Asp.Net Core middleware moved into 
+were moved into separate dedicated modules. For example, Rollbar Asp.Net Core middleware moved into
 the Rollbar.NetCore.AspNet module while changing its namespace to follow the module naming.
 So, might need to add extra reference to a relevant module and update namespaces when upgrading to v3.
 
