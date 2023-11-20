@@ -94,13 +94,19 @@
             return new HashSet<string>(
                 new[]
                 {
-                    "Password", 
+                    "Password",
+                    "password",
                     "passwd", 
                     "confirm_password", 
-                    "password_confirmation", 
+                    "password_confirmation",
+                    "AccessToken",
                     "accessToken", 
                     "auth_token", 
-                    "authentication", 
+                    "Authentication",
+                    "authentication",
+                    "Authorization",
+                    "authorization",
+                    "Secret",
                     "secret",
                 }
                 );
