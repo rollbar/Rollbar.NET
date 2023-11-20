@@ -104,8 +104,6 @@
                     "auth_token", 
                     "Authentication",
                     "authentication",
-                    "Authorization",
-                    "authorization",
                     "Secret",
                     "secret",
                 }
