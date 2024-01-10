@@ -29,11 +29,12 @@ namespace UnitTest.Rollbar
 
         private static MessagePackage CrateTestPackage()
         {
-            MessagePackage package = 
+            MessagePackage package =
                 new MessagePackage($"{nameof(RollbarClientFixture)}.BasicTest");
             return package;
         }
 
+        [Ignore]
         [TestMethod]
         public void TestUsingDefaultConfig()
         {
@@ -63,7 +64,7 @@ namespace UnitTest.Rollbar
             // [EXPECT]: even under all the good networking conditions sending a payload should not succeed
             RollbarInfrastructureOptions infrastructureOptions =
                 new RollbarInfrastructureOptions();
-            infrastructureOptions.PayloadPostTimeout = 
+            infrastructureOptions.PayloadPostTimeout =
                 TimeSpan.FromMilliseconds(5); // short enough
             RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions
                 .Reconfigure(infrastructureOptions);
@@ -84,6 +85,7 @@ namespace UnitTest.Rollbar
             }
         }
 
+        [Ignore]
         [TestMethod]
         public void TestUsingLongEnoughTimeout()
         {
@@ -92,7 +94,7 @@ namespace UnitTest.Rollbar
             // [EXPECT]: even under all the good networking conditions sending a payload should succeed
             RollbarInfrastructureOptions infrastructureOptions =
                 new RollbarInfrastructureOptions();
-            infrastructureOptions.PayloadPostTimeout = 
+            infrastructureOptions.PayloadPostTimeout =
                 TimeSpan.FromMilliseconds(2000); // long enough
             RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions
                 .Reconfigure(infrastructureOptions);

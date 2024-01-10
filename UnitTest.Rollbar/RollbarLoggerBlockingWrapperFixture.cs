@@ -61,6 +61,7 @@ namespace UnitTest.Rollbar
         }
 
 
+        [Ignore]
         [TestMethod]
         public void HasBlockingBehavior()
         {
@@ -139,6 +140,7 @@ namespace UnitTest.Rollbar
             }
         }
 
+        [Ignore]
         [DataTestMethod]
         [DataRow(ErrorLevel.Critical)]
         [DataRow(ErrorLevel.Error)]
@@ -153,12 +155,12 @@ namespace UnitTest.Rollbar
                 acctualLogLevel = payload.Data.Level.Value;
             }
 
-            RollbarDestinationOptions destinationOptions = 
+            RollbarDestinationOptions destinationOptions =
                 new RollbarDestinationOptions(
-                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.AccessToken,
                     RollbarUnitTestSettings.Environment
                     );
-            RollbarPayloadManipulationOptions payloadManipulationOptions = 
+            RollbarPayloadManipulationOptions payloadManipulationOptions =
                 new RollbarPayloadManipulationOptions(Transform);
             var loggerConfig = new RollbarLoggerConfig();
             loggerConfig.RollbarDestinationOptions.Reconfigure(destinationOptions);

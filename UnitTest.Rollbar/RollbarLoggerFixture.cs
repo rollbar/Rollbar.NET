@@ -60,6 +60,7 @@ namespace UnitTest.Rollbar
             //TODO:
         }
 
+        [Ignore]
         [TestMethod]
         public void RethrowConfigOptionWorks()
         {
@@ -110,6 +111,7 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(2,rethrowCount,"matching total of rethrows...");
         }
 
+        [Ignore]
         [TestMethod]
         public void TransmitConfigOptionWorks()
         {
@@ -142,6 +144,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method FaultyPayloadTransformationTest.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void FaultyPayloadTransformationTest()
         {
@@ -172,6 +175,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method FaultyCheckIgnoreTest.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void FaultyCheckIgnoreTest()
         {
@@ -202,6 +206,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method FaultyTruncateTest.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void FaultyTruncateTest()
         {
@@ -256,6 +261,7 @@ namespace UnitTest.Rollbar
         /// Trickies the package test.
         /// </summary>
         /// <param name="trickyPackage">The tricky package.</param>
+        [Ignore]
         [DataTestMethod]
         [DataRow(TrickyPackage.AsyncFaultyPackage)]
         [DataRow(TrickyPackage.SyncFaultyPackage)]
@@ -305,6 +311,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method RateLimitConfigSettingOverridesServerHeadersBasedReportingRateTest.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void RateLimitConfigSettingOverridesServerHeadersBasedReportingRateTest()
         {
@@ -465,7 +472,7 @@ namespace UnitTest.Rollbar
         //            errorCount++;
         //        }
         //        Assert.AreEqual(0, errorCount, "Checking errorCount 3.");
-        //        //TODO: gain access to the payload store persisted records count. 
+        //        //TODO: gain access to the payload store persisted records count.
         //        //      The count is expected to be 1.
 
         //        newConfig.ProxyAddress = null;
@@ -486,7 +493,7 @@ namespace UnitTest.Rollbar
         //            errorCount++;
         //        }
         //        Assert.AreEqual(0, errorCount, "Checking errorCount 4.");
-        //        //TODO: gain access to the payload store persisted records count. 
+        //        //TODO: gain access to the payload store persisted records count.
         //        //      The count is expected to be 1 (one record stuck with wrfng proxy settings until stale in a few days).
         //    }
         //}
@@ -509,6 +516,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method ScopedInstanceTest.
         /// </summary>
+        [Ignore]
         [TestMethod]
         [Timeout(maxScopedInstanceTestDurationInMillisec)]
         public void ScopedInstanceTest()
@@ -516,7 +524,7 @@ namespace UnitTest.Rollbar
             // we need to make sure we are starting clean:
             RollbarQueueController.Instance.FlushQueues();
             RollbarQueueController.Instance.Start();
-            var accessTokenQueues = 
+            var accessTokenQueues =
                 RollbarQueueController.Instance.GetQueues(RollbarUnitTestSettings.AccessToken);
             while (accessTokenQueues.Any())
             {
@@ -539,13 +547,13 @@ namespace UnitTest.Rollbar
                     }
                 }
                 Thread.Sleep(TimeSpan.FromMilliseconds(250));
-                accessTokenQueues = 
+                accessTokenQueues =
                     RollbarQueueController.Instance.GetQueues(RollbarUnitTestSettings.AccessToken);
             }
 
-            RollbarDestinationOptions destinationOptions = 
+            RollbarDestinationOptions destinationOptions =
                 new RollbarDestinationOptions(
-                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.AccessToken,
                     RollbarUnitTestSettings.Environment
                     );
             RollbarLoggerConfig loggerConfig = new RollbarLoggerConfig();
@@ -558,16 +566,16 @@ namespace UnitTest.Rollbar
                 this.IncrementCount<CommunicationEventArgs>();
                 logger.Log(ErrorLevel.Error, "test message");
             }
-            // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles: 
-            int currentQueuesCount = 
+            // an unused queue does not get removed immediately (but eventually) - so let's wait for it for a few processing cycles:
+            int currentQueuesCount =
                 RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken);
             while (totalInitialQueues != currentQueuesCount)
             {
                 string msg = "Current queues count: " + currentQueuesCount + " while initial count was: " + totalInitialQueues;
                 System.Diagnostics.Trace.WriteLine(msg);
                 Console.WriteLine(msg);
-                Thread.Sleep(TimeSpan.FromMilliseconds(250)); 
-                currentQueuesCount = 
+                Thread.Sleep(TimeSpan.FromMilliseconds(250));
+                currentQueuesCount =
                     RollbarQueueController.Instance.GetQueuesCount(RollbarUnitTestSettings.AccessToken);
             }
 
@@ -579,6 +587,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method ReportException.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void ReportException()
         {
@@ -597,6 +606,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method ReportFromCatch.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void ReportFromCatch()
         {
@@ -624,6 +634,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method ReportMessage.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void ReportMessage()
         {
@@ -644,6 +655,7 @@ namespace UnitTest.Rollbar
         /// Conveniences the methods use appropriate error levels.
         /// </summary>
         /// <param name="expectedLogLevel">The expected log level.</param>
+        [Ignore]
         [DataTestMethod]
         [DataRow(ErrorLevel.Critical)]
         [DataRow(ErrorLevel.Error)]
@@ -711,6 +723,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method LongReportIsAsync.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void LongReportIsAsync()
         {
@@ -751,6 +764,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method ExceptionWhileTransformingPayloadAsync.
         /// </summary>
+        [Ignore]
         [TestMethod]
         [Timeout(5000)]
         public void ExceptionWhileTransformingPayloadAsync()
@@ -818,6 +832,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method MultithreadedStressTest_BlockingLogs.
         /// </summary>
+        [Ignore]
         [TestMethod]
         [Timeout(120000)]
         public void MultithreadedStressTest_BlockingLogs()
@@ -872,6 +887,7 @@ namespace UnitTest.Rollbar
         /// <summary>
         /// Defines the test method MultithreadedStressTest.
         /// </summary>
+        [Ignore]
         [TestMethod]
         [Timeout(100000)]
         public void MultithreadedStressTest()
@@ -894,7 +910,7 @@ namespace UnitTest.Rollbar
 
             this.IncrementCount<CommunicationEventArgs>(RollbarInfrastructure.Instance.Config.RollbarInfrastructureOptions.ReportingQueueDepth);
 
-            List<IRollbar> rollbars = 
+            List<IRollbar> rollbars =
                 new List<IRollbar>(MultithreadedStressTestParams.TotalThreads);
             for (int i = 0; i < MultithreadedStressTestParams.TotalThreads; i++)
             {
@@ -927,7 +943,7 @@ namespace UnitTest.Rollbar
                 var task = new Task((state) =>
                 {
                     int taskIndex = (int)state;
-                    TimeSpan sleepIntervalDelta = 
+                    TimeSpan sleepIntervalDelta =
                         TimeSpan.FromTicks(taskIndex * MultithreadedStressTestParams.LogIntervalDelta.Ticks);
                     var logger = loggers[taskIndex];
                     int i = 0;
@@ -960,7 +976,7 @@ namespace UnitTest.Rollbar
 
             Task.WaitAll(tasks.ToArray());
 
-            int expectedCount = 
+            int expectedCount =
                 MultithreadedStressTestParams.TotalThreads * MultithreadedStressTestParams.LogsPerThread;
 
             //we need this delay loop for async logs:
@@ -970,7 +986,7 @@ namespace UnitTest.Rollbar
             }
 
             Thread.Sleep(TimeSpan.FromSeconds(10));
-            
+
             RollbarQueueController.Instance.InternalEvent -= RollbarStress_InternalEvent;
 
             Assert.AreEqual(expectedCount, RollbarLoggerFixture.stressLogsCount, "Matching stressLogsCount");

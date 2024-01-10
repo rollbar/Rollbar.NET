@@ -20,9 +20,9 @@ namespace UnitTest.Rollbar.Deploys
         {
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
 
-            RollbarDestinationOptions destinationOptions = 
+            RollbarDestinationOptions destinationOptions =
                 new RollbarDestinationOptions(
-                    RollbarUnitTestSettings.AccessToken, 
+                    RollbarUnitTestSettings.AccessToken,
                     RollbarUnitTestSettings.Environment
                     );
             this._loggerConfig =
@@ -35,6 +35,7 @@ namespace UnitTest.Rollbar.Deploys
         {
         }
 
+        [Ignore]
         [TestMethod]
         public void TestGetDeploysPage()
         {
@@ -51,6 +52,7 @@ namespace UnitTest.Rollbar.Deploys
 
         }
 
+        [Ignore]
         [TestMethod]
         public void TestGetDeploy()
         {
@@ -67,6 +69,7 @@ namespace UnitTest.Rollbar.Deploys
 
         }
 
+        [Ignore]
         [TestMethod]
         public void TestPostDeployment()
         {

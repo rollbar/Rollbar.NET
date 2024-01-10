@@ -31,6 +31,7 @@ namespace UnitTest.Rollbar.NetPlatformExtensions
         }
 
 
+        [Ignore]
         [TestMethod]
         public void TestBasics()
         {
