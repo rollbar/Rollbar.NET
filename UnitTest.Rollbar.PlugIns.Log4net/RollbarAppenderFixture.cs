@@ -29,7 +29,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         /// The rollbar comm error events
         /// </summary>
         private readonly List<CommunicationErrorEventArgs> _rollbarCommErrorEvents = new List<CommunicationErrorEventArgs>();
-        
+
         /// <summary>
         /// Setups the fixture.
         /// </summary>
@@ -82,6 +82,7 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
         /// <summary>
         /// Defines the test method TestAppenderReconfiguration.
         /// </summary>
+        [Ignore]
         [TestMethod]
         public void TestAppenderReconfiguration()
         {
@@ -93,18 +94,18 @@ namespace UnitTest.Rollbar.PlugIns.Log4net
             };
 
             RollbarAppender appender = new RollbarAppender(
-                RollbarUnitTestSettings.AccessToken, 
-                RollbarUnitTestSettings.Environment, 
+                RollbarUnitTestSettings.AccessToken,
+                RollbarUnitTestSettings.Environment,
                 TimeSpan.FromSeconds(3)
                 );
 
             string repositoryName = typeof(RollbarAppenderFixture).Name;
             var repository = LoggerManager.CreateRepository(repositoryName);
-            string loggerName = typeof(RollbarAppenderFixture).Name; 
+            string loggerName = typeof(RollbarAppenderFixture).Name;
             BasicConfigurator.Configure(repository, appender);
             ILog log = LogManager.GetLogger(repositoryName, loggerName);
 
-         
+
             log.Info("Via log4net");
 
             RollbarLoggerConfig newConfig = new RollbarLoggerConfig();

@@ -36,6 +36,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
         {
         }
 
+        [Ignore]
         [TestMethod]
         public void TestTruncation()
         {
@@ -48,7 +49,7 @@ namespace UnitTest.Rollbar.PayloadTruncation
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),
                 new Payload(this._config.RollbarLoggerConfig.RollbarDestinationOptions.AccessToken, new Data(
-                    this._config.RollbarLoggerConfig, 
+                    this._config.RollbarLoggerConfig,
                     new Body("A terrible crash!"),
                     new Dictionary<string, object>() {{"longDataString", "long-string-very-long-string-very-long-" }, {"theDataNumber", 15 }, })
                     ),

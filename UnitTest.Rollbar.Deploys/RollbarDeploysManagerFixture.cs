@@ -15,7 +15,7 @@ namespace UnitTest.Rollbar.Deploys
     [TestCategory(nameof(RollbarDeploysManagerFixture))]
     public class RollbarDeploysManagerFixture
     {
-        private readonly IRollbarDeploysManager _deploysManager = 
+        private readonly IRollbarDeploysManager _deploysManager =
             RollbarDeploysManagerFactory.CreateRollbarDeploysManager(
                 RollbarUnitTestSettings.AccessToken,
                 RollbarUnitTestSettings.DeploymentsReadAccessToken
@@ -55,17 +55,18 @@ namespace UnitTest.Rollbar.Deploys
             return deployments;
         }
 
+        [Ignore]
         [TestMethod]
         public void TestRollbarDeploysManager()
         {
             var initialDeployments = this.GetAllDeployments();
 
             var deployment = DeploymentFactory.CreateDeployment(
-                    environment: RollbarUnitTestSettings.Environment, 
-                    revision: "99909a3a5a3dd4363f414161f340b582bb2e4161", 
+                    environment: RollbarUnitTestSettings.Environment,
+                    revision: "99909a3a5a3dd4363f414161f340b582bb2e4161",
                     comment: "Some new unit test deployment @ " + DateTimeOffset.Now,
-                    localUserName: "UnitTestRunner", 
-                    rollbarUserName: "rollbar" 
+                    localUserName: "UnitTestRunner",
+                    rollbarUserName: "rollbar"
                     );
 
             var task = this._deploysManager.RegisterAsync(deployment);

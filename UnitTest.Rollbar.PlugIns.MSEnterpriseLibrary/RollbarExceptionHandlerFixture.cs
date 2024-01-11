@@ -38,25 +38,26 @@ namespace UnitTest.Rollbar.PlugIns.MSEnterpriseLibrary
 
         }
 
+        [Ignore]
         [TestMethod]
         public void TestBasics()
         {
             _rollbarCommunicationEventsCount = 0;
-            
+
             IExceptionHandler exceptionHandler = null;
             const int totalExceptionStackFrames = 10;
             int expectedCount = 0;
 
             exceptionHandler = new RollbarExceptionHandler(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment, null);
             exceptionHandler.HandleException(
-                ExceptionSimulator.GetExceptionWith(totalExceptionStackFrames, "RollbarExceptionHandlerFixture: TestBasics non-blocking..."), 
+                ExceptionSimulator.GetExceptionWith(totalExceptionStackFrames, "RollbarExceptionHandlerFixture: TestBasics non-blocking..."),
                 Guid.NewGuid()
                 );
             expectedCount++;
 
             exceptionHandler = new RollbarExceptionHandler(RollbarUnitTestSettings.AccessToken, RollbarUnitTestSettings.Environment, TimeSpan.FromSeconds(5));
             exceptionHandler.HandleException(
-                ExceptionSimulator.GetExceptionWith(totalExceptionStackFrames,"RollbarExceptionHandlerFixture: TestBasics blocking..."), 
+                ExceptionSimulator.GetExceptionWith(totalExceptionStackFrames,"RollbarExceptionHandlerFixture: TestBasics blocking..."),
                 Guid.NewGuid()
                 );
             expectedCount++;

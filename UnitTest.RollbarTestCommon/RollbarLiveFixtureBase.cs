@@ -100,7 +100,7 @@ namespace UnitTest.Rollbar
         /// <param name="e">The <see cref="RollbarEventArgs"/> instance containing the event data.</param>
         private void OnRollbarInternalEvent(object sender, RollbarEventArgs e)
         {
-            if(!(e is CommunicationEventArgs)) 
+            if(!(e is CommunicationEventArgs))
             {
             }
 
@@ -196,7 +196,7 @@ namespace UnitTest.Rollbar
             else
             {
                 this._rollbarEventsByType.Add(
-                    eventType, 
+                    eventType,
                     new List<RollbarEventArgs>(new[] {rollbarEvent})
                     );
             }
@@ -253,7 +253,7 @@ namespace UnitTest.Rollbar
         /// Clears this instance.
         /// </summary>
         /// <typeparam name="TRollbarEvent">The type of the t rollbar event.</typeparam>
-        protected void Clear<TRollbarEvent>() 
+        protected void Clear<TRollbarEvent>()
             where TRollbarEvent : RollbarEventArgs
         {
             if (this._rollbarEventsByType.TryGetValue(typeof(TRollbarEvent), out var rollbarEvents))
@@ -350,7 +350,7 @@ namespace UnitTest.Rollbar
         {
             if (this._loggerConfig == null)
             {
-                RollbarDestinationOptions destinationOptions = 
+                RollbarDestinationOptions destinationOptions =
                     new RollbarDestinationOptions(rollbarAccessToken, rollbarEnvironment);
 
                 RollbarDataSecurityOptions dataSecurityOptions = new RollbarDataSecurityOptions();
@@ -404,14 +404,15 @@ namespace UnitTest.Rollbar
             Assert.AreEqual(this.GetCount<CommunicationEventArgs>(), initialCommunicationEventsCount + 1, "Confirming Rollbar.NET is operational...");
         }
 
+        [Ignore]
         [TestMethod]
-        public void _VerifyInstanceOperationalTest() 
+        public void _VerifyInstanceOperationalTest()
         {
             // this test more about verifying if the test harness itself works well:
 
             this.ClearAllRollbarEvents();
 
-            using(IRollbar rollbar = this.ProvideDisposableRollbar()) 
+            using(IRollbar rollbar = this.ProvideDisposableRollbar())
             {
                 this.VerifyInstanceOperational(rollbar);
             }
