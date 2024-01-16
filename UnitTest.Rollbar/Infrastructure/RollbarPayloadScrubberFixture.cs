@@ -122,6 +122,7 @@
             Assert.IsFalse(initialPayload.Contains("***"));
             string scrubbedPayload_byName = scrubber.ScrubPayload(initialPayload);
             Assert.IsTrue(scrubbedPayload_byName.Contains("***"));
+            Assert.IsTrue(scrubbedPayload_byName.Contains("\"access_token\": \"***\""));
             Assert.IsTrue(scrubbedPayload_byName.Contains("\"log4net:UserName\": \"***\""));
             Assert.IsTrue(scrubbedPayload_byName.Contains("\"log4net:HostName\": \"***\""));
             Assert.IsTrue(scrubbedPayload_byName.Contains("\"log4net:Identity\": \"***\""));
