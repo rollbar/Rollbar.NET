@@ -13,33 +13,33 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>UnitTest.$(AssemblyName)</_Parameter1>
-    </AssemblyAttribute>  
+    </AssemblyAttribute>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>UnitTest.RollbarTestCommon</_Parameter1>
-    </AssemblyAttribute>  
+    </AssemblyAttribute>
   </ItemGroup>
-  
+
   <PropertyGroup Label="SDK Release Essential Info">
-    <SdkVersion>5.2.1</SdkVersion>            <!-- Required: major.minor.patch -->
+    <SdkVersion>5.2.2</SdkVersion>            <!-- Required: major.minor.patch -->
     <SdkVersionSuffix></SdkVersionSuffix>     <!-- Optional. Examples: alpha, beta, preview, RC etc. -->
     <SdkLtsRelease>false</SdkLtsRelease>      <!-- Optional. Examples: false (default) or true. -->
     <SdkReleaseNotes>                         <!-- Required -->
 
-		fix: resolve #644 - Scrub access token in the message payload
+		chore: Update project metadata.
 
-	</SdkReleaseNotes>                        
+	</SdkReleaseNotes>
 
     <!--
     Release Notes Tagging Conventions:
     ==================================
-    
+
     1.  Every entry within the PackageReleaseNotes element is expected to be started with
         at least one of the tags listed:
-        
+
         feat:     A new feature
         fix:      A bug fix
         docs:     Documentation only changes
@@ -48,26 +48,26 @@
         perf:     A code change that improves performance
         test:     Adding or modifying unit test code
         chore:    Changes to the build process or auxiliary tools and libraries such as documentation generation, etc.
-    
-    2.  Every entry within the PackageReleaseNotes element is expected to be tagged with 
-        EITHER 
+
+    2.  Every entry within the PackageReleaseNotes element is expected to be tagged with
+        EITHER
         "resolve #GITHUB_ISSUE_NUMBER:" - meaning completely addresses the GitHub issue
-        OR 
+        OR
         "ref #GITHUB_ISSUE_NUMBER:" - meaning relevant to the GitHub issue
         depending on what is more appropriate in each case.
     -->
-   
+
   </PropertyGroup>
 
-  
+
   <PropertyGroup Label="SDK Common Assembly Info and NuGet Packaging Info" >
 
     <PackageReleaseNotes>$(SdkReleaseNotes)</PackageReleaseNotes>
     <VersionPrefix>$(SdkVersion)</VersionPrefix>
     <VersionSuffix>$(SdkVersionSuffix)</VersionSuffix>
-    <Company>Rollbar Inc</Company>
-    <Owners>Andrey Kornich (Wide Spectrum Computing LLC), Rollbar Inc.</Owners>
-    <Authors>Andrey Kornich (Wide Spectrum Computing LLC)</Authors>
+    <Company>Rollbar, Inc.</Company>
+    <Owners>Rollbar, Inc.</Owners>
+    <Authors>Rollbar, Inc.</Authors>
     <Title>Rollbar.NET Notifier</Title>
     <Product>Rollbar.Net Notifier SDK</Product>
     <Description>Rollbar collects errors that happen in your application, notifies you, and analyzes them so you can debug and fix them.</Description>
@@ -83,8 +83,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <PropertyGroup 
-    Label="SDK Common Assembly Info and NuGet Packaging Info for non-LTS releases" 
+  <PropertyGroup
+    Label="SDK Common Assembly Info and NuGet Packaging Info for non-LTS releases"
     Condition="'$(SdkLtsRelease)'=='true'">
       <InformationalVersion>LTS-$(SdkVersion)-$(SdkVersionSuffix)</InformationalVersion>
       <ProductVersion>LTS-$(SdkVersion)-$(SdkVersionSuffix)</ProductVersion>
@@ -120,6 +120,6 @@
 
   <!--REFERENCES:
   https://docs.microsoft.com/en-us/dotnet/core/project-sdk/msbuild-props
-  
+
   -->
 </Project>
