@@ -5,6 +5,7 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading;
@@ -40,5 +41,26 @@
             Assert.IsFalse(string.IsNullOrWhiteSpace(path));
         }
 
+        [TestMethod]
+        public void TestGetSdkRuntimeLocationPathWithBinSubfolder()
+        {
+            var expectedPath = Path.Combine(AppContext.BaseDirectory, "bin");
+            try
+            {
+                Directory.CreateDirectory(expectedPath);
+
+                var path = RuntimeEnvironmentUtility.GetSdkRuntimeLocationPath();
+                Assert.IsNotNull(path);
+                Assert.IsFalse(string.IsNullOrWhiteSpace(path));
+                Assert.IsTrue(path.EndsWith("bin"));
+            }
+            finally
+            {
+                if (Directory.Exists(expectedPath))
+                {
+                    Directory.Delete(expectedPath);
+                }
+            }
+        }
     }
 }

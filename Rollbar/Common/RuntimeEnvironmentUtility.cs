@@ -32,6 +32,11 @@ namespace Rollbar.Common
 
             if (path != null)
             {
+                if (Directory.Exists(Path.Combine(path, "bin")))
+                {
+                    return Path.Combine(path, "bin");
+                }
+
                 return path;
             }
 #endif
