@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Rollbar\Rollbar.csproj" />
+    <ProjectReference Include="..\..\Rollbar.NetCore.AspNet\Rollbar.NetCore.AspNet.csproj" />
+  </ItemGroup>
+
+</Project>
