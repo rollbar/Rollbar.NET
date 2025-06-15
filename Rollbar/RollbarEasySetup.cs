@@ -158,6 +158,21 @@ namespace Rollbar
         public string? EndPoint { get; set; }
 
         /// <summary>
+        /// Host/server name for identifying the source of errors.
+        /// </summary>
+        public string? Host { get; set; }
+
+        /// <summary>
+        /// Code version/release identifier (e.g., "1.2.3", "v2.1.0", git commit hash).
+        /// </summary>
+        public string? CodeVersion { get; set; }
+
+        /// <summary>
+        /// Source control branch name (e.g., "main", "develop", "feature/xyz").
+        /// </summary>
+        public string? Branch { get; set; }
+
+        /// <summary>
         /// Fluent API for setting scrub fields.
         /// </summary>
         /// <param name="fields">Fields to scrub</param>
@@ -180,6 +195,33 @@ namespace Rollbar
             PersonId = id;
             PersonUsername = username;
             PersonEmail = email;
+            return this;
+        }
+
+        /// <summary>
+        /// Fluent API for setting deployment information.
+        /// </summary>
+        /// <param name="codeVersion">Code version/release identifier</param>
+        /// <param name="branch">Source control branch name (optional)</param>
+        /// <returns>This options instance for chaining</returns>
+        public SimpleRollbarOptions WithDeployment(string codeVersion, string? branch = null)
+        {
+            CodeVersion = codeVersion;
+            if (!string.IsNullOrEmpty(branch))
+            {
+                Branch = branch;
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Fluent API for setting host/server information.
+        /// </summary>
+        /// <param name="host">Host/server name</param>
+        /// <returns>This options instance for chaining</returns>
+        public SimpleRollbarOptions WithHost(string host)
+        {
+            Host = host;
             return this;
         }
 
@@ -231,6 +273,40 @@ namespace Rollbar
                 if (additionOptions != null)
                 {
                     additionOptions.Person = person;
+                }
+            }
+
+            // Apply code version if specified
+            if (!string.IsNullOrEmpty(CodeVersion))
+            {
+                var additionOptions = config.RollbarLoggerConfig.RollbarPayloadAdditionOptions as RollbarPayloadAdditionOptions;
+                if (additionOptions != null)
+                {
+                    additionOptions.CodeVersion = CodeVersion;
+                }
+            }
+
+            // Apply server information (host and branch) if specified
+            if (!string.IsNullOrEmpty(Host) || !string.IsNullOrEmpty(Branch))
+            {
+                var additionOptions = config.RollbarLoggerConfig.RollbarPayloadAdditionOptions as RollbarPayloadAdditionOptions;
+                if (additionOptions != null)
+                {
+                    // Create or update server information
+                    if (additionOptions.Server == null)
+                    {
+                        additionOptions.Server = new DTOs.Server();
+                    }
+
+                    if (!string.IsNullOrEmpty(Host))
+                    {
+                        additionOptions.Server.Host = Host;
+                    }
+
+                    if (!string.IsNullOrEmpty(Branch))
+                    {
+                        additionOptions.Server.Branch = Branch;
+                    }
                 }
             }
         }
