@@ -276,18 +276,8 @@ namespace Rollbar
                 }
             }
 
-            // Apply code version if specified
-            if (!string.IsNullOrEmpty(CodeVersion))
-            {
-                var additionOptions = config.RollbarLoggerConfig.RollbarPayloadAdditionOptions as RollbarPayloadAdditionOptions;
-                if (additionOptions != null)
-                {
-                    additionOptions.CodeVersion = CodeVersion;
-                }
-            }
-
-            // Apply server information (host and branch) if specified
-            if (!string.IsNullOrEmpty(Host) || !string.IsNullOrEmpty(Branch))
+            // Apply server information (host, branch, and code version) if specified
+            if (!string.IsNullOrEmpty(Host) || !string.IsNullOrEmpty(Branch) || !string.IsNullOrEmpty(CodeVersion))
             {
                 var additionOptions = config.RollbarLoggerConfig.RollbarPayloadAdditionOptions as RollbarPayloadAdditionOptions;
                 if (additionOptions != null)
@@ -306,6 +296,11 @@ namespace Rollbar
                     if (!string.IsNullOrEmpty(Branch))
                     {
                         additionOptions.Server.Branch = Branch;
+                    }
+
+                    if (!string.IsNullOrEmpty(CodeVersion))
+                    {
+                        additionOptions.Server.CodeVersion = CodeVersion;
                     }
                 }
             }
