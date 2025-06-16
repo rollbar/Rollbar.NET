@@ -282,7 +282,13 @@ namespace Rollbar
                 var additionOptions = config.RollbarLoggerConfig.RollbarPayloadAdditionOptions as RollbarPayloadAdditionOptions;
                 if (additionOptions != null)
                 {
-                    additionOptions.CodeVersion = CodeVersion;
+                    // Create or update server information
+                    if (additionOptions.Server == null)
+                    {
+                        additionOptions.Server = new DTOs.Server();
+                    }
+
+                    additionOptions.Server.CodeVersion = CodeVersion;
                 }
             }
 
@@ -302,6 +308,7 @@ namespace Rollbar
                     {
                         additionOptions.Server.Host = Host;
                     }
+
 
                     if (!string.IsNullOrEmpty(Branch))
                     {
