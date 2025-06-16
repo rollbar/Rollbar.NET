@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net6.0;net472</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <PackageId>Rollbar.Hangfire</PackageId>
+    <Version>5.2.2</Version>
+    <Authors>Rollbar Inc.</Authors>
+    <Description>Hangfire integration for Rollbar error tracking and monitoring</Description>
+    <PackageTags>Rollbar;Hangfire;ErrorTracking;BackgroundJobs;Monitoring</PackageTags>
+    <PackageProjectUrl>https://github.com/rollbar/Rollbar.NET</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/rollbar/Rollbar.NET</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rollbar\Rollbar.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.Core" Version="1.8.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+</Project>
